@@ -33,3 +33,5 @@ Few steps to follow
 
 6. `manage.py` is outside the `mlp` directory. But inside the main repo directory. 
 7. The main repo dir also contains `.gitignore` file 
+8. Copy `openshift-start-up-script` from similar projects
+9. Declare Enviroment variables in [Build](https://openshift.cern.ch/console/project/ml4dqm-playground/browse/builds) on Openshift platform 
