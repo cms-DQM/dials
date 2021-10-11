@@ -78,7 +78,7 @@ ipython_config.py
 
 
 ### Virtual Environment ###
-.mlp-env/
+mlp-env/
 
 ### WSGI
 wsgi/static/
