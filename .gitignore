@@ -86,3 +86,5 @@ wsgi/static/
 
 #Test Scripts
 test_script.txt
+
+.env
