@@ -1,0 +1,10 @@
+Django
+django-bootstrap3
+django-filter
+django-tables2
+djangorestframework
+daphne
+python-decouple
+psycopg2-binary
+django-tables2
+whitenoise

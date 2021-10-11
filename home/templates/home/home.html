@@ -1,0 +1,58 @@
+{% extends 'basepage/homebase.html' %}
+
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static "home/css/style.css" %}">
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock style %}
+
+{% block content %}
+<div class="album bg-light">
+    <div class="card text-white bg-secondary my-2 py-1 text-center" style="width: 100%">
+        <div class="card-body">
+            <h1 class="font-weight-light">ML Playground</h1>
+            <p class="text-white m-0">Tool to build ML models for helping offline tracker shifters in monitroing and certifying run reconstruction data.  
+            </p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card-deck my-3">
+            <div class="card h-50">
+                <div class="btn btn-secondary" onclick="location.href='#'">
+                <a href="#">
+                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/dataset3.png" %}" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text text-center" style="font-size: 18px">Datasets</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+            <div class="card h-50">
+                <div class="btn btn-secondary" onclick="location.href='#'">
+                <a href="#">
+                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/model.png" %}" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text text-center" style="font-size: 18px">Models</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+            <div class="card h-50">
+                <div class="btn btn-secondary" onclick="location.href='#'">
+                <a href="#">
+                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/mlreports.png" %}" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text text-center" style="font-size: 18px">Reports</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+{% endblock scripts %}
