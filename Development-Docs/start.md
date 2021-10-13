@@ -28,6 +28,7 @@ Few steps to follow
 5. In project structure. Main folder will be `mlp`. It will contain 
     * `settings.py`
         * Dont forget to edit `BASE_DIR`, `ALLOWED_HOSTS`, `TEMPLATES`, `DATABASES`, `STATIC` etc. 
+        * `MIDDLEWARE` has to be edited to include `whitenoise` to serve static files
     * `urls.py`
     * `asgi.py` & `wsgi.py`
 
