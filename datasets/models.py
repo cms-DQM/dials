@@ -19,7 +19,7 @@ class Dataset(models.Model):
     api = models.TextField(blank = True)
     api_description = models.TextField(blank = True)
     storagetype = models.CharField(choices=STORAGE_CHOICES, max_length=50)
-    granularity = models.CharField(choices=GRANULAR_CHOICES, max_length=50, default="lumi", blank=True)
+    granularity = models.CharField(choices=GRANULAR_CHOICES, max_length=50)
     location = models.TextField(blank = True)
     scripts = models.TextField(blank = True)
     comment = models.TextField(blank = True)
