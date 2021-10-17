@@ -22,6 +22,10 @@
     ```
     CREATE DATABASE devmlp
     ```
+    * To connect to this database
+    ```
+    \c devmlp 
+    ```
 
 4. Add the required environment variables in `settings.py` and OpenShift for this database
 ```

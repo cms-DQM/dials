@@ -36,3 +36,10 @@ Few steps to follow
 7. The main repo dir also contains `.gitignore` file 
 8. Copy `openshift-start-up-script` from similar projects
 9. Declare Enviroment variables in [Build](https://openshift.cern.ch/console/project/ml4dqm-playground/browse/builds) on Openshift platform 
+
+
+10. Create a superuser in Django 
+
+```python
+python manage.py createsuperuser
+```

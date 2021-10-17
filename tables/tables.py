@@ -26,7 +26,7 @@ class DatasetTable(tables.Table):
         return format_html(
             '<a href="{}">'
             '{}'
-            '</a>', value)
+            '</a>', value, value)
 
     def render_storagetype(self, value):
         value = value.replace("Postgres", "<div class='storage_postgres'>Postgres</div>")
