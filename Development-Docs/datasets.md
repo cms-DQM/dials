@@ -19,6 +19,12 @@ class Dataset(models.Model):
         ("external", "External")
     )
 
+    GRANULAR_CHOICES = (
+        ("fill", "Fill"),
+        ("run", "Run"),
+        ("lumi", "Lumisection")
+    )
+
     name = models.CharField(max_length=100)
     description = models.TextField(blank = True)
     api = models.TextField(blank = True)
@@ -27,6 +33,7 @@ class Dataset(models.Model):
     location = models.TextField(blank = True)
     scripts = models.TextField(blank = True)
     comment = models.TextField(blank = True)
+    granularity = models.CharField(choices=GRANULAR_CHOICES, max_length=50)
 
     def __str__(self):
         return "{}".format(self.name)
