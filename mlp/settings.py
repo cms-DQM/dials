@@ -36,17 +36,22 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'home.apps.HomeConfig',
-    'tables.apps.TablesConfig',
-    'datasets.apps.DatasetsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'home.apps.HomeConfig',
+    'tables.apps.TablesConfig',
+    'datasets.apps.DatasetsConfig',
+
     'bootstrap3',
     'django_tables2',
+
+    'runs.apps.RunsConfig',
+    'run_histos.apps.RunHistosConfig',
 ]
 
 MIDDLEWARE = [
