@@ -43,12 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'bootstrap3',
+    'django_tables2',
+    'django_extensions',
+
     'home.apps.HomeConfig',
     'tables.apps.TablesConfig',
     'datasets.apps.DatasetsConfig',
-
-    'bootstrap3',
-    'django_tables2',
 
     'runs.apps.RunsConfig',
     'run_histos.apps.RunHistosConfig',
@@ -138,3 +139,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Notebook arguments
+NOTEBOOK_ARGUMENTS = [
+    # exposes IP and port
+    '--ip=127.0.0.1',
+    '--port=8000',
+    # disables the browser
+    '--no-browser',
+]

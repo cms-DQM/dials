@@ -61,4 +61,14 @@ cd scripts
 source step2_extract_run_histos.sh
 ```
 
-To add everything, just uncomment the command in the loop. 
+To add everything, just uncomment the command in the loop.
+
+## Prototyping data extraction and views using jupyter
+
+In order to prototype the scripts for data extraction and the views, it is possible to use some notebooks.
+```
+pip install jupyter django-extensions
+python manage.py shell_plus --notebook
+```
+
+On lxplus, some lines can be added to settings.py in order to specify the IP adress and the port to be used as well as the no-browser option in order to forward the notebook.
