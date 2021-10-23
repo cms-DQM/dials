@@ -6,4 +6,4 @@ class Run(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"run {run_number}"
+        return f"run {self.run_number}"

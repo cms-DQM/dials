@@ -12,5 +12,5 @@ for f in $FILES
 
 do
   echo "Processing $f file..."
-  #python manage.py extract_run_histos f
+  python manage.py extract_run_histos $f
 done
