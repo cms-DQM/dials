@@ -20,7 +20,6 @@ class Command(BaseCommand):
 
         # extracting and creating run number (ForeignKey of histo1DRun)
         run_number = df.run.unique()[0]
-        print(type(run_number))
         run, _ = Run.objects.get_or_create(run_number=run_number)
         print(f'run {run_number} successfully added!')
 

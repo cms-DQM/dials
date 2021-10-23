@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} Run Histos {% endblock title %}
+
+{% block content %}
+
+<div>
+  {% if error_message %}
+    {{ error_message }}
+  {% endif %}
+
+  <form action="" method="POST" class="ui form">
+  {% csrf_token %}
+    <div class="field">
+        <label>Histogram</label>
+        <div class="ui selection dropdown">
+            <input type="hidden" name="histogram">
+            <i class="dropdown icon"></i>
+            <div class="default text">----</div>
+            <div class="menu">
+                <div class="item" value="Chi2Prob_GenTk">Chi2Prob_GenTk</div>
+                <div class="item" value="Chi2_GenTk">Chi2_GenTk</div>
+            </div>
+        </div>
+    </div>
+    <button class="ui primary button" type="submit">Select</button>
+  </form>
+
+</div>
+
+<hr>
+
+{{ df | safe }}
+
+{% endblock content %}
