@@ -9,7 +9,7 @@ python manage.py startapp datasets
 ```
 
 ### Build a model 
-In `datasets/models.py` 
+In `listdatasets/models.py` 
 
 ```python
 class Dataset(models.Model):

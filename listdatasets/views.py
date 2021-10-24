@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from datasets.models import Dataset
+from listdatasets.models import Dataset
 from tables.tables import DatasetTable
 
 # Create your views here.
@@ -21,4 +21,4 @@ def listdatasets(request):
     fill_table = DatasetTable(fill_list)
     context["fill_table"] = fill_table
 
-    return render(request, "datasets/listdatasets.html", context)
+    return render(request, "listdatasets/listdatasets.html", context)

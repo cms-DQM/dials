@@ -49,7 +49,8 @@ INSTALLED_APPS = [
 
     'home.apps.HomeConfig',
     'tables.apps.TablesConfig',
-    'datasets.apps.DatasetsConfig',
+    'listdatasets.apps.ListdatasetsConfig',
+    'dataset_tables.apps.DatasetTablesConfig',
 
     'runs.apps.RunsConfig',
     'run_histos.apps.RunHistosConfig',

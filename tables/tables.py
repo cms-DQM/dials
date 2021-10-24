@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 
-from datasets.models import Dataset
+from listdatasets.models import Dataset
 
 class DatasetTable(tables.Table):
     """
@@ -10,11 +10,10 @@ class DatasetTable(tables.Table):
     """
     name = tables.Column()
     description = tables.Column()
-    api = tables.Column(verbose_name = "API Link")
-    api_description = tables.Column(verbose_name = "API Description")
     storagetype = tables.Column(verbose_name = "Storage Type")
     location = tables.Column()
     scripts = tables.Column()
+    data_view = tables.Column(verbose_name = "Dataset View")
     #comment = tables.Column(verbose_name = "")
     
     class Meta:
@@ -22,11 +21,11 @@ class DatasetTable(tables.Table):
         fields = ()
         attrs = {"class": "table table-hover table-bordered table-fixed"}
 
-    def render_api(self, value):
+    def render_data_view(self, value):
         return format_html(
             '<a href="{}">'
-            '{}'
-            '</a>', value, value)
+            'View'
+            '</a>', value)
 
     def render_storagetype(self, value):
         value = value.replace("Postgres", "<div class='storage_postgres'>Postgres</div>")
