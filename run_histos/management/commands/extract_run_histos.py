@@ -14,17 +14,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        
+        split_file_path = file_path.replace('.csv', "").split('/')[-1].split('_')       
+        print(split_file_path) 
+
         # opening per run file from ML4DQM
         df = pd.read_csv(file_path)
 
         # extracting and creating run number (ForeignKey of histo1DRun)
-        run_number = df.run.unique()[0]
+        dataset    = split_file_path[0]
+        run_number = split_file_path[1]
+        workspace  = 'TrackParameters/generalTracks/GeneralProperties'
+        tag        = 'generalTracks'
+
         run, _ = Run.objects.get_or_create(run_number=run_number)
         print(f'run {run_number} successfully added!')
 
         # extracting set of histograms corresponding to the run
-        dataset   = 'ZeroBias'
+        dataset   = split_file_path[0]
         workspace = 'TrackParameters/generalTracks/GeneralProperties'
         tag       = 'generalTracks'
 
