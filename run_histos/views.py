@@ -1,8 +1,13 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+
 from runs.models import Run
 from .models import RunHisto
 
 import pandas as pd
+import altair as alt
+
+from vega_datasets import data
 
 # Create your views here.
 
@@ -19,8 +24,10 @@ def chart_select_view(request):
 
         if request.method == 'POST':
             print(f"request.POST is {request.POST}")
-            histogram = request.POST['histogram']
-            print(f"histogram: {histogram}")
+            dataset   = request.POST['dataset']
+            variable  = request.POST['variable']
+            plot_type = request.POST['plot_type']
+            print(f"dataset: {dataset} / variable: {variable} / plot_type: {plot_type}")
 
     else:
         error_message = "No records in the database"
@@ -31,3 +38,11 @@ def chart_select_view(request):
     }
 
     return render(request, 'run_histos/main.html', context)
+
+def chart_view_altair(request):
+    runhistos_df = pd.DataFrame(RunHisto.objects.all().values()).head(100)
+    chart_obj = alt.Chart(runhistos_df).mark_bar().encode(
+        x='mean',
+    ).to_json(indent=None)
+
+    return JsonResponse(chart_obj)
