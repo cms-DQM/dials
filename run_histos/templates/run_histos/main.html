@@ -58,16 +58,12 @@
 
 <hr>
 
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-
-  <h2> Here should be an altair plot... </h2>
+  <h2> Histogram </h2>
 
   <div id="vis"></div>
 
-  <script type="text/javscript">
-    var spec="https://raw.githubusercontent.com/vega/vega/master/docs/examples/bar-chart.vg.json";
+  <script type="text/javascript">
+    var spec = {{ chart|safe }};
     console.log(spec);
     vegaEmbed("#vis", spec)
   </script>

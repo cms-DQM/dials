@@ -32,9 +32,14 @@ def chart_select_view(request):
     else:
         error_message = "No records in the database"
 
+    chart = alt.Chart(runhistos_df.head(100)).mark_bar().encode(
+        x='mean',
+    ).to_json(indent=None)
+
     context = {
         'error_message': error_message,
-        'df': df.to_html(),
+        'df':            df.to_html(),
+        'chart' :        chart,
     }
 
     return render(request, 'run_histos/main.html', context)
@@ -44,5 +49,4 @@ def chart_view_altair(request):
     chart_obj = alt.Chart(runhistos_df).mark_bar().encode(
         x='mean',
     ).to_json(indent=None)
-
     return JsonResponse(chart_obj)
