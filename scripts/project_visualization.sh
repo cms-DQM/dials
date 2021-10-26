@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd ..
 
 ./manage.py graph_models -a -g -o ad_project.png
