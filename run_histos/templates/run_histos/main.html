@@ -9,17 +9,45 @@
     {{ error_message }}
   {% endif %}
 
+  <h2> Choosing Dataset / Variable / Plot type </h2>
+
   <form action="" method="POST" class="ui form">
   {% csrf_token %}
     <div class="field">
-        <label>Histogram</label>
+        <label>Dataset</label>
         <div class="ui selection dropdown">
-            <input type="hidden" name="histogram">
+            <input type="hidden" name="dataset">
+            <i class="dropdown icon"></i>
+            <div class="default text">----</div>
+            <div class="menu">
+                <div class="item" value="ZeroBias">ZeroBias</div>
+                <div class="item" value="SingleMuon">SingleMuon</div>
+                <div class="item" value="EGamma">EGamma</div>
+                <div class="item" value="JetHT">JetHT</div>
+            </div>
+        </div>
+    </div>
+    <div class="field">
+        <label>Variable</label>
+        <div class="ui selection dropdown">
+            <input type="hidden" name="variable">
             <i class="dropdown icon"></i>
             <div class="default text">----</div>
             <div class="menu">
                 <div class="item" value="Chi2Prob_GenTk">Chi2Prob_GenTk</div>
                 <div class="item" value="Chi2_GenTk">Chi2_GenTk</div>
+            </div>
+        </div>
+    </div>
+    <div class="field">
+        <label>Plot type</label>
+        <div class="ui selection dropdown">
+            <input type="hidden" name="plot_type">
+            <i class="dropdown icon"></i>
+            <div class="default text">----</div>
+            <div class="menu">
+                <div class="item" value="histogram">Histogram</div>
+                <div class="item" value="time_serie">Time Serie</div>
             </div>
         </div>
     </div>
@@ -30,6 +58,14 @@
 
 <hr>
 
-{{ df | safe }}
+  <h2> Plot </h2>
+
+  <div id="vis"></div>
+
+  <script type="text/javascript">
+    var spec = {{ chart|safe }};
+    console.log(spec);
+    vegaEmbed("#vis", spec)
+  </script>
 
 {% endblock content %}

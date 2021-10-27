@@ -3,5 +3,13 @@
 {% block title %} Runs {% endblock title %}
 
 {% block content %}
+
+{% if error_message %}
+{{ error_message }}
+{% endif %}
+
+{% if runs %}
 {{ runs | safe }}
+{% endif %}
+
 {% endblock content %}

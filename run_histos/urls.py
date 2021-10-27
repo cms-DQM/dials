@@ -1,7 +1,9 @@
 from django.urls import include, path
-from . import views
+from .views import run_histos_view, chart_view_altair, listRunHistos1D
 
 app_name = "run_histos"
 urlpatterns = [
-    path("listRunHistos1D/", views.listRunHistos1D, name="listRunHistos1D"),
+    path('',        run_histos_view, name='main-runhistos-view'),
+    path("listRunHistos1D/", listRunHistos1D, name="listRunHistos1D"),
+    path('altair/', chart_view_altair, name='altair-view'),
 ]
