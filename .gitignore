@@ -88,3 +88,9 @@ wsgi/static/
 test_script.txt
 
 .env
+db_extended
+static/admin/
+static/home/
+db_extended.sqlite3
+mlp_database
+Development-Docs/MacOSInstructions.md
