@@ -3,14 +3,15 @@ from .models import Run
 
 import pandas as pd
 
-# Create your views here.
 
+# Create your views here.
 def runs_view(request):
 
     error_message = None
     df = None
 
-    # objects.all().values() provides a dictionary while objects.all().values_list() provides a tuple
+    # objects.all().values() provides a dictionary
+    # while objects.all().values_list() provides a tuple
     runs_df = pd.DataFrame(Run.objects.all().values())
 
     if runs_df.shape[0] > 0:
@@ -28,4 +29,3 @@ def runs_view(request):
 
 def run_view(request):
     return render(request, 'runs/run.html')
-

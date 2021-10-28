@@ -4,18 +4,24 @@ from django.http import JsonResponse
 from runs.models import Run
 from .models import RunHisto
 
+from .utils import get_altair_chart
+
 import pandas as pd
 import altair as alt
 
 # Create your views here.
+
+def import_view(request):
+    return render(request, 'run_histos/import.html')
 
 def run_histos_view(request):
 
     error_message = None
     dataset       = None
     variable      = None
-    plot_type     = None
+    chart_type    = None
     df            = None
+    mean          = None
     chart         = {}
 
     # objects.all().values() provides a dictionary while objects.all().values_list() provides a tuple
@@ -28,27 +34,14 @@ def run_histos_view(request):
         if request.method == 'POST':
             dataset   = request.POST['dataset']
             variable  = request.POST['variable']
-            plot_type = request.POST['plot_type']
-            print(f"dataset: {dataset} / variable: {variable} / plot_type: {plot_type}")
+            chart_type = request.POST['plot_type']
+            print(f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}")
 
-        #df = df.query('primary_dataset.str.lower()=="zerobias" & title.str.lower()=="chi2prob_gentk"')
+        # df = df.query('primary_dataset.str.lower()=="zerobias" & title.str.lower()=="chi2prob_gentk"')
         df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
+        mean = df['mean'].to_frame().to_html()
 
-        if plot_type == 'histogram':
-            chart = alt.Chart(df).mark_bar().encode(
-                alt.X("mean", bin=True),
-                y='count()',
-            ).to_json(indent=None)
-        elif plot_type == 'time serie':
-            chart = alt.Chart(df).mark_circle(size=60).encode(
-                    alt.X('run_number',
-                    scale=alt.Scale(domain=(315000, 316000)) # shouldn't be hardcoded
-                ),
-                y='mean',
-                tooltip=['run_number', 'mean']
-            ).to_json(indent=None)
-        else:
-            print("No chart type was selected.")
+        chart = get_altair_chart(chart_type, df=df)
 
     else:
         error_message = "No runhistos in the database"
@@ -56,12 +49,13 @@ def run_histos_view(request):
     context = {
         'error_message': error_message,
         'df':            df,
+        'mean':          mean,
         'chart' :        chart,
     }
 
     return render(request, 'run_histos/main.html', context)
 
-def chart_view_altair(request):
+def altair_chart_view(request):
 
     chart = {}
 

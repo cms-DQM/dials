@@ -72,3 +72,10 @@ python manage.py shell_plus --notebook
 ```
 
 On lxplus, some lines can be added to settings.py in order to specify the IP adress and the port to be used as well as the no-browser option in order to forward the notebook.
+
+## Current class structure
+
+The main current class structure is the following:
+![Graph of class structure](./images/ad_project_classes.png?raw=true "Graph of class structure")
+
+Uniqueness should be established by the use of UniqueConstraint. Runs as well as the combinations of run+dataset+histogram and run+lumisection are unique. 

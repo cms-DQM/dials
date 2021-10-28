@@ -6,7 +6,12 @@
 
 <div>
   {% if error_message %}
-    {{ error_message }}
+    <div class="ui negative message">
+      <i class="close icon"></i>
+      <div class="header">
+        {{ error_message }}
+      </div>
+    </div>
   {% endif %}
 
   <h2> Choosing Dataset / Variable / Plot type </h2>
@@ -67,5 +72,7 @@
     console.log(spec);
     vegaEmbed("#vis", spec)
   </script>
+
+  {{mean | safe}}
 
 {% endblock content %}
