@@ -49,9 +49,11 @@ INSTALLED_APPS = [
     'tables.apps.TablesConfig',
     'datasets.apps.DatasetsConfig',
 
-    'runs.apps.RunsConfig',
-    'run_histos.apps.RunHistosConfig',
+    'runs',
+    'run_histos',
+    'run_certification',
     'lumisections',
+    'lumisection_histos2D',
 ]
 
 MIDDLEWARE = [

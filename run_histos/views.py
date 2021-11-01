@@ -29,7 +29,7 @@ def run_histos_view(request):
     runhistos_df = pd.DataFrame(RunHisto.objects.all().values())
 
     if runhistos_df.shape[0] > 0:
-        df = pd.merge(runs_df, runhistos_df, left_on='id', right_on='run_id').drop(['id_x', 'id_y', 'run_id', 'date_x', 'date_y'], axis=1)
+        df = pd.merge(runs_df, runhistos_df, left_on='id', right_on='run_number_id').drop(['id_x', 'id_y', 'run_number_id', 'date_x', 'date_y'], axis=1)
 
         if request.method == 'POST':
             dataset   = request.POST['dataset']

@@ -15,7 +15,7 @@ def runs_view(request):
     runs_df = pd.DataFrame(Run.objects.all().values())
 
     if runs_df.shape[0] > 0:
-        df = runs_df.drop(['id'], axis=1)
+        df = runs_df.drop(['id'], axis=1).to_html()
 
     else:
         error_message = "No runs in the database"
