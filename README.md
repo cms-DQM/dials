@@ -78,4 +78,17 @@ On lxplus, some lines can be added to settings.py in order to specify the IP adr
 The main current class structure is the following:
 ![Graph of class structure](./images/ad_project_classes.png?raw=true "Graph of class structure")
 
-Uniqueness should be established by the use of UniqueConstraint. Runs as well as the combinations of run+dataset+histogram and run+lumisection are unique. 
+Uniqueness should be established by the use of UniqueConstraint. Runs as well as the combinations of run+dataset+histogram and run+lumisection are unique.
+
+## Building a REST API
+
+The project can be split in two parts. The first goal is to move from many data sources to a database which can be queried by anyone. The second goal is to provide a framework to compare various approaches to anomaly detection. In order to fulfill the first goal while working towards the second, a REST API can be created which will allow users to access the relevant information from the database without modifying the project.
+
+In order to build the REST API, install the Django REST framework.
+```
+pip install djangorestframework
+```
+and add it to the list of installed apps.
+
+We then need to add a serializer.py file in each app we want to make accessible through the API. Starting with runs.
+ 
