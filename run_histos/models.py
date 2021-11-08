@@ -11,7 +11,7 @@ class RunHisto(models.Model):
     path            = models.CharField(max_length=220)
     title           = models.CharField(max_length=220)
 
-    entries         = models.IntegerField(null=True)
+    entries         = models.BigIntegerField(null=True)
     mean            = models.FloatField(null=True)
     rms             = models.FloatField(null=True)
     skewness        = models.FloatField(null=True)
