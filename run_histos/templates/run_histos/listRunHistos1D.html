@@ -6,7 +6,7 @@ List run histograms
 
 {% block style %}
     {% load static %}
-    <!-- <link rel="stylesheet" href="{% static "run_histos/css/list_histos.css" %}" type="text/css"> -->
+    <link rel="stylesheet" href="{% static "run_histos/css/list_histos.css" %}" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -34,7 +34,15 @@ List run histograms
 {% endblock content %}
 
 
-<!-- {% block scripts %}
-    {% load static %}
-
-{% endblock scripts %} -->
+{% block scripts %}
+    <script src="{% static "run_histos/js/filters.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#run_histos-filter-form").submit(function () {
+                var form = $(this);
+                disable_empty_filter_fields(form); // simpliflies URL alot by removing unused fields
+                return true; // ensure form still submits
+            });
+        });
+    </script>
+{% endblock scripts %}

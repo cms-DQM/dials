@@ -1,0 +1,68 @@
+{% load widget_tweaks %}
+<div class="container">
+    <div class="card border-light shadow p-3 bg-white rounded mb-4" style="margin: 0 auto 10px; width: 800px;">
+        <form id="run_histos-filter-form" action="" method="get" class="form my-1">
+            
+
+            <div class="form from-inline">
+                <div class="row top-buffer">
+                    <div class="col-sm-12 text-right">
+                        <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-run_number">
+                        <label class="form-check-label no-bold-label" for="id-ignore-run_number">Ignore other filters</label>
+                        <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+text-decoration: none;"></a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6>Run number:</h6>
+                    </div>
+                </div> 
+                <div class="row top-buffer">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-5">
+                        <strong>from</strong>:
+                    </div>
+                    <div class="col-sm-6">
+                        <strong>to</strong>:
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-sm-5">
+                        {% render_field filter.form.run__run_number__gte|add_class:"form-control" %}
+                    </div>
+                    <div class="col-sm-5">
+                        {% render_field filter.form.run__run_number__lte|add_class:"form-control" %}
+                    </div>
+                </div>
+
+                <div class="row top-buffer d-flex justify-content-center">
+                    <div class="col-sm-10">
+                        <strong>Comma-separated list</strong>:
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-sm-10">
+                        {% render_field filter.form.run__run_number__in|add_class:"form-control" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <hr style="width: 95%; color: lightgray; height: 1px; background-color:lightgray;" />
+            </div>
+            <div class="row">
+                <div class="col col-sm-6 text-left">
+                    <a href="{% url 'run_histos:listRunHistos1D' %}" class="btn btn-danger" id="clear-filters">
+                        <span class="glyphicon glyphicon-remove"></span> Reset
+                    </a>
+                </div>
+                <div class="col col-sm-6 text-right">
+                    <button type="submit" id="id_btn_filter" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-filter"></span> Filter
+                    </button>
+                </div>
+            </div>
+
+        </form>

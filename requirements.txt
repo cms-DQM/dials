@@ -4,6 +4,7 @@ django-filter
 django-tables2
 djangorestframework
 django-extensions
+django-widget-tweaks
 daphne
 python-decouple
 psycopg2-binary

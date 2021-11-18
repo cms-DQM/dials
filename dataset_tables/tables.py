@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from run_histos.models import RunHisto
 
-class RunHistoTable1D(tables.Table):
+class RunHistosTable1D(tables.Table):
     run = tables.Column(accessor = 'run.run_number')
     primary_dataset = tables.Column(verbose_name = "Dataset")
     title = tables.Column()
