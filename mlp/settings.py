@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'run_histos',
     'run_certification',
     'lumisections',
+    'lumisection_histos1D',
     'lumisection_histos2D',
 ]
 

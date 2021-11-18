@@ -1,4 +1,4 @@
-# ML Playground
+# Anomaly Detection Playground
 
 ## Setup the environment
 
@@ -45,7 +45,7 @@ python manage.py makemigrations new_app
 python manage.py migrate new_app
 ```
 
-## Filling the database using the Django management
+## Filling the database with run information
 
 The Django core management tool allows to interact with the database using scripts which can be scheduled. In order to fill the database, the runs and run_histos apps contain specific scripts which can be triggered from the scripts folder.
 
@@ -91,4 +91,32 @@ pip install djangorestframework
 and add it to the list of installed apps.
 
 We then need to add a serializer.py file in each app we want to make accessible through the API. Starting with runs.
- 
+
+## Run certification
+
+In progress
+
+## Filling the database with lumisection information
+
+Lumisection information from the ML4DQM dataset are 1D and 2D histograms. In order to add this information to the database, the run and lumisection they are related to need to have been created. The creation of run / lumisection is done when needed using a get_or_create for both as can be seen [here](https://github.com/XavierAtCERN/MLplayground/blob/master/lumisection_histos2D/management/commands/extract_lumisections_histos2D.py#L35-L44).
+
+A script to add lumisections can be ran as follow:
+````bash
+cd scripts
+source step4_extract_lumisections.sh
+```
+
+However, this script is of limited interest and will mostly be useful to test the code once tests will be added. Two more useful scripts can be ran to add 1D and 2D histogram information for every run/lumisection.
+
+````bash
+cd scripts
+source step5_extract_lumisection_histos1D.sh
+```
+
+Alternatively:
+
+````bash
+cd scripts
+source step6_extract_lumisection_histos2D.sh
+```
+

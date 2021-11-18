@@ -34,6 +34,7 @@ def runs_view(request):
 def run_view(request):
     return render(request, 'runs/run.html')
 
+
 # class based view (to be compared to function based view)
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all().order_by('run_number')

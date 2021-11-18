@@ -6,6 +6,7 @@ from run_certification.models import RunCertification
 
 import pandas as pd
 
+
 class Command(BaseCommand):
     help = 'Extracts PCA for each dataset using RunHisto'
 
@@ -18,6 +19,4 @@ class Command(BaseCommand):
             print(df.head(5))
 
         else:
-            print("No records in the database")
-
-
+	    print("No records in the database")
