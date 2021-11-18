@@ -6,6 +6,7 @@ from runs.models import Run
 # dummy example since each file is actually only one run
 import pandas as pd
 
+
 class Command(BaseCommand):
     help = 'Extracts runs from files'
 
