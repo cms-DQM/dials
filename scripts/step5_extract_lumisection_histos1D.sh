@@ -3,7 +3,7 @@
 cd ..
 
 # testing one file
-./manage.py extract_lumisections_histos1D.py /eos/project/c/cmsml4dc/ML_2020/UL2017_Data/DF2017B_1D_Complete/ZeroBias_2017B_DataFrame_1D_1.csv
+./manage.py extract_lumisections_histos1D /eos/project/c/cmsml4dc/ML_2020/UL2017_Data/DF2017B_1D_Complete/ZeroBias_2017B_DataFrame_1D_1.csv
 
 FILES="/eos/project/c/cmsml4dc/ML_2020/UL2017_Data/DF2017B_1D_Complete/ZeroBias*"
 
