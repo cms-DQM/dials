@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'bootstrap3',
     'django_tables2',
     'django_extensions',
+    'widget_tweaks',
+    'django_filters',
 
     'home.apps.HomeConfig',
     'tables.apps.TablesConfig',
