@@ -35,7 +35,8 @@ List run histograms
 
 
 {% block scripts %}
-    <script src="{% static "run_histos/js/filters.js" %}"></script>
+    {% load static %}
+    <script src="{% static "run_histos/js/filter.js" %}" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
             $("#run_histos-filter-form").submit(function () {
