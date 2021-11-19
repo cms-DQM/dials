@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'lumisections',
     'lumisection_histos1D',
     'lumisection_histos2D',
+    'lumisection_certification'
 ]
 
 MIDDLEWARE = [
