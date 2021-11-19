@@ -34,5 +34,5 @@ class Command(BaseCommand):
 
             lumisections.append(lumisection)
 
-        Lumisection.objects.bulk_create(lumisections)
+        Lumisection.objects.bulk_create(lumisections, ignore_conflicts=True)
         print('lumisections successfully added!')

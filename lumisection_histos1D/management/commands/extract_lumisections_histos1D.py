@@ -29,21 +29,19 @@ class Command(BaseCommand):
             title = row["hname"]
             entries = row["entries"]
 
-            if run_number == 297057:
-                print(run_number, lumi_number, title)
+            print(run_number, lumi_number, title)
 
-                run, _ = Run.objects.get_or_create(run_number=run_number)
-                lumisection, _ = Lumisection.objects.get_or_create(run_number=run, ls_number=lumi_number)
+            run, _ = Run.objects.get_or_create(run_number=run_number)
+            lumisection, _ = Lumisection.objects.get_or_create(run_number=run, ls_number=lumi_number)
 
-                lumisection_histo1D = LumisectionHisto1D(
-                    run_number=run,
-                    ls_number=lumisection,
-                    title=title,
-                    entries=entries,
-                    data=1.8
-                )
+            lumisection_histo1D = LumisectionHisto1D(
+                ls_number=lumisection,
+                title=title,
+                entries=entries,
+                data=1.8
+            )
 
-                lumisection_histos1D.append(lumisection_histo1D)
+            lumisection_histos1D.append(lumisection_histo1D)
 
-        LumisectionHisto1D.objects.bulk_create(lumisection_histos1D)
+        LumisectionHisto1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
         print('lumisections histos 1D successfully added!')

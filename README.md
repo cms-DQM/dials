@@ -8,7 +8,7 @@ conda activate ml_playground
 
 conda install pip
 
-git clone https://github.com/CMSTrackerDPG/MLplayground
+git clone https://github.com/XavierAtCERN/MLplayground
 
 cd MLplayground
 pip install -r requirements.txt
