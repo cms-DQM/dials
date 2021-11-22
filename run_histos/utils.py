@@ -14,7 +14,7 @@ def get_altair_chart(chart_type, *args, **kwargs):
                     y='count()',
                 ).to_json(indent=None)
 
-    elif chart_type == 'time serie':
+    elif chart_type == 'time_serie':
         chart = alt.Chart(df).mark_circle(size=60).encode(
                     alt.X('run_number',
                         scale=alt.Scale(domain=(315000, 316000)) # shouldn't be hardcoded

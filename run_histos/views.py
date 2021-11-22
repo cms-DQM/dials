@@ -37,8 +37,8 @@ def run_histos_view(request):
             chart_type = request.POST['plot_type']
             print(f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}")
 
-        # df = df.query('primary_dataset.str.lower()=="zerobias" & title.str.lower()=="chi2prob_gentk"')
-        df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
+        #df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
+        df = df.query('primary_dataset==@dataset & title==@variable')
         mean = df['mean'].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)
