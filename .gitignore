@@ -94,3 +94,5 @@ static/home/
 db_extended.sqlite3
 mlp_database
 Development-Docs/MacOSInstructions.md
+static/django_extensions/
+static/django_tables2/
