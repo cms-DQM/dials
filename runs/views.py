@@ -1,10 +1,14 @@
 from django.shortcuts import render
+
+from rest_framework import viewsets
+from .serializers import RunSerializer
+
 from .models import Run
 
 import pandas as pd
 
-# Create your views here.
 
+# Create your views here.
 def runs_view(request):
 
     error_message = None
@@ -28,4 +32,13 @@ def runs_view(request):
 
 def run_view(request):
     return render(request, 'runs/run.html')
+
+
+# class based view (to be compared to function based view)
+class RunViewSet(viewsets.ModelViewSet):
+    queryset = Run.objects.all().order_by('run_number')
+    serializer_class = RunSerializer
+
+
+
 

@@ -6,55 +6,49 @@
 
 <div>
   {% if error_message %}
-    {{ error_message }}
+    <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+      <div>
+        {{ error_message }}
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   {% endif %}
+</div>
 
   <h2> Choosing Dataset / Variable / Plot type </h2>
 
-  <form action="" method="POST" class="ui form">
-  {% csrf_token %}
-    <div class="field">
-        <label>Dataset</label>
-        <div class="ui selection dropdown">
-            <input type="hidden" name="dataset">
-            <i class="dropdown icon"></i>
-            <div class="default text">----</div>
-            <div class="menu">
-                <div class="item" value="ZeroBias">ZeroBias</div>
-                <div class="item" value="SingleMuon">SingleMuon</div>
-                <div class="item" value="EGamma">EGamma</div>
-                <div class="item" value="JetHT">JetHT</div>
-            </div>
-        </div>
-    </div>
-    <div class="field">
-        <label>Variable</label>
-        <div class="ui selection dropdown">
-            <input type="hidden" name="variable">
-            <i class="dropdown icon"></i>
-            <div class="default text">----</div>
-            <div class="menu">
-                <div class="item" value="Chi2Prob_GenTk">Chi2Prob_GenTk</div>
-                <div class="item" value="Chi2_GenTk">Chi2_GenTk</div>
-            </div>
-        </div>
-    </div>
-    <div class="field">
-        <label>Plot type</label>
-        <div class="ui selection dropdown">
-            <input type="hidden" name="plot_type">
-            <i class="dropdown icon"></i>
-            <div class="default text">----</div>
-            <div class="menu">
-                <div class="item" value="histogram">Histogram</div>
-                <div class="item" value="time_serie">Time Serie</div>
-            </div>
-        </div>
-    </div>
-    <button class="ui primary button" type="submit">Select</button>
-  </form>
+    <form action="" method="POST" class="px-4 py-3">
+    {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Dataset</label>
+        <select name="dataset" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="ZeroBias">ZeroBias</option>
+          <option value="SingleMuon">SingleMuon</option>
+          <option value="EGamma">EGamma</option>
+          <option value="JetHT">JetHT</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Variable</label>
+        <select name="variable" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="Chi2Prob_GenTk">Chi2Prob_GenTk</option>
+          <option value="Chi2_GenTk">Chi2_GenTk</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Plot type</label>
+        <select name="plot_type" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="histogram">Histogram</option>
+          <option value="time_serie">Time Serie</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Select</button>
+    </form>
 
-</div>
 
 <hr>
 

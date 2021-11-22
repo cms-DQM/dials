@@ -22,18 +22,16 @@ class Command(BaseCommand):
         for index, row in df.iterrows():
             run_number  = row["fromrun"]
             lumi_number = row["fromlumi"]
-            #print(run_number, lumi_number)
+            # print(run_number, lumi_number)
 
             run, _ = Run.objects.get_or_create(run_number=run_number)
 
             lumisection = Lumisection(
-                run_number = run,
-                ls_number  = lumi_number,
+                run_number=run,
+                ls_number=lumi_number,
             )
 
             lumisections.append(lumisection)
 
-        Lumisection.objects.bulk_create(lumisections)
-        print(f'lumisections successfully added!')
-
-
+        Lumisection.objects.bulk_create(lumisections, ignore_conflicts=True)
+        print('lumisections successfully added!')
