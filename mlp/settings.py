@@ -157,3 +157,7 @@ NOTEBOOK_ARGUMENTS = [
     # disables the browser
     '--no-browser',
 ]
+
+# Importing settings for subsystem
+from .settings_tracker import *
+
