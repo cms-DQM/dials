@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'widget_tweaks',
     'django_filters',
+    'rest_framework',
 
     'home.apps.HomeConfig',
     'tables.apps.TablesConfig',
@@ -159,3 +160,7 @@ NOTEBOOK_ARGUMENTS = [
     # disables the browser
     '--no-browser',
 ]
+
+# Importing settings for subsystem
+from .settings_tracker import *
+

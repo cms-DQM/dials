@@ -6,6 +6,7 @@ from lumisections.models import Lumisection
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 import pandas as pd
 
+
 class Command(BaseCommand):
     help = "Extracts lumisections from files"
 

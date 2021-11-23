@@ -11,6 +11,8 @@ from run_histos.utilities.utilities import request_contains_filter_parameter
 
 from .utils import get_altair_chart
 
+from .utils import get_altair_chart
+
 import pandas as pd
 import altair as alt
 
@@ -36,9 +38,11 @@ class listRunHistos1DView(SingleTableMixin, FilterView):
     
         return context
 
+
 def import_view(request):
     return render(request, 'run_histos/import.html')
 
+  
 def run_histos_view(request):
 
     error_message = None
@@ -80,6 +84,7 @@ def run_histos_view(request):
 
     return render(request, 'run_histos/main.html', context)
 
+  
 def altair_chart_view(request):
 
     chart = {}
