@@ -7,7 +7,6 @@ from .views import runs_view, run_view
 
 import pandas as pd
 
-
 # Create your tests here.
 class RunModelTest(TestCase):
 
