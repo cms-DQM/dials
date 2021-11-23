@@ -7,13 +7,16 @@ from .views import runs_view, run_view
 
 import pandas as pd
 
-# Create your tests here.
 
+# Create your tests here.
 class HomePageTest(TestCase):
 
     def test_resolve_runs_view(self):
-        found = resolve('/')
+        found = resolve('/runs/')
         self.assertEqual(found.func, runs_view)
+
+    def test_html_runs_view(self):
+        assert True
 
     def test_resolve_run_view(self):
         found = resolve('/run/')

@@ -6,6 +6,7 @@ from run_histos.models import RunHisto
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 import pandas as pd
 
+
 class Command(BaseCommand):
     help = 'Extracts histo summary from files'
 
@@ -14,8 +15,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        split_file_path = file_path.replace('.csv', "").split('/')[-1].split('_')       
-        print(split_file_path) 
+        split_file_path = file_path.replace('.csv', "").split('/')[-1].split('_')
+        print(split_file_path)
 
         # opening per run file from ML4DQM
         df = pd.read_csv(file_path)
