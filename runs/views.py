@@ -14,11 +14,12 @@ def runs_view(request):
     error_message = None
     df = None
 
-    # objects.all().values() provides a dictionary while objects.all().values_list() provides a tuple
+    # objects.all().values() provides a dictionary
+    # while objects.all().values_list() provides a tuple
     runs_df = pd.DataFrame(Run.objects.all().values())
 
     if runs_df.shape[0] > 0:
-        df = runs_df.drop(['id'], axis=1)
+        df = runs_df.drop(['id'], axis=1).to_html()
 
     else:
         error_message = "No runs in the database"

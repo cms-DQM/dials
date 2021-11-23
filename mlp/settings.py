@@ -48,15 +48,20 @@ INSTALLED_APPS = [
     'django_extensions',
     'widget_tweaks',
     'django_filters',
+    'rest_framework',
 
     'home.apps.HomeConfig',
     'tables.apps.TablesConfig',
     'listdatasets.apps.ListdatasetsConfig',
     'dataset_tables.apps.DatasetTablesConfig',
 
-    'runs.apps.RunsConfig',
-    'run_histos.apps.RunHistosConfig',
-    'lumisections.apps.LumisectionsConfig',
+    'runs',
+    'run_histos',
+    'run_certification',
+    'lumisections',
+    'lumisection_histos1D',
+    'lumisection_histos2D',
+    'lumisection_certification'
 ]
 
 MIDDLEWARE = [
@@ -154,3 +159,7 @@ NOTEBOOK_ARGUMENTS = [
     # disables the browser
     '--no-browser',
 ]
+
+# Importing settings for subsystem
+from .settings_tracker import *
+
