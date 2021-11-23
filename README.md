@@ -125,11 +125,11 @@ source step6_extract_lumisection_histos2D.sh
 Due to the increasing complexity of the project, now is a good time to start adding tests. Django helps running tests by creating a TestCase class which will be used to create the tests for each app. The test development benefits from the very useful book [Test-Driven Development with Python](https://www.obeythetestinggoat.com/).
 
 To run all the tests:
-````bash
+```bash
 python manage.py test
 ```
 
 To run all tests for a specific app:
-````bash
+```bash
 python manage.py test app
 ```
