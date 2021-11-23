@@ -133,3 +133,10 @@ To run all tests for a specific app:
 ```bash
 python manage.py test app
 ```
+
+## Unit tests vs functional tests
+
+Unit tests are ran using the python command shown before. However, another set of tests needs to be ran and emulate the behavior of a human connecting to the website, changing pages, interacting with the functionalities. In order to run such tests (functional tests), we need to install selenium which is the standard tool for this kind of browser test as well as geckodriver which will open Firefox to test the website. Based on the recommendations of the book, we will install geckodriver in ```~/.local/bin``` and append the repository to the PATH using ```echo 'PATH=~/.local/bin:$PATH' >> ~/.bashrc````.
+
+
+
