@@ -56,7 +56,12 @@ INSTALLED_APPS = [
 
     'runs.apps.RunsConfig',
     'run_histos.apps.RunHistosConfig',
+    'run_certification.apps.RunCertificationConfig',
+
     'lumisections.apps.LumisectionsConfig',
+    'lumisection_histos1D.apps.LumisectionHistos1DConfig',
+    'lumisection_histos2D.apps.LumisectionHistos2DConfig',
+    'lumisection_certification.apps.LumisectionCertificationConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'home/static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'home/static'), os.path.join(BASE_DIR, 'run_histos/static'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'

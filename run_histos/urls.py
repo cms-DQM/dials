@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import run_histos_view, chart_view_altair, listRunHistos1D, altair_chart_view, import_view
+from .views import run_histos_view, listRunHistos1D, altair_chart_view, import_view
 
 app_name = "run_histos"
 urlpatterns = [

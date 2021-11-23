@@ -4,7 +4,7 @@ from runs.models import Run
 
 # Create your models here.
 class RunHisto(models.Model):
-    run_number      = models.ForeignKey(Run, on_delete=models.CASCADE)
+    run             = models.ForeignKey(Run, on_delete=models.CASCADE)
     date            = models.DateTimeField(auto_now_add=True)
 
     primary_dataset = models.CharField(max_length=220)
@@ -18,7 +18,7 @@ class RunHisto(models.Model):
     kurtosis        = models.FloatField(null=True)
 
     def __str__(self):
-        return f"run: {self.run_number.run_number} / dataset: {self.primary_dataset} / histo: {self.title}"
+        return f"run: {self.run.run_number} / dataset: {self.primary_dataset} / histo: {self.title}"
 
     # def save(self, *args, **kwargs):
     #    self.mean = 0 # compute the mean of the array here
@@ -27,5 +27,5 @@ class RunHisto(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['run_number', 'primary_dataset', 'title'], name='unique run/dataset/histogram combination')
+            models.UniqueConstraint(fields=['run', 'primary_dataset', 'title'], name='unique run/dataset/histogram combination')
         ]

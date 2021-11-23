@@ -5,7 +5,7 @@ from lumisections.models import Lumisection
 
 # Create your models here.
 class LumisectionHisto2D(models.Model):
-    ls_number  = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
+    lumisection  = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
 
     date       = models.DateTimeField(auto_now_add=True)
 
@@ -21,9 +21,9 @@ class LumisectionHisto2D(models.Model):
     y_bin      = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f"run {self.ls_number.run_number} / lumisection {self.ls_number.ls_number} / name {self.title}"
+        return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['ls_number', 'title'], name='unique run / ls / 2d histogram combination')
+            models.UniqueConstraint(fields=['lumisection', 'title'], name='unique run / ls / 2d histogram combination')
         ]

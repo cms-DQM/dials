@@ -4,7 +4,7 @@ from run_histos.models import RunHisto
 
 # Create your models here.
 class RunCertification(models.Model):
-    run_number = models.ForeignKey(Run, on_delete=models.CASCADE)
+    run        = models.ForeignKey(Run, on_delete=models.CASCADE)
     date       = models.DateTimeField(auto_now_add=True)
 
     # pca
@@ -12,6 +12,6 @@ class RunCertification(models.Model):
     pca_2      = models.FloatField(null=True)
 
     def __str__(self):
-        return f"run: {self.run_number.run_number}"
+        return f"run: {self.run.run_number}"
 
 
