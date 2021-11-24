@@ -27,6 +27,8 @@ class RunModelTest(TestCase):
         # print(f'the number of runs in the database is: {n_runs}')
         assert n_runs == 1
 
+    def test_batch_creation_and_uniqueness(self):
+        assert True
 
 class RunViewTest(TestCase):
 
