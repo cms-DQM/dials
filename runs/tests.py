@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import resolve
-from runs.views import runs_view, run_view
+from django.http import HttpRequest
 
 from .models import Run
+from .views import runs_view, run_view
 
 import pandas as pd
 
@@ -38,7 +39,8 @@ class RunViewTest(TestCase):
         self.assertEqual(found.func, runs_view)
 
     def test_html_runs_view(self):
-        assert True
+        response = self.client.get('/runs/')
+        self.assertTemplateUsed(response, 'runs/main.html')
 
     def test_resolve_run_view(self):
         assert True
