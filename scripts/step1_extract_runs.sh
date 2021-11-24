@@ -12,5 +12,5 @@ for f in $FILES
 
 do
   echo "Processing $f file..."
-  #./manage.py extract_runs $f
+  ./manage.py extract_runs $f
 done

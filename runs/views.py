@@ -10,6 +10,7 @@ import pandas as pd
 
 # Create your views here.
 def runs_view(request):
+    pass
 
     error_message = None
     df = None

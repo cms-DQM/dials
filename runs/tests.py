@@ -31,14 +31,12 @@ class RunModelTest(TestCase):
 class RunViewTest(TestCase):
 
     def test_resolve_runs_view(self):
-        assert True
-        # found = resolve('/runs/')
-        # self.assertEqual(found.func, runs_view)
+        # fails if empty DB > to be solved with error message in view
+        found = resolve('/runs/')
+        self.assertEqual(found.func, runs_view)
 
     def test_html_runs_view(self):
         assert True
 
     def test_resolve_run_view(self):
         assert True
-        # found = resolve('/run/')
-        # self.assertEqual(found.func, run_view)
