@@ -1,18 +1,27 @@
-{% extends 'basepage/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %} Runs {% endblock title %}
 
 {% block content %}
 
-{% if error_message %}
-  <div class="ui negative message">
-    <i class="close icon"></i>
-    <div class="header">
-      {{ error_message }}
-    </div>
-  </div>
-{% endif %}
+  <div class='container-fluid'>
 
-{{ runs | safe }}
+  <div>
+    {% if error_message %}
+      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          {{ error_message }}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+
+  </div>
+
+  <div class='container-fluid'>
+    {{ runs | safe }}
+  </div>
 
 {% endblock content %}
