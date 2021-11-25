@@ -17,11 +17,22 @@ class RunHistosFilter1D(django_filters.FilterSet):
         })
     )
 
+    primary_dataset = django_filters.ModelChoiceFilter(
+        queryset=RunHisto.objects.values_list("primary_dataset", flat=True).distinct(),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        })
+    )
+
     run__run_number__in = InFilter(field_name='run__run_number', lookup_expr='in')
 
     class Meta:
         model = RunHisto
         fields = {
-            'run__run_number': ['gte', 'lte', ],
-            'primary_dataset': ['exact'],
+            'run__run_number': ['gte', 'lte',],
+            'entries': ['gte', 'lte',],
+            'mean': ['gte', 'lte',],
+            'rms': ['gte', 'lte',],
+            'skewness': ['gte', 'lte',],
+            'kurtosis': ['gte', 'lte',],
         }

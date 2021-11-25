@@ -41,9 +41,18 @@ List run histograms
         $(document).ready(function () {
             $("#run_histos-filter-form").submit(function () {
                 var form = $(this);
+                // ignore_unwanted_filters(form);
                 disable_empty_filter_fields(form); // simpliflies URL alot by removing unused fields
                 return true; // ensure form still submits
             });
         });
+
+        $(".ignore-other-filter-checkbox").change(function(){
+                if ($(this).is(":checked")){
+                    uncheck_all_ignore_other_filter_checkboxes();
+                    $(this).prop("checked", true);
+                }
+        });
+
     </script>
 {% endblock scripts %}

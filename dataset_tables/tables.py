@@ -5,6 +5,7 @@ class RunHistosTable1D(tables.Table):
     run = tables.Column(accessor = 'run.run_number')
     primary_dataset = tables.Column(verbose_name = "Dataset")
     title = tables.Column()
+    entries = tables.Column()
     mean = tables.Column()
     rms = tables.Column(verbose_name = "RMS")
     skewness = tables.Column()

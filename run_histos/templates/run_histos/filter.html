@@ -64,13 +64,31 @@
 
                         <div class="row top-buffer">
                             <div class="col-sm-12 text-right">
-                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-run_number">
-                                <label class="form-check-label no-bold-label" for="id-ignore-run_number">Ignore other filters</label>
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-stats">
+                                <label class="form-check-label no-bold-label" for="id-ignore-stats">Ignore other filters</label>
                                 <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
         text-decoration: none;"></a>
                             </div>
                         </div>
-         
+                        
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-2">
+                                <h6>Entries:</h6>
+                            </div>
+                            <div class="col-sm-2">
+                                <strong>>=</strong>:
+                            </div>
+                            <div class="col-sm-3">
+                                {% render_field filter.form.entries__gte|add_class:"form-control" %}
+                            </div>
+                            <div class="col-sm-2">
+                                <strong><=</strong>:
+                            </div>
+                            <div class="col-sm-3">
+                                {% render_field filter.form.entries__lte|add_class:"form-control" %}
+                            </div>
+                        </div> 
+
                         <div class="row d-flex justify-content-center">
                             <div class="col-sm-2">
                                 <h6>Mean:</h6>
@@ -79,13 +97,13 @@
                                 <strong>>=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__gte|add_class:"form-control" %}
+                                {% render_field filter.form.mean__gte|add_class:"form-control" %}
                             </div>
                             <div class="col-sm-2">
                                 <strong><=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__lte|add_class:"form-control" %}
+                                {% render_field filter.form.mean__lte|add_class:"form-control" %}
                             </div>
                         </div> 
                         
@@ -97,13 +115,13 @@
                                 <strong>>=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__gte|add_class:"form-control" %}
+                                {% render_field filter.form.rms__gte|add_class:"form-control" %}
                             </div>
                             <div class="col-sm-2">
                                 <strong><=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__lte|add_class:"form-control" %}
+                                {% render_field filter.form.rms__lte|add_class:"form-control" %}
                             </div>
                         </div>  
                         
@@ -115,13 +133,13 @@
                                 <strong>>=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__gte|add_class:"form-control" %}
+                                {% render_field filter.form.skewness__gte|add_class:"form-control" %}
                             </div>
                             <div class="col-sm-2">
                                 <strong><=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__lte|add_class:"form-control" %}
+                                {% render_field filter.form.skewness__lte|add_class:"form-control" %}
                             </div>
                         </div>  
                         
@@ -133,44 +151,52 @@
                                 <strong>>=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__gte|add_class:"form-control" %}
+                                {% render_field filter.form.kurtosis__gte|add_class:"form-control" %}
                             </div>
                             <div class="col-sm-2">
                                 <strong><=</strong>:
                             </div>
                             <div class="col-sm-3">
-                                {% render_field filter.form.run__run_number__lte|add_class:"form-control" %}
+                                {% render_field filter.form.kurtosis__lte|add_class:"form-control" %}
                             </div>
                         </div>  
                         
                     </div>
-
-
                 </div>
 
                 <div id="menu-datasets" class="tab-pane fade">
+                    <div class="form from-inline">
 
-                    <div class="row top-buffer">
-                        <div class="col-sm-12 text-right">
-                            <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-problem_categories">
-                            <label class="form-check-label no-bold-label" for="id-ignore-problem_categories">Ignore other filters</label>
-                            <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific date range)" style="color:black;
-                    text-decoration: none;"></a>
+                        <div class="row top-buffer">
+                            <div class="col-sm-12 text-right">
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-dataset">
+                                <label class="form-check-label no-bold-label" for="id-ignore-dataset">Ignore other filters</label>
+                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific date range)" style="color:black;
+                        text-decoration: none;"></a>
+                            </div>
                         </div>
+
+                        <div class="row top-buffer d-flex justify-content-center">
+                            <div class="col-sm-6">
+                                <h6>Primary dataset:</h6>
+                            </div>
+                            <div class="col col-sm-6 text-left">
+                                {% render_field filter.form.primary_dataset|add_class:"selectpicker" %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6>Title:</h6>
+                            </div>
+                            <div class="col-sm-6" style="margin-top: 10px">
+                                <a href="#" data-toggle="tooltip" title="use CTRL + Click to select and deselect multiple users" style="color:black;
+        text-decoration: none;">Help</a>
+                                {% render_field filter.form.title|add_class:"form-control" %}
+                            </div>
+                        </div>
+                        
                     </div>
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h4>Titles available:</h4>
-                        </div>
-                        <div class="col-sm-6 text-right" style="margin-top: 10px">
-                            <a href="#" data-toggle="tooltip" title="use CTRL + Click to select and deselect multiple users" style="color:black;
-    text-decoration: none;">Help</a>
-                        </div>
-                    </div>
-                    {% render_field filter.form.title|add_class:"form-control" %}
-
-
                 </div>
             
             </div>
