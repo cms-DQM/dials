@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 from run_histos.models import RunHisto
 from runs.models import Run
-from django_tables2 import SingleTableMixin
+from django_tables2 import SingleTableMixin, RequestConfig
 from dataset_tables.tables import RunHistosTable1D
 from run_histos.filters import RunHistosFilter1D
 from django_filters.views import FilterView
@@ -37,6 +37,21 @@ class listRunHistos1DView(SingleTableMixin, FilterView):
         context["runHistos_table"] = runHistos_table
     
         return context
+
+def listRunHistos1D_V2(request):
+    """
+    View to list the filtered 1D histograms for Runs
+    """
+    context = {}
+    runHistos_list = RunHisto.objects.all()
+    runHistos_filter = RunHistosFilter1D(request.GET, queryset=runHistos_list)
+    runHistos_table = RunHistosTable1D(runHistos_filter.qs[:50])
+
+    RequestConfig(request).configure(runHistos_table)
+
+    context["runHistos_table"] = runHistos_table
+    context["filter"] = runHistos_filter
+    return render(request, "run_histos/listRunHistos1D.html", context)
 
 
 def import_view(request):

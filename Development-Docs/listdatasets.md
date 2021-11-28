@@ -5,7 +5,7 @@ Docs for dataset app
 
 ### Create a new app **datasets**
 ```python
-python manage.py startapp datasets
+python manage.py startapp listdatasets
 ```
 
 ### Build a model 

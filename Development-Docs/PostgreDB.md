@@ -36,3 +36,7 @@
 'HOST': config('DJANGO_DATABASE_HOST')
 'PORT': config('DJANGO_DATABASE_PORT')
 ```
+
+
+5. Flushing Database 
+[tutorial](https://www.delftstack.com/howto/django/django-reset-database/)
