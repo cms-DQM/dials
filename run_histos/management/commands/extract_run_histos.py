@@ -48,7 +48,7 @@ class Command(BaseCommand):
         for index, row in df_melt.iterrows():
             #print(row['entries'], row['mean'], row['rms'])
             histo = RunHisto(
-                run_number      = run,                      # would be better with Run.objects.get_or_create(run_number=run_number)
+                run             = run,                      # would be better with Run.objects.get_or_create(run_number=run_number)
                 primary_dataset = dataset,
                 path            = workspace,
                 title           = row['title'],
