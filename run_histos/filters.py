@@ -8,16 +8,14 @@ class InFilter(django_filters.filters.BaseInFilter, django_filters.filters.CharF
 
 class RunHistosFilter1D(django_filters.FilterSet):
 
-    title = django_filters.filters.MultipleChoiceFilter(
-        choices=RunHisto.objects.values_list("title", flat=True).order_by("title").distinct("title"),
+    title = django_filters.filters.AllValuesMultipleFilter(
         widget=forms.SelectMultiple(attrs={
             'class': 'form-control',
             'size': '10',
         })
     )
 
-    primary_dataset = django_filters.ChoiceFilter(
-        choices=RunHisto.objects.values_list("primary_dataset", flat=True).distinct(),
+    primary_dataset = django_filters.AllValuesFilter(
         widget=forms.Select(attrs={
             'class': 'form-control',
         })
