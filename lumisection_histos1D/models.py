@@ -11,7 +11,7 @@ class LumisectionHisto1D(models.Model):
     date       = models.DateTimeField(auto_now_add=True)
 
     title      = models.CharField(max_length=100)
-    data       = ArrayField(models.FloatField(blank=True))
+    data       = ArrayField(models.FloatField(), blank=True)
     # ArrayField( ArrayField( models.IntegerField(blank=True), size=XX, ), size=XX,)
     entries    = models.IntegerField(blank=True, null=True)
     x_min      = models.FloatField(blank=True, null=True)
