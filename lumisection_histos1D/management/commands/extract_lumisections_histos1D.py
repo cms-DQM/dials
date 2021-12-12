@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from runs.models import Run
 from lumisections.models import Lumisection
 from lumisection_histos1D.models import LumisectionHisto1D
+import json
 
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 import pandas as pd
@@ -28,20 +29,21 @@ class Command(BaseCommand):
             lumi_number = row["fromlumi"]
             title = row["hname"]
             entries = row["entries"]
+            data=json.loads(row["histo"])
 
             print(run_number, lumi_number, title)
 
             run, _ = Run.objects.get_or_create(run_number=run_number)
-            lumisection, _ = Lumisection.objects.get_or_create(run_number=run, ls_number=lumi_number)
+            lumisection, _ = Lumisection.objects.get_or_create(run=run, ls_number=lumi_number)
 
-            lumisection_histo1D = LumisectionHisto1D(
-                ls_number=lumisection,
+            lumisection_histo1D_entry = LumisectionHisto1D(
+                lumisection=lumisection,
                 title=title,
                 entries=entries,
-                data=1.8
+                data=data
             )
 
-            lumisection_histos1D.append(lumisection_histo1D)
+            lumisection_histos1D.append(lumisection_histo1D_entry)
 
         LumisectionHisto1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
         print('lumisections histos 1D successfully added!')
