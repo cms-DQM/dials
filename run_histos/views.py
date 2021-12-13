@@ -1,18 +1,14 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
+from django_tables2 import RequestConfig
 
-from run_histos.models import RunHisto
 from runs.models import Run
-from django_tables2 import SingleTableMixin, RequestConfig
-from dataset_tables.tables import RunHistosTable1D
+from run_histos.models import RunHisto
+from run_histos.tables import RunHistosTable1D
 from run_histos.filters import RunHistos1DFilter
-from django_filters.views import FilterView
 from run_histos.utilities.utilities import request_contains_filter_parameter
 
 from .utils import get_altair_chart
-
-from .utils import get_altair_chart
-
 import pandas as pd
 import altair as alt
 
