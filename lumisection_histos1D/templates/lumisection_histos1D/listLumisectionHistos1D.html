@@ -1,7 +1,7 @@
 {% extends 'appbase.html' %}
 
 {% block title %}
-List run histograms
+lumisection 1D histograms
 {% endblock %}
 
 {% block style %}
@@ -36,10 +36,10 @@ List run histograms
 
 {% block scripts %}
     {% load static %}
-    <!-- <script src="{% static "lumisection_histos1D/js/filter.js" %}" type="text/javascript"></script>
+    <script src="{% static "lumisection_histos1D/js/filter.js" %}" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
-            $("#run_histos-filter-form").submit(function () {
+            $("#ls_histos-filter-form").submit(function () {
                 var form = $(this);
                 ignore_unwanted_filters(form);
                 disable_empty_filter_fields(form); // simpliflies URL alot by removing unused fields
@@ -54,5 +54,5 @@ List run histograms
                 }
         });
 
-    </script> -->
+    </script>
 {% endblock scripts %}
