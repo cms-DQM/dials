@@ -23,6 +23,7 @@ class Command(BaseCommand):
         print(df.columns)
 
         lumisection_histos1D = []
+        count = 0
 
         for index, row in df.iterrows():
             run_number = row["fromrun"]
@@ -36,14 +37,19 @@ class Command(BaseCommand):
             run, _ = Run.objects.get_or_create(run_number=run_number)
             lumisection, _ = Lumisection.objects.get_or_create(run=run, ls_number=lumi_number)
 
-            lumisection_histo1D_entry = LumisectionHisto1D(
+            lumisection_histo1D = LumisectionHisto1D(
                 lumisection=lumisection,
                 title=title,
                 entries=entries,
                 data=data
             )
 
-            lumisection_histos1D.append(lumisection_histo1D_entry)
+            lumisection_histos1D.append(lumisection_histo1D)
+            count += 1
+            if count == 50:
+                LumisectionHisto1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
+                print('50 lumisections 1D histograms successfully added!')
+                count = 0
+                lumisection_histos1D = []
 
-        LumisectionHisto1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
-        print('lumisections histos 1D successfully added!')
+
