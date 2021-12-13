@@ -3,7 +3,7 @@ from runs.models import Run
 
 # Create your models here.
 class Lumisection(models.Model):
-    run = models.ForeignKey(Run, on_delete=models.CASCADE)
+    run        = models.ForeignKey(Run, on_delete=models.CASCADE)
     ls_number  = models.IntegerField()
     date       = models.DateTimeField(auto_now_add=True)
 
