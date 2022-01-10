@@ -6,7 +6,7 @@ from run_histos.models import RunHisto
 class InFilter(django_filters.filters.BaseInFilter, django_filters.filters.CharFilter):
     pass
 
-class RunHistos1DFilter(django_filters.FilterSet):
+class RunHistos1DFilter(django_filters.rest_framework.FilterSet):
 
     title = django_filters.filters.AllValuesMultipleFilter(
         widget=forms.SelectMultiple(attrs={

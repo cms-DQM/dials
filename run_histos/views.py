@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django_tables2 import RequestConfig
+from django_filters import rest_framework as filters
 
 from runs.models import Run
 from run_histos.models import RunHisto
 from run_histos.tables import RunHistosTable1D
 from run_histos.filters import RunHistos1DFilter
 from run_histos.utilities.utilities import request_contains_filter_parameter
+from run_histos.serializers import RunHistosSerializer
 
 from .utils import get_altair_chart
 import pandas as pd
 import altair as alt
 
+from rest_framework import generics
 # Create your views here.
 
 def listRunHistos1D(request):
@@ -29,6 +32,11 @@ def listRunHistos1D(request):
     context["filter"] = runHistos_filter
     return render(request, "run_histos/listRunHistos1D.html", context)
 
+def listRunHistos1DAPI(generics.ListAPIView):
+    queryset = RunHisto.objects.all()
+    serializer_class = RunHistosSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = RunHistos1DFilter
 
 def import_view(request):
     return render(request, 'run_histos/import.html')

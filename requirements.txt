@@ -14,3 +14,4 @@ altair
 jupyter
 pandas
 numpy
+dynamic-rest
