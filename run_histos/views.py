@@ -32,7 +32,7 @@ def listRunHistos1D(request):
     context["filter"] = runHistos_filter
     return render(request, "run_histos/listRunHistos1D.html", context)
 
-def listRunHistos1DAPI(generics.ListAPIView):
+class listRunHistos1DAPI(generics.ListAPIView):
     queryset = RunHisto.objects.all()
     serializer_class = RunHistosSerializer
     filter_backends = (filters.DjangoFilterBackend,)
