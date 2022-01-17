@@ -54,10 +54,10 @@ def run_histos_view(request):
 
     # objects.all().values() provides a dictionary while objects.all().values_list() provides a tuple
     runs_df      = pd.DataFrame(Run.objects.all().values())
-    runhistos_df = pd.DataFrame(RunHisto.objects.all().values())
+    runhistos_df = pd.DataFrame(RunHisto.objects.all()[:200].values())
 
     if runhistos_df.shape[0] > 0:
-        df = pd.merge(runs_df, runhistos_df, left_on='id', right_on='run_number_id').drop(['id_x', 'id_y', 'run_number_id', 'date_x', 'date_y'], axis=1)
+        df = pd.merge(runs_df, runhistos_df, left_on='id', right_on='run_id').drop(['id_x', 'id_y', 'run_id', 'date_x', 'date_y'], axis=1)
 
         if request.method == 'POST':
             dataset   = request.POST['dataset']
@@ -88,7 +88,7 @@ def altair_chart_view(request):
 
     chart = {}
 
-    runhistos_df = pd.DataFrame(RunHisto.objects.all().values()).head(100)
+    runhistos_df = pd.DataFrame(RunHisto.objects.all()[:200].values())
 
     if runhistos_df.shape[0] > 0:   
         chart_obj = alt.Chart(runhistos_df).mark_bar().encode(
@@ -100,12 +100,6 @@ def altair_chart_view(request):
 
     return JsonResponse(chart_obj)
 
-
-# def listRunHistos1D(request):
-#     """
-#     View to list all 1D histograms for Run based data
-#     """
-#     return listRunHistos1DView.as_view()(request=request)
 
 # class listRunHistos1DView(SingleTableMixin, FilterView):
 #     table_class = RunHistosTable1D
