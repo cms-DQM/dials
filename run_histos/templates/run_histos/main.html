@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'appbase.html' %}
 
 {% block title %} Run Histos {% endblock title %}
 
@@ -56,10 +56,17 @@
 
   <div id="vis"></div>
 
-  <script type="text/javascript">
-    var spec = {{ chart|safe }};
-    console.log(spec);
-    vegaEmbed("#vis", spec)
-  </script>
+  
 
 {% endblock content %}
+
+{% block scripts %}
+    {% load static %}
+    <script src="{% static "run_histos/js/main.js" %}" type="text/javascript"></script>
+    <script type="text/javascript">
+      var spec = {{ chart|safe }};
+      console.log(spec);
+      vegaEmbed("#vis", spec)
+    </script>
+{% endblock scripts %}
+
