@@ -10,7 +10,7 @@ from run_histos.filters import RunHistos1DFilter
 from run_histos.utilities.utilities import request_contains_filter_parameter
 from run_histos.serializers import RunHistosSerializer
 
-from .utils import get_altair_chart
+from run_histos.utils import get_altair_chart
 import pandas as pd
 import altair as alt
 
@@ -66,7 +66,7 @@ def run_histos_view(request):
             print(f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}")
 
         #df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
-        df = df.query('primary_dataset==@dataset & title==@variable')
+        #df = df.query('primary_dataset==@dataset & title==@variable')
         mean = df['mean'].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)
