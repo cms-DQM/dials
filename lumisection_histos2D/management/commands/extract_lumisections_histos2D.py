@@ -23,7 +23,7 @@ class Command(BaseCommand):
             
             lumisection_histos2D = []
             count2 = 0
-            
+
             for index, row in df.iterrows():
                 run_number = row["fromrun"]
                 lumi_number = row["fromlumi"]
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 print(run_number, lumi_number, title)
 
                 run, _ = Run.objects.get_or_create(run_number=run_number)
-                lumisection, _ = Lumisection.objects.get_or_create(run_number=run, ls_number=lumi_number)
+                lumisection, _ = Lumisection.objects.get_or_create(run=run, ls_number=lumi_number)
 
                 lumisection_histo2D = LumisectionHisto2D(
                     lumisection=lumisection,
