@@ -19,11 +19,8 @@ class Command(BaseCommand):
         file_path = options["file_path"]
         count = 0
         for df in pd.read_csv(file_path, chunksize=50):
-            print(df.columns)
-            
-            lumisection_histos2D = []
-            count2 = 0
 
+            lumisection_histos2D = []
             for index, row in df.iterrows():
                 run_number = row["fromrun"]
                 lumi_number = row["fromlumi"]
@@ -42,14 +39,7 @@ class Command(BaseCommand):
                     entries=entries,
                     data=data
                 )
-
                 lumisection_histos2D.append(lumisection_histo2D)
-                count2 += 1
-                if count2 == 10: 
-                    LumisectionHisto2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
-                    print('10 2D lumisection histos 2D of chunk {} successfully added!'.format(count))
-                    count2 = 0
-                    lumisection_histos2D = []
-                    #Add case for (less than 10 cases!)
-
+                LumisectionHisto2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
+                print('50 2D lumisection histos 2D of chunk {} successfully added!'.format(count))
             count +=1
