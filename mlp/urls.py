@@ -22,6 +22,7 @@ urlpatterns = [
     path("listdatasets/", include("listdatasets.urls")),
     path("runs/", include("runs.urls")),
     path("runHistos/", include("run_histos.urls")),
-    path("lsHistos/", include("lumisection_histos1D.urls")),
+    path("lumisectionHistos1D/", include("lumisection_histos1D.urls")),
+    path("lumisectionHistos2D/", include("lumisection_histos1D.urls")),
     path('admin/', admin.site.urls),
 ]

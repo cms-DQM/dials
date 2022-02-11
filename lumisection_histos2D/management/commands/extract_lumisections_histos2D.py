@@ -19,20 +19,18 @@ class Command(BaseCommand):
         file_path = options["file_path"]
         count = 0
         for df in pd.read_csv(file_path, chunksize=50):
-
             lumisection_histos2D = []
+
             for index, row in df.iterrows():
                 run_number = row["fromrun"]
                 lumi_number = row["fromlumi"]
                 title = row["hname"]
                 entries = row["entries"]
                 data=json.loads(row["histo"])
-
                 print(run_number, lumi_number, title)
 
                 run, _ = Run.objects.get_or_create(run_number=run_number)
                 lumisection, _ = Lumisection.objects.get_or_create(run=run, ls_number=lumi_number)
-
                 lumisection_histo2D = LumisectionHisto2D(
                     lumisection=lumisection,
                     title=title,
@@ -40,6 +38,7 @@ class Command(BaseCommand):
                     data=data
                 )
                 lumisection_histos2D.append(lumisection_histo2D)
-                LumisectionHisto2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
-                print('50 2D lumisection histos 2D of chunk {} successfully added!'.format(count))
+
+            LumisectionHisto2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
+            print('50 2D lumisection histos 2D of chunk {} successfully added!'.format(count))
             count +=1
