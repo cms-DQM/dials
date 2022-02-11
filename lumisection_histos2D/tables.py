@@ -5,7 +5,7 @@ class LumisectionHistos2DTable(tables.Table):
     run = tables.Column(accessor = 'lumisection.run.run_number')
     lumisection = tables.Column(accessor = 'lumisection.ls_number')
     title = tables.Column()
-    data = tables.Column(verbose_name = "Histogram Data")
+    entries = tables.Column()
 
     class Meta:
         model = LumisectionHisto2D
