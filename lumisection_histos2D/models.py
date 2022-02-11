@@ -1,7 +1,7 @@
 from django.db import models
 from runs.models import Run
 from lumisections.models import Lumisection
-
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class LumisectionHisto2D(models.Model):
@@ -10,7 +10,7 @@ class LumisectionHisto2D(models.Model):
     date       = models.DateTimeField(auto_now_add=True)
 
     title      = models.CharField(max_length=100)
-    data       = models.FloatField(blank=True)
+    data       = ArrayField(models.FloatField(), blank=True)
     # ArrayField( ArrayField( models.IntegerField(blank=True), size=XX, ), size=XX,)
     entries    = models.IntegerField(blank=True, null=True)
     x_min      = models.FloatField(blank=True, null=True)
