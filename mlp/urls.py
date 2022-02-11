@@ -23,6 +23,6 @@ urlpatterns = [
     path("runs/", include("runs.urls")),
     path("runHistos/", include("run_histos.urls")),
     path("lumisectionHistos1D/", include("lumisection_histos1D.urls")),
-    path("lumisectionHistos2D/", include("lumisection_histos1D.urls")),
+    path("lumisectionHistos2D/", include("lumisection_histos2D.urls")),
     path('admin/', admin.site.urls),
 ]
