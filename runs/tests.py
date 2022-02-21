@@ -34,6 +34,7 @@ class RunModelTest(TestCase):
 class HomePageTest(TestCase):
 
     def test_resolve_runs_view(self):
+        pass
         found = resolve('/runs/')
         self.assertEqual(found.func, runs_view)
 

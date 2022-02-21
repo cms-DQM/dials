@@ -1,0 +1,19 @@
+language: python
+python:
+  - "3.6"
+  - "3.7"
+
+services: postgresql
+
+install:
+  - pip install --upgrade -r requirements.txt
+  - pip install --upgrade pytest pytest-django pytest-cov codecov selenium
+
+before_script:
+  - psql -c "create database testdb;" -U postgres
+
+script:
+  - PYTHONWARNINGS=all travis_retry pytest --ds=mlp.test_ci_settings --cov=. 
+
+after_success:
+  - codecov

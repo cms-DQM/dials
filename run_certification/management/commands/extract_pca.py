@@ -19,4 +19,4 @@ class Command(BaseCommand):
             print(df.head(5))
 
         else:
-	    print("No records in the database")
+            print("No records in the database")
