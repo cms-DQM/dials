@@ -8,21 +8,6 @@ from .views import runs_view, run_view
 import pandas as pd
 
 
-# Create your tests here.
-class HomePageTest(TestCase):
-
-    def test_resolve_runs_view(self):
-        found = resolve('/runs/')
-        self.assertEqual(found.func, runs_view)
-
-    def test_html_runs_view(self):
-        assert True
-
-    def test_resolve_run_view(self):
-        found = resolve('/run/')
-        self.assertEqual(found.func, run_view)
-
-
 class RunModelTest(TestCase):
 
     def test_saving_and_retrieving_run(self):
@@ -44,6 +29,21 @@ class RunModelTest(TestCase):
 
     def test_batch_creation_and_uniqueness(self):
         assert True
+
+
+class HomePageTest(TestCase):
+
+    def test_resolve_runs_view(self):
+        found = resolve('/runs/')
+        self.assertEqual(found.func, runs_view)
+
+    def test_html_runs_view(self):
+        assert True
+
+    def test_resolve_run_view(self):
+        found = resolve('/run/')
+        self.assertEqual(found.func, run_view)
+
 
 class RunViewTest(TestCase):
 
