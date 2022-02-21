@@ -7,13 +7,11 @@ services: postgresql
 
 install:
   - pip install --upgrade -r requirements.txt
-  - pip install --upgrade pytest pytest-django pytest-cov codecov selenium
+  - pip install --upgrade selenium
 
 before_script:
   - psql -c "create database testdb;" -U postgres
 
 script:
-  - PYTHONWARNINGS=all travis_retry pytest --ds=mlp.test_ci_settings --cov=. 
+  - python manage.py test
 
-after_success:
-  - codecov
