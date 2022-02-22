@@ -73,7 +73,6 @@ pycodestyle==2.8.0
 pycparser==2.20
 pyflakes==2.4.0
 Pygments==2.10.0
-pygraphviz @ file:///home/conda/feedstock_root/build_artifacts/pygraphviz_1612230753948/work
 pyOpenSSL==21.0.0
 pyparsing==2.4.7
 pyrsistent==0.18.0

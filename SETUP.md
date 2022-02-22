@@ -21,7 +21,7 @@ Create a .env file with the following content:
 DJANGO_DATABASE_ENGINE=django.db.backends.sqlite3
 DJANGO_DEBUG=True
 DJANGO_DATABASE_NAME=db.sqlite3
-DJANGO_SECRET_KEY=(%g65bg+&9rbnt+h&txlxw$+lkq=g=yrp!6@v+7@&$a%9^yt-!
+DJANGO_SECRET_KEY=django_secret_key
 ```
 
 ## Run website locally
