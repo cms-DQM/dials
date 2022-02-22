@@ -7,6 +7,8 @@ class Lumisection(models.Model):
     ls_number  = models.IntegerField()
     date       = models.DateTimeField(auto_now_add=True)
 
+    oms_zerobias_rate = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return f"run {self.run.run_number} / lumisection {self.ls_number}"
 
