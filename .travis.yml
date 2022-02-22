@@ -7,10 +7,6 @@ services: postgresql
 
 install:
   - pip install --upgrade -r requirements.txt
-  - pip install --upgrade selenium
-
-before_script:
-  - psql -c "create database testdb;" -U postgres
 
 script:
   - python manage.py test
