@@ -49,6 +49,7 @@ class HomePageTest(TestCase):
 class RunViewTest(TestCase):
 
     def test_resolve_runs_view(self):
+        pass
         # fails if empty DB > to be solved with error message in view
         found = resolve('/runs/')
         self.assertEqual(found.func, runs_view)
