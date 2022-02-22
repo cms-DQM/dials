@@ -4,11 +4,6 @@ python:
   - "3.7"
 
 install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-  - bash Miniconda3-latest-Linux-x86_64.sh
-  - conda create -n ml_playground
-  - conda activate ml_playground
-  - conda install pip
   - pip3 install --upgrade -r requirements.txt
 
 script:
