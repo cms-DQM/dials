@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.8"
+
+install:
+  - pip3 install --upgrade -r requirements.txt
+
+script:
+  - python manage.py test
+

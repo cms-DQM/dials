@@ -39,7 +39,3 @@ def run_view(request):
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all().order_by('run_number')
     serializer_class = RunSerializer
-
-
-
-
