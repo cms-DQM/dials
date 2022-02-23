@@ -45,3 +45,15 @@ class RunViewTest(TestCase):
 
     def test_resolve_run_view(self):
         assert True
+
+
+class RunAPITest(TestCase):
+
+    def test_API(self):
+        assert True
+
+
+class RunThirdPartyTest(TestCase):
+
+    def test_ML4DQM_files(self):
+        assert True
