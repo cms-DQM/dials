@@ -8,7 +8,7 @@ class InFilter(django_filters.filters.BaseInFilter, django_filters.filters.CharF
     pass
 
 
-class RunHistos1DFilter(django_filters.FilterSet):
+class RunHistos1DFilter(django_filters.rest_framework.FilterSet):
 
     title = django_filters.filters.AllValuesMultipleFilter(
         widget=forms.SelectMultiple(attrs={
