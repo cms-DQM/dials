@@ -6,6 +6,9 @@ Request an EOS project space following the CERN service [article](https://cern.s
 ### Mounting the space on OpenShift
 Follow the CERN service [article](https://cern.service-now.com/service-portal?id=kb_article&n=KB0005259)
 
+New method - 
+[article](https://paas.docs.cern.ch/3._Storage/eos/)
+
 [ML Playground](https://ml4dqm-playground.web.cern.ch/)
 
 Mounting instructions 
