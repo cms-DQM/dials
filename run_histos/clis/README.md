@@ -19,7 +19,7 @@ Options:
   --variable_list BOOLEAN  Provides list of variables.
   --run_number INTEGER     Run number for variable exploration.
   --subsystem TEXT         Subsystem for variable exploration.
-  --workspace_str TEXT     Workspace string for variable exploration.
+  --workspace TEXT         Workspace for variable exploration.
   --help                   Show this message and exit.
 ```
 
