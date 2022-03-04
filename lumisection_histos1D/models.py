@@ -37,7 +37,7 @@ class LumisectionHisto1D(models.Model):
         """
         df = pd.read_csv(file_path)
         logger.debug(f"Datafile head: {df.head()}")
-        logger.debug(f"Datafile columns:\n {df.columns}")
+        # logger.debug(f"Datafile columns:\n {df.columns}")
 
         # Create an entry for a new data file in the database
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
