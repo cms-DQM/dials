@@ -12,19 +12,26 @@ class HistogramDataFile(models.Model):
     - Big (in the order of GB) files may be partially processed, so their current
     percentage_processed is stored for display purposes.
     """
-    RUN = 'run'
-    LUMISECTION = 'lum'
-    HISTOGRAM_DIMENSIONS_CHOICES = ((1, '1D'), (2, '2D'))
-    DATAFILE_GRANULARITY_CHOICES = ((RUN, 'Run'), (LUMISECTION, 'Lumisection'))
+    GRANULARITY_RUN = 'run'
+    GRANULARITY_LUMISECTION = 'lum'
+    DIMENSIONALITY_1D = 1
+    DIMENSIONALITY_2D = 2
+    HISTOGRAM_DIMENSIONS_CHOICES = ((DIMENSIONALITY_1D, '1D'),
+                                    (DIMENSIONALITY_2D, '2D'))
+    DATAFILE_GRANULARITY_CHOICES = ((GRANULARITY_RUN, 'Run'),
+                                    (GRANULARITY_LUMISECTION, 'Lumisection'))
 
     # Recurse in Root filepath where all the DQM files are stored
     filepath = models.FilePathField(path=settings.FILE_PATH_EOS_CMSML4DC,
                                     help_text="Path where the file is stored",
-                                    recursive=True)
+                                    recursive=True,
+                                    max_length=255)
 
     filesize = models.PositiveIntegerField(
         default=0, blank=True, help_text="The data file's size (bytes)")
 
+    data_dimensionality = models.PositiveIntegerField(
+        default=DIMENSIONALITY_1D, choices=HISTOGRAM_DIMENSIONS_CHOICES)
     data_era = models.CharField(
         blank=False,
         null=False,
@@ -39,7 +46,7 @@ class HistogramDataFile(models.Model):
     granularity = models.CharField(
         max_length=3,
         choices=DATAFILE_GRANULARITY_CHOICES,
-        default=RUN,
+        default=GRANULARITY_RUN,
         help_text="The granularity of the data contained in the "\
         "data file (either whole run or lumisections)")
 

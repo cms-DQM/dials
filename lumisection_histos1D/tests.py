@@ -31,3 +31,5 @@ class CSVHistogram1DParsingTestCase(TestCase):
     def test_csv_histogram_1d_parsing(self):
         logger.debug(f"There are {LumisectionHisto1D.objects.count()} "
                      "1D Lumisection histograms in the DB")
+        assert LumisectionHisto1D.objects.count(
+        ) == 9 and HistogramDataFile.objects.count() == 1
