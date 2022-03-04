@@ -2,8 +2,10 @@ from .settings import *
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db_extended.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'testdb',
+        'USER': 'travis',
+        # 'HOST': 'localhost'
     }
 }
 
