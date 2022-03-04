@@ -21,89 +21,90 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('DJANGO_SECRET_KEY')
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    config('DJANGO_ALLOWED_HOSTS', default='localhost'),
-    '127.0.0.1',
+    config("DJANGO_ALLOWED_HOSTS", default="localhost"),
+    "127.0.0.1",
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://ml4dqm-playground.web.cern.ch']
+CSRF_TRUSTED_ORIGINS = ["https://ml4dqm-playground.web.cern.ch"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'bootstrap3',
-    'django_tables2',
-    'django_extensions',
-    'widget_tweaks',
-    'django_filters',
-    'rest_framework',
-    'home.apps.HomeConfig',
-    'tables.apps.TablesConfig',
-    'listdatasets.apps.ListdatasetsConfig',
-    'dataset_tables.apps.DatasetTablesConfig',
-    'runs.apps.RunsConfig',
-    'run_histos.apps.RunHistosConfig',
-    'run_certification.apps.RunCertificationConfig',
-    'lumisections.apps.LumisectionsConfig',
-    'lumisection_histos1D.apps.LumisectionHistos1DConfig',
-    'lumisection_histos2D.apps.LumisectionHistos2DConfig',
-    'lumisection_certification.apps.LumisectionCertificationConfig',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "bootstrap3",
+    "django_tables2",
+    "django_extensions",
+    "widget_tweaks",
+    "django_filters",
+    "rest_framework",
+    "home.apps.HomeConfig",
+    "tables.apps.TablesConfig",
+    "listdatasets.apps.ListdatasetsConfig",
+    "dataset_tables.apps.DatasetTablesConfig",
+    "runs.apps.RunsConfig",
+    "run_histos.apps.RunHistosConfig",
+    "run_certification.apps.RunCertificationConfig",
+    "lumisections.apps.LumisectionsConfig",
+    "lumisection_histos1D.apps.LumisectionHistos1DConfig",
+    "lumisection_histos2D.apps.LumisectionHistos2DConfig",
+    "lumisection_certification.apps.LumisectionCertificationConfig",
+    "histogram_file_manager",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'mlp.urls'
+ROOT_URLCONF = "mlp.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'mlp.wsgi.application'
-#ASGI_APPLICATION = "mlp.asgi.application"
+WSGI_APPLICATION = "mlp.wsgi.application"
+# ASGI_APPLICATION = "mlp.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': config('DJANGO_DATABASE_ENGINE', default=''),
-        'NAME': config('DJANGO_DATABASE_NAME', default=''),
-        'USER': config('DJANGO_DATABASE_USER', default=''),
-        'PASSWORD': config('DJANGO_DATABASE_PASSWORD', default=''),
-        'HOST': config('DJANGO_DATABASE_HOST', default=''),
-        'PORT': config('DJANGO_DATABASE_PORT', default=''),
+    "default": {
+        "ENGINE": config("DJANGO_DATABASE_ENGINE", default=""),
+        "NAME": config("DJANGO_DATABASE_NAME", default=""),
+        "USER": config("DJANGO_DATABASE_USER", default=""),
+        "PASSWORD": config("DJANGO_DATABASE_PASSWORD", default=""),
+        "HOST": config("DJANGO_DATABASE_HOST", default=""),
+        "PORT": config("DJANGO_DATABASE_PORT", default=""),
     },
 }
 
@@ -112,29 +113,29 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME":
+        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME":
+        "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME":
+        "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME":
+        "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -142,32 +143,56 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG" if DEBUG else "WARNING",
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} - {asctime} - {module} - {message}",
+            "style": "{",
+        },
+    },
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'home/static'),
-    os.path.join(BASE_DIR, 'run_histos/static'),
-    os.path.join(BASE_DIR, 'lumisection_histos1D/static'),
+    os.path.join(BASE_DIR, "home/static"),
+    os.path.join(BASE_DIR, "run_histos/static"),
+    os.path.join(BASE_DIR, "lumisection_histos1D/static"),
 )
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Notebook arguments
 NOTEBOOK_ARGUMENTS = [
     # exposes IP and port
-    '--ip=127.0.0.1',
-    '--port=8000',
+    "--ip=127.0.0.1",
+    "--port=8000",
     # disables the browser
-    '--no-browser',
+    "--no-browser",
 ]
+
+# Root directory where DQM files are stored, no default for safety
+FILE_PATH_EOS_CMSML4DC = config("FILE_PATH_EOS_CMSML4DC")
 
 # Importing settings for subsystem
 from .settings_tracker import *
