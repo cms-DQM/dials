@@ -12,7 +12,7 @@ from histogram_file_manager.models import HistogramDataFile
 
 logger = logging.getLogger(__name__)
 
-LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE = 100
+LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE = 50
 
 
 class LumisectionHisto2D(models.Model):
@@ -44,13 +44,13 @@ class LumisectionHisto2D(models.Model):
     )
 
     @staticmethod
-    def from_file(file_path, data_era: str = ""):
+    def from_csv(file_path, data_era: str = ""):
         """
-        Import 2D Lumisection Histograms from file
+        Import 2D Lumisection Histograms from a csv file
         """
         logger.info(
             f"Importing 2D Lumisection Histograms from '{file_path}', "
-            f"splitting into {LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE} chunks")
+            f"splitting into chunks of {LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE}")
 
         # Create an entry for a new data file in the database
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
@@ -71,10 +71,13 @@ class LumisectionHisto2D(models.Model):
         histogram_data_file.filesize = file_size
         histogram_data_file.save()
 
-        # Count chunks
+        # Keep track of current chunk
         current_chunk = 0
-        for df in pd.read_csv(file_path,
-                              chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE):
+        reader = pd.read_csv(file_path,
+                             chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
+        logger.info(f"File has ")
+        for df in reader:
+            logger.debug(f"Reading chunk {current_chunk}")
             lumisection_histos2D = []
 
             for index, row in df.iterrows():
@@ -101,11 +104,13 @@ class LumisectionHisto2D(models.Model):
 
             LumisectionHisto2D.objects.bulk_create(lumisection_histos2D,
                                                    ignore_conflicts=True)
+
             logger.info(
                 f"{len(lumisection_histos2D)} x "
                 f"2D lumisection histos successfully added from chunk {current_chunk}!"
             )
             current_chunk += 1
+            # histogram_data_file.percentage_processed = current_chunk / len(
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"

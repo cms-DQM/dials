@@ -26,7 +26,7 @@ class CSVHistogram2DParsingTestCase(TestCase):
 
         # Create entries in db
         for f in files:
-            LumisectionHisto2D.from_file(file_path=f)
+            LumisectionHisto2D.from_csv(file_path=f)
 
     def test_csv_histogram_1d_parsing(self):
         logger.debug(f"There are {LumisectionHisto2D.objects.count()} "

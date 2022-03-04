@@ -31,9 +31,9 @@ class LumisectionHisto1D(models.Model):
         "Source data file that the specific Histogram was read from, if any")
 
     @staticmethod
-    def from_file(file_path, data_era: str = ""):
+    def from_csv(file_path, data_era: str = ""):
         """
-        Import 1D Lumisection Histograms from a filepath
+        Import 1D Lumisection Histograms from a csv file
         """
         df = pd.read_csv(file_path)
         logger.debug(f"Datafile head: {df.head()}")

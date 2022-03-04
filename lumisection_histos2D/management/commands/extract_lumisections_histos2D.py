@@ -10,4 +10,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        LumisectionHisto2D.from_file(file_path)
+        LumisectionHisto2D.from_csv(file_path)
