@@ -2,9 +2,27 @@ language: python
 python:
   - "3.8"
 
+addons:
+  postgresql: "12"
+  apt:
+    packages:
+      - postgresql-12
+      - postgresql-client-12
+
+env:
+  global:
+    # From the official Travis documentation, username and port has changed for Postgres version > 10
+    - PGUSER=travis
+    - PGVER=12
+    - PGPORT=5433      
+
 install:
   - pip3 install --upgrade -r requirements.txt
 
+before_script:
+  - psql -c "create database testdb;" -U travis
+  
+
 script:
-  - python manage.py test
+  - python manage.py test --settings=mlp.test_ci_settings
 
