@@ -30,12 +30,6 @@ class LumisectionHisto1D(models.Model):
         help_text=
         "Source data file that the specific Histogram was read from, if any")
 
-    def save(self, *args, **kwargs):
-        """
-        Override save method to add HistogramDataFile entries
-        """
-        return super().save(*args, **kwargs)
-
     @staticmethod
     def from_file(file_path, data_era: str = ""):
         """
@@ -44,6 +38,24 @@ class LumisectionHisto1D(models.Model):
         df = pd.read_csv(file_path)
         logger.debug(f"Datafile head: {df.head()}")
         logger.debug(f"Datafile columns:\n {df.columns}")
+
+        # Create an entry for a new data file in the database
+        histogram_data_file, created = HistogramDataFile.objects.get_or_create(
+            filepath=file_path,
+            data_dimensionality=HistogramDataFile.DIMENSIONALITY_1D,
+            data_era=data_era,
+            granularity=HistogramDataFile.GRANULARITY_LUMISECTION)
+
+        file_size = os.path.getsize(file_path)
+        if not created and histogram_data_file.filesize != file_size:
+            logger.warning(
+                f"File '{file_path}' already in DB but size differs! "
+                f"({histogram_data_file.filesize} bytes in DB, "
+                f"{file_size} bytes actually)")
+
+        # Update file size anyway
+        histogram_data_file.filesize = file_size
+        histogram_data_file.save()
 
         lumisection_histos1D = []  # New LumisectionHisto1D entries
         count = 0
@@ -65,23 +77,6 @@ class LumisectionHisto1D(models.Model):
             # Get existing or create new Lumisection entry
             lumisection, _ = Lumisection.objects.get_or_create(
                 run=run, ls_number=lumi_number)
-
-            # Create an entry for a new data file in the database
-            histogram_data_file, created = HistogramDataFile.objects.get_or_create(
-                filepath=file_path,
-                data_dimensionality=HistogramDataFile.DIMENSIONALITY_1D,
-                data_era=data_era,
-                granularity=HistogramDataFile.GRANULARITY_LUMISECTION)
-
-            file_size = os.path.getsize(file_path)
-            if not created and histogram_data_file.filesize != file_size:
-                logger.warning(
-                    f"File '{file_path}' already in DB but size differs! "
-                    "({histogram_data_file.filesize} bytes in DB, "
-                    "{file_size} bytes actually)")
-
-            # Update file size anyway
-            histogram_data_file.filesize = file_size
 
             lumisection_histo1D = LumisectionHisto1D(
                 lumisection=lumisection,
