@@ -61,6 +61,14 @@ class LumisectionHisto2D(models.Model):
         )
 
         file_size = os.path.getsize(file_path)
+
+        # Get number of lines, this may take a "long" time, but
+        # it's needed to record our progress while parsing the file
+        with open(file_path, 'r') as fp:
+            for file_line_count, line in enumerate(fp):
+                pass
+
+        # Histogram file was already recorded in database
         if not created and histogram_data_file.filesize != file_size:
             logger.warning(
                 f"File '{file_path}' already in DB but size differs! "
@@ -73,9 +81,11 @@ class LumisectionHisto2D(models.Model):
 
         # Keep track of current chunk
         current_chunk = 0
+        # Keep track of lines read
+        num_lines_read = 0
         reader = pd.read_csv(file_path,
                              chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
-        logger.info(f"File has ")
+        logger.info(f"File has {file_line_count} lines")
         for df in reader:
             logger.debug(f"Reading chunk {current_chunk}")
             lumisection_histos2D = []
@@ -109,8 +119,14 @@ class LumisectionHisto2D(models.Model):
                 f"{len(lumisection_histos2D)} x "
                 f"2D lumisection histos successfully added from chunk {current_chunk}!"
             )
+            num_lines_read += len(lumisection_histos2D)
             current_chunk += 1
-            # histogram_data_file.percentage_processed = current_chunk / len(
+            # Record progress in DB
+            # Not safe to assume progress by chunks read,
+            # the last chunk may have less lines than expected
+            histogram_data_file.percentage_processed = (num_lines_read /
+                                                        file_line_count) * 100
+            histogram_data_file.save()  # Save entries and move to next chunk
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"

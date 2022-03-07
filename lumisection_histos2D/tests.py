@@ -35,8 +35,10 @@ class CSVHistogram2DParsingTestCase(TestCase):
             self.num_total_lines += pd.read_csv(f).shape[0]
             LumisectionHisto2D.from_csv(file_path=f)
 
-    def test_csv_histogram_1d_parsing(self):
+    def test_csv_histogram_2d_parsing_completeness(self):
         logger.debug(f"There are {LumisectionHisto2D.objects.count()} "
                      "2D Lumisection histograms in the DB")
-        # Stupid test to verify that 9 histograms were loaded from one file
         assert LumisectionHisto2D.objects.count() == self.num_total_lines
+        for hdf in HistogramDataFile.objects.all():
+            logger.debug(f"{hdf.filepath}\t{hdf.percentage_processed}")
+            assert hdf.percentage_processed == 100.0
