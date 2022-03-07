@@ -32,16 +32,21 @@ class HistogramDataFile(models.Model):
 
     data_dimensionality = models.PositiveIntegerField(
         default=DIMENSIONALITY_1D, choices=HISTOGRAM_DIMENSIONS_CHOICES)
+
     data_era = models.CharField(
         blank=False,
         null=False,
         max_length=5,
         help_text="The era that the data refers to (e.g. 2018A)")
 
-    percentage_processed = models.FloatField(
-        default=0.0,
+    entries_total = models.PositiveIntegerField(
+        default=0,
+        help_text="Total number of entries contained in this histogram file")
+
+    entries_processed = models.PositiveIntegerField(
+        default=0,
         help_text=
-        "Percentage of file which has been processed and added to the DB")
+        "Number of histogram entries that have been extracted from the file")
 
     granularity = models.CharField(
         max_length=3,
@@ -52,6 +57,10 @@ class HistogramDataFile(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    @property
+    def percentage_processed(self):
+        return (self.entries_processed / self.entries_total) * 100
 
     class Meta:
         constraints = [

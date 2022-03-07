@@ -1,15 +1,17 @@
 import os
 import os.path
 import logging
+import threading
 import pandas as pd
 from django.test import TestCase
+from django.core import management
 from .models import LumisectionHisto2D
 from histogram_file_manager.models import HistogramDataFile
 
 logger = logging.getLogger(__name__)
 
 
-class CSVHistogram2DParsingTestCase(TestCase):
+class CSVHistogram2DCompleteParsingTestCase(TestCase):
     """
     Test parsing a 2D Histogram CSV file and storing it into the DB
     """
@@ -40,5 +42,15 @@ class CSVHistogram2DParsingTestCase(TestCase):
                      "2D Lumisection histograms in the DB")
         assert LumisectionHisto2D.objects.count() == self.num_total_lines
         for hdf in HistogramDataFile.objects.all():
-            logger.debug(f"{hdf.filepath}\t{hdf.percentage_processed}")
+            # logger.debug(f"{hdf.filepath}\t{hdf.percentage_processed}")
             assert hdf.percentage_processed == 100.0
+
+
+# TODO: Add test which partially stores a Histogram file, then tries to resume
+# and verifies that it was added completely. Possible ways to do it:
+# 1) Call the management command as a Thread, which will have to be killed
+# somehow after some arbitrary time delay.
+# 2) Call the management command as a subprocess. This requires that the venv
+# is somehow activated first. Then, a SIGKILL should suffice.
+# 3) Modify the from_file method to accept a limit to the lines it reads, so
+# that the file is incompletely read.
