@@ -12,7 +12,19 @@ from histogram_file_manager.models import HistogramDataFile
 
 logger = logging.getLogger(__name__)
 
+# Specifies the number of lines that the csv file will be
+# chunked into during parsing.
+# E.g. 50 means that a 120-line csv will be read in two 50-line chunks
+# and one 20-line chunk.
 LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE = 50
+
+
+def get_last_chunk(histogram_data_file, chunk_size):
+    """
+    Function that calculates the last chunk that was parsed from
+    a 2D Lumisection histogram csv file.
+    """
+    return int(histogram_data_file.entries_processed / chunk_size)
 
 
 class LumisectionHisto2D(models.Model):
@@ -44,9 +56,14 @@ class LumisectionHisto2D(models.Model):
     )
 
     @staticmethod
-    def from_csv(file_path, data_era: str = ""):
+    def from_csv(file_path, data_era: str = "", resume: bool = True):
         """
         Import 2D Lumisection Histograms from a csv file
+        
+        Parameters:
+        - file_path: A path to a .csv file containing a 2D Lumisection Histogram
+        - data_era: The era that the data refers to (e.g. 2018A)
+        - resume: Specify whether 
         """
         logger.info(
             f"Importing 2D Lumisection Histograms from '{file_path}', "
@@ -61,6 +78,15 @@ class LumisectionHisto2D(models.Model):
         )
 
         file_size = os.path.getsize(file_path)
+        file_line_count = 0  # Total lines in CSV
+
+        # Get number of lines, this may take a "long" time, but
+        # it's needed to record our progress while parsing the file
+        with open(file_path, 'r') as fp:
+            for file_line_count, line in enumerate(fp):
+                pass
+
+        # Histogram file was already recorded in database
         if not created and histogram_data_file.filesize != file_size:
             logger.warning(
                 f"File '{file_path}' already in DB but size differs! "
@@ -69,15 +95,28 @@ class LumisectionHisto2D(models.Model):
 
         # Update file size anyway
         histogram_data_file.filesize = file_size
+        histogram_data_file.entries_total = file_line_count
         histogram_data_file.save()
 
+        # Last saved chunk in DB.
+        last_chunk = 0 if created else get_last_chunk(
+            histogram_data_file,
+            LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE) if resume else 0
+
+        logger.info(f"Last chunk: {last_chunk}")
         # Keep track of current chunk
         current_chunk = 0
+        # Keep track of lines read
+        num_lines_read = 0
         reader = pd.read_csv(file_path,
                              chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
-        logger.info(f"File has ")
+        logger.info(f"File has {file_line_count} lines")
         for df in reader:
-            logger.debug(f"Reading chunk {current_chunk}")
+            if resume and current_chunk < last_chunk:
+                logger.debug(f"Skipping chunk {current_chunk}")
+                continue
+            else:
+                logger.debug(f"Reading chunk {current_chunk}")
             lumisection_histos2D = []
 
             for index, row in df.iterrows():
@@ -109,8 +148,13 @@ class LumisectionHisto2D(models.Model):
                 f"{len(lumisection_histos2D)} x "
                 f"2D lumisection histos successfully added from chunk {current_chunk}!"
             )
+            num_lines_read += len(lumisection_histos2D)
             current_chunk += 1
-            # histogram_data_file.percentage_processed = current_chunk / len(
+            # Record progress in DB
+            # Not safe to assume progress by chunks read,
+            # the last chunk may have less lines than expected
+            histogram_data_file.entries_processed = num_lines_read
+            histogram_data_file.save()  # Save entries and move to next chunk
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
