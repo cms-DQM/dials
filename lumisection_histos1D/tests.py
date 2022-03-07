@@ -41,3 +41,5 @@ class CSVHistogram1DParsingTestCase(TestCase):
 
         # Assumes all lines in all CSV test files are unique
         assert LumisectionHisto1D.objects.count() == self.num_total_lines
+        for hdf in HistogramDataFile.objects.all():
+            assert hdf.percentage_processed == 100.0

@@ -47,6 +47,14 @@ class LumisectionHisto1D(models.Model):
             granularity=HistogramDataFile.GRANULARITY_LUMISECTION)
 
         file_size = os.path.getsize(file_path)
+        file_line_count = 0  # Total lines in CSV
+
+        # Get number of lines, this may take a "long" time, but
+        # it's needed to record our progress while parsing the file
+        with open(file_path, 'r') as fp:
+            for file_line_count, line in enumerate(fp):
+                pass
+
         if not created and histogram_data_file.filesize != file_size:
             logger.warning(
                 f"File '{file_path}' already in DB but size differs! "
@@ -55,6 +63,7 @@ class LumisectionHisto1D(models.Model):
 
         # Update file size anyway
         histogram_data_file.filesize = file_size
+        histogram_data_file.entries_total = file_line_count
         histogram_data_file.save()
 
         lumisection_histos1D = []  # New LumisectionHisto1D entries
@@ -95,11 +104,16 @@ class LumisectionHisto1D(models.Model):
                                                        ignore_conflicts=True)
                 logger.info(
                     "50 lumisections 1D histograms successfully added!")
+                histogram_data_file.entries_processed += 50
+                histogram_data_file.save()
                 count = 0
                 lumisection_histos1D = []
-        if lumisection_histos1D:
+
+        if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
             LumisectionHisto1D.objects.bulk_create(lumisection_histos1D,
                                                    ignore_conflicts=True)
+            histogram_data_file.entries_processed += len(lumisection_histos1D)
+            histogram_data_file.save()
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
