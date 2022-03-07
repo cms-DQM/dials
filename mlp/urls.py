@@ -25,4 +25,5 @@ urlpatterns = [
     path("lumisectionHistos1D/", include("lumisection_histos1D.urls")),
     path("lumisectionHistos2D/", include("lumisection_histos2D.urls")),
     path('admin/', admin.site.urls),
+    path('histogram_file_manager/', include('histogram_file_manager.urls'))
 ]

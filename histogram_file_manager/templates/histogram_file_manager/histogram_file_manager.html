@@ -1,0 +1,29 @@
+{% extends 'appbase.html' %}
+
+{% block title %}
+Histogram File Manager
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<h1 class="my-3" align="center">Histogram File Manager</h1>
+	<h2>List data files in DB</h2>
+	<ul>
+		{% for df in data_files %}
+		<li>
+			{{ df }}
+		</li>
+		{% endfor %}
+	</ul>
+	<h2>Test with form</h2>
+	<form action ="/{% url 'histogram_file_manager:file_manager' %}" method="post">
+		{% csrf_token %}
+		{{ form }}
+		<input type="submit" value="Submit">
+	</form>
+		
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

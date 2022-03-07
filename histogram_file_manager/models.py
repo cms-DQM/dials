@@ -25,7 +25,8 @@ class HistogramDataFile(models.Model):
     filepath = models.FilePathField(path=settings.FILE_PATH_EOS_CMSML4DC,
                                     help_text="Path where the file is stored",
                                     recursive=True,
-                                    max_length=255)
+                                    max_length=255,
+                                    match=".*\.csv")
 
     filesize = models.PositiveIntegerField(
         default=0, blank=True, help_text="The data file's size (bytes)")
