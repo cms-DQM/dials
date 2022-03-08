@@ -39,9 +39,7 @@ class HistogramDataFileTable(tables.Table):
         files_in_db = HistogramDataFile.objects.all()
 
         # Ignore some fields, or override them
-        overridden_fields = [
-            'filepath', 'lumisectionhisto1d', 'lumisectionhisto2d'
-        ]
+        overridden_fields = ['filepath', 'pk']
 
         # Data that will be returned to be rendered as a table
         new_table_data = []
@@ -53,10 +51,15 @@ class HistogramDataFileTable(tables.Table):
             try:
                 entry = files_in_db.get(filepath=f[0])
                 # Copy the values from each fields to the new table entry
-                for field in HistogramDataFile._meta.get_fields():
+                for field in HistogramDataFile._meta.local_fields:
                     if field.name not in overridden_fields:
                         new_table_entry[field.name] = getattr(
                             entry, field.name)
+                # Do the same for properties
+                for prop in HistogramDataFile._meta._property_names:
+                    if prop not in overridden_fields:
+                        new_table_entry[prop] = getattr(entry, prop)
+
                 new_table_entry['in_db'] = True
 
             # File not stored in db, display empty data
