@@ -17,3 +17,7 @@ DJANGO_DATABASE_PORT
 DJANGO_SECRET_KEY
 DIR_PATH_EOS_CMSML4DC
  ```
+
+## Behavior
+### Histogram File Manager
+- Currently, the choices for available files provided are only refreshed once, on server start, meaning that to refresh the list of available DQM files, one has to restart the app
