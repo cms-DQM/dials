@@ -7,6 +7,8 @@ Histogram File Manager
 {% block content %}
 <div class="container-fluid">
 	<h1 class="my-3" align="center">Histogram File Manager</h1>
+
+	{% comment %}
 	<h2>List data files in DB</h2>
 	<ul>
 		{% for df in files_in_db %}
@@ -28,6 +30,8 @@ Histogram File Manager
 		<input type="submit" value="Submit">
 	</form>
 	<br>
+	{% endcomment %}
+	
 	<h2>Available DQM Histogram files</h2>
 	{% load render_table from django_tables2 %}
 	{% load bootstrap3 %}
