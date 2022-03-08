@@ -9,19 +9,41 @@ Histogram File Manager
 	<h1 class="my-3" align="center">Histogram File Manager</h1>
 	<h2>List data files in DB</h2>
 	<ul>
-		{% for df in data_files %}
+		{% for df in files_in_db %}
 		<li>
 			{{ df }}
 		</li>
 		{% endfor %}
 	</ul>
+	<br>
 	<h2>Test with form</h2>
-	<form action ="/{% url 'histogram_file_manager:file_manager' %}" method="post">
+	<form action ="{% url 'histogram_file_manager:file_manager' %}" method="post">
 		{% csrf_token %}
-		{{ form }}
+		{{ form.non_field_errors }}
+		<div class="fieldWrapper">
+			{{ form.filepath.errors }}
+			<label for="{{ form.filepath.id_for_label }}">Filepath:</label>
+			{{ form.filepath }}
+		</div>
 		<input type="submit" value="Submit">
 	</form>
-		
+	<br>
+	<h2>django_tables2</h2>
+	{% load render_table from django_tables2 %}
+	{% load bootstrap3 %}
+	{% if table %}
+	{% render_table table 'django_tables2/bootstrap.html' %}
+	{% endif %}
+	<br>
+	<h2>Custom view</h2>
+	<ul>
+		{% for k, v in file_choices.items %}
+		<li>
+			File: {{ k }} - Available: {{ v.in_db }}
+		</li>
+	{% endfor %}
+</ul>	
+	
 </div>
 {% endblock %}
 

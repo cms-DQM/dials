@@ -22,7 +22,7 @@ class HistogramDataFile(models.Model):
                                     (GRANULARITY_LUMISECTION, 'Lumisection'))
 
     # Recurse in Root filepath where all the DQM files are stored
-    filepath = models.FilePathField(path=settings.FILE_PATH_EOS_CMSML4DC,
+    filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
                                     help_text="Path where the file is stored",
                                     recursive=True,
                                     max_length=255,
@@ -61,7 +61,8 @@ class HistogramDataFile(models.Model):
 
     @property
     def percentage_processed(self):
-        return (self.entries_processed / self.entries_total) * 100
+        return ((self.entries_processed / self.entries_total) *
+                100) if self.entries_total > 0 else 0
 
     class Meta:
         constraints = [

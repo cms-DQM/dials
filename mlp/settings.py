@@ -192,7 +192,7 @@ NOTEBOOK_ARGUMENTS = [
 ]
 
 # Root directory where DQM files are stored, no default for safety
-FILE_PATH_EOS_CMSML4DC = config("FILE_PATH_EOS_CMSML4DC")
+DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
 
 # Importing settings for subsystem
 from .settings_tracker import *
