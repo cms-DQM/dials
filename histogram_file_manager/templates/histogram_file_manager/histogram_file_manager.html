@@ -1,5 +1,5 @@
 {% extends 'appbase.html' %}
-
+{% load static %}
 {% block title %}
 Histogram File Manager
 {% endblock %}
@@ -28,20 +28,14 @@ Histogram File Manager
 		<input type="submit" value="Submit">
 	</form>
 	<br>
-	<h2>django_tables2</h2>
+	<h2>Available DQM Histogram files</h2>
 	{% load render_table from django_tables2 %}
 	{% load bootstrap3 %}
 	{% if table %}
 	{% render_table table 'django_tables2/bootstrap.html' %}
 	{% endif %}
 	<br>
-	<h2>Custom view</h2>
-	<ul>
-		{% for k, v in file_choices.items %}
-		<li>
-			File: {{ k }} - Available: {{ v.in_db }}
-		</li>
-	{% endfor %}
+
 </ul>	
 	
 </div>
