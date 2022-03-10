@@ -31,13 +31,15 @@ class HistogramDataFile(models.Model):
                                     allow_folders=False)
 
     filesize = models.PositiveIntegerField(
-        default=0, blank=True, help_text="The data file's size (bytes)")
+        default=0, help_text="The data file's size (bytes)")
 
     data_dimensionality = models.PositiveIntegerField(
-        default=DIMENSIONALITY_1D, choices=HISTOGRAM_DIMENSIONS_CHOICES)
+        default=DIMENSIONALITY_1D,
+        choices=HISTOGRAM_DIMENSIONS_CHOICES,
+        blank=True)
 
     data_era = models.CharField(
-        blank=False,
+        blank=True,
         null=False,
         max_length=5,
         help_text="The era that the data refers to (e.g. 2018A)")
@@ -73,6 +75,9 @@ class HistogramDataFile(models.Model):
         if self.filesize <= 0:
             self.filesize = getsize(self.filepath)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.filepath} ({self.filesize / 1024 / 1024:.2f} MB)"
 
     class Meta:
         constraints = [
