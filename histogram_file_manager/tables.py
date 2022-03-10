@@ -10,6 +10,14 @@ class HistogramDataFileTable(tables.Table):
     """
     Custom Table to display information and allow control
     of Histogram datafile parsing.
+
+    The initial concept was to base this on HistogramDataFile, but this
+    would limit the table's entries to just the ones stored in the database. 
+
+    Since we want to display *all* the available datafiles in a specific directory,
+    this custom Table was created. The "from_filepaths" method checks files
+    passsed as an argument one by one, and, if they
+    are stored in the DB, it copies the info to the appropriate column.
     """
     filepath = tables.Column()
     in_db = tables.Column(empty_values=())
@@ -22,6 +30,9 @@ class HistogramDataFileTable(tables.Table):
     percentage_processed = tables.Column()
 
     def render_in_db(self, value):
+        """
+        Replace True/False "in_db" boolean with checkmark
+        """
         return format_html(
             f"<img src='{settings.STATIC_URL}/histogram_file_manager/icons/check.svg' alt=''>"
         ) if value else ""
@@ -38,7 +49,7 @@ class HistogramDataFileTable(tables.Table):
         # Get all histograms stored in db
         files_in_db = HistogramDataFile.objects.all()
 
-        # Ignore some fields, or override them
+        # Ignore some fields from the HistogramDataFile model
         overridden_fields = ['filepath', 'pk']
 
         # Data that will be returned to be rendered as a table
