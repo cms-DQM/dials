@@ -1,3 +1,4 @@
+from os.path import getsize
 from django.db import models
 from django.conf import settings
 
@@ -26,7 +27,8 @@ class HistogramDataFile(models.Model):
                                     help_text="Path where the file is stored",
                                     recursive=True,
                                     max_length=255,
-                                    match=".*\.csv")
+                                    match=".*\.csv",
+                                    allow_folders=False)
 
     filesize = models.PositiveIntegerField(
         default=0, blank=True, help_text="The data file's size (bytes)")
@@ -63,6 +65,14 @@ class HistogramDataFile(models.Model):
     def percentage_processed(self):
         return ((self.entries_processed / self.entries_total) *
                 100) if self.entries_total > 0 else 0
+
+    def save(self, *args, **kwargs):
+        """
+        Override save method to get file attributes on save
+        """
+        if self.filesize <= 0:
+            self.filesize = getsize(self.filepath)
+        super().save(*args, **kwargs)
 
     class Meta:
         constraints = [

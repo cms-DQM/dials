@@ -19,11 +19,12 @@ class HistogramDataFileTable(tables.Table):
     passsed as an argument one by one, and, if they
     are stored in the DB, it copies the info to the appropriate column.
     """
+
     filepath = tables.Column()
     in_db = tables.Column(empty_values=())
 
     filesize = tables.Column()
-    dimensionality = tables.Column(accessor="data_dimensionality")
+    dimensionality = tables.Column()
     era = tables.Column(accessor="data_era")
     entries_total = tables.Column()
     granularity = tables.Column()
