@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from histogram_file_manager.api.routers import router as histogram_data_file_router
-from lumisection_histos1D.urls import router as lumisection_histos1D_router
+# from lumisection_histos1D.urls import router as lumisection_histos1D_router
 
+# Create a router and extend it will all apps' api endpoints
 router = routers.DefaultRouter()
 router.registry.extend(histogram_data_file_router.registry)
-router.registry.extend(lumisection_histos1D_router.registry)
+# router.registry.extend(lumisection_histos1D_router.registry)
 
 urlpatterns = [
     path("", include("home.urls")),
@@ -32,5 +33,5 @@ urlpatterns = [
     path("lumisectionHistos2D/", include("lumisection_histos2D.urls")),
     path('admin/', admin.site.urls),
     path('histogram_file_manager/', include('histogram_file_manager.urls')),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls))  # Mount aggregate API endpoints to api/
 ]
