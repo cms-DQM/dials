@@ -31,7 +31,7 @@ class HistogramDataFileTable(tables.Table):
     percentage_processed = tables.Column()
 
     def render_filesize(self, value):
-        return f"{value / 1024 / 1024:.2f}"
+        return f"{value / 1024 / 1024:.2f}" if value else 0
 
     # def render_in_db(self, value):
     #     """
