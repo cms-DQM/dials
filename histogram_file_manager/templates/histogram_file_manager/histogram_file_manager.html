@@ -1,5 +1,10 @@
 {% extends 'appbase.html' %}
 {% load static %}
+
+{% block head %}
+<script src="{% static 'js/vue.global.js' %}"></script>
+{% endblock %}
+
 {% block title %}
 Histogram File Manager
 {% endblock %}
