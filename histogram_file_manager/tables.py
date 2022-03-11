@@ -21,22 +21,25 @@ class HistogramDataFileTable(tables.Table):
     """
 
     filepath = tables.Column()
-    in_db = tables.Column(empty_values=())
+    # in_db = tables.Column(empty_values=())
 
-    filesize = tables.Column()
+    filesize = tables.Column(empty_values=(), verbose_name="Filesize (MB)")
     dimensionality = tables.Column()
     era = tables.Column(accessor="data_era")
     entries_total = tables.Column()
     granularity = tables.Column()
     percentage_processed = tables.Column()
 
-    def render_in_db(self, value):
-        """
-        Replace True/False "in_db" boolean with checkmark
-        """
-        return format_html(
-            f"<img src='{settings.STATIC_URL}/histogram_file_manager/icons/check.svg' alt=''>"
-        ) if value else ""
+    def render_filesize(self, value):
+        return f"{value / 1024 / 1024:.2f}"
+
+    # def render_in_db(self, value):
+    #     """
+    #     Replace True/False "in_db" boolean with checkmark
+    #     """
+    #     return format_html(
+    #         f"<img src='{settings.STATIC_URL}/histogram_file_manager/icons/check.svg' alt=''>"
+    #     ) if value else ""
 
     @classmethod
     def from_filepaths(cls, filepaths: list):
