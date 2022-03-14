@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.conf import settings
 from histogram_file_manager.forms import HistogramDataFileForm
-from histogram_file_manager.modeils import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile
 
 
 class HistogramDataFileTestCase(TestCase):
