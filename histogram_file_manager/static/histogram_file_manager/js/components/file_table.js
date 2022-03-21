@@ -21,7 +21,6 @@ app.component('file-table', {
 		<div class="row">
 		  <button 
 			v-on:click="file_actions_clicked(file_information)"
-			:class="{disabled: file_information.percentage_processed === 100.0 }"
 			>
 			Actions
 		  </button>
@@ -36,15 +35,9 @@ app.component('file-table', {
         // Callback for Parsing button, takes the id of the file as parameter
         file_actions_clicked(file_information) {
             this.$emit('file-actions-clicked', file_information);
-            // console.debug(`Sending parse command for file ${file_id}`);
         },
     },
     props: {
-        // headers: {
-        //     type: Array,
-        //     required: true,
-        // },
-        // Array of objects
         files_information: {
             type: Array,
             required: true,

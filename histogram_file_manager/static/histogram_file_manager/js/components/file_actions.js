@@ -9,6 +9,13 @@ app.component('file-actions', {
     <span class="close" v-on:click="clicked_close">&times;</span>
 	<h4>File actions (File {{ file_id }})</h4>
     <p>Actions go here</p>
+	<div class="col">
+	  <div class="row">
+		<button :class="{disabled: file_information.percentage_processed === 100.0 }">
+		  Parse
+		</button>
+	  </div>
+	</div>
 {{ Object.keys(file_information) }}
   </div>
 </div>
