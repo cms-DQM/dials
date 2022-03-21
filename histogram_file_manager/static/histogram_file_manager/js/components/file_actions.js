@@ -2,7 +2,7 @@ app.component('file-actions', {
     // delimiters: ['{', '}'],
     template:
         /*html*/
-`
+        `
 <!-- :class="{ hidden: !is_visible }" -->
 <div id="modal-file-actions" class="modal modal-extra" :class="{ shown: is_visible }" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -18,8 +18,12 @@ app.component('file-actions', {
 		{{ Object.keys(file_information) }}
       </div>
       <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-		<button type="button" class="btn btn-primary" :class="{disabled: file_information.percentage_processed === 100.0 }">
+		<button
+		  type="button"
+		  class="btn btn-primary"
+		  :class="{disabled: file_information.percentage_processed === 100.0 }"
+		  v-on:click="send_parse_file_command(file_information)"
+		  >
 		  Parse
 		</button>
       </div>
@@ -54,6 +58,11 @@ app.component('file-actions', {
         clicked_close() {
             console.debug('Modal was closed');
             this.$emit('clicked-close');
+        },
+        send_parse_file_command(file_information) {
+            console.debug(
+                `Sending command for parsing file ${file_information.id}`,
+            );
         },
     },
 });
