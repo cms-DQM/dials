@@ -4,7 +4,7 @@ app.component('file-actions', {
         /*html*/
 `
 <!-- :class="{ hidden: !is_visible }" -->
-<div id="modal-file-actions" class="modal" :class="{ shown: is_visible }" tabindex="-1" role="dialog">
+<div id="modal-file-actions" class="modal modal-extra" :class="{ shown: is_visible }" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
 	<div class="modal-content">
 	  <div class="modal-header">
