@@ -19,7 +19,7 @@ app.component('file-table', {
 	<td>
 	  <div class="col">
 		<div class="row">
-		  <button 
+		  <button type="button" class="btn btn-primary"
 			v-on:click="file_actions_clicked(file_information)"
 			>
 			Actions
