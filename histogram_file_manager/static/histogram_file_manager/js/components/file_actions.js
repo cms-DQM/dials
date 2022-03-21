@@ -2,21 +2,28 @@ app.component('file-actions', {
     // delimiters: ['{', '}'],
     template:
         /*html*/
-        `
-<div id="modal-file-actions" :class="{ hidden: !is_visible }">
-  <div class="modal-content">
-
-    <span class="close" v-on:click="clicked_close">&times;</span>
-	<h4>File actions (File {{ file_id }})</h4>
-    <p>Actions go here</p>
-	<div class="col">
-	  <div class="row">
-		<button :class="{disabled: file_information.percentage_processed === 100.0 }">
+`
+<!-- :class="{ hidden: !is_visible }" -->
+<div id="modal-file-actions" class="modal" :class="{ shown: is_visible }" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+        <h5 class="modal-title">File actions (File {{ file_id }})</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="clicked_close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+	  </div>
+	  <div class="modal-body">
+		<p>Modal body text goes here.</p>
+		{{ Object.keys(file_information) }}
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+		<button type="button" class="btn btn-primary" :class="{disabled: file_information.percentage_processed === 100.0 }">
 		  Parse
 		</button>
-	  </div>
-	</div>
-{{ Object.keys(file_information) }}
+      </div>
+    </div>
   </div>
 </div>
 `,
