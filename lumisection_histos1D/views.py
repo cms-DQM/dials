@@ -2,11 +2,11 @@ from django.shortcuts import render
 from django_tables2 import RequestConfig
 from django_filters import rest_framework as filters
 from rest_framework import generics
-
 from lumisection_histos1D.models import LumisectionHisto1D
 from lumisection_histos1D.filters import LumisectionHistos1DFilter
 from lumisection_histos1D.tables import LumisectionHistos1DTable
 from lumisection_histos1D.serializers import LumisectionHisto1DSerializer
+
 
 def listLumisectionHistos1D(request):
     """
