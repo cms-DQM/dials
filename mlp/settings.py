@@ -53,12 +53,13 @@ INSTALLED_APPS = [
     "listdatasets.apps.ListdatasetsConfig",
     "dataset_tables.apps.DatasetTablesConfig",
     "runs.apps.RunsConfig",
-    "run_histos.apps.RunHistosConfig",
+    # "run_histos.apps.RunHistosConfig",
     "run_certification.apps.RunCertificationConfig",
     "lumisections.apps.LumisectionsConfig",
-    "lumisection_histos1D.apps.LumisectionHistos1DConfig",
-    "lumisection_histos2D.apps.LumisectionHistos2DConfig",
+    # "lumisection_histos1D.apps.LumisectionHistos1DConfig",
+    # "lumisection_histos2D.apps.LumisectionHistos2DConfig",
     "lumisection_certification.apps.LumisectionCertificationConfig",
+    "histograms",
     "histogram_file_manager",
 ]
 
@@ -198,7 +199,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.IsAuthenticated', # will require authentication
         'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
     ],
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS':
+    ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Importing settings for subsystem

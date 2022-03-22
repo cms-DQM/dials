@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %} Run Histos {% endblock title %}
+
+{% block content %}
+
+<div>
+  {% if error_message %}
+    <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+      <div>
+        {{ error_message }}
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+</div>
+
+  <h2> Choosing Dataset / Variable / Plot type </h2>
+
+    <form action="" method="POST" class="px-4 py-3">
+    {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Dataset</label>
+        <select name="dataset" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="ZeroBias">ZeroBias</option>
+          <option value="SingleMuon">SingleMuon</option>
+          <option value="EGamma">EGamma</option>
+          <option value="JetHT">JetHT</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Variable</label>
+        <select name="variable" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="Chi2Prob_GenTk">Chi2Prob_GenTk</option>
+          <option value="Chi2_GenTk">Chi2_GenTk</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Plot type</label>
+        <select name="plot_type" class="form-select" aria-label="Default select example">
+          <option selected>----</option>
+          <option value="histogram">Histogram</option>
+          <option value="time_serie">Time Serie</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Select</button>
+    </form>
+
+
+<hr>
+
+  <h2> Plot </h2>
+
+  <div id="vis"></div>
+
+  <script type="text/javascript">
+    var spec = {{ chart|safe }};
+    console.log(spec);
+    vegaEmbed("#vis", spec)
+  </script>
+
+{% endblock content %}

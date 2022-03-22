@@ -1,11 +1,11 @@
 from django.db import models
 from runs.models import Run
-from run_histos.models import RunHisto
+from histograms.models import RunHistogram
 
 
 class RunCertification(models.Model):
-    run        = models.ForeignKey(Run, on_delete=models.CASCADE)
-    date       = models.DateTimeField(auto_now_add=True)
+    run = models.ForeignKey(Run, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
 
     # run registry
     rr_is_pixel_good = models.BooleanField(null=True)
