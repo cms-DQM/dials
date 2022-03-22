@@ -1,3 +1,4 @@
+from os.path import getsize
 from django.db import models
 from django.conf import settings
 
@@ -22,19 +23,23 @@ class HistogramDataFile(models.Model):
                                     (GRANULARITY_LUMISECTION, 'Lumisection'))
 
     # Recurse in Root filepath where all the DQM files are stored
-    filepath = models.FilePathField(path=settings.FILE_PATH_EOS_CMSML4DC,
+    filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
                                     help_text="Path where the file is stored",
                                     recursive=True,
-                                    max_length=255)
+                                    max_length=255,
+                                    match=".*\.csv",
+                                    allow_folders=False)
 
     filesize = models.PositiveIntegerField(
-        default=0, blank=True, help_text="The data file's size (bytes)")
+        default=0, help_text="The data file's size (bytes)")
 
     data_dimensionality = models.PositiveIntegerField(
-        default=DIMENSIONALITY_1D, choices=HISTOGRAM_DIMENSIONS_CHOICES)
+        default=DIMENSIONALITY_1D,
+        choices=HISTOGRAM_DIMENSIONS_CHOICES,
+        blank=True)
 
     data_era = models.CharField(
-        blank=False,
+        blank=True,
         null=False,
         max_length=5,
         help_text="The era that the data refers to (e.g. 2018A)")
@@ -60,7 +65,19 @@ class HistogramDataFile(models.Model):
 
     @property
     def percentage_processed(self):
-        return (self.entries_processed / self.entries_total) * 100
+        return ((self.entries_processed / self.entries_total) *
+                100) if self.entries_total > 0 else 0
+
+    def save(self, *args, **kwargs):
+        """
+        Override save method to get file attributes on save
+        """
+        if self.filesize <= 0:
+            self.filesize = getsize(self.filepath)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.filepath} ({self.filesize / 1024 / 1024:.2f} MB)"
 
     class Meta:
         constraints = [

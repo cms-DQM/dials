@@ -1,0 +1,82 @@
+{% extends 'appbase.html' %}
+{% load static %}
+
+{% block head %}
+<script src="{% static 'js/vue.global.js' %}"></script>
+<script src="{% static 'js/axios.min.js' %}"></script>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'histogram_file_manager/js/histogram_file_manager.js' %}"></script>
+<script src="{% static 'histogram_file_manager/js/components/file_table.js' %}"></script>
+<script src="{% static 'histogram_file_manager/js/components/file_actions.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'histogram_file_manager/css/file_actions.css' %}">
+{% endblock %}
+
+{% block title %}
+Histogram File Manager
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<h1 class="my-3" align="center">Histogram File Manager</h1>
+
+	{% comment %}
+	<h2>List data files in DB</h2>
+	<ul>
+		{% for df in files_in_db %}
+		<li>
+			{{ df }}
+		</li>
+		{% endfor %}
+	</ul>
+	<br>
+	<h2>Test with form</h2>
+	<form action ="{% url 'histogram_file_manager:file_manager' %}" method="post">
+		{% csrf_token %}
+		{{ form.non_field_errors }}
+		<div class="fieldWrapper">
+			{{ form.filepath.errors }}
+			<label for="{{ form.filepath.id_for_label }}">Filepath:</label>
+			{{ form.filepath }}
+		</div>
+		<input type="submit" value="Submit">
+	</form>
+	<br>
+	{% endcomment %}
+	
+	<h2>Available DQM Histogram files</h2>
+	{% load render_table from django_tables2 %}
+	{% load bootstrap3 %}
+	{% if table %}
+	{% render_table table 'django_tables2/bootstrap.html' %}
+	{% endif %}
+	<br>
+
+	<h2>JS-based file list</h2>
+	<div id="app">
+		<file-table
+			:files_information="files_information"
+			@file-actions-clicked="show_file_actions_modal"
+		>
+		</file-table>
+		<file-actions
+			:file_information="file_information"
+			:is_visible="file_actions_is_visible"
+			:file_id="Number(file_information.id)" 
+			@clicked-close="hide_file_actions_modal"
+		>
+			
+		</file-actions>
+	</div>
+
+	</ul>	
+	
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+ const mountedApp = app.mount('#app');
+</script>
+
+{% endblock %}

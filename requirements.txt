@@ -14,3 +14,5 @@ altair
 jupyter
 pandas
 numpy
+pyyaml
+uritemplate

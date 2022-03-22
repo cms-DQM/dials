@@ -168,11 +168,10 @@ LOGGING = {
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "home/static"),
-    os.path.join(BASE_DIR, "run_histos/static"),
-    os.path.join(BASE_DIR, "lumisection_histos1D/static"),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "home/static"),
+                    os.path.join(BASE_DIR, "run_histos/static"),
+                    os.path.join(BASE_DIR, "lumisection_histos1D/static"),
+                    os.path.join(BASE_DIR, "common/static"))
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
@@ -192,7 +191,14 @@ NOTEBOOK_ARGUMENTS = [
 ]
 
 # Root directory where DQM files are stored, no default for safety
-FILE_PATH_EOS_CMSML4DC = config("FILE_PATH_EOS_CMSML4DC")
+DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # 'rest_framework.permissions.IsAuthenticated', # will require authentication
+        'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
+    ]
+}
 
 # Importing settings for subsystem
 from .settings_tracker import *
