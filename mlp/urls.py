@@ -19,12 +19,14 @@ from django.views.generic import TemplateView
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
 from histogram_file_manager.api.routers import router as histogram_data_file_router
-# from lumisection_histos1D.urls import router as lumisection_histos1D_router
+from lumisection_histos1D.api.routers import router as lumisection_histos1D_router
+from lumisection_histos2D.api.routers import router as lumisection_histos2D_router
 
 # Create a router and extend it will all apps' api endpoints
 router = routers.DefaultRouter()
 router.registry.extend(histogram_data_file_router.registry)
-# router.registry.extend(lumisection_histos1D_router.registry)
+router.registry.extend(lumisection_histos1D_router.registry)
+router.registry.extend(lumisection_histos2D_router.registry)
 
 urlpatterns = [
     path("", include("home.urls")),

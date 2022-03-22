@@ -31,3 +31,10 @@ DIR_PATH_EOS_CMSML4DC
 
 ### `lumisection_histos2D`
 - `exctract_lumisections_histos2D_csv`: Given a CSV containing 2D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHisto2D` table.
+
+## Development
+### Database
+For storing histograms, the `ArrayField` is used, so a PostgreSQL database is 
+recommended for running the project locally. 
+
+Installing `pgadmin4` is also recommended for easier interfacing with the DB.
