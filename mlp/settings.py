@@ -197,7 +197,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.IsAuthenticated', # will require authentication
         'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Importing settings for subsystem
