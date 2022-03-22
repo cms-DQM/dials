@@ -23,11 +23,11 @@ def RunHistogramList(request):
 
     context["runHistos_table"] = runHistos_table
     context["filter"] = runHistos_filter
-    return render(request, "run_histos/listRunHistos1D.html", context)
+    return render(request, "histograms/listRunHistos1D.html", context)
 
 
 def import_view(request):
-    return render(request, 'run_histos/import.html')
+    return render(request, 'histograms/import.html')
 
 
 def run_histos_view(request):
@@ -74,7 +74,7 @@ def run_histos_view(request):
         'chart': chart,
     }
 
-    return render(request, 'run_histos/main.html', context)
+    return render(request, 'histograms/main_run_histograms.html', context)
 
 
 def altair_chart_view(request):
