@@ -1,8 +1,8 @@
 from django.urls import include, path
-from .views import listLumisectionHistos1D
+from .views import listLumisectionHisto1D
 
 app_name = "lumisection_histos1D"
 
 urlpatterns = [
-    path("list/", listLumisectionHistos1D, name="list"),
+    path("list/", listLumisectionHisto1D, name="list"),
 ]

@@ -1,6 +1,6 @@
 import django_filters
 from django import forms
-from lumisection_histos1D.models import LumisectionHisto1D
+from lumisection_histos2D.models import LumisectionHisto2D
 
 
 class InFilter(django_filters.filters.BaseInFilter,
@@ -8,7 +8,7 @@ class InFilter(django_filters.filters.BaseInFilter,
     pass
 
 
-class LumisectionHisto1DFilter(django_filters.FilterSet):
+class LumisectionHisto2DFilter(django_filters.FilterSet):
 
     title = django_filters.filters.AllValuesMultipleFilter(
         widget=forms.SelectMultiple(attrs={
@@ -22,7 +22,7 @@ class LumisectionHisto1DFilter(django_filters.FilterSet):
         field_name='lumisection__run__run_number', lookup_expr='in')
 
     class Meta:
-        model = LumisectionHisto1D
+        model = LumisectionHisto2D
         fields = {
             'lumisection__run__run_number': [
                 'gte',
