@@ -13,16 +13,7 @@ class Command(BaseCommand):
     help = ("Scans the default DQM datafile directory for new files and"
             "stores them in the Database")
 
-    # No need for custom path, always use the default one
-    # def add_arguments(self, parser):
-    #     parser.add_argument("directory",
-    #                         nargs='?',
-    #                         type=str,
-    #                         default=settings.DIR_PATH_EOS_CMSML4DC)
-
     def handle(self, *args, **options):
-        # directory_path = options["directory"]
-
         # Use the form's FilePathField method to populate valid files
         for f in HistogramDataFileForm().fields.get("filepath")._choices:
             try:

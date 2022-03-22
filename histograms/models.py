@@ -21,16 +21,22 @@ class HistogramBase(models.Model):
     """
     Base model to be inherited from Run and Lumisection Histograms
     """
+    date = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=220)
+    source_data_file = models.ForeignKey(
+        HistogramDataFile,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=
+        "Source data file that the specific Histogram was read from, if any",
+    )
 
 
 class RunHistogram(HistogramBase):
     run = models.ForeignKey(Run, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-
     primary_dataset = models.CharField(max_length=220)
     path = models.CharField(max_length=220)
-    title = models.CharField(max_length=220)
-
     entries = models.BigIntegerField(null=True)
     mean = models.FloatField(null=True)
     rms = models.FloatField(null=True)
@@ -40,12 +46,13 @@ class RunHistogram(HistogramBase):
     def __str__(self):
         return f"run: {self.run.run_number} / dataset: {self.primary_dataset} / histo: {self.title}"
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['run', 'primary_dataset', 'title'],
-                name='unique run/dataset/histogram combination')
-        ]
+    # TODO
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(
+    #             fields=['run', 'primary_dataset', 'title'],
+    #             name='unique run/dataset/histogram combination')
+    #     ]
 
 
 class LumisectionHistogramBase(models.Model):
@@ -53,28 +60,20 @@ class LumisectionHistogramBase(models.Model):
     Abstract Base model that both 1D and 2D lumisection histograms inherit from.
     
     """
+    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
+
+    entries = models.IntegerField(blank=True, null=True)
+
     class Meta:
         abstract = True
 
 
 class LumisectionHistogram1D(HistogramBase, LumisectionHistogramBase):
-    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
 
-    date = models.DateTimeField(auto_now_add=True)
-
-    title = models.CharField(max_length=100)
     data = ArrayField(models.FloatField(), blank=True)
-    entries = models.IntegerField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
     x_bin = models.IntegerField(blank=True, null=True)
-    source_data_file = models.ForeignKey(
-        HistogramDataFile,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        help_text=
-        "Source data file that the specific Histogram was read from, if any")
 
     @staticmethod
     def from_csv(file_path, data_era: str = ""):
@@ -140,37 +139,41 @@ class LumisectionHistogram1D(HistogramBase, LumisectionHistogramBase):
                 data=data,
                 source_data_file=histogram_data_file)
 
-            lumisection_histos1D.append(lumisection_histo1D)
+            # lumisection_histos1D.append(lumisection_histo1D)
+            lumisection_histo1D.save()
             count += 1
+            histogram_data_file.entries_processed += 1
+            histogram_data_file.save()
 
             # Bulk create every 50 entries
-            if count == 50:
+            # if count == 50:
 
-                LumisectionHistogram1D.objects.bulk_create(
-                    lumisection_histos1D, ignore_conflicts=True)
-                logger.info(
-                    "50 lumisections 1D histograms successfully added!")
-                histogram_data_file.entries_processed += 50
-                histogram_data_file.save()
-                count = 0
-                lumisection_histos1D = []
+            # LumisectionHistogram1D.objects.bulk_create(
+            #     lumisection_histos1D, ignore_conflicts=True)
+            # logger.info(
+            #     "50 lumisections 1D histograms successfully added!")
+            # histogram_data_file.entries_processed += 50
+            # histogram_data_file.save()
+            # count = 0
+            # lumisection_histos1D = []
 
-        if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
-            LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
-                                                       ignore_conflicts=True)
-            histogram_data_file.entries_processed += len(lumisection_histos1D)
-            histogram_data_file.save()
+        # if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
+        #     LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
+        #                                                ignore_conflicts=True)
+        #     histogram_data_file.entries_processed += len(lumisection_histos1D)
+        #     histogram_data_file.save()
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["lumisection", "title"],
-                name="unique run / ls / 1d histogram combination",
-            )
-        ]
+    # TODO
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(
+    #             fields=["lumisection", "HistogramBase.title"],
+    #             name="unique run / ls / 1d histogram combination",
+    #         )
+    #     ]
 
 
 def get_last_chunk(histogram_data_file, chunk_size):
@@ -185,29 +188,14 @@ class LumisectionHistogram2D(HistogramBase, LumisectionHistogramBase):
     """
     Model containing 2D Lumisection Histogram information
     """
-
-    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
-
-    date = models.DateTimeField(auto_now_add=True)
-
-    title = models.CharField(max_length=100)
     data = ArrayField(models.FloatField(), blank=True)
     # ArrayField( ArrayField( models.IntegerField(blank=True), size=XX, ), size=XX,)
-    entries = models.IntegerField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
     x_bin = models.IntegerField(blank=True, null=True)
     y_max = models.FloatField(blank=True, null=True)
     y_min = models.FloatField(blank=True, null=True)
     y_bin = models.IntegerField(blank=True, null=True)
-    source_data_file = models.ForeignKey(
-        HistogramDataFile,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        help_text=
-        "Source data file that the specific Histogram was read from, if any",
-    )
 
     @staticmethod
     def from_csv(file_path, data_era: str = "", resume: bool = True):
@@ -268,11 +256,12 @@ class LumisectionHistogram2D(HistogramBase, LumisectionHistogramBase):
         for df in reader:
             if resume and current_chunk < last_chunk:
                 logger.debug(f"Skipping chunk {current_chunk}")
+                current_chunk += 1
                 continue
             else:
                 logger.debug(f"Reading chunk {current_chunk}")
-            lumisection_histos2D = []
 
+            # For each line in chunk
             for index, row in df.iterrows():
                 run_number = row["fromrun"]
                 lumi_number = row["fromlumi"]
@@ -293,30 +282,37 @@ class LumisectionHistogram2D(HistogramBase, LumisectionHistogramBase):
                     entries=entries,
                     data=data,
                     source_data_file=histogram_data_file)
-                lumisection_histos2D.append(lumisection_histo2D)
 
-            LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
-                                                       ignore_conflicts=True)
+                lumisection_histo2D.save()
+                num_lines_read += 1
+                histogram_data_file.entries_processed += 1
+                histogram_data_file.save()
+
+            # Does not work with multi-table inheritance
+            # LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
+            # ignore_conflicts=True)
 
             logger.info(
-                f"{len(lumisection_histos2D)} x "
+                f"{num_lines_read} x "
                 f"2D lumisection histos successfully added from chunk {current_chunk}!"
             )
-            num_lines_read += len(lumisection_histos2D)
+            # num_lines_read += len(lumisection_histos2D)
             current_chunk += 1
+            num_lines_read = 0  # Reset num lines read from chunk
             # Record progress in DB
             # Not safe to assume progress by chunks read,
             # the last chunk may have less lines than expected
-            histogram_data_file.entries_processed = num_lines_read
-            histogram_data_file.save()  # Save entries and move to next chunk
+            # histogram_data_file.entries_processed = num_lines_read
+            # histogram_data_file.save()  # Save entries and move to next chunk
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["lumisection", "title"],
-                name="unique run / ls / 2d histogram combination",
-            )
-        ]
+    # TODO
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(
+    #             fields=["lumisection", "title"],
+    #             name="unique run / ls / 2d histogram combination",
+    #         )
+    #     ]

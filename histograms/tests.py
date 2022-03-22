@@ -25,9 +25,8 @@ class CSVHistogram1DParsingTestCase(TestCase):
             os.path.dirname(os.path.abspath(__file__)), "test_files", "1D",
             "per_lumi")
         self.test_files = [
-            os.path.join(self.test_files_directory, f) for f in os.listdir(
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "test_files", "per_lumi"))
+            os.path.join(self.test_files_directory, f)
+            for f in os.listdir(self.test_files_directory)
             if os.path.isfile(os.path.join(self.test_files_directory, f))
         ]
 
@@ -58,12 +57,11 @@ class CSVHistogram2DCompleteParsingTestCase(TestCase):
     def setUp(self):
         # List all files in the test_files/per_lumi directory
         self.test_files_directory = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "test_files",
+            os.path.dirname(os.path.abspath(__file__)), "test_files", "2D",
             "per_lumi")
         files = [
-            os.path.join(self.test_files_directory, f) for f in os.listdir(
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "test_files", "2D", "per_lumi"))
+            os.path.join(self.test_files_directory, f)
+            for f in os.listdir(self.test_files_directory)
             if os.path.isfile(os.path.join(self.test_files_directory, f))
         ]
 
