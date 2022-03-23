@@ -1,0 +1,188 @@
+{% load widget_tweaks %}
+<div class="container">
+    <div class="card border-light shadow p-3 bg-white rounded mb-4" style="margin: 0 auto 10px; width: 800px;">
+        <form id="ls_histos-filter-form" action="" method="get" class="form my-1">
+            
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-run-numbers">Run</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-ls-numbers">Lumisection</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-stats">Statistics</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-datasets">Title</a></li>
+            </ul>
+            <div class="tab-content">
+
+                <div id="menu-run-numbers" class="tab-pane fade in active show">
+                    <div class="form from-inline">
+
+                        <div class="row top-buffer">
+                            <div class="col-sm-12 text-right">
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-run_number">
+                                <label class="form-check-label no-bold-label" for="id-ignore-run_number">Ignore other filters</label>
+                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+        text-decoration: none;"></a>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6>Run number:</h6>
+                            </div>
+                        </div> 
+                        <div class="row top-buffer">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-5">
+                                <strong>from</strong>:
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>to</strong>:
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-5">
+                                {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control" %}
+                            </div>
+                            <div class="col-sm-5">
+                                {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control" %}
+                            </div>
+                        </div>
+        
+                        <div class="row top-buffer d-flex justify-content-center">
+                            <div class="col-sm-10">
+                                <strong>Comma-separated list</strong>:
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-10">
+                                {% render_field filter.form.lumisection__run__run_number__in|add_class:"form-control" %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="menu-ls-numbers" class="tab-pane fade">
+                    <div class="form from-inline">
+
+                        <div class="row top-buffer">
+                            <div class="col-sm-12 text-right">
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-ls_number">
+                                <label class="form-check-label no-bold-label" for="id-ignore-ls_number">Ignore other filters</label>
+                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+        text-decoration: none;"></a>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6>Lumisection number:</h6>
+                            </div>
+                        </div> 
+                        <div class="row top-buffer">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-5">
+                                <strong>from</strong>:
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>to</strong>:
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-5">
+                                {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control" %}
+                            </div>
+                            <div class="col-sm-5">
+                                {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control" %}
+                            </div>
+                        </div>
+        
+                        <div class="row top-buffer d-flex justify-content-center">
+                            <div class="col-sm-10">
+                                <strong>Comma-separated list</strong>:
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-10">
+                                {% render_field filter.form.lumisection__ls_number__in|add_class:"form-control" %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="menu-stats" class="tab-pane fade">
+                    <div class="form from-inline">
+
+                        <div class="row top-buffer">
+                            <div class="col-sm-12 text-right">
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-stats">
+                                <label class="form-check-label no-bold-label" for="id-ignore-stats">Ignore other filters</label>
+                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+        text-decoration: none;"></a>
+                            </div>
+                        </div>
+                        
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-2">
+                                <h6>Entries:</h6>
+                            </div>
+                            <div class="col-sm-2">
+                                <strong>>=</strong>:
+                            </div>
+                            <div class="col-sm-3">
+                                {% render_field filter.form.entries__gte|add_class:"form-control" %}
+                            </div>
+                            <div class="col-sm-2">
+                                <strong><=</strong>:
+                            </div>
+                            <div class="col-sm-3">
+                                {% render_field filter.form.entries__lte|add_class:"form-control" %}
+                            </div>
+                        </div> 
+
+                    </div>
+                </div>
+
+                <div id="menu-datasets" class="tab-pane fade">
+                    <div class="form from-inline">
+
+                        <div class="row top-buffer">
+                            <div class="col-sm-12 text-right">
+                                <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-dataset">
+                                <label class="form-check-label no-bold-label" for="id-ignore-dataset">Ignore other filters</label>
+                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific date range)" style="color:black;
+                        text-decoration: none;"></a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6>Title:</h6>
+                            </div>
+                            <div class="col-sm-6" style="margin-top: 10px">
+                                <a href="#" data-toggle="tooltip" title="use CTRL + Click to select and deselect multiple titles" style="color:black;
+        text-decoration: none;">Help</a>
+                                {% render_field filter.form.title|add_class:"form-control" %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            
+            </div>
+            <div class="row">
+                <hr style="width: 95%; color: lightgray; height: 1px; background-color:lightgray;" />
+            </div>
+            <div class="row">
+                <div class="col col-sm-6 text-left">
+                    <a href="{% url 'lumisection_histos2D:list' %}" class="btn btn-danger" id="clear-filters">
+                        <span class="glyphicon glyphicon-remove"></span> Reset
+                    </a>
+                </div>
+                <div class="col col-sm-6 text-right">
+                    <button type="submit" id="id_btn_filter" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-filter"></span> Filter
+                    </button>
+                </div>
+            </div>
+
+        </form>
