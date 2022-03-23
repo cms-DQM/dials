@@ -55,20 +55,16 @@ class RunHistogram(HistogramBase):
     #     ]
 
 
-class LumisectionHistogramBase(models.Model):
+class LumisectionHistogramBase(HistogramBase):
     """
     Abstract Base model that both 1D and 2D lumisection histograms inherit from.
     
     """
     lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
-
     entries = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        abstract = True
 
-
-class LumisectionHistogram1D(HistogramBase, LumisectionHistogramBase):
+class LumisectionHistogram1D(LumisectionHistogramBase):
 
     data = ArrayField(models.FloatField(), blank=True)
     x_min = models.FloatField(blank=True, null=True)
@@ -184,7 +180,7 @@ def get_last_chunk(histogram_data_file, chunk_size):
     return int(histogram_data_file.entries_processed / chunk_size)
 
 
-class LumisectionHistogram2D(HistogramBase, LumisectionHistogramBase):
+class LumisectionHistogram2D(LumisectionHistogramBase):
     """
     Model containing 2D Lumisection Histogram information
     """

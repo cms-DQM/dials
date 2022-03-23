@@ -9,13 +9,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('lumisection_certification', '0001_initial'),
+        ('histograms', '0001_initial'),
         ('lumisections', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lumisectioncertification',
+            model_name='lumisectionhistogrambase',
             name='lumisection',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lumisections.lumisection'),
         ),
