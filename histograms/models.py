@@ -253,8 +253,10 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                              chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
         logger.info(f"File has {file_line_count} lines")
         for df in reader:
-            if resume and current_chunk < last_chunk:
+            if resume and current_chunk <= last_chunk:
                 logger.debug(f"Skipping chunk {current_chunk}")
+                current_chunk += 1
+                num_lines_read += LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE
                 continue
             else:
                 logger.debug(f"Reading chunk {current_chunk}")
