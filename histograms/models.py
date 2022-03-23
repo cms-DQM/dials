@@ -32,6 +32,9 @@ class HistogramBase(models.Model):
         "Source data file that the specific Histogram was read from, if any",
     )
 
+    class Meta:
+        abstract = True
+
 
 class RunHistogram(HistogramBase):
     run = models.ForeignKey(Run, on_delete=models.CASCADE)
@@ -62,6 +65,9 @@ class LumisectionHistogramBase(HistogramBase):
     """
     lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
     entries = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
 
 
 class LumisectionHistogram1D(LumisectionHistogramBase):
@@ -135,29 +141,26 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 data=data,
                 source_data_file=histogram_data_file)
 
-            # lumisection_histos1D.append(lumisection_histo1D)
-            lumisection_histo1D.save()
+            lumisection_histos1D.append(lumisection_histo1D)
             count += 1
-            histogram_data_file.entries_processed += 1
-            histogram_data_file.save()
 
             # Bulk create every 50 entries
-            # if count == 50:
+            if count == 50:
 
-            # LumisectionHistogram1D.objects.bulk_create(
-            #     lumisection_histos1D, ignore_conflicts=True)
-            # logger.info(
-            #     "50 lumisections 1D histograms successfully added!")
-            # histogram_data_file.entries_processed += 50
-            # histogram_data_file.save()
-            # count = 0
-            # lumisection_histos1D = []
+                LumisectionHistogram1D.objects.bulk_create(
+                    lumisection_histos1D, ignore_conflicts=True)
+                logger.info(
+                    "50 lumisections 1D histograms successfully added!")
+                histogram_data_file.entries_processed += 50
+                histogram_data_file.save()
+                count = 0
+                lumisection_histos1D = []
 
-        # if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
-        #     LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
-        #                                                ignore_conflicts=True)
-        #     histogram_data_file.entries_processed += len(lumisection_histos1D)
-        #     histogram_data_file.save()
+        if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
+            LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
+                                                       ignore_conflicts=True)
+            histogram_data_file.entries_processed += len(lumisection_histos1D)
+            histogram_data_file.save()
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
@@ -201,7 +204,8 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         Parameters:
         - file_path: A path to a .csv file containing a 2D Lumisection Histogram
         - data_era: The era that the data refers to (e.g. 2018A)
-        - resume: Specify whether 
+        - resume: Specify whether the function will continue parsing from the last
+        parsed chunk
         """
         logger.info(
             f"Importing 2D Lumisection Histograms from '{file_path}', "
@@ -252,12 +256,11 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         for df in reader:
             if resume and current_chunk < last_chunk:
                 logger.debug(f"Skipping chunk {current_chunk}")
-                current_chunk += 1
                 continue
             else:
                 logger.debug(f"Reading chunk {current_chunk}")
+            lumisection_histos2D = []
 
-            # For each line in chunk
             for index, row in df.iterrows():
                 run_number = row["fromrun"]
                 lumi_number = row["fromlumi"]
@@ -278,28 +281,22 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     entries=entries,
                     data=data,
                     source_data_file=histogram_data_file)
+                lumisection_histos2D.append(lumisection_histo2D)
 
-                lumisection_histo2D.save()
-                num_lines_read += 1
-                histogram_data_file.entries_processed += 1
-                histogram_data_file.save()
-
-            # Does not work with multi-table inheritance
-            # LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
-            # ignore_conflicts=True)
+            LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
+                                                       ignore_conflicts=True)
 
             logger.info(
-                f"{num_lines_read} x "
+                f"{len(lumisection_histos2D)} x "
                 f"2D lumisection histos successfully added from chunk {current_chunk}!"
             )
-            # num_lines_read += len(lumisection_histos2D)
+            num_lines_read += len(lumisection_histos2D)
             current_chunk += 1
-            num_lines_read = 0  # Reset num lines read from chunk
             # Record progress in DB
             # Not safe to assume progress by chunks read,
             # the last chunk may have less lines than expected
-            # histogram_data_file.entries_processed = num_lines_read
-            # histogram_data_file.save()  # Save entries and move to next chunk
+            histogram_data_file.entries_processed = num_lines_read
+            histogram_data_file.save()  # Save entries and move to next chunk
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
