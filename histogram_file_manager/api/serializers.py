@@ -4,8 +4,8 @@ from histogram_file_manager.forms import HistogramDataFileForm
 
 
 class HistogramDataFileSerializer(serializers.ModelSerializer):
-    percentage_processsed = serializers.FloatField(
-        source="percentage_processed")
+    percentage_processed = serializers.DecimalField(max_digits=10,
+                                                    decimal_places=1)
 
     class Meta:
         model = HistogramDataFile
