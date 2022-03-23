@@ -197,7 +197,10 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     y_bin = models.IntegerField(blank=True, null=True)
 
     @staticmethod
-    def from_csv(file_path, data_era: str = "", resume: bool = True):
+    def from_csv(file_path,
+                 data_era: str = "",
+                 resume: bool = True,
+                 read_chunk_num_max: int = -1):
         """
         Import 2D Lumisection Histograms from a csv file
         
@@ -253,7 +256,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                              chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
         logger.info(f"File has {file_line_count} lines")
         for df in reader:
-            if resume and current_chunk <= last_chunk:
+            if resume and current_chunk < last_chunk:
                 logger.debug(f"Skipping chunk {current_chunk}")
                 current_chunk += 1
                 num_lines_read += LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE
@@ -268,9 +271,9 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 title = row["hname"]
                 entries = row["entries"]
                 data = json.loads(row["histo"])
-                logger.debug(
-                    f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}"
-                )
+                # logger.debug(
+                #     f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}"
+                # )
 
                 run, _ = Run.objects.get_or_create(run_number=run_number)
                 lumisection, _ = Lumisection.objects.get_or_create(
@@ -298,6 +301,13 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
             # the last chunk may have less lines than expected
             histogram_data_file.entries_processed = num_lines_read
             histogram_data_file.save()  # Save entries and move to next chunk
+
+            # User can decide up to which chunk to read
+            if read_chunk_num_max >= current_chunk:
+                logger.info(
+                    f"Read until requested chunk {read_chunk_num_max}, stopping"
+                )
+                break
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
