@@ -50,12 +50,12 @@ class RunHistogram(HistogramBase):
         return f"run: {self.run.run_number} / dataset: {self.primary_dataset} / histo: {self.title}"
 
     # TODO
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(
-    #             fields=['run', 'primary_dataset', 'title'],
-    #             name='unique run/dataset/histogram combination')
-    #     ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['run', 'primary_dataset', 'title'],
+                name='unique run/dataset/histogram combination')
+        ]
 
 
 class LumisectionHistogramBase(HistogramBase):
@@ -166,13 +166,13 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
     # TODO
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(
-    #             fields=["lumisection", "HistogramBase.title"],
-    #             name="unique run / ls / 1d histogram combination",
-    #         )
-    #     ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["lumisection", "title"],
+                name="unique run / ls / 1d histogram combination",
+            )
+        ]
 
 
 def get_last_chunk(histogram_data_file, chunk_size):
@@ -301,11 +301,10 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
-    # TODO
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(
-    #             fields=["lumisection", "title"],
-    #             name="unique run / ls / 2d histogram combination",
-    #         )
-    #     ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["lumisection", "title"],
+                name="unique run / ls / 2d histogram combination",
+            )
+        ]
