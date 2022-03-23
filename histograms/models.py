@@ -88,10 +88,10 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
         # Create an entry for a new data file in the database
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
-            filepath=file_path,
-            data_dimensionality=HistogramDataFile.DIMENSIONALITY_1D,
-            data_era=data_era,
-            granularity=HistogramDataFile.GRANULARITY_LUMISECTION)
+            filepath=file_path)
+        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
+        histogram_data_file.data_era = data_era
+        histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
         file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV

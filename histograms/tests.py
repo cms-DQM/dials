@@ -20,6 +20,7 @@ class CSVHistogram1DParsingTestCase(TestCase):
     num_total_lines = 0  # Total lines across all test files
 
     def setUp(self):
+        self.num_total_lines = 0  # Reset, this method will be called again
         # List all files in the test_files/per_lumi directory
         self.test_files_directory = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "test_files", "1D",
@@ -45,6 +46,16 @@ class CSVHistogram1DParsingTestCase(TestCase):
         for hdf in HistogramDataFile.objects.all():
             assert hdf.percentage_processed == 100.0
 
+    def test_duplicate_entries(self):
+        """
+        Make sure that re-reading the same CSV will not lead to duplicate entries
+        """
+        # Try to re-read 1D csv files
+        self.setUp()
+
+        # Should not have changed
+        assert LumisectionHistogram1D.objects.count() == self.num_total_lines
+
 
 class CSVHistogram2DCompleteParsingTestCase(TestCase):
     """
@@ -55,6 +66,7 @@ class CSVHistogram2DCompleteParsingTestCase(TestCase):
     num_total_lines = 0  # Total lines across all test files
 
     def setUp(self):
+        self.num_total_lines = 0
         # List all files in the test_files/per_lumi directory
         self.test_files_directory = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "test_files", "2D",
@@ -78,6 +90,16 @@ class CSVHistogram2DCompleteParsingTestCase(TestCase):
         for hdf in HistogramDataFile.objects.all():
             # logger.debug(f"{hdf.filepath}\t{hdf.percentage_processed}")
             assert hdf.percentage_processed == 100.0
+
+    def test_duplicate_entries(self):
+        """
+        Make sure that re-reading the same CSV will not lead to duplicate entries
+        """
+        # Try to re-read 2D csv files
+        self.setUp()
+
+        # Should not have changed
+        assert LumisectionHistogram2D.objects.count() == self.num_total_lines
 
 
 # TODO: Add test which partially stores a Histogram file, then tries to resume
