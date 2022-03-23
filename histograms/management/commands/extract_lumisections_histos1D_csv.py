@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from lumisection_histos1D.models import LumisectionHisto1D
+from histograms.models import LumisectionHistogram1D
 
 
 class Command(BaseCommand):
@@ -11,4 +11,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        LumisectionHisto1D.from_csv(file_path)
+        LumisectionHistogram1D.from_csv(file_path)

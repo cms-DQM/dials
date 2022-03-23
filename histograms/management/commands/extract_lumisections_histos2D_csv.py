@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from lumisection_histos2D.models import LumisectionHisto2D
+from histograms.models import LumisectionHistogram2D
 
 
 class Command(BaseCommand):
@@ -10,4 +10,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        LumisectionHisto2D.from_csv(file_path)
+        LumisectionHistogram2D.from_csv(file_path)
