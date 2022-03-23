@@ -53,12 +53,13 @@ INSTALLED_APPS = [
     "listdatasets.apps.ListdatasetsConfig",
     "dataset_tables.apps.DatasetTablesConfig",
     "runs.apps.RunsConfig",
-    "run_histos.apps.RunHistosConfig",
+    # "run_histos.apps.RunHistosConfig",
     "run_certification.apps.RunCertificationConfig",
     "lumisections.apps.LumisectionsConfig",
-    "lumisection_histos1D.apps.LumisectionHistos1DConfig",
-    "lumisection_histos2D.apps.LumisectionHistos2DConfig",
+    # "lumisection_histos1D.apps.LumisectionHistos1DConfig",
+    # "lumisection_histos2D.apps.LumisectionHistos2DConfig",
     "lumisection_certification.apps.LumisectionCertificationConfig",
+    "histograms",
     "histogram_file_manager",
 ]
 
@@ -168,10 +169,11 @@ LOGGING = {
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "home/static"),
-                    os.path.join(BASE_DIR, "run_histos/static"),
-                    os.path.join(BASE_DIR, "lumisection_histos1D/static"),
-                    os.path.join(BASE_DIR, "common/static"))
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "home/static"),
+    # os.path.join(BASE_DIR, "run_histos/static"),
+    # os.path.join(BASE_DIR, "lumisection_histos1D/static"),
+    os.path.join(BASE_DIR, "common/static"))
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
@@ -198,7 +200,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.IsAuthenticated', # will require authentication
         'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
     ],
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS':
+    ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Importing settings for subsystem

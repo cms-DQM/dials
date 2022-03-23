@@ -20,17 +20,18 @@ DIR_PATH_EOS_CMSML4DC
 
 ## Behavior
 ### Histogram File Manager
-- Currently, the choices for available files provided are only refreshed once, on server start, meaning that to refresh the list of available DQM files, one has to restart the app
+- Currently, the choices for available files provided are only refreshed every time the `discover_dqm_files` management command is run
+
+**Known limitation**:
+- The `HistogramDataFile` entries can be deleted without affecting the Histograms loaded from the deleted files. However, re-reading the file will **NOT** update the existing Histogram entries to point to the newly read file
 
 ## Management Commands
 ### `histogram_file_manager`
 - `discover_dqm_files`: Will scan `DIR_PATH_EOS_CMSML4DC` for files and check if a `HistogramDataFile` has been stored in the DB for each file.
 
-### `lumisection_histos1D`
-- `exctract_lumisections_histos1D_csv`: Given a CSV containing 1D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHisto1D` table.
-
-### `lumisection_histos2D`
-- `exctract_lumisections_histos2D_csv`: Given a CSV containing 2D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHisto2D` table.
+### `histograms`
+- `exctract_lumisections_histos1D_csv`: Given a CSV containing 1D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHistogram1D` table.
+- `exctract_lumisections_histos2D_csv`: Given a CSV containing 2D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHistogram2D` table.
 
 ## Development
 ### Database
@@ -38,3 +39,4 @@ For storing histograms, the `ArrayField` is used, so a PostgreSQL database is
 recommended for running the project locally. 
 
 Installing `pgadmin4` is also recommended for easier interfacing with the DB.
+
