@@ -33,6 +33,10 @@ DIR_PATH_EOS_CMSML4DC
 - `exctract_lumisections_histos1D_csv`: Given a CSV containing 1D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHistogram1D` table.
 - `exctract_lumisections_histos2D_csv`: Given a CSV containing 2D Lumisection Histograms, this command will parse the file's contents and create appropriate entries in the `LumisectionHistogram2D` table.
 
+## Authentication
+### External applications
+To query the API from a third-party application, you will need to generate a token (from the admin dashboard)
+
 ## Development
 ### Database
 For storing histograms, the `ArrayField` is used, so a PostgreSQL database is 
@@ -40,3 +44,10 @@ recommended for running the project locally.
 
 Installing `pgadmin4` is also recommended for easier interfacing with the DB.
 
+### API access via JS
+Accessing the API via a rendered HTML page requires session authentication of the DRF. This is done by:
+1. Requiring the user to login to the page that contains the JS that does the requests
+2. Configuring DRF to accept `SessionAuthentication`
+3. Adding the `X-CSRF-TOKEN` header to the API request and setting its value to the CSRF token which you can get by accessing the cookies stored in the current page. https://docs.djangoproject.com/en/4.0/ref/csrf/#ajax
+
+https://www.django-rest-framework.org/topics/ajax-csrf-cors/
