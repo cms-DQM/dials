@@ -4,7 +4,9 @@ from data_taking_objects.models import Run, Lumisection
 
 # Create your models here.
 class LumisectionCertification(models.Model):
-    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
+    lumisection = models.ForeignKey(Lumisection,
+                                    on_delete=models.CASCADE,
+                                    related_name="certifications")
     date = models.DateTimeField(auto_now_add=True)
 
     # run registry
