@@ -30,8 +30,8 @@ class HistogramDataFile(models.Model):
                                     match=".*\.csv",
                                     allow_folders=False)
 
-    filesize = models.PositiveIntegerField(
-        default=0, help_text="The data file's size (bytes)")
+    filesize = models.FloatField(default=0,
+                                 help_text="The data file's size (Mbytes)")
 
     data_dimensionality = models.PositiveIntegerField(
         default=DIMENSIONALITY_1D,
@@ -73,11 +73,11 @@ class HistogramDataFile(models.Model):
         Override save method to get file attributes on save
         """
         if self.filesize <= 0:
-            self.filesize = getsize(self.filepath)
+            self.filesize = getsize(self.filepath) / (1024 * 1024)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.filepath} ({self.filesize / 1024 / 1024:.2f} MB)"
+        return f"{self.filepath} ({self.filesize:.2f} MB)"
 
     class Meta:
         constraints = [
