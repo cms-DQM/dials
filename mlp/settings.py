@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     "django_tables2", "django_extensions", "widget_tweaks", "django_filters",
     "rest_framework", "home.apps.HomeConfig", "tables.apps.TablesConfig",
     "listdatasets.apps.ListdatasetsConfig",
-    "dataset_tables.apps.DatasetTablesConfig", "data_taking_objects",
+    "dataset_tables.apps.DatasetTablesConfig",
     "run_certification.apps.RunCertificationConfig",
     "lumisection_certification.apps.LumisectionCertificationConfig",
-    "histograms", "histogram_file_manager", "challenge"
+    "histograms", "histogram_file_manager", "challenge", "data_taking_objects",
+    "data_taking_certification"
 ]
 
 MIDDLEWARE = [
