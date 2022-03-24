@@ -22,9 +22,9 @@ const app = Vue.createApp({
         // via the API
         _update_data() {
             this._waiting_for_data = true;
-            // const csrftoken = getCookie('csrftoken'); // Will be needed for authentication
+
             axios
-                .get('/api/histogram_data_files/')
+                .get('/api/histogram_data_files/', get_axios_config())
                 .then((response) => {
                     // console.warn(response);
                     this.files_information = response.data;

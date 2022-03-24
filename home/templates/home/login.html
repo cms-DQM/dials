@@ -1,0 +1,12 @@
+{% extends 'appbase.html' %}
+{% block content %}
+<div class="container-fluid">
+	<form method="POST">{% csrf_token %}
+		{{ form.as_p }} 
+		<input class ="btn btn-primary" type="submit" name="sumbit">
+	</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
