@@ -1,6 +1,5 @@
 from django.db import models
-from runs.models import Run
-from histograms.models import RunHistogram
+from data_taking_objects.models import Run, Lumisection
 
 
 class RunCertification(models.Model):

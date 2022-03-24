@@ -4,8 +4,7 @@ import logging
 import pandas as pd  # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from runs.models import Run
-from lumisections.models import Lumisection
+from data_taking_objects.models import Run, Lumisection
 from histogram_file_manager.models import HistogramDataFile
 
 logger = logging.getLogger(__name__)

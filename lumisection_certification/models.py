@@ -1,6 +1,5 @@
 from django.db import models
-from runs.models import Run
-from lumisections.models import Lumisection
+from data_taking_objects.models import Run, Lumisection
 
 
 # Create your models here.

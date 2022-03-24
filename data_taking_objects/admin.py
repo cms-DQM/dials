@@ -1,3 +1,5 @@
 from django.contrib import admin
+from data_taking_objects.models import Run, Lumisection
 
-# Register your models here.
+admin.site.register(Run)
+admin.site.register(Lumisection)

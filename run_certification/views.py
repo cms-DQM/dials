@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from runs.models import Run
-from run_histos.models import RunHisto
+from data_taking_objects.models import Run
+from histograms.models import RunHistogram
 
 import pandas as pd
 import numpy as np

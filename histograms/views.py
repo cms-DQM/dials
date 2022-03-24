@@ -3,7 +3,7 @@ import altair as alt
 from django.shortcuts import render
 from django.http import JsonResponse
 from django_tables2 import RequestConfig
-from runs.models import Run
+from data_taking_objects.models import Run
 from histograms.utils import get_altair_chart
 from histograms.models import RunHistogram, LumisectionHistogram1D, LumisectionHistogram2D
 from histograms.tables import RunHistogramTable, LumisectionHistogram1DTable, LumisectionHistogram2DTable
