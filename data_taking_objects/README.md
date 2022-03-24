@@ -1,8 +1,8 @@
-# Runs
+# Data Taking Objects
 
-The runs app is meant to encapsulate information relative to the runs. The main external source of information is the OMS website.
+This is meant to encapsulate information and functionality relative to the runs and lumisections. The main external source of information is the OMS website.
 
-## Model
+## Models
 
 ...
 

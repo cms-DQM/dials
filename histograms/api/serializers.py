@@ -1,4 +1,4 @@
-from lumisections.models import Lumisection
+from data_taking_objects.models import Lumisection
 from rest_framework import serializers
 from histograms.models import RunHistogram, LumisectionHistogram1D, LumisectionHistogram2D
 

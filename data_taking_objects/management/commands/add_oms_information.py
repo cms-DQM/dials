@@ -1,9 +1,7 @@
-from django.core.management.base import BaseCommand
-
-from runs.models import Run
-
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 import pandas as pd
+from django.core.management.base import BaseCommand
+from data_taking_objects.models import Run
 
 
 class Command(BaseCommand):
@@ -24,16 +22,15 @@ class Command(BaseCommand):
 
         return oms_dict
 
-
     def handle(self, *args, **options):
 
-        oms_dict = get_oms_info(run)
+        oms_dict = self.get_oms_info(run)
 
         Run.objects.get_or_create(
             run_number=run_number,
-            oms_fill = oms_dict['oms_fill'],
-            oms_lumisections = oms_dict['oms_lumisections'],
-            oms_initial_lumi = oms_dict['oms_initial_lumi'],
-            oms_end_lumi = oms_dict['oms_initial_lumi'],
+            oms_fill=oms_dict['oms_fill'],
+            oms_lumisections=oms_dict['oms_lumisections'],
+            oms_initial_lumi=oms_dict['oms_initial_lumi'],
+            oms_end_lumi=oms_dict['oms_initial_lumi'],
         )
         print(f'run {run_number} successfully added!')

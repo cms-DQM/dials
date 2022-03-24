@@ -1,14 +1,10 @@
-from django.shortcuts import render
-
-from rest_framework import viewsets
-from .serializers import RunSerializer
-
-from .models import Run
-
 import pandas as pd
+from django.shortcuts import render
+from rest_framework import viewsets
+from data_taking_objects.models import Run
+from data_taking_objects.api.serializers import RunSerializer
 
 
-# Create your views here.
 def runs_view(request):
 
     error_message = None
@@ -28,11 +24,7 @@ def runs_view(request):
         'error_message': error_message,
         'runs': df,
     }
-    return render(request, 'runs/main.html', context)
-
-
-def run_view(request):
-    return render(request, 'runs/run.html')
+    return render(request, 'data_taking_objects/main.html', context)
 
 
 # class based view (to be compared to function based view)

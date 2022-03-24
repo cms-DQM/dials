@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from runs.models import Run
-from lumisections.models import Lumisection
+from data_taking_objects.models import Run, Lumisection
 
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 import pandas as pd
@@ -16,12 +15,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         file_path = options["file_path"]
 
-        df   = pd.read_csv(file_path)
+        df = pd.read_csv(file_path)
 
         lumisections = []
 
         for index, row in df.iterrows():
-            run_number  = row["fromrun"]
+            run_number = row["fromrun"]
             lumi_number = row["fromlumi"]
             # print(run_number, lumi_number)
 
