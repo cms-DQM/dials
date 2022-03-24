@@ -1,3 +1,5 @@
 from django.contrib import admin
+from data_taking_certification.models import RunCertification, LumisectionCertification
 
-# Register your models here.
+admin.site.register(RunCertification)
+admin.site.register(LumisectionCertification)
