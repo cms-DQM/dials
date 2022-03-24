@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes", "django.contrib.sessions",
     "django.contrib.messages", "django.contrib.staticfiles", "bootstrap3",
     "django_tables2", "django_extensions", "widget_tweaks", "django_filters",
-    "rest_framework", "home.apps.HomeConfig", "tables.apps.TablesConfig",
-    "listdatasets.apps.ListdatasetsConfig",
+    "rest_framework", "rest_framework.authtoken", "home.apps.HomeConfig",
+    "tables.apps.TablesConfig", "listdatasets.apps.ListdatasetsConfig",
     "dataset_tables.apps.DatasetTablesConfig", "histograms",
     "histogram_file_manager", "challenge", "data_taking_objects",
     "data_taking_certification"
@@ -181,11 +181,13 @@ DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated', # will require authentication
-        'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
+        'rest_framework.permissions.IsAuthenticated',  # will require authentication
+        # 'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
     ],
     'DEFAULT_FILTER_BACKENDS':
-    ['django_filters.rest_framework.DjangoFilterBackend']
+    ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    ['rest_framework.authentication.TokenAuthentication']
 }
 
 # Importing settings for subsystem
