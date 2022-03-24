@@ -15,3 +15,11 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function get_axios_config() {
+    return {
+        headers: {
+            'X-CSRF-TOKEN': getCookie('csrftoken'),
+        },
+    };
+}

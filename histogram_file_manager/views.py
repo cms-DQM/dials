@@ -1,12 +1,14 @@
 import logging
 from django.shortcuts import render
-from .models import HistogramDataFile
-from .forms import HistogramDataFileForm
-from .tables import HistogramDataFileTable
+from django.contrib.auth.decorators import login_required
+from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.forms import HistogramDataFileForm
+from histogram_file_manager.tables import HistogramDataFileTable
 
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def histogram_file_manager(request):
     """
     View for histogram file manager. Lists all available datafiles and their
