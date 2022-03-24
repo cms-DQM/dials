@@ -20,7 +20,9 @@ class Run(models.Model):
 
 
 class Lumisection(models.Model):
-    run = models.ForeignKey(Run, on_delete=models.CASCADE)
+    run = models.ForeignKey(Run,
+                            on_delete=models.CASCADE,
+                            related_name="lumisections")
     ls_number = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
 
