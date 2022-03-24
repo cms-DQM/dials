@@ -30,6 +30,8 @@ urlpatterns = [
     path("", include("home.urls")),
     path("listdatasets/", include("listdatasets.urls")),
     path("data_taking_objects/", include("data_taking_objects.urls")),
+    path("data_taking_certification/",
+         include("data_taking_certification.urls")),
     path("histograms/", include("histograms.urls")),
     path('admin/', admin.site.urls),
     path('histogram_file_manager/', include('histogram_file_manager.urls')),
