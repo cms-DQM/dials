@@ -36,27 +36,16 @@ CSRF_TRUSTED_ORIGINS = ["https://ml4dqm-playground.web.cern.ch"]
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "bootstrap3",
-    "django_tables2",
-    "django_extensions",
-    "widget_tweaks",
-    "django_filters",
-    "rest_framework",
-    "home.apps.HomeConfig",
-    "tables.apps.TablesConfig",
+    "django.contrib.admin", "django.contrib.auth",
+    "django.contrib.contenttypes", "django.contrib.sessions",
+    "django.contrib.messages", "django.contrib.staticfiles", "bootstrap3",
+    "django_tables2", "django_extensions", "widget_tweaks", "django_filters",
+    "rest_framework", "home.apps.HomeConfig", "tables.apps.TablesConfig",
     "listdatasets.apps.ListdatasetsConfig",
-    "dataset_tables.apps.DatasetTablesConfig",
-    "data_taking_objects",
+    "dataset_tables.apps.DatasetTablesConfig", "data_taking_objects",
     "run_certification.apps.RunCertificationConfig",
     "lumisection_certification.apps.LumisectionCertificationConfig",
-    "histograms",
-    "histogram_file_manager",
+    "histograms", "histogram_file_manager", "challenge"
 ]
 
 MIDDLEWARE = [
