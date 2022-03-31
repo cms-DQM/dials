@@ -62,12 +62,15 @@ app.component('file-actions', {
             this.$emit('clicked-close');
         },
         send_parse_file_command(file_information) {
+            data = {};
             console.debug(
                 `Sending command for parsing file ${file_information.id}`,
             );
             axios
                 .post(
                     `/api/histogram_data_files/${file_information.id}/start_parsing/`,
+                    data,
+                    get_axios_config(),
                 )
                 .then((response) => {
                     console.log(response);
