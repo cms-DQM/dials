@@ -14,26 +14,34 @@ app.component('file-actions', {
         </button>
 	  </div>
 	  <div class="modal-body">
-		<p>Modal body text goes here.</p>
-		{{ Object.keys(file_information) }}
-      </div>
-      <div class="modal-footer">
-		<button
-		  type="button"
+		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
+		 <!-- {{ Object.keys(file_information) }} -->
+		<form @submit.prevent="send_parse_file_command">
+		  <div v-for="(choices, field_name) in field_choices">
+			<label :for="field_name">{{ field_name }}</label>
+			<select :id="field_name" v-model="$data[field_name]">
+			  <option v-for="(choice, choice_label) in choices">
+				{{ choice_label }}
+			  </option>
+			</select>
+		  </div>
+		<input
+		  type="submit"
 		  class="btn btn-primary"
 		  :class="{disabled: file_information.percentage_processed === 100.0 }"
-		  v-on:click="send_parse_file_command(file_information)"
-		  >
-		  Parse
-		</button>
+		  value="Parse">
+		</form>
+      </div>
+      <div class="modal-footer">
       </div>
     </div>
   </div>
 </div>
-`,
+		`,
     data() {
         return {
             // is_visible: false,
+            errors: [],
         };
     },
     props: {
@@ -53,24 +61,56 @@ app.component('file-actions', {
             type: Object,
             required: true,
         },
+        field_choices: {
+            type: Object,
+            required: true,
+        },
+    },
+    mounted() {
+        for (var field in this.field_choices) {
+            this.field = null;
+        }
     },
     methods: {
         clicked_close() {
             console.debug('Modal was closed');
             this.$emit('clicked-close');
         },
-        send_parse_file_command(file_information) {
+        send_parse_file_command() {
+            // POST data, dynamically populated by Django form
+            data = {};
+            for (var field in this.field_choices) {
+                console.warn(field, this[field]);
+                data[field] = this[field];
+            }
+            console.warn(data);
             console.debug(
-                `Sending command for parsing file ${file_information.id}`,
+                `Sending command for parsing file ${this.file_information.id}`,
             );
             axios
                 .post(
-                    `/api/histogram_data_files/${file_information.id}/start_parsing/`,
+                    `/api/histogram_data_files/${this.file_information.id}/start_parsing/`,
+                    data,
+                    get_axios_config(),
                 )
                 .then((response) => {
                     console.log(response);
                 })
-                .catch((error) => console.error(error));
+                .catch((error) => {
+                    console.error(error);
+                    this.errors.push(`${error}: ${error.response.data}`);
+                });
+        },
+        on_submit() {
+            let form = {};
+        },
+        dismiss_error(error) {
+            console.debug(error);
+            for (var i = 0; i < this.errors.length; i++) {
+                if (this.errors[i] === error) {
+                    this.errors.splice(i, 1);
+                }
+            }
         },
     },
 });

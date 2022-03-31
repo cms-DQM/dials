@@ -19,7 +19,7 @@ function getCookie(name) {
 function get_axios_config() {
     return {
         headers: {
-            'X-CSRF-TOKEN': getCookie('csrftoken'),
+            'X-CSRFToken': getCookie('csrftoken'),
         },
     };
 }
