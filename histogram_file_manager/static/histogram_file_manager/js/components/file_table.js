@@ -2,9 +2,9 @@ app.component('file-table', {
     template:
         /*html*/
         `
-<div>
- <table class="table">
-   <tr>
+<div class="table-responsive">
+ <table class="table table-sm table-hover">
+   <tr class="thead-dark">
      <th scope="col"
 	   v-for="header in headers"
 	   :key="header">

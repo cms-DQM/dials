@@ -17,9 +17,9 @@ app.component('file-actions', {
 		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
 		 <!-- {{ Object.keys(file_information) }} -->
 		<form @submit.prevent="send_parse_file_command">
-		  <div v-for="(choices, field_name) in field_choices">
+		  <div class="form-group" v-for="(choices, field_name) in field_choices">
 			<label :for="field_name">{{ field_name }}</label>
-			<select :id="field_name" v-model="$data[field_name]">
+			<select class="form-control" :id="field_name" v-model="$data[field_name]">
 			  <option v-for="(choice, choice_label) in choices">
 				{{ choice_label }}
 			  </option>
@@ -40,15 +40,10 @@ app.component('file-actions', {
 		`,
     data() {
         return {
-            // is_visible: false,
             errors: [],
         };
     },
     props: {
-        // modal_id: {
-        //     type: String,
-        //     required: true,
-        // },
         file_id: {
             type: Number,
             required: true,
@@ -76,8 +71,11 @@ app.component('file-actions', {
             console.debug('Modal was closed');
             this.$emit('clicked-close');
         },
+        // Callback for form submission (file parsing)
         send_parse_file_command() {
-            // POST data, dynamically populated by Django form
+            // Create a data variable for POST. Fields are dynamically populated by
+            // Django form,
+            // passed
             data = {};
             for (var field in this.field_choices) {
                 console.warn(field, this[field]);
@@ -101,9 +99,7 @@ app.component('file-actions', {
                     this.errors.push(`${error}: ${error.response.data}`);
                 });
         },
-        on_submit() {
-            let form = {};
-        },
+        // Callback for error dismissal from errors component
         dismiss_error(error) {
             console.debug(error);
             for (var i = 0; i < this.errors.length; i++) {
