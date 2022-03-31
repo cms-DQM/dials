@@ -63,7 +63,8 @@ Histogram File Manager
 		<file-actions
 			:file_information="file_information"
 			:is_visible="file_actions_is_visible"
-			:file_id="Number(file_information.id)" 
+			:file_id="Number(file_information.id)"
+			:field_choices="{{field_choices}}"
 			@clicked-close="hide_file_actions_modal"
 		>
 			
@@ -71,7 +72,6 @@ Histogram File Manager
 	</div>
 
 	</ul>	
-	
 </div>
 {% endblock %}
 

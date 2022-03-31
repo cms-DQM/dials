@@ -13,6 +13,8 @@ class HistogramDataFile(models.Model):
     - Big (in the order of GB) files may be partially processed, so their current
     percentage_processed is stored for display purposes.
     """
+    FILETYPE_CSV = 'csv'
+    # FILETYPE_NANODQDM = 'nanodqm'  # TODO
     GRANULARITY_RUN = 'run'
     GRANULARITY_LUMISECTION = 'lum'
     DIMENSIONALITY_1D = 1
@@ -21,6 +23,10 @@ class HistogramDataFile(models.Model):
                                     (DIMENSIONALITY_2D, '2D'))
     DATAFILE_GRANULARITY_CHOICES = ((GRANULARITY_RUN, 'Run'),
                                     (GRANULARITY_LUMISECTION, 'Lumisection'))
+
+    DATAFILE_FORMAT_CHOICES = ((FILETYPE_CSV, 'csv'),
+                               # (FILETYPE_NANODQDM, 'nanoDQM')
+                               )
 
     # Recurse in Root filepath where all the DQM files are stored
     filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
