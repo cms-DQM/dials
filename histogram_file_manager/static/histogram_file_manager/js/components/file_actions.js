@@ -77,7 +77,7 @@ app.component('file-actions', {
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.errors.push(error);
+                    this.errors.push(`${error}: ${error.response.data}`);
                 });
         },
         dismiss_error(error) {
