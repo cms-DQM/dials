@@ -42,7 +42,7 @@ Histogram File Manager
 		<input type="submit" value="Submit">
 	</form>
 	<br>
-	{% endcomment %}
+
 	
 	<h2>Available DQM Histogram files</h2>
 	{% load render_table from django_tables2 %}
@@ -51,7 +51,7 @@ Histogram File Manager
 	{% render_table table 'django_tables2/bootstrap.html' %}
 	{% endif %}
 	<br>
-
+	{% endcomment %}
 	<h2>JS-based file list</h2>
 	<div id="app">
 		<file-table
