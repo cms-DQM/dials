@@ -7,7 +7,6 @@ app.component('errors', {
 	role="alert"
 	class="alert alert-danger alert-dismissable fade show"
 	v-for="error in errors">
-	{{ error }}
 	<button
 	  type="button"
 	  class="close"
@@ -16,6 +15,8 @@ app.component('errors', {
 	  v-on:click="dismiss_error(error)">
       <span aria-hidden="true">&times;</span>
 	</button>
+	{{ error }}
+
   </div>
 </div>
 		`,

@@ -13,13 +13,15 @@ from histogram_file_manager.forms import HistogramDataFileStartParsingForm
 logger = logging.getLogger(__name__)
 
 HISTOGRAM_PARSING_FUNCTIONS_MAP = {
-    'csv': {
-        1: {
-            # 'run': RunHistogram.from_csv,  # Not implemented yet
-            'lumisection': LumisectionHistogram1D.from_csv
+    HistogramDataFile.FILETYPE_CSV: {
+        HistogramDataFile.DIMENSIONALITY_1D: {
+            # HistogramDataFile.GRANULARITY_RUN: RunHistogram.from_csv,  # Not implemented yet
+            HistogramDataFile.GRANULARITY_LUMISECTION:
+            LumisectionHistogram1D.from_csv
         },
-        2: {
-            'lumisection': LumisectionHistogram2D.from_csv
+        HistogramDataFile.DIMENSIONALITY_2D: {
+            HistogramDataFile.GRANULARITY_LUMISECTION:
+            LumisectionHistogram2D.from_csv
         }
     }
 }
@@ -51,21 +53,20 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
         # return Response(f"Required param(s) missing ({required_params})",
         # status=status.HTTP_400_BAD_REQUEST)
 
-        # file_format = request.data['file_format'].lower()
-        # granularity = request.data['granularity']
-        # data_dimensionality = int(request.data['data_dimensionality'])
-        form = HistogramDataFileStartParsingForm(request.POST)
+        form = HistogramDataFileStartParsingForm(request.data)
+
         if form.is_valid():
-            logger.info("!!!!!!")
+            file_format = request.data['file_format'].lower()
+            granularity = request.data['granularity']
+            data_dimensionality = int(request.data['data_dimensionality'])
+            # Use the HISTOGRAM_PARSING_FUNCTIONS_MAP to find the appropriate parsing method
+            HISTOGRAM_PARSING_FUNCTIONS_MAP[file_format][data_dimensionality][
+                granularity](self.get_object().filepath)
         else:
             return Response(f"Required param(s) missing ({required_params})",
                             status=status.HTTP_400_BAD_REQUEST)
 
         # logger.info(
         # f"Requested parsing of {self.get_object()} as {file_format}")
-
-        # Use the HISTOGRAM_PARSING_FUNCTIONS_MAP to find the appropriate parsing method
-        # HISTOGRAM_PARSING_FUNCTIONS_MAP[file_format][data_dimensionality][
-        # granularity](self.get_object().filepath)
 
         return Response(status=status.HTTP_202_ACCEPTED)

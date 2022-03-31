@@ -18,15 +18,15 @@ app.component('file-actions', {
 		 <!-- {{ Object.keys(file_information) }} -->
 		<form @submit.prevent="send_parse_file_command">
 		  <div v-for="(choices, field_name) in field_choices">
-			<label for="field_name">{{ field_name }}</label>
-			<select id="field_name" v-model="field_name">
+			<label :for="field_name">{{ field_name }}</label>
+			<select :id="field_name" v-model="$data[field_name]">
 			  <option v-for="(choice, choice_label) in choices">
 				{{ choice_label }}
 			  </option>
 			</select>
 		  </div>
 		<input
-		  type="button"
+		  type="submit"
 		  class="btn btn-primary"
 		  :class="{disabled: file_information.percentage_processed === 100.0 }"
 		  value="Parse">
@@ -83,12 +83,13 @@ app.component('file-actions', {
                 console.warn(field, this[field]);
                 data[field] = this[field];
             }
+            console.warn(data);
             console.debug(
                 `Sending command for parsing file ${this.file_information.id}`,
             );
             axios
                 .post(
-                    `/api/histogram_data_files/${thil.file_information.id}/start_parsing/`,
+                    `/api/histogram_data_files/${this.file_information.id}/start_parsing/`,
                     data,
                     get_axios_config(),
                 )

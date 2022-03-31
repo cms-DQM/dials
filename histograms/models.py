@@ -103,14 +103,14 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
             for file_line_count, line in enumerate(fp):
                 pass
 
-        if not created and histogram_data_file.filesize != file_size:
-            logger.warning(
-                f"File '{file_path}' already in DB but size differs! "
-                f"({histogram_data_file.filesize} bytes in DB, "
-                f"{file_size} bytes actually)")
+        # if not created and histogram_data_file.filesize != file_size:
+        #     logger.warning(
+        #         f"File '{file_path}' already in DB but size differs! "
+        #         f"({histogram_data_file.filesize} bytes in DB, "
+        #         f"{file_size} bytes actually)")
 
         # Update file size anyway
-        histogram_data_file.filesize = file_size
+        # histogram_data_file.filesize = file_size
         histogram_data_file.entries_total = file_line_count
         histogram_data_file.save()
 
@@ -232,14 +232,14 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 pass
 
         # Histogram file was already recorded in database
-        if not created and histogram_data_file.filesize != file_size:
-            logger.warning(
-                f"File '{file_path}' already in DB but size differs! "
-                f"({histogram_data_file.filesize} bytes in DB, "
-                f"{file_size} bytes actually)")
+        # if not created and histogram_data_file.filesize != file_size:
+        #     logger.warning(
+        #         f"File '{file_path}' already in DB but size differs! "
+        #         f"({histogram_data_file.filesize} bytes in DB, "
+        #         f"{file_size} bytes actually)")
 
         # Update file size anyway
-        histogram_data_file.filesize = file_size
+        # histogram_data_file.filesize = file_size
         histogram_data_file.entries_total = file_line_count
         histogram_data_file.save()
 
