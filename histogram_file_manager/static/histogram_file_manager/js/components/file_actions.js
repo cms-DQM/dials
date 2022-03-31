@@ -14,6 +14,7 @@ app.component('file-actions', {
         </button>
 	  </div>
 	  <div class="modal-body">
+		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
 		<p>Modal body text goes here.</p>
 		{{ Object.keys(file_information) }}
       </div>
@@ -34,6 +35,7 @@ app.component('file-actions', {
     data() {
         return {
             // is_visible: false,
+            errors: [],
         };
     },
     props: {
@@ -70,7 +72,18 @@ app.component('file-actions', {
                 .then((response) => {
                     console.log(response);
                 })
-                .catch((error) => console.error(error));
+                .catch((error) => {
+                    console.error(error);
+                    this.errors.push(error);
+                });
+        },
+        dismiss_error(error) {
+            console.debug(error);
+            for (var i = 0; i < this.errors.length; i++) {
+                if (this.errors[i] === error) {
+                    this.errors.splice(i, 1);
+                }
+            }
         },
     },
 });
