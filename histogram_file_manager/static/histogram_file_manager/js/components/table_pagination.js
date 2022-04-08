@@ -32,8 +32,8 @@ app.component('table-pagination', {
     },
     computed: {
         is_enabled() {
-            return true;
-            // return this.page_next !== null || this.page_previous !== null;
+            // return true;
+            return this.page_next !== null || this.page_previous !== null;
         },
     },
 });
