@@ -92,8 +92,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "mlp.wsgi.application"
-# ASGI_APPLICATION = "mlp.asgi.application"
+# WSGI_APPLICATION = "mlp.wsgi.application"
+ASGI_APPLICATION = "mlp.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
