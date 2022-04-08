@@ -1,4 +1,5 @@
 import logging
+import threading
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 HISTOGRAM_PARSING_FUNCTIONS_MAP = {
     HistogramDataFile.FILETYPE_CSV: {
         HistogramDataFile.DIMENSIONALITY_1D: {
-            # HistogramDataFile.GRANULARITY_RUN: RunHistogram.from_csv,  # Not implemented yet
+            # HistogramDataFile.GRANULARITY_RUN:            RunHistogram.from_csv,  # Not implemented yet
             HistogramDataFile.GRANULARITY_LUMISECTION:
             LumisectionHistogram1D.from_csv
         },
@@ -60,8 +61,17 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
             granularity = request.data['granularity']
             data_dimensionality = int(request.data['data_dimensionality'])
             # Use the HISTOGRAM_PARSING_FUNCTIONS_MAP to find the appropriate parsing method
-            HISTOGRAM_PARSING_FUNCTIONS_MAP[file_format][data_dimensionality][
-                granularity](self.get_object().filepath)
+            try:
+                logger.info(self.get_object().filepath)
+                # Start as a separate thread, might take a long time
+                threading.Thread(
+                    target=HISTOGRAM_PARSING_FUNCTIONS_MAP[file_format]
+                    [data_dimensionality][granularity],
+                    args=(self.get_object().filepath,
+                          )).start()  # Comma is intentional
+            except Exception as e:
+                return Response(f"Error occurred: {e}",
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(f"Required param(s) missing ({required_params})",
                             status=status.HTTP_400_BAD_REQUEST)
