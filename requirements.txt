@@ -16,3 +16,4 @@ pandas
 numpy
 pyyaml
 uritemplate
+gunicorn
