@@ -208,7 +208,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS":
-    "rest_framework.pagination.LimitOffsetPagination",
+    "mlp.pagination.MLPlaygroundAPIPagination",
     "PAGE_SIZE":
     50,
 }

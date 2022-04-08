@@ -7,6 +7,7 @@ const app = Vue.createApp({
             _waiting_for_data: false,
             page_next: null,
             page_previous: null,
+            total_pages: 0,
         };
     },
     // This will run as soon as the app is mounted
@@ -34,6 +35,7 @@ const app = Vue.createApp({
                     this.page_count = response.data.count;
                     this.page_next = response.data.next || null;
                     this.page_previous = response.data.previous || null;
+                    this.total_pages = response.data.total_pages || 0;
                 })
                 .catch((error) => console.error(error))
                 .finally(() => {

@@ -80,3 +80,6 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
         # f"Requested parsing of {self.get_object()} as {file_format}")
 
         return Response(status=status.HTTP_202_ACCEPTED)
+
+    class Meta:
+        ordering = ['-id']
