@@ -12,6 +12,7 @@
 <script src="{% static 'histogram_file_manager/js/components/errors.js' %}"></script>
 
 <link rel="stylesheet" href="{% static 'histogram_file_manager/css/file_actions.css' %}">
+<link rel="stylesheet" href="{% static 'histogram_file_manager/css/histogram_file_manager.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -55,18 +56,20 @@ Histogram File Manager
 	<br>
 	{% endcomment %}
 	<h2>Available Histogram Files</h2>
-	<div id="app">
+	<div id="app" >
 		<file-table
 			:files_information="files_information"
-			@file-actions-clicked="show_file_actions_modal"
+								@file-actions-clicked="show_file_actions_modal"
+								:class="{dimmed: waiting_for_data}"
 		>
 		</file-table>
 		<table-pagination
 			:page_next="page_next"
 						:page_previous="page_previous"
-			:total_pages="total_pages"
+						:total_pages="total_pages"
 						@clicked-previous="fetch_previous_result_page"
-						@clicked-next="fetch_next_result_page"			
+						@clicked-next="fetch_next_result_page"
+						:class="{dimmed: waiting_for_data}"
 		></table-pagination>
 		<file-actions
 			:file_information="file_information"

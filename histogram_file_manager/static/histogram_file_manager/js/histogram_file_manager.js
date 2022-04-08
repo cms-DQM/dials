@@ -4,7 +4,7 @@ const app = Vue.createApp({
             files_information: [],
             file_information: {},
             file_actions_is_visible: false,
-            _waiting_for_data: false,
+            waiting_for_data: false,
             page_next: null,
             page_previous: null,
             total_pages: 0,
@@ -18,14 +18,14 @@ const app = Vue.createApp({
     },
     methods: {
         // _periodic_tasks() {
-        //     if (!this._waiting_for_data) {
+        //     if (!this.waiting_for_data) {
         //         this._update_data();
         //     }
         // },
         // Private method to fetch updated files information
         // via the API
         _update_data(url = '/api/histogram_data_files/') {
-            this._waiting_for_data = true;
+            this.waiting_for_data = true;
 
             axios
                 .get(url, get_axios_config())
@@ -39,7 +39,7 @@ const app = Vue.createApp({
                 })
                 .catch((error) => console.error(error))
                 .finally(() => {
-                    this._waiting_for_data = false;
+                    this.waiting_for_data = false;
                 });
         },
         show_file_actions_modal(file_information) {
