@@ -163,6 +163,13 @@ LOGGING = {
             "style": "{",
         },
     },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }
 
 # Static files (CSS, JavaScript, Images)
