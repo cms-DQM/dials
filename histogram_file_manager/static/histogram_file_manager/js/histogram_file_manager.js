@@ -5,29 +5,35 @@ const app = Vue.createApp({
             file_information: {},
             file_actions_is_visible: false,
             _waiting_for_data: false,
+            page_next: null,
+            page_previous: null,
         };
     },
     // This will run as soon as the app is mounted
     mounted() {
-        this._periodic_tasks();
-        setInterval(this._periodic_tasks, 5000);
+        // this._periodic_tasks();
+        // setInterval(this._periodic_tasks, 5000);
+        this._update_data();
     },
     methods: {
-        _periodic_tasks() {
-            if (!this._waiting_for_data) {
-                this._update_data();
-            }
-        },
+        // _periodic_tasks() {
+        //     if (!this._waiting_for_data) {
+        //         this._update_data();
+        //     }
+        // },
         // Private method to fetch updated files information
         // via the API
-        _update_data() {
+        _update_data(url = '/api/histogram_data_files/') {
             this._waiting_for_data = true;
 
             axios
-                .get('/api/histogram_data_files/', get_axios_config())
+                .get(url, get_axios_config())
                 .then((response) => {
                     // console.warn(response);
-                    this.files_information = response.data;
+                    this.files_information = response.data.results;
+                    this.page_count = response.data.count;
+                    this.page_next = response.data.next || null;
+                    this.page_previous = response.data.previous || null;
                 })
                 .catch((error) => console.error(error))
                 .finally(() => {
@@ -40,6 +46,12 @@ const app = Vue.createApp({
         },
         hide_file_actions_modal() {
             this.file_actions_is_visible = false;
+        },
+        fetch_previous_result_page() {
+            this._update_data(this.page_previous);
+        },
+        fetch_next_result_page() {
+            this._update_data(this.page_next);
         },
     },
 });

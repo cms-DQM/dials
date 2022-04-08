@@ -14,6 +14,9 @@ import os
 
 from decouple import config
 
+# Importing settings for subsystem
+from .settings_tracker import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -36,15 +39,28 @@ CSRF_TRUSTED_ORIGINS = ["https://ml4dqm-playground.web.cern.ch"]
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin", "django.contrib.auth",
-    "django.contrib.contenttypes", "django.contrib.sessions",
-    "django.contrib.messages", "django.contrib.staticfiles", "bootstrap3",
-    "django_tables2", "django_extensions", "widget_tweaks", "django_filters",
-    "rest_framework", "rest_framework.authtoken", "home.apps.HomeConfig",
-    "tables.apps.TablesConfig", "listdatasets.apps.ListdatasetsConfig",
-    "dataset_tables.apps.DatasetTablesConfig", "histograms",
-    "histogram_file_manager", "challenge", "data_taking_objects",
-    "data_taking_certification"
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "bootstrap3",
+    "django_tables2",
+    "django_extensions",
+    "widget_tweaks",
+    "django_filters",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "home.apps.HomeConfig",
+    "tables.apps.TablesConfig",
+    "listdatasets.apps.ListdatasetsConfig",
+    "dataset_tables.apps.DatasetTablesConfig",
+    "histograms",
+    "histogram_file_manager",
+    "challenge",
+    "data_taking_objects",
+    "data_taking_certification",
 ]
 
 MIDDLEWARE = [
@@ -157,7 +173,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "home/static"),
     # os.path.join(BASE_DIR, "run_histos/static"),
     # os.path.join(BASE_DIR, "lumisection_histos1D/static"),
-    os.path.join(BASE_DIR, "common/static"))
+    os.path.join(BASE_DIR, "common/static"),
+)
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
@@ -193,7 +210,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS":
     "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE":
-    100,
+    50,
 }
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"

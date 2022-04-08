@@ -33,8 +33,8 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
     serializer_class = HistogramDataFileSerializer
 
     # Cache results for 60 seconds
-    @method_decorator(cache_page(60 * 1))
-    @method_decorator(vary_on_cookie)
+    # @method_decorator(cache_page(60 * 1))
+    # @method_decorator(vary_on_cookie)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

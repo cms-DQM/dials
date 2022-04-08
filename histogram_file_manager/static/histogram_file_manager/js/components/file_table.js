@@ -28,7 +28,7 @@ app.component('file-table', {
 	  </div>
 	</td>
   </tr>
-</table>   
+ </table>   
 </div>
 `,
     methods: {
