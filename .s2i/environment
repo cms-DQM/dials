@@ -1,3 +1,0 @@
-DISABLE_COLLECTSTATIC=true
-
-APP_SCRIPT=openshift-start-up-script.sh
