@@ -195,5 +195,5 @@ REST_FRAMEWORK = {
     "PAGE_SIZE":
     100,
 }
-LOGIN_URL = "login/"
+LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
