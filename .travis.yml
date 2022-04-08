@@ -24,5 +24,6 @@ before_script:
   
 
 script:
+  - pwd
   - python manage.py test --settings=mlp.test_ci_settings
 

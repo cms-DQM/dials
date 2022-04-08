@@ -14,6 +14,9 @@ import os
 
 from decouple import config
 
+# Importing settings for subsystem
+from .settings_tracker import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,18 +51,16 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django_filters",
     "rest_framework",
+    "rest_framework.authtoken",
     "home.apps.HomeConfig",
     "tables.apps.TablesConfig",
     "listdatasets.apps.ListdatasetsConfig",
     "dataset_tables.apps.DatasetTablesConfig",
-    "runs.apps.RunsConfig",
-    "run_histos.apps.RunHistosConfig",
-    "run_certification.apps.RunCertificationConfig",
-    "lumisections.apps.LumisectionsConfig",
-    "lumisection_histos1D.apps.LumisectionHistos1DConfig",
-    "lumisection_histos2D.apps.LumisectionHistos2DConfig",
-    "lumisection_certification.apps.LumisectionCertificationConfig",
+    "histograms",
     "histogram_file_manager",
+    "challenge",
+    "data_taking_objects",
+    "data_taking_certification",
 ]
 
 MIDDLEWARE = [
@@ -91,8 +92,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "mlp.wsgi.application"
-# ASGI_APPLICATION = "mlp.asgi.application"
+# WSGI_APPLICATION = "mlp.wsgi.application"
+ASGI_APPLICATION = "mlp.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -162,6 +163,19 @@ LOGGING = {
             "style": "{",
         },
     },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'daphne': {
+            'handlers': [
+                'console',
+            ],
+            'level': 'DEBUG'
+        },
+    },
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -170,8 +184,9 @@ LOGGING = {
 STATIC_URL = "/static/"
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "home/static"),
-    os.path.join(BASE_DIR, "run_histos/static"),
-    os.path.join(BASE_DIR, "lumisection_histos1D/static"),
+    # os.path.join(BASE_DIR, "run_histos/static"),
+    # os.path.join(BASE_DIR, "lumisection_histos1D/static"),
+    os.path.join(BASE_DIR, "common/static"),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
@@ -192,7 +207,23 @@ NOTEBOOK_ARGUMENTS = [
 ]
 
 # Root directory where DQM files are stored, no default for safety
-FILE_PATH_EOS_CMSML4DC = config("FILE_PATH_EOS_CMSML4DC")
+DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
 
-# Importing settings for subsystem
-from .settings_tracker import *
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",  # will require authentication
+        # 'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
+    ],
+    "DEFAULT_FILTER_BACKENDS":
+    ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PAGINATION_CLASS":
+    "mlp.pagination.MLPlaygroundAPIPagination",
+    "PAGE_SIZE":
+    50,
+}
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/"

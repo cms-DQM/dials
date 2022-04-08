@@ -1,0 +1,610 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /runHistos/API/:
+    get:
+      operationId: listRunHistos
+      description: ''
+      parameters:
+      - name: run__run_number__gte
+        required: false
+        in: query
+        description: run__run_number__gte
+        schema:
+          type: string
+      - name: run__run_number__lte
+        required: false
+        in: query
+        description: run__run_number__lte
+        schema:
+          type: string
+      - name: entries__gte
+        required: false
+        in: query
+        description: entries__gte
+        schema:
+          type: string
+      - name: entries__lte
+        required: false
+        in: query
+        description: entries__lte
+        schema:
+          type: string
+      - name: mean__gte
+        required: false
+        in: query
+        description: mean__gte
+        schema:
+          type: string
+      - name: mean__lte
+        required: false
+        in: query
+        description: mean__lte
+        schema:
+          type: string
+      - name: rms__gte
+        required: false
+        in: query
+        description: rms__gte
+        schema:
+          type: string
+      - name: rms__lte
+        required: false
+        in: query
+        description: rms__lte
+        schema:
+          type: string
+      - name: skewness__gte
+        required: false
+        in: query
+        description: skewness__gte
+        schema:
+          type: string
+      - name: skewness__lte
+        required: false
+        in: query
+        description: skewness__lte
+        schema:
+          type: string
+      - name: kurtosis__gte
+        required: false
+        in: query
+        description: kurtosis__gte
+        schema:
+          type: string
+      - name: kurtosis__lte
+        required: false
+        in: query
+        description: kurtosis__lte
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: primary_dataset
+        required: false
+        in: query
+        description: primary_dataset
+        schema:
+          type: string
+      - name: run__run_number__in
+        required: false
+        in: query
+        description: run__run_number__in
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RunHistos'
+          description: ''
+      tags:
+      - runHistos
+  /lumisectionHistos1D/API/:
+    get:
+      operationId: listLumisectionHisto1Ds
+      description: ''
+      parameters:
+      - name: lumisection__run__run_number__gte
+        required: false
+        in: query
+        description: lumisection__run__run_number__gte
+        schema:
+          type: string
+      - name: lumisection__run__run_number__lte
+        required: false
+        in: query
+        description: lumisection__run__run_number__lte
+        schema:
+          type: string
+      - name: lumisection__ls_number__gte
+        required: false
+        in: query
+        description: lumisection__ls_number__gte
+        schema:
+          type: string
+      - name: lumisection__ls_number__lte
+        required: false
+        in: query
+        description: lumisection__ls_number__lte
+        schema:
+          type: string
+      - name: entries__gte
+        required: false
+        in: query
+        description: entries__gte
+        schema:
+          type: string
+      - name: entries__lte
+        required: false
+        in: query
+        description: entries__lte
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: lumisection__ls_number__in
+        required: false
+        in: query
+        description: lumisection__ls_number__in
+        schema:
+          type: string
+      - name: lumisection__run__run_number__in
+        required: false
+        in: query
+        description: lumisection__run__run_number__in
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LumisectionHisto1D'
+          description: ''
+      tags:
+      - lumisectionHistos1D
+  /lumisectionHistos2D/API/:
+    get:
+      operationId: listLumisectionHisto2Ds
+      description: ''
+      parameters:
+      - name: lumisection__run__run_number__gte
+        required: false
+        in: query
+        description: lumisection__run__run_number__gte
+        schema:
+          type: string
+      - name: lumisection__run__run_number__lte
+        required: false
+        in: query
+        description: lumisection__run__run_number__lte
+        schema:
+          type: string
+      - name: lumisection__ls_number__gte
+        required: false
+        in: query
+        description: lumisection__ls_number__gte
+        schema:
+          type: string
+      - name: lumisection__ls_number__lte
+        required: false
+        in: query
+        description: lumisection__ls_number__lte
+        schema:
+          type: string
+      - name: entries__gte
+        required: false
+        in: query
+        description: entries__gte
+        schema:
+          type: string
+      - name: entries__lte
+        required: false
+        in: query
+        description: entries__lte
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: lumisection__ls_number__in
+        required: false
+        in: query
+        description: lumisection__ls_number__in
+        schema:
+          type: string
+      - name: lumisection__run__run_number__in
+        required: false
+        in: query
+        description: lumisection__run__run_number__in
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LumisectionHisto2D'
+          description: ''
+      tags:
+      - lumisectionHistos2D
+  /api/histogram_data_files/:
+    get:
+      operationId: listHistogramDataFiles
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createHistogramDataFile
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+  /api/histogram_data_files/{id}/:
+    get:
+      operationId: retrieveHistogramDataFile
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this histogram data file.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateHistogramDataFile
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this histogram data file.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateHistogramDataFile
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this histogram data file.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyHistogramDataFile
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this histogram data file.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/histogram_data_files/{id}/start_parsing/:
+    post:
+      operationId: startParsingHistogramDataFile
+      description: Start parsing a specific HistogramDataFile, identified by pk
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this histogram data file.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HistogramDataFile'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistogramDataFile'
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    RunHistos:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        run:
+          type: integer
+          readOnly: true
+        primary_dataset:
+          type: string
+          maxLength: 220
+        title:
+          type: string
+          maxLength: 220
+        entries:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        mean:
+          type: number
+          nullable: true
+        rms:
+          type: number
+          nullable: true
+        skewness:
+          type: number
+          nullable: true
+        kurtosis:
+          type: number
+          nullable: true
+      required:
+      - primary_dataset
+      - title
+    LumisectionHisto1D:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        run:
+          type: integer
+          readOnly: true
+        lumisection:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        data:
+          type: array
+          items:
+            type: number
+        entries:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        x_min:
+          type: number
+          nullable: true
+        x_max:
+          type: number
+          nullable: true
+        x_bin:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        source_data_file:
+          type: integer
+          nullable: true
+          description: Source data file that the specific Histogram was read from,
+            if any
+      required:
+      - title
+    LumisectionHisto2D:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        run:
+          type: integer
+          readOnly: true
+        lumisection:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        data:
+          type: array
+          items:
+            type: number
+        entries:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        x_min:
+          type: number
+          nullable: true
+        x_max:
+          type: number
+          nullable: true
+        x_bin:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        y_max:
+          type: number
+          nullable: true
+        y_min:
+          type: number
+          nullable: true
+        y_bin:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        source_data_file:
+          type: integer
+          nullable: true
+          description: Source data file that the specific Histogram was read from,
+            if any
+      required:
+      - title
+    HistogramDataFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        percentage_processsed:
+          type: number
+        filepath:
+          enum:
+          - ''
+          - /home/mpliax/Desktop/tmp/ZeroBias_2018A_DataFrame_1D_2.csv
+          - /home/mpliax/Desktop/tmp/ZeroBias_2018A_DataFrame_2D_2.csv
+          type: string
+          description: Path where the file is stored
+        filesize:
+          type: integer
+          maximum: 2147483647
+          description: The data file's size (bytes)
+          minimum: 0
+        data_dimensionality:
+          enum:
+          - 1
+          - 2
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        data_era:
+          type: string
+          description: The era that the data refers to (e.g. 2018A)
+          maxLength: 5
+        entries_total:
+          type: integer
+          maximum: 2147483647
+          description: Total number of entries contained in this histogram file
+          minimum: 0
+        entries_processed:
+          type: integer
+          maximum: 2147483647
+          description: Number of histogram entries that have been extracted from the
+            file
+          minimum: 0
+        granularity:
+          enum:
+          - run
+          - lum
+          type: string
+          description: The granularity of the data contained in the data file (either
+            whole run or lumisections)
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - percentage_processsed
+      - filepath
