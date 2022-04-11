@@ -163,19 +163,20 @@ LOGGING = {
             "style": "{",
         },
     },
-    # 'loggers': {
-    #     'django': {
-    #         'handlers': ['console'],
-    #         'level': 'DEBUG',
-    #         'propagate': True,
-    #     },
-    #     'daphne': {
-    #         'handlers': [
-    #             'console',
-    #         ],
-    #         'level': 'DEBUG'
-    #     },
-    # },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+        #     'daphne': {
+        #         'handlers': [
+        #             'console',
+        #         ],
+        #         'level': 'DEBUG'
+        #     },
+    },
 }
 
 # Static files (CSS, JavaScript, Images)
