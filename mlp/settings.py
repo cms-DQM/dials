@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "challenge",
     "data_taking_objects",
     "data_taking_certification",
-    "debug_toolbar",
+    # "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "mlp.urls"
@@ -94,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-INTERNAL_IPS = [config("DEBUG_ALLOWED_IPS", default="127.0.0.1")]
+INTERNAL_IPS = [config("DEBUG_ALLOWED_IPS", default="127.0.0.1"), "127.0.0.1"]
 # WSGI_APPLICATION = "mlp.wsgi.application"
 ASGI_APPLICATION = "mlp.asgi.application"
 
