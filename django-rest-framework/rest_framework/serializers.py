@@ -11,6 +11,8 @@ python primitives.
 response content is handled by parsers and renderers.
 """
 import copy
+import time
+import logging
 import inspect
 import traceback
 from collections import OrderedDict, defaultdict
@@ -66,6 +68,7 @@ from rest_framework.fields import (  # NOQA # isort:skip
 )
 from rest_framework.relations import Hyperlink, PKOnlyObject  # NOQA # isort:skip
 
+logger = logging.getLogger(__name__)
 # We assume that 'validators' are intended for the child serializer,
 # rather than the parent serializer.
 LIST_SERIALIZER_KWARGS = (
@@ -503,8 +506,8 @@ class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
         """
         ret = OrderedDict()
         fields = self._readable_fields
-
         for field in fields:
+            
             try:
                 attribute = field.get_attribute(instance)
             except SkipField:
@@ -519,7 +522,11 @@ class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
             if check_for_none is None:
                 ret[field.field_name] = None
             else:
+                start = time.time()
                 ret[field.field_name] = field.to_representation(attribute)
+                now = time.time()
+                if now - start > 0.01:
+                    logger.debug(f"to_representation for {field.field_name} took {now - start}")
 
         return ret
 

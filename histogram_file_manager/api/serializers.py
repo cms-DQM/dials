@@ -11,9 +11,11 @@ class HistogramDataFileSerializer(serializers.ModelSerializer):
                                                     decimal_places=1)
 
     def to_representation(self, instance, *args, **kwargs):
-        # start = time.time()
+        start = time.time()
         a = super().to_representation(instance, *args, **kwargs)
-        # logger.debug(f"Serialization took {time.time() - start:.6f}")
+        now = time.time()
+        if now - start > 0.01:
+            logger.debug(f"to_representation took {time.time() - start:.6f}")
         return a
 
     class Meta:
