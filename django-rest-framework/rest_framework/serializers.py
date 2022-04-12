@@ -506,6 +506,7 @@ class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
         """
         ret = OrderedDict()
         fields = self._readable_fields
+        start_loop = time.time()
         for field in fields:
             
             try:
@@ -527,7 +528,7 @@ class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
                 now = time.time()
                 if now - start > 0.01:
                     logger.debug(f"to_representation for {field.field_name} took {now - start}")
-
+        logger.debug(f"to_representation FIELD LOOP for {repr(instance)} took {time.time() - start_loop}")        
         return ret
 
     def validate(self, attrs):
@@ -688,11 +689,13 @@ class ListSerializer(BaseSerializer):
         """
         # Dealing with nested relationships, data can be a Manager,
         # so, first get a queryset from the Manager if needed
+        start = time.time()
         iterable = data.all() if isinstance(data, models.Manager) else data
-
-        return [
+        a = [
             self.child.to_representation(item) for item in iterable
         ]
+        logger.debug(f"to_representation in ListSerializer took {time.time() - start}")
+        return 
 
     def validate(self, attrs):
         return attrs
