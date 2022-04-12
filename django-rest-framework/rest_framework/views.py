@@ -532,7 +532,7 @@ class APIView(View):
             else:
                 handler = self.http_method_not_allowed
             now = time.time()
-            logger.debug(f"get handler {now - start}")
+            logger.debug(f"get {repr(handler)} handler {now - start}")
             start = now
 
             response = handler(request, *args, **kwargs)
