@@ -29,12 +29,16 @@ class HistogramDataFile(models.Model):
                                )
 
     # Recurse in Root filepath where all the DQM files are stored
-    filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
-                                    help_text="Path where the file is stored",
-                                    recursive=True,
-                                    max_length=255,
-                                    match=".*\.csv",
-                                    allow_folders=False)
+    # filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
+    #                                 help_text="Path where the file is stored",
+    #                                 recursive=True,
+    #                                 max_length=255,
+    #                                 match=".*\.csv",
+    #                                 allow_folders=False)
+    filepath = models.CharField(
+        help_text="Path where the file is stored",
+        max_length=255,
+    )
 
     filesize = models.FloatField(default=0,
                                  help_text="The data file's size (Mbytes)")
