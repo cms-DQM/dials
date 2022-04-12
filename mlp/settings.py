@@ -214,14 +214,14 @@ DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        # "rest_framework.permissions.IsAuthenticated",  # will require authentication
-        'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
+        "rest_framework.permissions.IsAuthenticated",  # will require authentication
+        # 'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
     ],
     "DEFAULT_FILTER_BACKENDS":
     ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # "rest_framework.authentication.TokenAuthentication",
-        # "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS":
     # 'rest_framework.pagination.LimitOffsetPagination',
