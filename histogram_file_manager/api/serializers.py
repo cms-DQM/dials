@@ -5,19 +5,24 @@ from histogram_file_manager.models import HistogramDataFile
 
 logger = logging.getLogger(__name__)
 
+
 class HistogramDataFileSerializer(serializers.ModelSerializer):
     percentage_processed = serializers.DecimalField(max_digits=10,
                                                     decimal_places=1)
 
     def to_representation(self, instance, *args, **kwargs):
-        start = time.time()
+        # start = time.time()
         a = super().to_representation(instance, *args, **kwargs)
-        logger.debug(f"Serialization took {time.time() - start:.6f}")
+        # logger.debug(f"Serialization took {time.time() - start:.6f}")
         return a
 
     class Meta:
         model = HistogramDataFile
-        fields = '__all__'
+        fields = [
+            'id', 'filepath', 'filesize', 'data_dimensionality', 'data_era',
+            'entries_total', 'entries_processed', 'percentage_processed',
+            'granularity', 'created', 'modified'
+        ]
 
 
 class HistogramDataFileSerializer_(serializers.Serializer):

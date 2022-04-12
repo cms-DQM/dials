@@ -1,8 +1,10 @@
+import time
 import logging
 import threading
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
+from django.core.signals import request_finished, request_started
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -26,17 +28,56 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
         }
     }
 }
+serializer_time = 0
+db_time = 0
+render_time = 0
+started = 0
+dispatch_time = 0
 
 
-class HistogramDataFileViewset(viewsets.ModelViewSet):
+class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
+
     queryset = HistogramDataFile.objects.all()
     serializer_class = HistogramDataFileSerializer
+
+    def get(self, request):
+        global serializer_time
+        global db_time
+
+        db_start = time.time()
+        hdf = list(self.queryset)
+        db_time = time.time() - db_start
+
+        serializer_start = time.time()
+        serializer = HistogramDataFileSerializer(hdf)
+        data = serializer.data
+        # -------------------
+        # data = HistogramDataFile.objects.values(
+        #     'id', 'filepath', 'filesize', 'data_dimensionality', 'data_era',
+        #     'entries_total', 'entries_processed', 'percentage_processed',
+        #     'granularity', 'created', 'modified')
+        serializer_time = time.time() - serializer_start
+
+        return Response(data)
 
     # Cache results for 60 seconds
     # @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(60 * 1))
     def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+        global dispatch_time
+        global render_time
+
+        dispatch_start = time.time()
+        ret = super(HistogramDataFileViewset,
+                    self).dispatch(request, *args, **kwargs)
+
+        render_start = time.time()
+        ret.render()
+        render_time = time.time() - render_start
+
+        dispatch_time = time.time() - dispatch_start
+
+        return ret
 
     @action(detail=True, methods=['post'])
     def start_parsing(self, request, pk=None):
@@ -83,3 +124,24 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
 
     class Meta:
         ordering = ['-id']
+
+
+def started(sender, **kwargs):
+    global started
+    started = time.time()
+
+
+def finished(sender, **kwargs):
+    total = time.time() - started
+    api_view_time = dispatch_time - (render_time + serializer_time + db_time)
+    request_response_time = total - dispatch_time
+
+    print("Database lookup               | %.4fs" % db_time)
+    print("Serialization                 | %.4fs" % serializer_time)
+    print("Django request/response       | %.4fs" % request_response_time)
+    print("API view                      | %.4fs" % api_view_time)
+    print("Response rendering            | %.4fs" % render_time)
+
+
+request_started.connect(started)
+request_finished.connect(finished)

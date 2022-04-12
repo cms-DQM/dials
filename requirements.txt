@@ -2,7 +2,8 @@ Django
 django-bootstrap3
 django-filter
 django-tables2
-djangorestframework
+#djangorestframework
+-e ./django-rest-framework
 django-extensions
 django-widget-tweaks
 daphne
