@@ -127,7 +127,7 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
 
 
 def started(sender, **kwargs):
-    global started
+    global start
     start = time.time()
 
 
