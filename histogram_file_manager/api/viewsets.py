@@ -31,7 +31,7 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
 serializer_time = 0
 db_time = 0
 render_time = 0
-started = 0
+start = 0
 dispatch_time = 0
 
 
@@ -128,11 +128,11 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
 
 def started(sender, **kwargs):
     global started
-    started = time.time()
+    start = time.time()
 
 
 def finished(sender, **kwargs):
-    total = time.time() - started
+    total = time.time() - start
     api_view_time = dispatch_time - (render_time + serializer_time + db_time)
     request_response_time = total - dispatch_time
 
