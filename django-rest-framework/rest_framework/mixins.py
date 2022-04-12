@@ -53,14 +53,22 @@ class ListModelMixin:
         start = now
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            a = self.get_paginated_response(serializer.data)
+            d = serializer.data
+            now = time.time()
+            logger.debug(f"serializer data {now - start}")
+            start = now
+            a = self.get_paginated_response()
             now = time.time()
             logger.debug(f"get paginated response {now - start}")
             start = now
             return a
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        a = serializer.data
+        now = time.time()
+        logger.debug(f"serializer data {now - start}")
+        start = now
+        return Response(a)
 
 
 class RetrieveModelMixin:
