@@ -16,4 +16,4 @@ pandas
 numpy
 pyyaml
 uritemplate
-gunicorn
+django-debug-toolbar
