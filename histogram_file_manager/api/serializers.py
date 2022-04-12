@@ -7,16 +7,14 @@ logger = logging.getLogger(__name__)
 
 
 class HistogramDataFileSerializer(serializers.ModelSerializer):
-    percentage_processed = serializers.DecimalField(max_digits=10,
-                                                    decimal_places=1)
+    percentage_processed = serializers.SerializerMethodField()
+    filesize = serializers.SerializerMethodField()
 
-    def to_representation(self, instance, *args, **kwargs):
-        start = time.time()
-        a = super().to_representation(instance, *args, **kwargs)
-        now = time.time()
-        if now - start > 0.01:
-            logger.debug(f"to_representation took {time.time() - start:.6f}")
-        return a
+    def get_percentage_processed(self, obj):
+        return f"{obj.percentage_processed:.2f}"
+
+    def get_filesize(self, obj):
+        return f"{obj.filesize:.2f}"
 
     class Meta:
         model = HistogramDataFile
