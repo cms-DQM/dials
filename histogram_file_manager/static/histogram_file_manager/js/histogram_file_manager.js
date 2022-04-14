@@ -32,7 +32,7 @@ const app = Vue.createApp({
         // Private method to fetch updated files information
         // via the API
         _update_data() {
-            let url = this.page_current;
+            let url = this.request_url;
             this.waiting_for_data = true;
 
             axios
@@ -66,6 +66,11 @@ const app = Vue.createApp({
             this.page_current = this.page_next;
             this._cancel_request();
             this._update_data();
+        },
+    },
+    computed: {
+        request_url() {
+            return this.page_current + window.location.search;
         },
     },
 });

@@ -1,20 +1,28 @@
-from django.db.models import Q, F, Case, When, Value
+from django.forms import NumberInput, Select
+from django.db.models import F, Case, When, Value
 from django.db.models.fields import FloatField
-from django.db.models.lookups import LessThan, Exact
+
 from django_filters import rest_framework as filters
 from histogram_file_manager.models import HistogramDataFile
 
 
 class HistogramDataFileFilter(filters.FilterSet):
 
-    entries_total__gt = filters.NumberFilter(field_name='entries_total',
-                                             lookup_expr='gt')
+    entries_total__gt = filters.NumberFilter(
+        field_name='entries_total',
+        lookup_expr='gt',
+        widget=NumberInput(attrs={'class': 'form-control'}),
+    )
 
-    entries_total__lt = filters.NumberFilter(field_name='entries_total',
-                                             lookup_expr='lt')
+    entries_total__lt = filters.NumberFilter(
+        field_name='entries_total',
+        lookup_expr='lt',
+        widget=NumberInput(attrs={'class': 'form-control'}))
 
     processing_complete = filters.BooleanFilter(
-        label="Processing complete", method="filter_processing_complete")
+        label="Processing complete",
+        method="filter_processing_complete",
+    )
 
     def filter_processing_complete(self, queryset, name, value):
         """
