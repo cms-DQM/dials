@@ -8,23 +8,25 @@ const app = Vue.createApp({
             page_next: null,
             page_previous: null,
             total_pages: 0,
+            page_current: '/api/histogram_data_files/',
         };
     },
     // This will run as soon as the app is mounted
     mounted() {
-        // this._periodic_tasks();
-        // setInterval(this._periodic_tasks, 5000);
-        this._update_data();
+        this._periodic_tasks();
+        setInterval(this._periodic_tasks, 5000);
+        this._update_data(this.page_current);
     },
     methods: {
-        // _periodic_tasks() {
-        //     if (!this.waiting_for_data) {
-        //         this._update_data();
-        //     }
-        // },
+        _periodic_tasks() {
+            if (!this.waiting_for_data) {
+                this._update_data();
+            }
+        },
         // Private method to fetch updated files information
         // via the API
-        _update_data(url = '/api/histogram_data_files/') {
+        _update_data() {
+            let url = this.page_current;
             this.waiting_for_data = true;
 
             axios
@@ -50,10 +52,12 @@ const app = Vue.createApp({
             this.file_actions_is_visible = false;
         },
         fetch_previous_result_page() {
-            this._update_data(this.page_previous);
+            this.page_current = this.page_previous;
+            // this._update_data();
         },
         fetch_next_result_page() {
-            this._update_data(this.page_next);
+            this.page_current = this.page_next;
+            // this._update_data();
         },
     },
 });
