@@ -16,10 +16,11 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function get_axios_config() {
+function get_axios_config(abort_controller) {
     return {
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
         },
+        signal: abort_controller.signal,
     };
 }

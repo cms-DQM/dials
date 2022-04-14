@@ -7,21 +7,21 @@ logger = logging.getLogger(__name__)
 
 
 class HistogramDataFileSerializer(serializers.ModelSerializer):
-    percentage_processed = serializers.SerializerMethodField()
-    filesize = serializers.SerializerMethodField()
-
-    def get_percentage_processed(self, obj):
-        return f"{obj.percentage_processed:.2f}"
-
-    def get_filesize(self, obj):
-        return f"{obj.filesize:.2f}"
 
     class Meta:
         model = HistogramDataFile
         fields = [
-            'id', 'filepath', 'filesize', 'data_dimensionality', 'data_era',
-            'entries_total', 'entries_processed', 'percentage_processed',
-            'granularity', 'created', 'modified'
+            'id',
+            'filepath',
+            'filesize',
+            'data_dimensionality',
+            'data_era',
+            'entries_total',
+            'entries_processed',
+            'percentage_processed',
+            'granularity',
+            'created',
+            'modified',
         ]
 
 

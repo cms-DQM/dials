@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from histogram_file_manager.models import HistogramDataFile
 from histogram_file_manager.api.serializers import HistogramDataFileSerializer
+from histogram_file_manager.api.filters import HistogramDataFileFilter
 from histograms.models import RunHistogram, LumisectionHistogram1D, LumisectionHistogram2D
 from histogram_file_manager.forms import HistogramDataFileStartParsingForm
 
@@ -34,6 +35,7 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
 
     queryset = HistogramDataFile.objects.all()
     serializer_class = HistogramDataFileSerializer
+    filterset_class = HistogramDataFileFilter
 
     # Cache results for 60 seconds
     # @method_decorator(vary_on_cookie)
