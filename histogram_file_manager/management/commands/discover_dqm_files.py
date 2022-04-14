@@ -22,6 +22,6 @@ class Command(BaseCommand):
                     logger.debug(f"File '{hdf}' already in DB")
                 except ObjectDoesNotExist:
                     logger.debug(
-                        f"File '{f[0]}' not found in DB, creating new entry")
+                        f"File '{f}' not found in DB, creating new entry")
                     hdf = HistogramDataFile(filepath=f).save()
                     logger.info(f"Stored new file in DB: {hdf}")
