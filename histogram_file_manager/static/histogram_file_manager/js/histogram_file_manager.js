@@ -9,18 +9,24 @@ const app = Vue.createApp({
             page_previous: null,
             total_pages: 0,
             page_current: '/api/histogram_data_files/',
+            abort_controller: new AbortController(), // To cancel a request
         };
     },
     // This will run as soon as the app is mounted
     mounted() {
         this._periodic_tasks();
         setInterval(this._periodic_tasks, 5000);
-        this._update_data(this.page_current);
+        this._update_data(); // Immediately update data on start
     },
     methods: {
         _periodic_tasks() {
             if (!this.waiting_for_data) {
                 this._update_data();
+            }
+        },
+        _cancel_request() {
+            if (this.waiting_for_data) {
+                this.abort_controller.abort();
             }
         },
         // Private method to fetch updated files information
@@ -30,7 +36,7 @@ const app = Vue.createApp({
             this.waiting_for_data = true;
 
             axios
-                .get(url, get_axios_config())
+                .get(url, get_axios_config(this.abort_controller))
                 .then((response) => {
                     // console.warn(response);
                     this.files_information = response.data.results;
@@ -53,11 +59,13 @@ const app = Vue.createApp({
         },
         fetch_previous_result_page() {
             this.page_current = this.page_previous;
-            // this._update_data();
+            this._cancel_request();
+            this._update_data();
         },
         fetch_next_result_page() {
             this.page_current = this.page_next;
-            // this._update_data();
+            this._cancel_request();
+            this._update_data();
         },
     },
 });
