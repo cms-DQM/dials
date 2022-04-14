@@ -30,7 +30,7 @@ class HistogramDataFile(models.Model):
                                     (GRANULARITY_LUMISECTION, 'Lumisection'))
 
     DATAFILE_FORMAT_CHOICES = (
-        (FILETYPE_UNKNOWN, 'Unknown'),
+        # (FILETYPE_UNKNOWN, 'Unknown'), # Not needed
         (FILETYPE_CSV, 'csv'),
         # (FILETYPE_NANODQDM, 'nanoDQM')
     )
@@ -52,7 +52,7 @@ class HistogramDataFile(models.Model):
                                  help_text="The data file's size (Mbytes)")
 
     data_dimensionality = models.PositiveIntegerField(
-        default=DIMENSIONALITY_1D,
+        default=DIMENSIONALITY_UNKNOWN,
         choices=HISTOGRAM_DIMENSIONS_CHOICES,
         blank=True)
 
@@ -74,7 +74,7 @@ class HistogramDataFile(models.Model):
     granularity = models.CharField(
         max_length=3,
         choices=DATAFILE_GRANULARITY_CHOICES,
-        default=GRANULARITY_RUN,
+        default=GRANULARITY_UNKNOWN,
         help_text="The granularity of the data contained in the "\
         "data file (either whole run or lumisections)")
 
