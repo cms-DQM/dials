@@ -25,10 +25,14 @@ Histogram File Manager
 	<h2>Available Histogram Files</h2>
 
 	<!-- Filter form, rendered by django -->
-	<div class="card border-light shadow p-3 bg-white rounded mb-4">
+	<p>
+		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filters-collapse" aria-expanded="false" aria-controls="filters-collapse">
+			Filters
+		</button>
+	</p>
+	<div class="card border-light shadow p-3 bg-white rounded mb-4 collapse" id="filters-collapse">
 		<form id="file_filter_form" method="get" action="">
 			<div class="form-group">
-				<h5>Filters</h5>
 				{{ filter.form }}
 			</div>
 			<button type="submit" class="btn btn-primary">Apply filters</button>
@@ -68,7 +72,11 @@ Histogram File Manager
 {% block scripts %}
 <script>
  const mountedApp = app.mount('#app');
- console.log(window.location.search);
+
+ // On page load
+ // window.addEventListener('load', (event) => {
+ // });
+ 
 </script>
 
 {% endblock %}
