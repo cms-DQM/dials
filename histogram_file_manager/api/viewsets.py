@@ -1,8 +1,10 @@
+import time
 import logging
 import threading
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
+from django.core.signals import request_finished, request_started
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -28,7 +30,8 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
 }
 
 
-class HistogramDataFileViewset(viewsets.ModelViewSet):
+class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
+
     queryset = HistogramDataFile.objects.all()
     serializer_class = HistogramDataFileSerializer
 
