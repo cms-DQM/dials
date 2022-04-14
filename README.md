@@ -28,7 +28,9 @@ DIR_PATH_EOS_CMSML4DC
 ### Histogram File Manager
 
 - Currently, the choices for available files provided are only refreshed
-every time the `discover_dqm_files` management command is run
+  every time the `discover_dqm_files` management command is run. To run it, login to
+  PaaS, select the `ml4dqm-playground` project, go to `Administrator`->`Pods`, select
+  the currently running pod, go to `Terminal` and run `python manage.py discover_dqm_files`
 
 **Known limitation**:
 
