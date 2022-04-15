@@ -27,6 +27,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       env:
+        DIR_PATH_EOS_CMSML4DC: ${{ secrets.DIR_PATH_EOS_CMSML4DC }}
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
