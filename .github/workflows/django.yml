@@ -47,10 +47,13 @@ jobs:
         python manage.py test
 
     - name: Run Functional Tests with Selenium on Chrome
+      env:
         WEB_BROWSER: Chrome
       run: |
         python manage.py test functional_tests
+
     - name: Run Functional Tests with Selenium on Firefox
+      env:
         WEB_BROWSER: Firefox
       run: |
         python manage.py test functional_tests
