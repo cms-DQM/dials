@@ -1,6 +1,6 @@
 from os.path import getsize
 from django.db import models
-from django.conf import settings
+# from django.conf import settings
 
 
 class HistogramDataFile(models.Model):
@@ -13,21 +13,29 @@ class HistogramDataFile(models.Model):
     - Big (in the order of GB) files may be partially processed, so their current
     percentage_processed is stored for display purposes.
     """
+    FILETYPE_UNKNOWN = 'unk'
     FILETYPE_CSV = 'csv'
     # FILETYPE_NANODQDM = 'nanodqm'  # TODO
+    GRANULARITY_UNKNOWN = 'unk'
     GRANULARITY_RUN = 'run'
     GRANULARITY_LUMISECTION = 'lum'
+    DIMENSIONALITY_UNKNOWN = 0
     DIMENSIONALITY_1D = 1
     DIMENSIONALITY_2D = 2
-    HISTOGRAM_DIMENSIONS_CHOICES = ((DIMENSIONALITY_1D, '1D'),
+    HISTOGRAM_DIMENSIONS_CHOICES = ((DIMENSIONALITY_UNKNOWN,
+                                     'Unknown'), (DIMENSIONALITY_1D, '1D'),
                                     (DIMENSIONALITY_2D, '2D'))
-    DATAFILE_GRANULARITY_CHOICES = ((GRANULARITY_RUN, 'Run'),
+    DATAFILE_GRANULARITY_CHOICES = ((GRANULARITY_UNKNOWN,
+                                     'Unknown'), (GRANULARITY_RUN, 'Run'),
                                     (GRANULARITY_LUMISECTION, 'Lumisection'))
 
-    DATAFILE_FORMAT_CHOICES = ((FILETYPE_CSV, 'csv'),
-                               # (FILETYPE_NANODQDM, 'nanoDQM')
-                               )
+    DATAFILE_FORMAT_CHOICES = (
+        # (FILETYPE_UNKNOWN, 'Unknown'), # Not needed
+        (FILETYPE_CSV, 'csv'),
+        # (FILETYPE_NANODQDM, 'nanoDQM')
+    )
 
+    # DISABLED DUE TO PERFORMANCE ISSUES (see issue #30)
     # Recurse in Root filepath where all the DQM files are stored
     # filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
     #                                 help_text="Path where the file is stored",
@@ -44,7 +52,7 @@ class HistogramDataFile(models.Model):
                                  help_text="The data file's size (Mbytes)")
 
     data_dimensionality = models.PositiveIntegerField(
-        default=DIMENSIONALITY_1D,
+        default=DIMENSIONALITY_UNKNOWN,
         choices=HISTOGRAM_DIMENSIONS_CHOICES,
         blank=True)
 
@@ -66,7 +74,7 @@ class HistogramDataFile(models.Model):
     granularity = models.CharField(
         max_length=3,
         choices=DATAFILE_GRANULARITY_CHOICES,
-        default=GRANULARITY_RUN,
+        default=GRANULARITY_UNKNOWN,
         help_text="The granularity of the data contained in the "\
         "data file (either whole run or lumisections)")
 

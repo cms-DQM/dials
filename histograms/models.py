@@ -1,3 +1,4 @@
+import time
 import os.path
 import json
 import logging
@@ -99,10 +100,11 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
+        logger.debug(f"Counting total lines for file {file_path}")
         with open(file_path, 'r') as fp:
             for file_line_count, line in enumerate(fp):
                 pass
-
+        logger.debug(f"File {file_path} has {file_line_count} lines")
         # if not created and histogram_data_file.filesize != file_size:
         #     logger.warning(
         #         f"File '{file_path}' already in DB but size differs! "
@@ -156,6 +158,8 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 histogram_data_file.save()
                 count = 0
                 lumisection_histos1D = []
+
+            time.sleep(0.1)  # Don't be greedy!
 
         if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
             LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
@@ -227,10 +231,11 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
+        logger.debug(f"Counting total lines for file {file_path}")
         with open(file_path, 'r') as fp:
             for file_line_count, line in enumerate(fp):
                 pass
-
+        logger.debug(f"File {file_path} has {file_line_count} lines")
         # Histogram file was already recorded in database
         # if not created and histogram_data_file.filesize != file_size:
         #     logger.warning(
@@ -287,6 +292,8 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     data=data,
                     source_data_file=histogram_data_file)
                 lumisection_histos2D.append(lumisection_histo2D)
+
+                time.sleep(0.1)  # Don't be greedy!
 
             LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
                                                        ignore_conflicts=True)
