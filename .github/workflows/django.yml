@@ -15,6 +15,19 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        #         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        #
+
     steps:
     - uses: actions/checkout@v2
 
@@ -44,7 +57,7 @@ jobs:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
       run: |
-        python manage.py test
+        python manage.py test --settings=mlp.test_ci_settings
 
     - name: Run Functional Tests with Selenium on Chrome
       env:
