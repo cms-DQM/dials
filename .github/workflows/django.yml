@@ -26,11 +26,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
-      run: |
-        python manage.py test
-      with:
+      env:
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
+      run: |
+        python manage.py test
