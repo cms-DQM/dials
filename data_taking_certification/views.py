@@ -8,4 +8,4 @@ from histograms.models import RunHistogram
 
 # Create your views here.
 def run_certification_view(request):
-    return render(request, 'data_taking_certification/runs_main.html')
+    return render(request, "data_taking_certification/runs_main.html")
