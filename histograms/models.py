@@ -103,21 +103,15 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
-        logger.debug(f"Counting total lines for file {file_path}")
-        with open(file_path, "r") as fp:
-            for file_line_count, line in enumerate(fp):
-                pass
-        logger.debug(f"File {file_path} has {file_line_count} lines")
-        # if not created and histogram_data_file.filesize != file_size:
-        #     logger.warning(
-        #         f"File '{file_path}' already in DB but size differs! "
-        #         f"({histogram_data_file.filesize} bytes in DB, "
-        #         f"{file_size} bytes actually)")
+        if histogram_data_file.entries_total < 1:
+            logger.debug(f"Counting total lines for file {file_path}")
+            with open(file_path, "r") as fp:
+                for file_line_count, line in enumerate(fp):
+                    pass
+            logger.debug(f"File {file_path} has {file_line_count} lines")
 
-        # Update file size anyway
-        # histogram_data_file.filesize = file_size
-        histogram_data_file.entries_total = file_line_count
-        histogram_data_file.save()
+            histogram_data_file.entries_total = file_line_count
+            histogram_data_file.save()
 
         lumisection_histos1D = []  # New LumisectionHisto1D entries
         count = 0
@@ -241,22 +235,14 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
-        logger.debug(f"Counting total lines for file {file_path}")
-        with open(file_path, "r") as fp:
-            for file_line_count, line in enumerate(fp):
-                pass
-        logger.debug(f"File {file_path} has {file_line_count} lines")
-        # Histogram file was already recorded in database
-        # if not created and histogram_data_file.filesize != file_size:
-        #     logger.warning(
-        #         f"File '{file_path}' already in DB but size differs! "
-        #         f"({histogram_data_file.filesize} bytes in DB, "
-        #         f"{file_size} bytes actually)")
-
-        # Update file size anyway
-        # histogram_data_file.filesize = file_size
-        histogram_data_file.entries_total = file_line_count
-        histogram_data_file.save()
+        if histogram_data_file.entries_total < 1:
+            logger.debug(f"Counting total lines for file {file_path}")
+            with open(file_path, "r") as fp:
+                for file_line_count, line in enumerate(fp):
+                    pass
+            logger.debug(f"File {file_path} has {file_line_count} lines")
+            histogram_data_file.entries_total = file_line_count
+            histogram_data_file.save()
 
         # Last saved chunk in DB.
         last_chunk = (
@@ -275,7 +261,6 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         # Keep track of lines read
         num_lines_read = 0
         reader = pd.read_csv(file_path, chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
-        logger.info(f"File has {file_line_count} lines")
         for df in reader:
             if resume and current_chunk < last_chunk:
                 logger.debug(f"Skipping chunk {current_chunk}")
