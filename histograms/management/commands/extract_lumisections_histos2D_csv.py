@@ -9,8 +9,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "file_path",
             type=str,
-            help=
-            "Absolute filepath to CSV file containing 2D Lumisection Histograms"
+            help="Absolute filepath to CSV file containing 2D Lumisection Histograms",
         )
 
     def handle(self, *args, **options):

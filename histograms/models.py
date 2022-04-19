@@ -21,6 +21,7 @@ class HistogramBase(models.Model):
     """
     Base model to be inherited from Run and Lumisection Histograms
     """
+
     date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=220)
     source_data_file = models.ForeignKey(
@@ -28,8 +29,7 @@ class HistogramBase(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        help_text=
-        "Source data file that the specific Histogram was read from, if any",
+        help_text="Source data file that the specific Histogram was read from, if any",
     )
 
     class Meta:
@@ -53,18 +53,20 @@ class RunHistogram(HistogramBase):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['run', 'primary_dataset', 'title'],
-                name='unique run/dataset/histogram combination')
+                fields=["run", "primary_dataset", "title"],
+                name="unique run/dataset/histogram combination",
+            )
         ]
 
 
 class LumisectionHistogramBase(HistogramBase):
     """
     Abstract Base model that both 1D and 2D lumisection histograms inherit from.
-    
+
     """
+
     lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
-    #related_name="%(class)s_histograms")
+    # related_name="%(class)s_histograms")
 
     entries = models.IntegerField(blank=True, null=True)
 
@@ -90,18 +92,19 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
         # Create an entry for a new data file in the database
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
-            filepath=file_path)
+            filepath=file_path
+        )
         histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
-        file_size = os.path.getsize(file_path)
+        # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
         logger.debug(f"Counting total lines for file {file_path}")
-        with open(file_path, 'r') as fp:
+        with open(file_path, "r") as fp:
             for file_line_count, line in enumerate(fp):
                 pass
         logger.debug(f"File {file_path} has {file_line_count} lines")
@@ -135,14 +138,16 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
             # Get existing or create new Lumisection entry
             lumisection, _ = Lumisection.objects.get_or_create(
-                run=run, ls_number=lumi_number)
+                run=run, ls_number=lumi_number
+            )
 
             lumisection_histo1D = LumisectionHistogram1D(
                 lumisection=lumisection,
                 title=title,
                 entries=entries,
                 data=data,
-                source_data_file=histogram_data_file)
+                source_data_file=histogram_data_file,
+            )
 
             lumisection_histos1D.append(lumisection_histo1D)
             count += 1
@@ -151,9 +156,9 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
             if count == 50:
 
                 LumisectionHistogram1D.objects.bulk_create(
-                    lumisection_histos1D, ignore_conflicts=True)
-                logger.info(
-                    "50 lumisections 1D histograms successfully added!")
+                    lumisection_histos1D, ignore_conflicts=True
+                )
+                logger.info("50 lumisections 1D histograms successfully added!")
                 histogram_data_file.entries_processed += 50
                 histogram_data_file.save()
                 count = 0
@@ -161,9 +166,12 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
             time.sleep(0.1)  # Don't be greedy!
 
-        if lumisection_histos1D:  # If total entries not a multiple of 50, some will be left
-            LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D,
-                                                       ignore_conflicts=True)
+        if (
+            lumisection_histos1D
+        ):  # If total entries not a multiple of 50, some will be left
+            LumisectionHistogram1D.objects.bulk_create(
+                lumisection_histos1D, ignore_conflicts=True
+            )
             histogram_data_file.entries_processed += len(lumisection_histos1D)
             histogram_data_file.save()
 
@@ -192,6 +200,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     """
     Model containing 2D Lumisection Histogram information
     """
+
     data = ArrayField(models.FloatField(), blank=True)
     # ArrayField( ArrayField( models.IntegerField(blank=True), size=XX, ), size=XX,)
     x_min = models.FloatField(blank=True, null=True)
@@ -202,13 +211,12 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     y_bin = models.IntegerField(blank=True, null=True)
 
     @staticmethod
-    def from_csv(file_path,
-                 data_era: str = "",
-                 resume: bool = True,
-                 read_chunk_num_max: int = -1):
+    def from_csv(
+        file_path, data_era: str = "", resume: bool = True, read_chunk_num_max: int = -1
+    ):
         """
         Import 2D Lumisection Histograms from a csv file
-        
+
         Parameters:
         - file_path: A path to a .csv file containing a 2D Lumisection Histogram
         - data_era: The era that the data refers to (e.g. 2018A)
@@ -217,22 +225,24 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         """
         logger.info(
             f"Importing 2D Lumisection Histograms from '{file_path}', "
-            f"splitting into chunks of {LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE}")
+            f"splitting into chunks of {LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE}"
+        )
 
         # Create an entry for a new data file in the database
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
-            filepath=file_path)
+            filepath=file_path
+        )
         histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
-        file_size = os.path.getsize(file_path)
+        # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
 
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
         logger.debug(f"Counting total lines for file {file_path}")
-        with open(file_path, 'r') as fp:
+        with open(file_path, "r") as fp:
             for file_line_count, line in enumerate(fp):
                 pass
         logger.debug(f"File {file_path} has {file_line_count} lines")
@@ -249,17 +259,22 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file.save()
 
         # Last saved chunk in DB.
-        last_chunk = 0 if created else get_last_chunk(
-            histogram_data_file,
-            LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE) if resume else 0
+        last_chunk = (
+            0
+            if created
+            else get_last_chunk(
+                histogram_data_file, LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE
+            )
+            if resume
+            else 0
+        )
 
         logger.info(f"Last chunk: {last_chunk}")
         # Keep track of current chunk
         current_chunk = 0
         # Keep track of lines read
         num_lines_read = 0
-        reader = pd.read_csv(file_path,
-                             chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
+        reader = pd.read_csv(file_path, chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
         logger.info(f"File has {file_line_count} lines")
         for df in reader:
             if resume and current_chunk < last_chunk:
@@ -283,20 +298,23 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
 
                 run, _ = Run.objects.get_or_create(run_number=run_number)
                 lumisection, _ = Lumisection.objects.get_or_create(
-                    run=run, ls_number=lumi_number)
+                    run=run, ls_number=lumi_number
+                )
 
                 lumisection_histo2D = LumisectionHistogram2D(
                     lumisection=lumisection,
                     title=title,
                     entries=entries,
                     data=data,
-                    source_data_file=histogram_data_file)
+                    source_data_file=histogram_data_file,
+                )
                 lumisection_histos2D.append(lumisection_histo2D)
 
                 time.sleep(0.1)  # Don't be greedy!
 
-            LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D,
-                                                       ignore_conflicts=True)
+            LumisectionHistogram2D.objects.bulk_create(
+                lumisection_histos2D, ignore_conflicts=True
+            )
 
             logger.info(
                 f"{len(lumisection_histos2D)} x "

@@ -77,7 +77,7 @@ class HistogramDataFileTable(tables.Table):
                 new_table_entry["in_db"] = True
 
             # File not stored in db, display empty data
-            except ObjectDoesNotExist as e:
+            except ObjectDoesNotExist:
                 new_table_entry["in_db"] = False
 
             new_table_data.append(new_table_entry)

@@ -1,6 +1,6 @@
-import pandas as pd
-import numpy as np
-import altair as alt
+# import pandas as pd
+# import numpy as np
+# import altair as alt
 from django.shortcuts import render
 from data_taking_objects.models import Run
 from histograms.models import RunHistogram

@@ -1,8 +1,20 @@
 import logging
 from rest_framework import viewsets
-from histograms.models import RunHistogram, LumisectionHistogram1D, LumisectionHistogram2D
-from histograms.api.serializers import RunHistogramSerializer, LumisectionHistogram1DSerializer, LumisectionHistogram2DSerializer
-from histograms.api.filters import RunHistogramFilter, LumisectionHistogram1DFilter, LumisectionHistogram2DFilter
+from histograms.models import (
+    RunHistogram,
+    LumisectionHistogram1D,
+    LumisectionHistogram2D,
+)
+from histograms.api.serializers import (
+    RunHistogramSerializer,
+    LumisectionHistogram1DSerializer,
+    LumisectionHistogram2DSerializer,
+)
+from histograms.api.filters import (
+    RunHistogramFilter,
+    LumisectionHistogram1DFilter,
+    LumisectionHistogram2DFilter,
+)
 
 logger = logging.getLogger(__name__)
 
