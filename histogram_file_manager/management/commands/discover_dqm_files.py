@@ -1,4 +1,4 @@
-import re
+# import re
 import os
 import logging
 from django.core.management.base import BaseCommand
@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = (
         "Scans the default DQM datafile directory recursively for new files and"
-        "stores them in the Database")
+        "stores them in the Database"
+    )
 
     def handle(self, *args, **options):
         valid_files_extensions = [
@@ -22,8 +23,7 @@ class Command(BaseCommand):
         logger.debug(
             f"Getting recursive file list of directory {settings.DIR_PATH_EOS_CMSML4DC} ..."
         )
-        for root, dirs, files in sorted(os.walk(
-                settings.DIR_PATH_EOS_CMSML4DC)):
+        for root, dirs, files in sorted(os.walk(settings.DIR_PATH_EOS_CMSML4DC)):
 
             for f in sorted(files):
                 # Check if file has correct extension
@@ -34,8 +34,7 @@ class Command(BaseCommand):
                         break
 
                 if not is_valid_extension:
-                    logger.debug(
-                        f"Invalid file extension on file {f}, skipping")
+                    logger.debug(f"Invalid file extension on file {f}, skipping")
                     continue
 
                 f = os.path.join(root, f)
@@ -44,7 +43,6 @@ class Command(BaseCommand):
                     hdf = HistogramDataFile.objects.get(filepath=f)
                     logger.debug(f"File '{hdf}' already in DB")
                 except ObjectDoesNotExist:
-                    logger.debug(
-                        f"File '{f}' not found in DB, creating new entry")
+                    logger.debug(f"File '{f}' not found in DB, creating new entry")
                     hdf = HistogramDataFile(filepath=f).save()
                     logger.info(f"Stored new file in DB: {hdf}")

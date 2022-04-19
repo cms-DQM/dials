@@ -17,3 +17,4 @@ numpy
 pyyaml
 uritemplate
 django-debug-toolbar
+flake8

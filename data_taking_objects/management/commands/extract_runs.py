@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from data_taking_objects.models import Run
 
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
-import pandas as pd
+# import pandas as pd
 
 
 class Command(BaseCommand):

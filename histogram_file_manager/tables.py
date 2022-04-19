@@ -12,7 +12,7 @@ class HistogramDataFileTable(tables.Table):
     of Histogram datafile parsing.
 
     The initial concept was to base this on HistogramDataFile, but this
-    would limit the table's entries to just the ones stored in the database. 
+    would limit the table's entries to just the ones stored in the database.
 
     Since we want to display *all* the available datafiles in a specific directory,
     this custom Table was created. The "from_filepaths" method checks files
@@ -45,7 +45,7 @@ class HistogramDataFileTable(tables.Table):
     def from_filepaths(cls, filepaths: list):
         """
         Create a HistogramDataFileTable using the passed list of filepaths.
-  
+
         Parameters:
         - filepaths: a list of tuples, as returned from the forms.FilePathField class
 
@@ -54,32 +54,31 @@ class HistogramDataFileTable(tables.Table):
         files_in_db = HistogramDataFile.objects.all()
 
         # Ignore some fields from the HistogramDataFile model
-        overridden_fields = ['filepath', 'pk']
+        overridden_fields = ["filepath", "pk"]
 
         # Data that will be returned to be rendered as a table
         new_table_data = []
 
         # For each filepath passed as argument
         for f in filepaths:
-            new_table_entry = {'filepath': f[0]}
+            new_table_entry = {"filepath": f[0]}
             # If this succeeds, the filepath has already been recorded in db
             try:
                 entry = files_in_db.get(filepath=f[0])
                 # Copy the values from each fields to the new table entry
                 for field in HistogramDataFile._meta.local_fields:
                     if field.name not in overridden_fields:
-                        new_table_entry[field.name] = getattr(
-                            entry, field.name)
+                        new_table_entry[field.name] = getattr(entry, field.name)
                 # Do the same for properties
                 for prop in HistogramDataFile._meta._property_names:
                     if prop not in overridden_fields:
                         new_table_entry[prop] = getattr(entry, prop)
 
-                new_table_entry['in_db'] = True
+                new_table_entry["in_db"] = True
 
             # File not stored in db, display empty data
-            except ObjectDoesNotExist as e:
-                new_table_entry['in_db'] = False
+            except ObjectDoesNotExist:
+                new_table_entry["in_db"] = False
 
             new_table_data.append(new_table_entry)
 

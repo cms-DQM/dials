@@ -3,7 +3,6 @@ import unittest
 
 
 class NewVisitorTest(unittest.TestCase):
-
     def setUp(self):
         self.browser = webdriver.Firefox()
 
@@ -19,6 +18,6 @@ class NewVisitorTest(unittest.TestCase):
 
         self.fail("Finish the test!")
 
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
 
+if __name__ == "__main__":
+    unittest.main(warnings="ignore")

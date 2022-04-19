@@ -51,7 +51,7 @@ class HistogramDataFileFilter(filters.FilterSet):
 
     def filter_processing_complete(self, queryset, name, value):
         """
-        Custom filter for keeping only completely processed or unprocessed files 
+        Custom filter for keeping only completely processed or unprocessed files
 
         Annotates the queryset with a percentage_complete field (differs
         from the one defined as a method in the model, which cannot be used
@@ -59,14 +59,16 @@ class HistogramDataFileFilter(filters.FilterSet):
         Takes care of not dividing by zero (entries_total = 0)
         """
 
-        queryset = queryset.annotate(percentage_complete=Case(
-            When(
-                entries_total__gt=0,
-                then=100 * F("entries_processed") / F("entries_total"),
-            ),
-            output_field=FloatField(),
-            default=Value(0.0),
-        ))
+        queryset = queryset.annotate(
+            percentage_complete=Case(
+                When(
+                    entries_total__gt=0,
+                    then=100 * F("entries_processed") / F("entries_total"),
+                ),
+                output_field=FloatField(),
+                default=Value(0.0),
+            )
+        )
 
         # Requested processed files
         if value:

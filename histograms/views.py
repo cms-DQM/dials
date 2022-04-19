@@ -5,9 +5,21 @@ from django.http import JsonResponse
 from django_tables2 import RequestConfig
 from data_taking_objects.models import Run
 from histograms.utils import get_altair_chart
-from histograms.models import RunHistogram, LumisectionHistogram1D, LumisectionHistogram2D
-from histograms.tables import RunHistogramTable, LumisectionHistogram1DTable, LumisectionHistogram2DTable
-from histograms.api.filters import RunHistogramFilter, LumisectionHistogram1DFilter, LumisectionHistogram2DFilter
+from histograms.models import (
+    RunHistogram,
+    LumisectionHistogram1D,
+    LumisectionHistogram2D,
+)
+from histograms.tables import (
+    RunHistogramTable,
+    LumisectionHistogram1DTable,
+    LumisectionHistogram2DTable,
+)
+from histograms.api.filters import (
+    RunHistogramFilter,
+    LumisectionHistogram1DFilter,
+    LumisectionHistogram2DFilter,
+)
 
 
 def RunHistogramList(request):
@@ -27,7 +39,7 @@ def RunHistogramList(request):
 
 
 def import_view(request):
-    return render(request, 'histograms/import.html')
+    return render(request, "histograms/import.html")
 
 
 def run_histos_view(request):
@@ -45,22 +57,21 @@ def run_histos_view(request):
     runhistos_df = pd.DataFrame(RunHistogram.objects.all()[:200].values())
 
     if runhistos_df.shape[0] > 0:
-        df = pd.merge(runs_df, runhistos_df, left_on='id',
-                      right_on='run_id').drop(
-                          ['id_x', 'id_y', 'run_id', 'date_x', 'date_y'],
-                          axis=1)
+        df = pd.merge(runs_df, runhistos_df, left_on="id", right_on="run_id").drop(
+            ["id_x", "id_y", "run_id", "date_x", "date_y"], axis=1
+        )
 
-        if request.method == 'POST':
-            dataset = request.POST['dataset']
-            variable = request.POST['variable']
-            chart_type = request.POST['plot_type']
+        if request.method == "POST":
+            dataset = request.POST["dataset"]
+            variable = request.POST["variable"]
+            chart_type = request.POST["plot_type"]
             print(
                 f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}"
             )
 
-        #df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
-        #df = df.query('primary_dataset==@dataset & title==@variable')
-        mean = df['mean'].to_frame().to_html()
+        # df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
+        # df = df.query('primary_dataset==@dataset & title==@variable')
+        mean = df["mean"].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)
 
@@ -68,24 +79,30 @@ def run_histos_view(request):
         error_message = "No runhistos in the database"
 
     context = {
-        'error_message': error_message,
-        'df': df,
-        'mean': mean,
-        'chart': chart,
+        "error_message": error_message,
+        "df": df,
+        "mean": mean,
+        "chart": chart,
     }
 
-    return render(request, 'histograms/main_run_histograms.html', context)
+    return render(request, "histograms/main_run_histograms.html", context)
 
 
 def altair_chart_view(request):
 
-    chart = {}
+    # chart = {}
 
     runhistos_df = pd.DataFrame(RunHistogram.objects.all()[:200].values())
 
     if runhistos_df.shape[0] > 0:
-        chart_obj = alt.Chart(runhistos_df).mark_bar().encode(
-            x='mean', ).to_json(indent=None)
+        chart_obj = (
+            alt.Chart(runhistos_df)
+            .mark_bar()
+            .encode(
+                x="mean",
+            )
+            .to_json(indent=None)
+        )
 
     else:
         print("No runshistos in the database")
@@ -100,9 +117,11 @@ def LumisectionHistogram1DList(request):
     context = {}
     lumisectionHistos1D_list = LumisectionHistogram1D.objects.all()
     lumisectionHistos1D_filter = LumisectionHistogram1DFilter(
-        request.GET, queryset=lumisectionHistos1D_list)
+        request.GET, queryset=lumisectionHistos1D_list
+    )
     lumisectionHistos1D_table = LumisectionHistogram1DTable(
-        lumisectionHistos1D_filter.qs[:50])
+        lumisectionHistos1D_filter.qs[:50]
+    )
 
     RequestConfig(request).configure(lumisectionHistos1D_table)
 
@@ -118,9 +137,11 @@ def LumisectionHistogram2DList(request):
     context = {}
     lumisectionHistos2D_list = LumisectionHistogram2D.objects.all()
     lumisectionHistos2D_filter = LumisectionHistogram2DFilter(
-        request.GET, queryset=lumisectionHistos2D_list)
+        request.GET, queryset=lumisectionHistos2D_list
+    )
     lumisectionHistos2D_table = LumisectionHistogram2DTable(
-        lumisectionHistos2D_filter.qs[:50])
+        lumisectionHistos2D_filter.qs[:50]
+    )
 
     RequestConfig(request).configure(lumisectionHistos2D_table)
 
