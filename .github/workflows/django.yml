@@ -50,14 +50,13 @@ jobs:
 
     - name: Run Unit Tests
       env:
-        DIR_PATH_EOS_CMSML4DC: ${{ secrets.DIR_PATH_EOS_CMSML4DC }}
+        DIR_PATH_EOS_CMSML4DC: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
       run: |
-        pwd
         python manage.py test --settings=mlp.test_ci_settings
 
     - name: Run Functional Tests with Selenium on Chrome
