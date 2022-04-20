@@ -1,101 +1,10 @@
-{% extends 'homebase.html' %}
+{%extends 'base.html'%}
+{%load static%}
 
-{% load static %}
-
-{% block style %}
-<link rel="stylesheet" type="text/css" href="{% static "home/css/style.css" %}">
-<!-- Add icon library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-{% endblock style %}
+{%block title %} Home {%endblock title %}
 
 {% block content %}
-<div class="album bg-light">
-    <div class="card text-white bg-secondary my-2 py-1 text-center" style="width: 100%">
-        <div class="card-body">
-            <h1 class="font-weight-light">ML Playground</h1>
-            <p class="text-white m-0">Tool to build data driven models for Data Quality Monitoring and Data Certification.  
-            </p>
-        </div>
-    </div>
-    <div class="container">
-        <div class="card-deck my-3">
-            <div class="card h-50">
-                <div class="btn btn-secondary" onclick="location.href='{% url 'listdatasets:listdatasets' %}'">
-                <a href="#">
-                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/dataset3.png" %}" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-text text-center" style="font-size: 18px">Data</p>
-                    </div>
-                </a>
-                </div>
-            </div>
-            <div class="card h-50">
-                <div class="btn btn-secondary" onclick="location.href='#'">
-                <a href="#">
-                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/model.png" %}" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-text text-center" style="font-size: 18px">Model</p>
-                    </div>
-                </a>
-                </div>
-            </div>
-            <div class="card h-50">
-                <div class="btn btn-secondary" onclick="location.href='#'">
-                <a href="#">
-                    <img class="card-img-top embed-responsive-item img" src="{% static "home/img/mlreports.png" %}" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-text text-center" style="font-size: 18px">Result</p>
-                    </div>
-                </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-            <h4 style="color: #6a7179;" class="font-weight-light">The tool contains the three main apps.</h4>
-            <ul style="color: #6a7179;">
-            <li>Data - References to various sources of data used for modeling</li>
-            <li>Model - Scripts which run the models on the central server</li>
-            <li>Result - Output of these models which can be used for DQM/DC</li>
-            </ul>
-    </div>
-</div>
 
-<footer class="page-footer font-small pt-4">
-    <hr style="width: 100%; color: #6a7179;; height: 3px; background-color: #6a7179;" />
-    <div class="container-fluid text-center text-md-left">
-        <!-- Grid row -->
-        <div class="row">
-            <div class="col-md-2 mb-md-0 mb-3">
-                <!-- Links -->
-                <h6 style="color: #6a7179;" class="text-uppercase">Links</h5>
-                <ul class="list-unstyled">
-                <li><a href="https://github.com/CMSTrackerDPG/MLplayground">Github</a></li>
-                <li><a href="#!">Contact Us</a></li>
-                <li><a href="https://github.com/CMSTrackerDPG/MLplayground/blob/master/Development-Docs/start.md">User Manual</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4 mb-md-0 mb-3">
-            </div>
-            <!-- Grid column -->
-            <div class="col-md-6 mt-md-0 mt-3">
-                <!-- Content -->
-                <!-- <h6 style="color: #6a7179;" class="text-uppercase">ABOUT THE PROJECT</h5>
-                <p style="color: #6a7179;">
-                    This open source project is an initiative by CMS Tracker DPG. 
-                    It is built using Python-Django, PostgreSQL, Altair etc.
-                </p> -->
-            </div>
-            <!-- Grid column -->
-            <!-- Grid column -->
-            
-            
-            <!-- Grid column -->
-        </div>
-        <!-- Grid row -->
-    </div>
-</footer>
+    <img class="mr-3" src="{% static 'home/img/AnomalyDetection.jpg' %}" alt="Anomaly Detection">
+
 {% endblock content %}
-
-{% block scripts %}
-{% endblock scripts %}
