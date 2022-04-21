@@ -18,9 +18,6 @@
       </li>
 
       {% if request.user.is_authenticated%}
-      <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link" href="#">Whatever</a>
-      </li>
 
       <li class="nav-item {%if request.path == path_to_logout%} active {% endif %}">
         <a class="nav-link" href="{{path_to_logout}}">Logout</a>
@@ -29,7 +26,7 @@
       {% else %}
 
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Granularity
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -39,7 +36,7 @@
       </li>
 
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Histograms
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -54,7 +51,7 @@
       </li>
 
       <li class="nav-item dropdown {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Challenges
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
