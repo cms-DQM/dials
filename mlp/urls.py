@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
+
 from histogram_file_manager.api.routers import router as histogram_data_file_router
 from histograms.api.routers import router as histograms_router
 from challenge.api.routers import router as challenge_router

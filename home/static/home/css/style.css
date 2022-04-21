@@ -14,3 +14,13 @@ h5 {
 p {
     color: white;
 }
+
+.container-img-front-page {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.img-front-page {
+  horizontal-align: center;
+}
