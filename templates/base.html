@@ -36,14 +36,16 @@
   <body>
 
     <!-- Navigation -->
-    {% include "navbar.html" %}
+    {% include "navbar_top.html" %}
 
     <!-- Page Content -->
-    <div class='container px-5'>
+    <div class='container container-main-page'>
       {% block content %}
         Default Bootstrap Container.
       {% endblock %}
     </div>
+
+    {% include "navbar_bottom.html" %}
 
   </body>
 
