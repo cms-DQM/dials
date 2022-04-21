@@ -34,21 +34,25 @@ urlpatterns = [
     path("", include("home.urls")),
     path("listdatasets/", include("listdatasets.urls")),
     path("data_taking_objects/", include("data_taking_objects.urls")),
-    path("data_taking_certification/",
-         include("data_taking_certification.urls")),
+    path("data_taking_certification/", include("data_taking_certification.urls")),
     path("histograms/", include("histograms.urls")),
-    path('admin/', admin.site.urls),
-    path('histogram_file_manager/', include('histogram_file_manager.urls')),
-    path('api/',
-         include(router.urls)),  # Mount aggregate API endpoints to api/
-    path('openapi',
-         get_schema_view(title='MLPlayground',
-                         description="API",
-                         version="0.0.0"),
-         name='openapi-schema'),
-    path('swagger-ui/',
-         TemplateView.as_view(template_name='swagger-ui.html',
-                              extra_context={'schema_url': 'openapi-schema'}),
-         name='swagger-ui'),
+    path("admin/", admin.site.urls),
+    path("histogram_file_manager/", include("histogram_file_manager.urls")),
+    path(
+        "api/", include(router.urls), name="api"
+    ),  # Mount aggregate API endpoints to api/
+    path(
+        "openapi",
+        get_schema_view(title="MLPlayground", description="API", version="0.0.0"),
+        name="openapi-schema",
+    ),
+    path(
+        "swagger-ui/",
+        TemplateView.as_view(
+            template_name="swagger-ui.html",
+            extra_context={"schema_url": "openapi-schema"},
+        ),
+        name="swagger-ui",
+    ),
     # path('__debug__/', include('debug_toolbar.urls')),
 ]

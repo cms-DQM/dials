@@ -20,8 +20,8 @@
           Granularity
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'data_taking_objects:main-runs-view' %}">Runs</a>
-          <a class="dropdown-item" href="#">Lumisections</a>
+          <a class="dropdown-item" href="{% url 'data_taking_objects:runs-view' %}">Runs</a>
+          <a class="dropdown-item" href="{% url 'data_taking_objects:lumisections-view' %}">Lumisections</a>
         </div>
       </li>
 
@@ -30,6 +30,7 @@
           Histograms
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
           <a class="dropdown-item" href="#">Histograms Summary</a>
           <a class="dropdown-item" href="#">1D Histograms</a>
           <a class="dropdown-item" href="#">2D Histograms</a>
