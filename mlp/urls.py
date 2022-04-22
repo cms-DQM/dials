@@ -38,9 +38,7 @@ urlpatterns = [
     path("histograms/", include("histograms.urls")),
     path("admin/", admin.site.urls),
     path("histogram_file_manager/", include("histogram_file_manager.urls")),
-    path(
-        "api/", include(router.urls), name="api"
-    ),  # Mount aggregate API endpoints to api/
+    path("api/", include((router.urls, "api"), namespace="api"), name="api"),
     path(
         "openapi",
         get_schema_view(title="MLPlayground", description="API", version="0.0.0"),
