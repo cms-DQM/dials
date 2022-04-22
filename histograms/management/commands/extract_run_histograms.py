@@ -65,6 +65,6 @@ class Command(BaseCommand):
             )
             histos.append(histo)
 
-        # RunHisto.objects.bulk_create(histos)
+        RunHistogram.objects.bulk_create(histos)
 
         print(f"histograms from run {run_number} successfully added!")

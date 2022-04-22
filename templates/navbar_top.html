@@ -31,14 +31,25 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
-          <a class="dropdown-item" href="#">Histograms Summary</a>
-          <a class="dropdown-item" href="#">1D Histograms</a>
-          <a class="dropdown-item" href="#">2D Histograms</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">Lumisection 1D Histograms</a>
+          <a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">Lumisection 2D Histograms</a>
         </div>
       </li>
 
-      <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link" href="#">Certification</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Certification
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Overview</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="#">Run Certification</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="#">Lumisection Certification</a>
+        </div>
       </li>
 
       <li class="nav-item dropdown {%if request.path == path_to_whatever%} active {% endif %}">

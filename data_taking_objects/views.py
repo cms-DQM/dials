@@ -15,7 +15,7 @@ def runs_view(request):
     runs_df = pd.DataFrame(Run.objects.all().values())
 
     if runs_df.shape[0] > 0:
-        df = runs_df.drop(["id"], axis=1) #.to_html()
+        df = runs_df.drop(["id"], axis=1)  # .to_html()
     else:
         error_message = "No runs in the database"
 
@@ -41,7 +41,7 @@ def run_view(request, run_number):
     context = {
         "error_message": error_message,
         "run_number": run_number,
-        "run_info": run_info
+        "run_info": run_info,
     }
     return render(request, "data_taking_objects/run.html", context)
 
@@ -53,10 +53,12 @@ def lumisections_view(request):
 
     # TODO The following lines should be done on the DB side
     lumisections_df = pd.DataFrame(Lumisection.objects.all().values())
-    runs_df =  pd.DataFrame(Run.objects.all().values())
+    runs_df = pd.DataFrame(Run.objects.all().values())
 
     if lumisections_df.shape[0] > 0:
-        df = runs_df.merge(lumisections_df, left_on="id", right_on="run_id")[["run_number", "ls_number"]]
+        df = runs_df.merge(lumisections_df, left_on="id", right_on="run_id")[
+            ["run_number", "ls_number"]
+        ]
         print(df.head())
     else:
         error_message = "No lumisections in the database"
@@ -75,7 +77,7 @@ def lumisection_view(request, run_number, lumi_number):
     context = {
         "error_message": error_message,
         "run_number": run_number,
-        "lumi_number": lumi_number
+        "lumi_number": lumi_number,
     }
 
     return render(request, "data_taking_objects/lumisection.html", context)
