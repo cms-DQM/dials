@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Runs {% endblock title %}
+{% block title %} Run {{run_number}} {% endblock title %}
 
 {% block content %}
 
@@ -28,18 +28,12 @@
         </tr>
       </thead>
       <tbody>
-        {% for run in runs.itertuples %}
           <tr>
-            <th scope="row"> 
-              <a href="#">
-                {{ run.run_number }}
-              </a>
-            </th>
+            <th scope="row">{{ run_number }}</th>
             <td>XXX</td>
             <td>XXX</td>
             <td>XXX</td>
           </tr>
-        {% endfor %}
       </tbody>
     </table>
 
