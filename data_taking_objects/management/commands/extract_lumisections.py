@@ -27,7 +27,7 @@ class Command(BaseCommand):
             run, _ = Run.objects.get_or_create(run_number=run_number)
 
             lumisection = Lumisection(
-                run_number=run,
+                run=run,
                 ls_number=lumi_number,
             )
 

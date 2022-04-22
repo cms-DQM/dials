@@ -31,12 +31,10 @@ def run_view(request, run_number):
     error_message = None
     run_info = None
 
-    # objects.all().values() provides a dictionary
-    # while objects.all().values_list() provides a tuple
     runs_df = pd.DataFrame(Run.objects.all().values())
 
     if run_number in runs_df.run_number.tolist():
-        run_info = runs_df["run_number" == run_number]
+        run_info = runs_df
     else:
         error_message = "This run is not in the DB"
 
@@ -45,7 +43,6 @@ def run_view(request, run_number):
         "run_number": run_number,
         "run_info": run_info
     }
-
     return render(request, "data_taking_objects/run.html", context)
 
 
@@ -54,25 +51,34 @@ def lumisections_view(request):
     error_message = None
     df = None
 
-    # objects.all().values() provides a dictionary
-    # while objects.all().values_list() provides a tuple
-    runs_df = pd.DataFrame(Run.objects.all().values())
+    # TODO The following lines should be done on the DB side
+    lumisections_df = pd.DataFrame(Lumisection.objects.all().values())
+    runs_df =  pd.DataFrame(Run.objects.all().values())
 
-    if runs_df.shape[0] > 0:
-        df = runs_df.drop(["id"], axis=1).to_html()
-
+    if lumisections_df.shape[0] > 0:
+        df = runs_df.merge(lumisections_df, left_on="id", right_on="run_id")[["run_number", "ls_number"]]
+        print(df.head())
     else:
         error_message = "No lumisections in the database"
 
     context = {
         "error_message": error_message,
-        "runs": df,
+        "lumisections": df,
     }
     return render(request, "data_taking_objects/lumisections.html", context)
 
 
-def lumisection_view(request):
-    return
+def lumisection_view(request, run_number, lumi_number):
+
+    error_message = None
+
+    context = {
+        "error_message": error_message,
+        "run_number": run_number,
+        "lumi_number": lumi_number
+    }
+
+    return render(request, "data_taking_objects/lumisection.html", context)
 
 
 # class based view (to be compared to function based view)
