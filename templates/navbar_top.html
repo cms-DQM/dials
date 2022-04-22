@@ -31,9 +31,11 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
-          <a class="dropdown-item" href="#">Histograms Summary</a>
-          <a class="dropdown-item" href="#">1D Histograms</a>
-          <a class="dropdown-item" href="#">2D Histograms</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
+          <hr class="dropdown-divider">
+          <a class="dropdown-item" href="#">Lumisection 1D Histograms</a>
+          <a class="dropdown-item" href="#">Lumisection 2D Histograms</a>
         </div>
       </li>
 

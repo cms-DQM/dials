@@ -42,7 +42,7 @@ def import_view(request):
     return render(request, "histograms/import.html")
 
 
-def run_histos_view(request):
+def run_histograms_view(request):
 
     error_message = None
     dataset = None
