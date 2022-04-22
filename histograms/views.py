@@ -33,13 +33,15 @@ def run_histograms_view(request):
     error_message = None
     list_of_histograms = None
 
-    list_of_histograms = RunHistogram.objects.all()[:200].values_list('title', flat=True)
+    list_of_histograms = RunHistogram.objects.all()[:200].values_list(
+        "title", flat=True
+    )
 
     context = {
         "error_message": error_message,
         "list_of_histograms": list_of_histograms,
     }
-    
+
     return render(request, "histograms/run_histograms.html", context)
 
 
