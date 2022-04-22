@@ -22,27 +22,28 @@ from histograms.api.filters import (
 )
 
 
-def RunHistogramList(request):
-    """
-    View to list the filtered 1D histograms for Runs
-    """
-    context = {}
-    runHistos_list = RunHistogram.objects.all()
-    runHistos_filter = RunHistogramFilter(request.GET, queryset=runHistos_list)
-    runHistos_table = RunHistogramTable(runHistos_filter.qs[:50])
-
-    RequestConfig(request).configure(runHistos_table)
-
-    context["runHistos_table"] = runHistos_table
-    context["filter"] = runHistos_filter
-    return render(request, "histograms/listRunHistos1D.html", context)
-
-
 def import_view(request):
     return render(request, "histograms/import.html")
 
 
+# Could be a duplicate of RunHistogramList...
+# Just checking a few things
 def run_histograms_view(request):
+
+    error_message = None
+    list_of_histograms = None
+
+    list_of_histograms = RunHistogram.objects.all()[:200].values_list('title', flat=True)
+
+    context = {
+        "error_message": error_message,
+        "list_of_histograms": list_of_histograms,
+    }
+    
+    return render(request, "histograms/run_histograms.html", context)
+
+
+def run_histograms_plotting_view(request):
 
     error_message = None
     dataset = None
@@ -108,6 +109,22 @@ def altair_chart_view(request):
         print("No runshistos in the database")
 
     return JsonResponse(chart_obj)
+
+
+def RunHistogramList(request):
+    """
+    View to list the filtered 1D histograms for Runs
+    """
+    context = {}
+    runHistos_list = RunHistogram.objects.all()
+    runHistos_filter = RunHistogramFilter(request.GET, queryset=runHistos_list)
+    runHistos_table = RunHistogramTable(runHistos_filter.qs[:50])
+
+    RequestConfig(request).configure(runHistos_table)
+
+    context["runHistos_table"] = runHistos_table
+    context["filter"] = runHistos_filter
+    return render(request, "histograms/listRunHistos1D.html", context)
 
 
 def LumisectionHistogram1DList(request):
