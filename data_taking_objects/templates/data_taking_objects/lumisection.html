@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %} Runs {% endblock title %}
+{% block title %} Run {{run_number}} - Lumisection {{lumi_number}} {% endblock title %}
 
 {% block content %}
-  <div class='container-fluid'>
 
   <div>
     {% if error_message %}
@@ -17,9 +16,27 @@
     {% endif %}
   </div>
 
+  <div class='container-fluid'>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Run number</th>
+          <th scope="col">Lumisection number</th>
+          <th scope="col">Integrated luminosity</th>
+          <th scope="col">Initial ZeroBias rate</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <th scope="row"> {{ run_number }} </th>
+            <th> {{lumi_number}} </th>
+            <td>XXX</td>
+            <td>XXX</td>
+          </tr>
+      </tbody>
+    </table>
+
   </div>
 
-  <div class='container-fluid'>
-    {{ runs | safe }}
-  </div>
 {% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %} Runs {% endblock title %}
+
+{% block content %}
+
+  <div>
+    {% if error_message %}
+      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          {{ error_message }}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class='container-fluid'>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Run number</th>
+          <th scope="col">Number of lumisections</th>
+          <th scope="col">Integrated luminosity</th>
+          <th scope="col">Initial ZeroBias rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in runs.itertuples %}
+          <tr>
+            <th scope="row"> 
+              <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">
+                {{ run.run_number }}
+              </a>
+            </th>
+            <td>XXX</td>
+            <td>XXX</td>
+            <td>XXX</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock content %}

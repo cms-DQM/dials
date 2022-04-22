@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %} Run {{run_number}} {% endblock title %}
+
+{% block content %}
+
+  <div>
+    {% if error_message %}
+      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          {{ error_message }}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class='container-fluid'>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Run number</th>
+          <th scope="col">Number of lumisections</th>
+          <th scope="col">Integrated luminosity</th>
+          <th scope="col">Initial ZeroBias rate</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <th scope="row">{{ run_number }}</th>
+            <td>XXX</td>
+            <td>XXX</td>
+            <td>XXX</td>
+          </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock content %}
