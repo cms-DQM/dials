@@ -17,13 +17,20 @@ class Command(BaseCommand):
 
         df_rr_run = pd.read_pickle(file_path)
 
-        print(df_rr_run.head())
-        print(df_rr_run.columns.tolist())
+        # print(df_rr_run.head())
+        # print(df_rr_run.columns.tolist())
+
+        cols = df_rr_run.columns[df_rr_run.dtypes.eq('float64')]
+        print(cols)
+
+        df_rr_run[cols] = df_rr_run[cols].apply(pd.to_numeric)
+        print(df_rr_run.fraction_pixel_GOOD.dtypes)
 
         certifications = []
 
         for index, row in df_rr_run.iterrows():
             run, _ = Run.objects.get_or_create(run_number=row["run_number"])
+
             certification = RunCertification(
                 run=run,
                 rr_frac_pixel_good=row["fraction_pixel_GOOD"],

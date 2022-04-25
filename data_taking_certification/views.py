@@ -25,6 +25,7 @@ def run_certification_view(request):
                 "rr_frac_pixel_good",
                 "rr_frac_strip_good",
                 "rr_frac_tracking_good",
+                "rr_frac_ecal_good",
             ]
         ]
         print(df.head())

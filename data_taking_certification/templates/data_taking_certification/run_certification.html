@@ -28,6 +28,7 @@
           <th scope="col">Frac. Pixel GOOD</th>
           <th scope="col">Frac. Strip GOOD</th>
           <th scope="col">Frac. Track GOOD</th>
+          <th scope="col">Frac. Ecal GOOD</th>
         </tr>
       </thead>
       <tbody>
@@ -46,6 +47,9 @@
             </td>
             <td>
               {{ run.rr_frac_tracking_good }}
+            </td>
+            <td>
+              {{ run.rr_frac_ecal_good }}
             </td>
           </tr>
         {% endfor %}
