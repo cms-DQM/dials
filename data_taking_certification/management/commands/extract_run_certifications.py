@@ -20,7 +20,7 @@ class Command(BaseCommand):
         # print(df_rr_run.head())
         # print(df_rr_run.columns.tolist())
 
-        cols = df_rr_run.columns[df_rr_run.dtypes.eq('float64')]
+        cols = df_rr_run.columns[df_rr_run.dtypes.eq("float64")]
         print(cols)
 
         df_rr_run[cols] = df_rr_run[cols].apply(pd.to_numeric)
