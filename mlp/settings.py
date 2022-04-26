@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "django.contrib.sitemaps",
     "bootstrap3",
     "django_tables2",
@@ -63,6 +64,8 @@ INSTALLED_APPS = [
     "data_taking_objects",
     "data_taking_certification",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

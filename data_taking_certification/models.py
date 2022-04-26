@@ -3,9 +3,9 @@ from data_taking_objects.models import Run, Lumisection
 
 
 class RunCertification(models.Model):
-    run = models.ForeignKey(Run,
-                            on_delete=models.CASCADE,
-                            related_name="certifications")
+    run = models.ForeignKey(
+        Run, on_delete=models.CASCADE, related_name="certifications"
+    )
     date = models.DateTimeField(auto_now_add=True)
 
     # run registry
@@ -35,17 +35,15 @@ class RunCertification(models.Model):
     rr_frac_jetmet_good = models.FloatField(null=True)
     rr_frac_btag_good = models.FloatField(null=True)
 
-    # elogs?
-
     def __str__(self):
         return f"run: {self.run.run_number}"
 
 
 # Create your models here.
 class LumisectionCertification(models.Model):
-    lumisection = models.ForeignKey(Lumisection,
-                                    on_delete=models.CASCADE,
-                                    related_name="certifications")
+    lumisection = models.ForeignKey(
+        Lumisection, on_delete=models.CASCADE, related_name="certifications"
+    )
     date = models.DateTimeField(auto_now_add=True)
 
     # run registry
