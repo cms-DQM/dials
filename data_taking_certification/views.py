@@ -44,22 +44,17 @@ def lumisection_certification_view(request):
     error_message = None
     df = None
 
-    # TODO The following lines should be done on the DB side
-    certification_df = pd.DataFrame(LumisectionCertification.objects.all().values())
-    print(certification_df.head())
-    lumisection_df = pd.DataFrame(Lumisection.objects.all().values())
-    print(lumisection_df.head())
+    lumisection_certifications = LumisectionCertification.objects.all()
+    n_certifications = len(lumisection_certifications)
 
-    if certification_df.shape[0] > 0:
-        df = lumisection_df.merge(certification_df, left_on="id", right_on="lumisection_id")
-        print(df.head())
-        print(df.columns.tolist())
+    if n_certifications > 0:
+        print(f"{n_certifications} certifications are being loaded")
     else:
         error_message = "No lumisectionn certifications in the database"
 
     context = {
         "error_message": error_message,
-        "lumisections": df,
+        "lumisection_certifications": lumisection_certifications,
     }
 
     return render(request, "data_taking_certification/lumisection_certification.html", context)

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Lumisection certification {% endblock title %}
+{% block title %} Lumisection certification with queryset {% endblock title %}
 
 {% block content %}
   <div class='container-fluid'>
@@ -32,26 +32,26 @@
         </tr>
       </thead>
       <tbody>
-        {% for lumisection in lumisections.itertuples %}
+        {% for certification in lumisection_certifications %}
           <tr>
             <th scope="row">
-              <a href="#">
-                XXX
+              <a href="{% url 'data_taking_objects:run-view' run_number=certification.lumisection.run.run_number %}">
+                {{ certification.lumisection.run.run_number }}
+              </a>
+            </th>
+            <th>
+              <a href="{% url 'data_taking_objects:lumisection-view' run_number=certification.lumisection.run.run_number lumi_number=certification.lumisection.ls_number %}">
+                {{ certification.lumisection.ls_number }}
               </a>
             </th>
             <td>
-              <a href="#">
-                {{ lumisection.ls_number }}
-              </a>
+              {{ certification.rr_is_pixel_good }}
             </td>
             <td>
-              {{ lumisection.rr_is_pixel_good }}
+              {{ certification.rr_is_strip_good }}
             </td>
             <td>
-              {{ lumisection.rr_is_strip_good }}
-            </td>
-            <td>
-              {{ lumisection.rr_is_tracking_good }}
+              {{ certification.rr_is_tracking_good }}
             </td>
           </tr>
         {% endfor %}
