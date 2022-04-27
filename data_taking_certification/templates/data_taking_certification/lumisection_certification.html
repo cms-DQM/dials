@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %} Lumisection certification with queryset {% endblock title %}
+
+{% block content %}
+  <div class='container-fluid'>
+
+  <div>
+    {% if error_message %}
+      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          {{ error_message }}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+
+  </div>
+
+  <div class='container-fluid'>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Run number</th>
+          <th scope="col">Lumisection number</th>
+          <th scope="col">Pixel GOOD</th>
+          <th scope="col">Strip GOOD</th>
+          <th scope="col">Track GOOD</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for certification in lumisection_certifications %}
+          <tr>
+            <th scope="row">
+              <a href="{% url 'data_taking_objects:run-view' run_number=certification.lumisection.run.run_number %}">
+                {{ certification.lumisection.run.run_number }}
+              </a>
+            </th>
+            <th>
+              <a href="{% url 'data_taking_objects:lumisection-view' run_number=certification.lumisection.run.run_number lumi_number=certification.lumisection.ls_number %}">
+                {{ certification.lumisection.ls_number }}
+              </a>
+            </th>
+            <td>
+              {{ certification.rr_is_pixel_good }}
+            </td>
+            <td>
+              {{ certification.rr_is_strip_good }}
+            </td>
+            <td>
+              {{ certification.rr_is_tracking_good }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock content %}

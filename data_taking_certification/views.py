@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from data_taking_objects.models import Run
-from data_taking_certification.models import RunCertification
+from data_taking_objects.models import Run, Lumisection
+from data_taking_certification.models import RunCertification, LumisectionCertification
 
 # from histograms.models import RunHistogram
 
@@ -38,3 +38,23 @@ def run_certification_view(request):
     }
 
     return render(request, "data_taking_certification/run_certification.html", context)
+
+def lumisection_certification_view(request):
+
+    error_message = None
+    df = None
+
+    lumisection_certifications = LumisectionCertification.objects.all()
+    n_certifications = len(lumisection_certifications)
+
+    if n_certifications > 0:
+        print(f"{n_certifications} certifications are being loaded")
+    else:
+        error_message = "No lumisectionn certifications in the database"
+
+    context = {
+        "error_message": error_message,
+        "lumisection_certifications": lumisection_certifications,
+    }
+
+    return render(request, "data_taking_certification/lumisection_certification.html", context)
