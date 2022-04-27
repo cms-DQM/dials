@@ -1,8 +1,11 @@
 import pandas as pd
 import altair as alt
+
 from django.shortcuts import render
 from django.http import JsonResponse
+
 from django_tables2 import RequestConfig
+
 from data_taking_objects.models import Run
 from histograms.utils import get_altair_chart
 from histograms.models import (

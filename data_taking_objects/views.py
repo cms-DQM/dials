@@ -1,27 +1,27 @@
-import pandas as pd
 from django.shortcuts import render
+
 from rest_framework import viewsets
+
 from data_taking_objects.models import Run, Lumisection
 from data_taking_objects.api.serializers import RunSerializer
 
+import pandas as pd
 
 def runs_view(request):
 
     error_message = None
-    df = None
 
-    # objects.all().values() provides a dictionary
-    # while objects.all().values_list() provides a tuple
-    runs_df = pd.DataFrame(Run.objects.all().values())
+    runs = Run.objects.all()
+    n_runs = len(runs)
 
-    if runs_df.shape[0] > 0:
-        df = runs_df.drop(["id"], axis=1)  # .to_html()
+    if n_runs > 0:
+        print(f"{n_runs} are being loaded")
     else:
         error_message = "No runs in the database"
 
     context = {
         "error_message": error_message,
-        "runs": df,
+        "runs": runs,
     }
     return render(request, "data_taking_objects/runs.html", context)
 
@@ -29,19 +29,17 @@ def runs_view(request):
 def run_view(request, run_number):
 
     error_message = None
-    run_info = None
 
-    runs_df = pd.DataFrame(Run.objects.all().values())
+    run = Run.objects.filter(run_number=run_number)
 
-    if run_number in runs_df.run_number.tolist():
-        run_info = runs_df
+    if run:
+        print(f"loading following run: {run}")
     else:
         error_message = "This run is not in the DB"
 
     context = {
         "error_message": error_message,
-        "run_number": run_number,
-        "run_info": run_info,
+        "run": run[0],
     }
     return render(request, "data_taking_objects/run.html", context)
 
@@ -49,23 +47,18 @@ def run_view(request, run_number):
 def lumisections_view(request):
 
     error_message = None
-    df = None
 
-    # TODO The following lines should be done on the DB side
-    lumisections_df = pd.DataFrame(Lumisection.objects.all().values())
-    runs_df = pd.DataFrame(Run.objects.all().values())
+    lumisections = Lumisection.objects.all()
+    n_lumisections = len(lumisections)
 
-    if lumisections_df.shape[0] > 0:
-        df = runs_df.merge(lumisections_df, left_on="id", right_on="run_id")[
-            ["run_number", "ls_number"]
-        ]
-        print(df.head())
+    if n_lumisections > 0:
+        print(f"{n_lumisections} are being loaded")
     else:
         error_message = "No lumisections in the database"
 
     context = {
         "error_message": error_message,
-        "lumisections": df,
+        "lumisections": lumisections,
     }
     return render(request, "data_taking_objects/lumisections.html", context)
 
@@ -74,10 +67,16 @@ def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
 
+    lumisection = Lumisection.objects.filter(ls_number=lumi_number, run__run_number=run_number)
+
+    if lumisection:
+        print(f"loading following lumisection: {lumisection}")
+    else:
+        error_message = "This lumisection is not in the DB"
+
     context = {
         "error_message": error_message,
-        "run_number": run_number,
-        "lumi_number": lumi_number,
+        "lumisection": lumisection[0],
     }
 
     return render(request, "data_taking_objects/lumisection.html", context)

@@ -32,24 +32,24 @@
         </tr>
       </thead>
       <tbody>
-        {% for run in runs.itertuples %}
+        {% for certification in run_certifications %}
           <tr>
             <th scope="row">
-              <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">
-                {{ run.run_number }}
+              <a href="{% url 'data_taking_objects:run-view' run_number=certification.run.run_number %}">
+                {{ certification.run.run_number }}
               </a>
             </th>
             <td>
-              {{ run.rr_frac_pixel_good }}
+              {{ certification.rr_frac_pixel_good }}
             </td>
             <td>
-              {{ run.rr_frac_strip_good }}
+              {{ certification.rr_frac_strip_good }}
             </td>
             <td>
-              {{ run.rr_frac_tracking_good }}
+              {{ certification.rr_frac_tracking_good }}
             </td>
             <td>
-              {{ run.rr_frac_ecal_good }}
+              {{ certification.rr_frac_ecal_good }}
             </td>
           </tr>
         {% endfor %}
