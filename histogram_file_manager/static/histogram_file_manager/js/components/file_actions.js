@@ -9,7 +9,7 @@ app.component('file-actions', {
 	<div class="modal-content">
 	  <div class="modal-header">
         <h5 class="modal-title">File actions (File {{ file_id }})</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="clicked_close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clicked_close">
           <span aria-hidden="true" >&times;</span>
         </button>
 	  </div>
