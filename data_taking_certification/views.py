@@ -1,7 +1,11 @@
+import logging
+
 from django.shortcuts import render
 
 from data_taking_objects.models import Run, Lumisection
 from data_taking_certification.models import RunCertification, LumisectionCertification
+
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -13,7 +17,7 @@ def run_certification_view(request):
     n_certifications = run_certifications.count()
 
     if n_certifications > 0:
-        print(f"{n_certifications} certifications are being loaded")
+        logger.info(f"{n_certifications} certifications are being loaded")
     else:
         error_message = "No run certifications in the database"
 
@@ -33,7 +37,7 @@ def lumisection_certification_view(request):
     n_certifications = lumisection_certifications.count()
 
     if n_certifications > 0:
-        print(f"{n_certifications} certifications are being loaded")
+        logger.info(f"{n_certifications} certifications are being loaded")
     else:
         error_message = "No lumisection certifications in the database"
 
