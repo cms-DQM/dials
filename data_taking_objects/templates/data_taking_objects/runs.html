@@ -28,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for run in runs.itertuples %}
+        {% for run in runs %}
           <tr>
             <th scope="row"> 
               <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">

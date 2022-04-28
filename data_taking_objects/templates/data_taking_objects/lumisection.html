@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Run {{run_number}} - Lumisection {{lumi_number}} {% endblock title %}
+{% block title %} Run {{lumisection.run.run_number}} - Lumisection {{lumisection.ls_number}} {% endblock title %}
 
 {% block content %}
 
@@ -29,8 +29,8 @@
       </thead>
       <tbody>
           <tr>
-            <th scope="row"> {{ run_number }} </th>
-            <th> {{lumi_number}} </th>
+            <th scope="row"> {{ lumisection.run.run_number }} </th>
+            <th> {{ lumisection.ls_number}} </th>
             <td>XXX</td>
             <td>XXX</td>
           </tr>

@@ -31,16 +31,16 @@
         </tr>
       </thead>
       <tbody>
-        {% for lumi in lumisections.itertuples %}
+        {% for lumisection in lumisections %}
           <tr>
             <th scope="row">
-              <a href="{% url 'data_taking_objects:run-view' run_number=lumi.run_number %}">
-                {{ lumi.run_number }}
+              <a href="{% url 'data_taking_objects:run-view' run_number=lumisection.run.run_number %}">
+                {{ lumisection.run.run_number }}
               </a>
             </th>
             <th>
-              <a href="{% url 'data_taking_objects:lumisection-view' run_number=lumi.run_number lumi_number=lumi.ls_number%}">
-                {{ lumi.ls_number }}
+              <a href="{% url 'data_taking_objects:lumisection-view' run_number=lumisection.run.run_number lumi_number=lumisection.ls_number%}">
+                {{ lumisection.ls_number }}
               </a>
             </th>
             <td>XXX</td>
