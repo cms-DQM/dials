@@ -1,6 +1,6 @@
 # DQM Playground
 
-[![Django CI](https://github.com/XavierAtCERN/MLplayground/actions/workflows/django.yml/badge.svg?branch=master)](https://github.com/XavierAtCERN/MLplayground/actions/workflows/django.yml)
+[![Django CI - Updated](https://github.com/CMSTrackerDPG/MLplayground/actions/workflows/django.yml/badge.svg)](https://github.com/CMSTrackerDPG/MLplayground/actions/workflows/django.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 

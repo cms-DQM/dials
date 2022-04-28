@@ -4,10 +4,10 @@
         <form id="ls_histos-filter-form" action="" method="get" class="form my-1">
             
             <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-run-numbers">Run</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-ls-numbers">Lumisection</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-stats">Statistics</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu-datasets">Title</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#menu-run-numbers">Run</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#menu-ls-numbers">Lumisection</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#menu-stats">Statistics</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#menu-datasets">Title</a></li>
             </ul>
             <div class="tab-content">
 
@@ -18,7 +18,7 @@
                             <div class="col-sm-12 text-right">
                                 <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-run_number">
                                 <label class="form-check-label no-bold-label" for="id-ignore-run_number">Ignore other filters</label>
-                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+                                <a href="#" data-bs-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
         text-decoration: none;"></a>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                             <div class="col-sm-12 text-right">
                                 <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-ls_number">
                                 <label class="form-check-label no-bold-label" for="id-ignore-ls_number">Ignore other filters</label>
-                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+                                <a href="#" data-bs-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
         text-decoration: none;"></a>
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                             <div class="col-sm-12 text-right">
                                 <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-stats">
                                 <label class="form-check-label no-bold-label" for="id-ignore-stats">Ignore other filters</label>
-                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
+                                <a href="#" data-bs-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific mean range)" style="color:black;
         text-decoration: none;"></a>
                             </div>
                         </div>
@@ -149,7 +149,7 @@
                             <div class="col-sm-12 text-right">
                                 <input type="checkbox" class="form-check-input ignore-other-filter-checkbox" id="id-ignore-dataset">
                                 <label class="form-check-label no-bold-label" for="id-ignore-dataset">Ignore other filters</label>
-                                <a href="#" data-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific date range)" style="color:black;
+                                <a href="#" data-bs-toggle="tooltip" title="Check if you do not want to apply multiple filters at once (for example a run number range within a specific date range)" style="color:black;
                         text-decoration: none;"></a>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                                 <h6>Title:</h6>
                             </div>
                             <div class="col-sm-6" style="margin-top: 10px">
-                                <a href="#" data-toggle="tooltip" title="use CTRL + Click to select and deselect multiple titles" style="color:black;
+                                <a href="#" data-bs-toggle="tooltip" title="use CTRL + Click to select and deselect multiple titles" style="color:black;
         text-decoration: none;">Help</a>
                                 {% render_field filter.form.title|add_class:"form-control" %}
                             </div>
