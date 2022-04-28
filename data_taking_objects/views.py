@@ -12,7 +12,7 @@ def runs_view(request):
     error_message = None
 
     runs = Run.objects.all()
-    n_runs = len(runs)
+    n_runs = runs.count()
 
     if n_runs > 0:
         print(f"{n_runs} are being loaded")
@@ -49,7 +49,7 @@ def lumisections_view(request):
     error_message = None
 
     lumisections = Lumisection.objects.all()
-    n_lumisections = len(lumisections)
+    n_lumisections = lumisections.count()
 
     if n_lumisections > 0:
         print(f"{n_lumisections} are being loaded")
