@@ -67,8 +67,7 @@ class LumisectionHistogramBase(HistogramBase):
 
     """
 
-    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE)
-    # related_name="%(class)s_histograms")
+    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_histograms")
 
     entries = models.IntegerField(blank=True, null=True)
 
