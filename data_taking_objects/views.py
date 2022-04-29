@@ -1,4 +1,4 @@
-import logging 
+import logging
 
 from django.shortcuts import render
 
@@ -70,7 +70,9 @@ def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
 
-    lumisection = Lumisection.objects.filter(ls_number=lumi_number, run__run_number=run_number)
+    lumisection = Lumisection.objects.filter(
+        ls_number=lumi_number, run__run_number=run_number
+    )
 
     if lumisection:
         logger.info(f"loading following lumisection: {lumisection}")
