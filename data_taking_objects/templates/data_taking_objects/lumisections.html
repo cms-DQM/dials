@@ -27,7 +27,8 @@
           <th scope="col">Run number</th>
           <th scope="col">Lumisection number</th>
           <th scope="col">OMS info</th>
-          <th scope="col">Histograms</th>
+          <th scope="col">1D Histograms</th>
+          <th scope="col">2D Histograms</th>
           <th scope="col">RR certification info</th>
         </tr>
       </thead>
@@ -48,7 +49,10 @@
               <span class="badge bg-warning">Not available</span>
             </td>
             <td>
-              <span class="badge bg-success"> {{ lumisection.lumisection_histogram|length }} histograms available</span>
+              <span class="badge bg-success"> {{ lumisection.histograms_lumisectionhistogram1d_histograms.count }} 1D histograms</span>
+            </td>
+            <td>
+              <span class="badge bg-success"> {{ lumisection.histograms_lumisectionhistogram2d_histograms.count }} 2D histograms</span>
             </td>
             <td>
               <span class="badge bg-success">Available</span>
