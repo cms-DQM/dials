@@ -39,7 +39,7 @@ class HistogramBase(models.Model):
 
 
 class RunHistogram(HistogramBase):
-    run = models.ForeignKey(Run, on_delete=models.CASCADE)
+    run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="run_histogram")
     primary_dataset = models.CharField(max_length=220)
     path = models.CharField(max_length=220)
     entries = models.BigIntegerField(null=True)

@@ -22,9 +22,10 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col">Run number</th>
-          <th scope="col">Number of lumisections</th>
-          <th scope="col">Integrated luminosity</th>
-          <th scope="col">Initial ZeroBias rate</th>
+          <th scope="col">OMS info</th>
+          <th scope="col">RR OMS info</th>
+          <th scope="col">Histograms</th>
+          <th scope="col">RR certification info</th>
         </tr>
       </thead>
       <tbody>
@@ -35,9 +36,18 @@
                 {{ run.run_number }}
               </a>
             </th>
-            <td>XXX</td>
-            <td>XXX</td>
-            <td>XXX</td>
+            <td>
+              <span class="badge bg-warning">Not available</span>
+            </td>
+            <td>
+              <span class="badge bg-success">Available</span>
+            </td>
+            <td>
+              <span class="badge bg-success"> {{ run.run_histograms|length }} histograms available</span>
+            </td>
+            <td>
+              <span class="badge bg-success">Available</span>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

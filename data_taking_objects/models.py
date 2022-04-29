@@ -18,6 +18,9 @@ class Run(models.Model):
     def __str__(self):
         return f"run {self.run_number}"
 
+    class Meta:
+        ordering = ["run_number"]
+
 
 class Lumisection(models.Model):
     run = models.ForeignKey(Run,
@@ -32,6 +35,7 @@ class Lumisection(models.Model):
         return f"run {self.run.run_number} / lumisection {self.ls_number}"
 
     class Meta:
+        ordering = ["run__run_number", "ls_number"]
         constraints = [
             models.UniqueConstraint(fields=['run', 'ls_number'],
                                     name='unique run/ls combination')

@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 
 from rest_framework import viewsets
@@ -5,7 +7,8 @@ from rest_framework import viewsets
 from data_taking_objects.models import Run, Lumisection
 from data_taking_objects.api.serializers import RunSerializer
 
-import pandas as pd
+logger = logging.getLogger(__name__)
+
 
 def runs_view(request):
 
@@ -15,7 +18,7 @@ def runs_view(request):
     n_runs = runs.count()
 
     if n_runs > 0:
-        print(f"{n_runs} are being loaded")
+        logger.info(f"{n_runs} are being loaded")
     else:
         error_message = "No runs in the database"
 
@@ -33,7 +36,7 @@ def run_view(request, run_number):
     run = Run.objects.filter(run_number=run_number)
 
     if run:
-        print(f"loading following run: {run}")
+        logger.info(f"loading following run: {run}")
     else:
         error_message = "This run is not in the DB"
 
@@ -52,7 +55,7 @@ def lumisections_view(request):
     n_lumisections = lumisections.count()
 
     if n_lumisections > 0:
-        print(f"{n_lumisections} are being loaded")
+        logger.info(f"{n_lumisections} are being loaded")
     else:
         error_message = "No lumisections in the database"
 
@@ -67,10 +70,12 @@ def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
 
-    lumisection = Lumisection.objects.filter(ls_number=lumi_number, run__run_number=run_number)
+    lumisection = Lumisection.objects.filter(
+        ls_number=lumi_number, run__run_number=run_number
+    )
 
     if lumisection:
-        print(f"loading following lumisection: {lumisection}")
+        logger.info(f"loading following lumisection: {lumisection}")
     else:
         error_message = "This lumisection is not in the DB"
 
