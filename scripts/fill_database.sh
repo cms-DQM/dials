@@ -42,3 +42,14 @@ echo ""
 # ...
 echo "Adding run information from Run Registry"
 echo ""
+
+# ...
+echo "Adding lumisection information from Run Registry?"
+echo ""
+
+# ...
+echo "Adding lumisection information from OMS file"
+FILE="/eos/user/x/xcoubez/dqm_playground_shared/data/secondary/ZeroBias_rate_perLS_from_OMS_2018.pkl"
+./manage.py extract_oms_lumisection_information_from_file $FILE
+echo "OMS information added succesfully"
+echo ""
