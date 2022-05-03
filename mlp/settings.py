@@ -116,6 +116,9 @@ DATABASES = {
     },
 }
 
+#print(f"DJANGO DATABASE USER IS *** DRUM FUCKING ROLL *** {config('DJANGO_DATABASE_USER'}")
+print(config("DJANGO_DATABASE_USER"))
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
