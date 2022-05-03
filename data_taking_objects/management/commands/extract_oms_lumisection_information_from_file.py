@@ -23,6 +23,8 @@ class Command(BaseCommand):
         print(df_rate.head())
 
         # VERY VERY SLOW
+        # TODO
+        # move to a loop on run numbers and update or create all the lumisections
         for index, row in df_rate.iterrows():
 
             run_number = row["attributes.run_number"]
@@ -32,7 +34,7 @@ class Command(BaseCommand):
             print(run_number, ls_number, rate)
 
             run, _ = Run.objects.get_or_create(run_number=run_number)
-            lumisection, _ = Lumisection.objects.get_or_create(
+            lumisection, _ = Lumisection.objects.update_or_create(
                 run=run, ls_number=ls_number, oms_zerobias_rate=rate
             )
 
@@ -40,6 +42,6 @@ class Command(BaseCommand):
             # lumisection = Lumisection(...)
             # lumisections.append(lumisection)
             # Lumisection.objects.bulk_create(lumisections)
-            # would require bulk_get_or_create...
+            # would require bulk_update_or_create...
 
             print(f"run {run_number} / ls {ls_number} rate successfully added!")
