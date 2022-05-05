@@ -53,6 +53,7 @@ class RunHistogram(HistogramBase):
 
     # TODO
     class Meta:
+        ordering = ["title"]
         constraints = [
             models.UniqueConstraint(
                 fields=["run", "primary_dataset", "title"],

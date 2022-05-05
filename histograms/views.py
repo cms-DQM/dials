@@ -24,11 +24,6 @@ from histograms.api.filters import (
     LumisectionHistogram2DFilter,
 )
 
-
-def import_view(request):
-    return render(request, "histograms/import.html")
-
-
 # Could be a duplicate of RunHistogramList...
 # Just checking a few things
 def run_histograms_view(request):
@@ -47,16 +42,19 @@ def run_histograms_view(request):
 
     return render(request, "histograms/run_histograms.html", context)
 
-
-def run_histograms_plotting_view(request):
+# TODO refactor
+def run_histograms_plots_view(request):
 
     error_message = None
+    run_histos_names = None
     dataset = None
     variable = None
     chart_type = None
     df = None
     mean = None
     chart = {}
+
+    run_histos_names = RunHistogram.objects.all().values("title").distinct()
 
     # objects.all().values() provides a dictionary while objects.all().values_list() provides a tuple
     runs_df = pd.DataFrame(Run.objects.all().values())
@@ -76,6 +74,46 @@ def run_histograms_plotting_view(request):
             )
 
         # df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
+        df = df.query('primary_dataset==@dataset & title==@variable')
+        mean = df["mean"].to_frame().to_html()
+
+        chart = get_altair_chart(chart_type, df=df)
+
+    else:
+        error_message = "No runhistos in the database"
+
+    context = {
+        "error_message": error_message,
+        "run_histos_names": run_histos_names,
+        "df": df,
+        "mean": mean,
+        "chart": chart,
+    }
+
+    return render(request, "histograms/run_histograms_plots.html", context)
+
+
+def run_histogram_time_serie_view(request, histogram_name):
+
+    error_message = None
+    dataset = "ZeroBias"
+    variable = histogram_name
+    chart_type = "time_serie"
+    df = None
+    mean = None
+    chart = {}
+
+    print(f"Trying to plot {variable}")
+
+    runs_df = pd.DataFrame(Run.objects.all().values())
+    runhistos_df = pd.DataFrame(RunHistogram.objects.all()[:200].values())
+
+    if runhistos_df.shape[0] > 0:
+        df = pd.merge(runs_df, runhistos_df, left_on="id", right_on="run_id").drop(
+            ["id_x", "id_y", "run_id", "date_x", "date_y"], axis=1
+        )
+
+        df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
         # df = df.query('primary_dataset==@dataset & title==@variable')
         mean = df["mean"].to_frame().to_html()
 
@@ -91,7 +129,7 @@ def run_histograms_plotting_view(request):
         "chart": chart,
     }
 
-    return render(request, "histograms/main_run_histograms.html", context)
+    return render(request, "histograms/run_histogram_time_serie.html", context)
 
 
 def altair_chart_view(request):
@@ -113,7 +151,7 @@ def altair_chart_view(request):
     else:
         print("No runshistos in the database")
 
-    return JsonResponse(chart_obj)
+    return JsonResponse(chart_obj, safe=False)
 
 
 def RunHistogramList(request):
