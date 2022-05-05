@@ -31,9 +31,7 @@ def run_histograms_view(request):
     error_message = None
     list_of_histograms = None
 
-    list_of_histograms = RunHistogram.objects.all()[:200].values_list(
-        "title", flat=True
-    )
+    list_of_histograms = RunHistogram.objects.all().values("title").distinct()
 
     context = {
         "error_message": error_message,
@@ -73,7 +71,6 @@ def run_histograms_plots_view(request):
                 f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}"
             )
 
-        # df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
         df = df.query('primary_dataset==@dataset & title==@variable')
         mean = df["mean"].to_frame().to_html()
 
@@ -113,8 +110,7 @@ def run_histogram_time_serie_view(request, histogram_name):
             ["id_x", "id_y", "run_id", "date_x", "date_y"], axis=1
         )
 
-        df = df.query('primary_dataset.str.lower()==@dataset & title.str.lower()==@variable')
-        # df = df.query('primary_dataset==@dataset & title==@variable')
+        df = df.query('primary_dataset==@dataset & title==@variable')
         mean = df["mean"].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)
@@ -124,6 +120,7 @@ def run_histogram_time_serie_view(request, histogram_name):
 
     context = {
         "error_message": error_message,
+        "histogram_name": histogram_name,
         "df": df,
         "mean": mean,
         "chart": chart,

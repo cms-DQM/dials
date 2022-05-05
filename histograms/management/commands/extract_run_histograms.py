@@ -51,7 +51,7 @@ class Command(BaseCommand):
         histos = []
 
         for index, row in df_melt.iterrows():
-            # print(row['entries'], row['mean'], row['rms'])
+            print(row['entries'], row['mean'], row['rms'])
             histo = RunHistogram(
                 run=run,  # would be better with Run.objects.get_or_create(run_number=run_number)
                 primary_dataset=dataset,
@@ -66,5 +66,6 @@ class Command(BaseCommand):
             histos.append(histo)
 
         RunHistogram.objects.bulk_create(histos)
+        # RunHistogram.objects.bulk_update(histos, fields=["primary_dataset", "entries", "mean", "rms"])
 
         print(f"histograms from run {run_number} successfully added!")

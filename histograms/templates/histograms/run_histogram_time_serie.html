@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Run Histograms {{histogram_name}} {% endblock title %}
+
+{% block extra_head %}
+<script type='text/javascript' src="{% static 'histograms/js/main.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div>
+  {% if error_message %}
+    <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+      <div>
+        {{ error_message }}
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+</div>
+
+  <h2> {{histogram_name}} time serie </h2>
+
+  <div id="vis"></div>
+
+{% endblock content %}
+
+{% block scripts %}
+    <script type="text/javascript">
+      var spec = {{ chart|safe }};
+      console.log(spec);
+      vegaEmbed("#vis", spec)
+    </script>
+{% endblock scripts %}
+
