@@ -27,18 +27,29 @@ echo ""
 
 # ...
 echo "Adding run certification from Run Registry file"
-FILE="/afs/cern.ch/user/x/xcoubez/public/ML4DQM/RR_unfolded.pkl"
+FILE="/eos/user/x/xcoubez/dqm_playground_shared/data/derived/runs_flags.pkl"
 ./manage.py extract_run_certifications $FILE
 echo "Certification added succesfully"
 echo ""
 
 # ...
 echo "Adding lumisection certification from Run Registry files"
-FILE="/afs/cern.ch/user/x/xcoubez/public/ML4DQM/LS_flags.pkl"
+FILE="/eos/user/x/xcoubez/dqm_playground_shared/data/derived/lumisections_flags.pkl"
 ./manage.py extract_lumisections_certifications $FILE
 echo "Certification added succesfully"
 echo ""
 
 # ...
 echo "Adding run information from Run Registry"
+echo ""
+
+# ...
+echo "Adding lumisection information from Run Registry?"
+echo ""
+
+# ...
+echo "Adding lumisection information from OMS file"
+FILE="/eos/user/x/xcoubez/dqm_playground_shared/data/secondary/ZeroBias_rate_perLS_from_OMS_2018.pkl"
+./manage.py extract_oms_lumisection_information_from_file $FILE
+echo "OMS information added succesfully"
 echo ""
