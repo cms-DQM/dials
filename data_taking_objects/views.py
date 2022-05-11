@@ -7,6 +7,8 @@ from rest_framework import viewsets
 from data_taking_objects.models import Run, Lumisection
 from data_taking_objects.api.serializers import RunSerializer
 
+from .forms import DiagnosticForm
+
 logger = logging.getLogger(__name__)
 
 
@@ -85,6 +87,40 @@ def lumisection_view(request, run_number, lumi_number):
     }
 
     return render(request, "data_taking_objects/lumisection.html", context)
+
+
+def diagnostic_view(request):
+
+    error_message = None
+    form = None
+    run_number = None
+    lumisection_number = None
+
+    if request.method == "POST":
+        form = DiagnosticForm(request.POST)
+        if form.is_valid():
+            run_number = form.cleaned_data["run_number"]
+            lumisection_number = form.cleaned_data["lumisection_number"]
+            context = {
+                "error_message": error_message,
+                "form": form,
+                "run_number": run_number,
+                "lumisection_number": lumisection_number,
+            }
+            # print(f"context: {context['run_number']},  {context['lumisection_number']}")
+            render(request, "data_taking_objects/diagnostic.html", context)
+
+    else:
+        form = DiagnosticForm()
+
+    context = {
+        "error_message": error_message,
+        "form": form,
+        "run_number": run_number,
+        "lumisection_number": lumisection_number,
+    }
+
+    return render(request, "data_taking_objects/diagnostic.html", context)
 
 
 # class based view (to be compared to function based view)

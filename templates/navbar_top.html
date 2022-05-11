@@ -33,6 +33,7 @@
           <a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
           <hr class="dropdown-divider">
           <a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
+          <a class="dropdown-item" href="{% url 'histograms:run-histograms-plots-view' %}">Run Histograms Plots</a>
           <hr class="dropdown-divider">
           <a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">Lumisection 1D Histograms</a>
           <a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">Lumisection 2D Histograms</a>
@@ -57,9 +58,14 @@
           Challenges
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Task</a>
+          <a class="dropdown-item" href="{% url 'challenge:create-task-view' %}">Task</a>
           <a class="dropdown-item" href="#">Prediction</a>
+          <a class="dropdown-item" href="#">JSON Producer</a>
         </div>
+      </li>
+
+      <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
+        <a class="nav-link" href="{% url 'data_taking_objects:diagnostic-view' %}">Diagnostic</a>
       </li>
 
       <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">

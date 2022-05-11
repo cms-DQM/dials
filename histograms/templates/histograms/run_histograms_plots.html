@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %} Run Histos {% endblock title %}
+{% block title %} Run Histograms {% endblock title %}
 
 {% block extra_head %}
 <script type='text/javascript' src="{% static 'histograms/js/main.js' %}"></script>
@@ -40,8 +40,9 @@
         <label class="form-label">Variable</label>
         <select name="variable" class="form-select" aria-label="Default select example">
           <option selected>----</option>
-          <option value="Chi2Prob_GenTk">Chi2Prob_GenTk</option>
-          <option value="Chi2_GenTk">Chi2_GenTk</option>
+          {% for name in run_histos_names %}
+            <option value="{{name.title}}">{{name.title}}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="mb-3">
@@ -62,7 +63,6 @@
 
   <div id="vis"></div>
 
-  
 
 {% endblock content %}
 

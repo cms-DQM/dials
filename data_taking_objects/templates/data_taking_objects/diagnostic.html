@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} Lumisections {% endblock title %}
+
+{% block content %}
+  <div class='container-fluid'>
+
+  <div>
+    {% if error_message %}
+      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+          {{ error_message }}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+
+  </div>
+
+  <div class='container-fluid'>
+
+    <form action="" method="POST">
+    {% csrf_token %}
+      <div class="form-group">
+        <label for="run_number">Run number</label>
+        <input class="form-control" id="id_run_number" type="text" name="run_number" value="{{ run_number }}">
+      </div>
+      <div class="form-group">
+        <label for="lumisection_number">Lumisection number</label>
+        <input class="form-control" id="id_lumisection_number" type="text" name="lumisection_number" value="{{ lumisection_number }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+  </div>
+
+  <div class="container-fluid">
+
+    {% if run_number %}
+      Run is {{ run_number }} / Lumisection is {{ lumisection_number }}
+    {% endif %}
+
+  </div>
+
+{% endblock content %}

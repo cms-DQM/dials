@@ -20,6 +20,10 @@ class Run(models.Model):
 
     class Meta:
         ordering = ["run_number"]
+        constraints = [
+            models.UniqueConstraint(fields=['run_number'],
+                                    name='unique run number')
+        ]
 
 
 class Lumisection(models.Model):

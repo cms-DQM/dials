@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Create Task {% endblock title %}
+
+{% block content %}
+
+  <div class='container-fluid'>
+
+  <h2> Creating task </h2>
+
+    <form action="{% url 'challenge:create-task-view' %}" method="POST" class="px-4 py-3">
+      {% csrf_token %}
+      {{form.as_p}}
+      <button type="submit" class="btn btn-primary">Create task</button>
+    </form>
+
+  </div>
+
+{% endblock content %}

@@ -32,8 +32,10 @@
       <tbody>
         {% for histogram in list_of_histograms %}
           <tr>
-            <th scope="row"> 
-                {{ histogram }}
+            <th scope="row">
+              <a href="{% url 'histograms:run-histogram-time-serie-view' histogram_name=histogram.title %}"> 
+                {{ histogram.title }}
+              </a>
             </th>
             <td>XXX</td>
             <td>XXX</td>

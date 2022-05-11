@@ -1,5 +1,9 @@
 from django.db import models
+from django.db.models import UniqueConstraint
+from django.forms import ModelForm
+
 from data_taking_objects.models import Run, Lumisection
+
 from histograms.models import (
     RunHistogram,
     LumisectionHistogram1D,
@@ -13,6 +17,7 @@ class Task(models.Model):
     both for runs and lumisections, which are used by Models
     """
 
+    name = models.CharField(max_length=200)
     training_runs = models.ManyToManyField(
         Run,
         help_text="Runs used as a whole for training the model",
@@ -37,11 +42,14 @@ class Task(models.Model):
         blank=True,
         related_name="tasks_using_for_testing",
     )
-    metadata = models.JSONField(
-        help_text="Extra details that describe the Task", blank=True
+    metadata = models.CharField(  # for now...
+        help_text="Extra details that describe the Task", blank=True, max_length=200
     )
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [ UniqueConstraint(fields=['name'], name='unique task name') ]
 
 
 class Strategy(models.Model):

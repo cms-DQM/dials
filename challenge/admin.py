@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Task, Strategy, Prediction
 
-# Register your models here.
+admin.site.register(Task)
+admin.site.register(Strategy)
+admin.site.register(Prediction)
