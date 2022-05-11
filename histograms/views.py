@@ -24,6 +24,7 @@ from histograms.api.filters import (
     LumisectionHistogram2DFilter,
 )
 
+
 # Could be a duplicate of RunHistogramList...
 # Just checking a few things
 def run_histograms_view(request):
@@ -39,6 +40,7 @@ def run_histograms_view(request):
     }
 
     return render(request, "histograms/run_histograms.html", context)
+
 
 # TODO refactor
 def run_histograms_plots_view(request):
@@ -71,7 +73,7 @@ def run_histograms_plots_view(request):
                 f"dataset: {dataset} / variable: {variable} / chart_type: {chart_type}"
             )
 
-        df = df.query('primary_dataset==@dataset & title==@variable')
+        df = df.query("primary_dataset==@dataset & title==@variable")
         mean = df["mean"].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)
@@ -110,7 +112,7 @@ def run_histogram_time_serie_view(request, histogram_name):
             ["id_x", "id_y", "run_id", "date_x", "date_y"], axis=1
         )
 
-        df = df.query('primary_dataset==@dataset & title==@variable')
+        df = df.query("primary_dataset==@dataset & title==@variable")
         mean = df["mean"].to_frame().to_html()
 
         chart = get_altair_chart(chart_type, df=df)

@@ -96,11 +96,11 @@ def diagnostic_view(request):
     run_number = None
     lumisection_number = None
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DiagnosticForm(request.POST)
         if form.is_valid():
-            run_number = form.cleaned_data['run_number']
-            lumisection_number = form.cleaned_data['lumisection_number']
+            run_number = form.cleaned_data["run_number"]
+            lumisection_number = form.cleaned_data["lumisection_number"]
             context = {
                 "error_message": error_message,
                 "form": form,
@@ -119,7 +119,7 @@ def diagnostic_view(request):
         "run_number": run_number,
         "lumisection_number": lumisection_number,
     }
-    
+
     return render(request, "data_taking_objects/diagnostic.html", context)
 
 
