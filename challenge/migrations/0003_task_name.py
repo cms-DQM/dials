@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('challenge', '0002_alter_task_metadata'),
+        ("challenge", "0002_alter_task_metadata"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='name',
-            field=models.CharField(default='Whatever', max_length=200),
+            model_name="task",
+            name="name",
+            field=models.CharField(default="Whatever", max_length=200),
             preserve_default=False,
         ),
     ]

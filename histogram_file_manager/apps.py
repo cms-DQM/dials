@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class HistogramFileManagerConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'histogram_file_manager'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "histogram_file_manager"

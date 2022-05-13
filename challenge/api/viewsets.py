@@ -2,7 +2,11 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from challenge.models import Task, Strategy, Prediction
-from challenge.api.serializers import TaskSerializer, StrategySerializer, PredictionSerializer
+from challenge.api.serializers import (
+    TaskSerializer,
+    StrategySerializer,
+    PredictionSerializer,
+)
 
 
 class TaskViewSet(viewsets.ModelViewSet):

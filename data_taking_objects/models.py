@@ -21,15 +21,12 @@ class Run(models.Model):
     class Meta:
         ordering = ["run_number"]
         constraints = [
-            models.UniqueConstraint(fields=['run_number'],
-                                    name='unique run number')
+            models.UniqueConstraint(fields=["run_number"], name="unique run number")
         ]
 
 
 class Lumisection(models.Model):
-    run = models.ForeignKey(Run,
-                            on_delete=models.CASCADE,
-                            related_name="lumisections")
+    run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="lumisections")
     ls_number = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
 
@@ -41,6 +38,7 @@ class Lumisection(models.Model):
     class Meta:
         ordering = ["run__run_number", "ls_number"]
         constraints = [
-            models.UniqueConstraint(fields=['run', 'ls_number'],
-                                    name='unique run/ls combination')
+            models.UniqueConstraint(
+                fields=["run", "ls_number"], name="unique run/ls combination"
+            )
         ]

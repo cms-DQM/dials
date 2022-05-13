@@ -7,19 +7,27 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_taking_objects', '0002_auto_20220429_0713'),
-        ('histograms', '0003_alter_runhistogram_run'),
+        ("data_taking_objects", "0002_auto_20220429_0713"),
+        ("histograms", "0003_alter_runhistogram_run"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lumisectionhistogram1d',
-            name='lumisection',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='histograms_lumisectionhistogram1d_histogram', to='data_taking_objects.lumisection'),
+            model_name="lumisectionhistogram1d",
+            name="lumisection",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="histograms_lumisectionhistogram1d_histogram",
+                to="data_taking_objects.lumisection",
+            ),
         ),
         migrations.AlterField(
-            model_name='lumisectionhistogram2d',
-            name='lumisection',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='histograms_lumisectionhistogram2d_histogram', to='data_taking_objects.lumisection'),
+            model_name="lumisectionhistogram2d",
+            name="lumisection",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="histograms_lumisectionhistogram2d_histogram",
+                to="data_taking_objects.lumisection",
+            ),
         ),
     ]

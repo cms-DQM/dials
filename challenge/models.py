@@ -49,7 +49,7 @@ class Task(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:
-        constraints = [ UniqueConstraint(fields=['name'], name='unique task name') ]
+        constraints = [UniqueConstraint(fields=["name"], name="unique task name")]
 
 
 class Strategy(models.Model):
