@@ -43,77 +43,50 @@ class Command(BaseCommand):
         list_of_runs = sorted(df_rate.run_number.unique())
         logger.info(f"Found {len(list_of_runs)} runs")
 
-        timestamp = time.time()
-
-        # # Create all runs in list_of_runs, ignore if already created
-        runs = Run.objects.bulk_create(
+        # Create all runs in list_of_runs, ignore if already created
+        Run.objects.bulk_create(
             [Run(run_number=run_number) for run_number in list_of_runs],
             ignore_conflicts=True,
         )
-        print(
-            f"Bulk create {len(runs)} runs took {time.time() - timestamp:.2f} seconds"
-        )
 
-        timestamp = time.time()
+        logger.info(f"Creating Lumisections in bulk..")
 
-        # Run.objects.get() should not be raising DoesNotExist
-        ls_objects = [
-            Lumisection(
-                run=Run.objects.get(
-                    run_number=row["run_number"],
-                ),
-                ls_number=row["lumisection_number"],
-            )
-            for index, row in df_rate[["run_number", "lumisection_number"]].iterrows()
-        ]
-        print(
-            f"Creation of {len(ls_objects)} ls entries took {time.time() - timestamp:.2f} seconds"
-        )
-
-        timestamp = time.time()
-        l = Lumisection.objects.bulk_create(
-            ls_objects,
+        # Bulk create the objects
+        Lumisection.objects.bulk_create(
+            [
+                Lumisection(
+                    run=Run.objects.get(
+                        run_number=row["run_number"],
+                    ),
+                    ls_number=row["lumisection_number"],
+                )
+                for index, row in df_rate[
+                    ["run_number", "lumisection_number"]
+                ].iterrows()
+            ],
             ignore_conflicts=True,
             batch_size=1000,
         )
-        print(
-            f"Bulk create {len(l)} lumisections took {time.time() - timestamp:.2f} seconds"
-        )
 
-        #######
-
+        # Prepare the queryset, select related objects and only keep required fields
         lumisections = (
             Lumisection.objects.filter(ls_number__in=df_rate["lumisection_number"])
             .select_related("run")
             .only("ls_number", "run")
         )
-        #######
 
-        # limit size for testing
-        # lumisections = lumisections[:10000]
-
-        timestamp = time.time()
-        time_df = 0
-        # Can't think of something smarter than this -- hits DB
+        logger.info(f"Updating Lumisections..")
         for lumisection in lumisections:
+            # Add extra fields/values to update here
             try:
-                timestamp_2 = time.time()
-                rate = df_rate.query(
+                lumisection.oms_zerobias_rate = df_rate.query(
                     "(lumisection_number == @lumisection.ls_number)&(run_number==@lumisection.run.run_number)"
                 )["rate"].values[0]
-                time_df += time.time() - timestamp_2
-                lumisection.oms_zerobias_rate = rate
             except IndexError:
                 lumisection.oms_zerobias_rate = 0  # ???
-        print(f"Time spent querying dataframe {time_df:.2f} seconds")
-        print(
-            f"Update {len(lumisections)} lumisections took {time.time() - timestamp:.2f} seconds"
+
+        num_ls = Lumisection.objects.bulk_update(
+            lumisections, ["oms_zerobias_rate"], batch_size=1000
         )
 
-        timestamp = time.time()
-        l = Lumisection.objects.bulk_update(
-            lumisections, ["oms_zerobias_rate"], batch_size=10000
-        )
-        print(
-            f"Bulk update {l} lumisections took {time.time() - timestamp:.2f} seconds"
-        )
+        logger.info(f"Updated {num_ls} lumisections")
