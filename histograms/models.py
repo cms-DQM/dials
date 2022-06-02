@@ -32,6 +32,7 @@ class HistogramBase(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         help_text="Source data file that the specific Histogram was read from, if any",
+        related_name="%(class)s",
     )
 
     class Meta:
@@ -68,7 +69,11 @@ class LumisectionHistogramBase(HistogramBase):
 
     """
 
-    lumisection = models.ForeignKey(Lumisection, on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_histograms")
+    lumisection = models.ForeignKey(
+        Lumisection,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_histograms",
+    )
 
     entries = models.IntegerField(blank=True, null=True)
 
