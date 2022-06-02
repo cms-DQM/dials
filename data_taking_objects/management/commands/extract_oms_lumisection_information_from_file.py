@@ -1,8 +1,9 @@
+import logging
+import pandas as pd
 from django.core.management.base import BaseCommand
-
 from data_taking_objects.models import Run, Lumisection
 
-import pandas as pd
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -39,7 +40,7 @@ class Command(BaseCommand):
         )
 
         list_of_runs = sorted(df_rate.run_number.unique())
-        print(list_of_runs)
+        logger.debug(f"Runs: {list_of_runs}")
 
         for run_number in list_of_runs:
 
@@ -48,7 +49,7 @@ class Command(BaseCommand):
             list_of_lumisections = sorted(
                 df_rate.query("run_number==@run_number").lumisection_number.unique()
             )
-            print(list_of_lumisections)
+            logger.debug(f"Lumisections: {list_of_lumisections}")
 
             lumisections_to_create_or_update = []
 
@@ -57,7 +58,9 @@ class Command(BaseCommand):
                     "(run_number==@run_number)&(lumisection_number==@lumisection_number)"
                 ).rate.values[0]
 
-                print(f"Adding {run_number} / {lumisection_number} / {rate} to the DB")
+                logger.debug(
+                    f"Adding {run_number} / {lumisection_number} / {rate} to the DB"
+                )
 
                 lumisection = Lumisection(
                     run=run, ls_number=lumisection_number, oms_zerobias_rate=rate
@@ -65,12 +68,12 @@ class Command(BaseCommand):
 
                 lumisections_to_create_or_update.append(lumisection)
 
-            print("Trying bulk creation of objects")
+            logger.debug("Trying bulk creation of objects")
             Lumisection.objects.bulk_create(
                 lumisections_to_create_or_update, ignore_conflicts=True
             )
 
-            print("Trying bulk update of objects")
+            logger.debug("Trying bulk update of objects")
             Lumisection.objects.bulk_update(
                 lumisections_to_create_or_update, ["oms_zerobias_rate"]
             )
