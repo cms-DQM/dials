@@ -49,7 +49,7 @@ class Command(BaseCommand):
             ignore_conflicts=True,
         )
 
-        logger.info(f"Creating Lumisections in bulk..")
+        logger.info("Creating Lumisections in bulk..")
 
         # Bulk create the objects
         Lumisection.objects.bulk_create(
@@ -75,7 +75,7 @@ class Command(BaseCommand):
             .only("ls_number", "run")
         )
 
-        logger.info(f"Updating Lumisections..")
+        logger.info("Updating Lumisections..")
         for lumisection in lumisections:
             # Add extra fields/values to update here
             try:
