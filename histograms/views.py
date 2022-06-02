@@ -95,7 +95,7 @@ def run_histograms_plots_view(request):
 def run_histogram_time_serie_view(request, histogram_name):
 
     error_message = None
-    dataset = "ZeroBias"
+    # dataset = "ZeroBias"
     variable = histogram_name
     chart_type = "time_serie"
     df = None
