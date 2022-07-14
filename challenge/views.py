@@ -1,9 +1,12 @@
+import logging
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from challenge.forms import TaskForm
 from challenge.models import Task
+
+logger = logging.getLogger(__name__)
 
 # TODO Check that this is the best option
 def create_task_view(request):
@@ -27,3 +30,20 @@ class TaskListView(ListView):
 
 class TaskDetailView(DetailView):
     model = Task
+
+    def post(self, request, pk, *args, **kwargs):
+        success = False
+        msg = ""
+        try:
+            t = Task.objects.get(id=pk)
+            t.trigger_pipeline()
+            success = True
+            msg = f"Pipeline triggered for Task {pk}"
+        except Task.DoesNotExist:
+            msg = f"No Task with id {pk} exists!"
+            logger.error(msg)
+        except Exception as e:
+            msg = e
+            logger.error(msg)
+
+        return JsonResponse({"success": success, "message": msg})

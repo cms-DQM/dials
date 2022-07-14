@@ -8,9 +8,12 @@
 
 <div class="container-fluid">
 	<h2> {% if task.name %} {{ task.name }} {% else %} {{ task.id }} {% endif %}</h2>
-	<div class="row">
-		<button class="btn btn-block btn-primary">Run Pipeline</button>
-	</div>
+	<form method="POST">
+		{% csrf_token %}
+		<div class="row">
+			<button class="btn btn-block btn-primary">Run Pipeline</button>
+		</div>
+	</form>
 </div>
 
 {% endblock %}
