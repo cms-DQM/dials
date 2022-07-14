@@ -9,6 +9,8 @@ class RunFilter(filters.FilterSet):
 
 
 class LumisectionFilter(filters.FilterSet):
+    run = filters.NumberFilter(field_name="run__run_number")
+
     class Meta:
         model = Lumisection
         fields = "__all__"
