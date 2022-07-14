@@ -6,16 +6,16 @@
 
 {% block content %}
 
-  <div class='container-fluid'>
+<div class='container-fluid'>
 
-  <h2> Creating task </h2>
+	<h2> Creating task </h2>
 
     <form action="{% url 'challenge:create-task-view' %}" method="POST" class="px-4 py-3">
-      {% csrf_token %}
-      {{form.as_p}}
-      <button type="submit" class="btn btn-primary">Create task</button>
+		{% csrf_token %}
+		{{form.as_p}}
+		<button type="submit" class="btn btn-primary">Create task</button>
     </form>
 
-  </div>
+</div>
 
 {% endblock content %}

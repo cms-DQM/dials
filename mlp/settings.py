@@ -121,20 +121,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME":
-        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME":
-        "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        "NAME":
-        "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME":
-        "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -155,10 +151,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose"
-        },
+        "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
     },
     "root": {
         "handlers": ["console"],
@@ -219,8 +212,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",  # will require authentication
         # 'rest_framework.permissions.AllowAny',  # Allow any user, no need for authentication
     ],
-    "DEFAULT_FILTER_BACKENDS":
-    ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -228,8 +220,11 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS":
     # 'rest_framework.pagination.LimitOffsetPagination',
     "mlp.pagination.MLPlaygroundAPIPagination",
-    "PAGE_SIZE":
-    50,
+    "PAGE_SIZE": 50,
 }
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
+
+
+DQM_PLAYGROUND_DS_ADDRESS = config("DQM_PLAYGROUND_DS_ADDRESS", "dqm-playground-ds")
+DQM_PLAYGROUND_DS_PORT = config("DQM_PLAYGROUND_DS_PORT", 8888)
