@@ -82,7 +82,8 @@ class Task(models.Model):
             tcp_client(
                 settings.DQM_PLAYGROUND_DS_ADDRESS,
                 settings.DQM_PLAYGROUND_DS_PORT,
-                f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']} {self.id}",
+                # f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']} {self.id}",
+                f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']}",
             )
         )
 
