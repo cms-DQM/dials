@@ -229,4 +229,4 @@ LOGIN_REDIRECT_URL = "/"
 DQM_PLAYGROUND_DS_ADDRESS = config(
     "DQM_PLAYGROUND_DS_ADDRESS", default="dqm-playground-ds", cast=str
 )
-DQM_PLAYGROUND_DS_PORT = config("DQM_PLAYGROUND_DS_PORT", default=8888, cast=int)
+DQM_PLAYGROUND_DS_PORT = config("DQM_PLAYGROUND_DS_ASFDGA", default=8888)
