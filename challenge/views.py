@@ -43,7 +43,7 @@ class TaskDetailView(DetailView):
             msg = f"No Task with id {pk} exists!"
             logger.error(msg)
         except Exception as e:
-            msg = e
+            msg = repr(e)
             logger.error(msg)
 
         return JsonResponse({"success": success, "message": msg})
