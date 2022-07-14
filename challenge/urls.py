@@ -1,9 +1,10 @@
 from django.urls import path
-from challenge.views import create_task_view, TaskListView
+from challenge import views
 
 app_name = "challenge"
 
 urlpatterns = [
-    path("create_task/", create_task_view, name="create-task-view"),
-    path("task_list/", TaskListView.as_view(), name="task-list"),
+    path("create_task/", views.create_task_view, name="create-task-view"),
+    path("task_list/", views.TaskListView.as_view(), name="task-list"),
+    path("task_detail/<int:pk>/", views.TaskDetailView.as_view(), name="task-detail"),
 ]

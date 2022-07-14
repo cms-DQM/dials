@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Task {{ object.id }} {% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+	<h2> {% if task.name %} {{ task.name }} {% else %} {{ task.id }} {% endif %}</h2>
+	<div class="row">
+		<button class="btn btn-block btn-primary">Run Pipeline</button>
+	</div>
+</div>
+
+{% endblock %}
+
+
