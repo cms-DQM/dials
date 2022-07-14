@@ -13,4 +13,4 @@ class LumisectionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Lumisection
-        fields = ("run", "date")
+        fields = ("run", "ls_number", "date")
