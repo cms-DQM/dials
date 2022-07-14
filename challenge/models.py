@@ -79,11 +79,11 @@ class Task(models.Model):
         Trigger the DS project to run the Kedro pipelines
         """
         logger.debug(
-            f"Connecting to {settings.DQM_PLAYGROUND_DS_ADDRESS}:{settings.DQM_PLAYGROUND_DS_PORT}"
+            f"Connecting to {settings.DQM_PLAYGROUND_DS_HOST}:{settings.DQM_PLAYGROUND_DS_PORT}"
         )
         asyncio.run(
             tcp_client(
-                settings.DQM_PLAYGROUND_DS_ADDRESS,
+                settings.DQM_PLAYGROUND_DS_HOST,
                 settings.DQM_PLAYGROUND_DS_PORT,
                 # f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']} {self.id}",
                 f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']}",
