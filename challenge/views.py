@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from challenge.forms import TaskForm
 from challenge.models import Task
 
@@ -21,4 +22,8 @@ def create_task_view(request):
 
 
 class TaskListView(ListView):
+    model = Task
+
+
+class TaskDetailView(DetailView):
     model = Task
