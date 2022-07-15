@@ -3,15 +3,18 @@ app.component('file-table', {
         /*html*/
         `
 <div class="table-responsive">
- <table class="table table-sm table-hover">
-   <tr class="thead-dark">
+ <table class="table table-sm table-hover table-striped">
+   <thead class="thead-dark">
+<tr>
      <th scope="col"
 	   v-for="header in headers"
 	   :key="header">
 	   {{ header }}
 	 </th>
      <th>Actions</th>
-   </tr>
+</tr>
+   </thead>
+<tbody>
   <tr v-for="file_information of files_information">
     <td v-for="value of file_information">
 	  {{ value }}
@@ -28,6 +31,7 @@ app.component('file-table', {
 	  </div>
 	</td>
   </tr>
+</tbody>
  </table>   
 </div>
 `,

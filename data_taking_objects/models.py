@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Run(models.Model):
-    run_number = models.IntegerField(unique=True)
+    run_number = models.IntegerField(unique=True, primary_key=True)
     run_date = models.DateTimeField(blank=True, null=True)
 
     year = models.IntegerField(blank=True, null=True)

@@ -32,6 +32,7 @@ class HistogramBase(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         help_text="Source data file that the specific Histogram was read from, if any",
+        related_name="%(class)s",
     )
 
     class Meta:
