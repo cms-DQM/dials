@@ -48,7 +48,7 @@ class LumisectionCertification(models.Model):
 
     # run registry
     rr_is_golden_json = models.BooleanField(null=True)
-    rr_is_pixel_good = models.FloatField(null=True)
+    rr_is_pixel_good = models.BooleanField(null=True)
     rr_is_strip_good = models.BooleanField(null=True)
     rr_is_ecal_good = models.BooleanField(null=True)
     rr_is_hcal_good = models.BooleanField(null=True)
