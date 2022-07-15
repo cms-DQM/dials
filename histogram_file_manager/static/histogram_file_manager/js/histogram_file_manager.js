@@ -9,7 +9,6 @@ const app = Vue.createApp({
             page_previous_url: null,
             total_pages: 0,
             api_base: '/api/histogram_data_files/',
-            page_current: 1,
             page_current_url: '/api/histogram_data_files/',
             abort_controller: new AbortController(), // To cancel a request
         };
