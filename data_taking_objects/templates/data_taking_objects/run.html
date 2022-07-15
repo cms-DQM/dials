@@ -40,3 +40,36 @@
   </div>
 
 {% endblock content %}
+
+{% block navbar_bottom %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+
+  <span class="navbar-text">
+    Data Sources
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+
+      {% if request.user.is_authenticated%}
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropup-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          OMS
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropup-item" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Runs</a>
+          <a class="dropup-item" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates</a>
+          <a class="dropup-item" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates</a>
+        </div>
+      </li>
+
+      {% endif %}
+
+    </ul>
+  </div>
+
+</nav>
+
+{% endblock navbar_bottom %}

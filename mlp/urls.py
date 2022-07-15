@@ -23,12 +23,14 @@ from rest_framework.schemas import get_schema_view
 from histogram_file_manager.api.routers import router as histogram_data_file_router
 from histograms.api.routers import router as histograms_router
 from challenge.api.routers import router as challenge_router
+from data_taking_objects.api.routers import router as data_taking_objects_router
 
 # Create a router and extend it will all apps' api endpoints
 router = routers.DefaultRouter()
 router.registry.extend(histogram_data_file_router.registry)
 router.registry.extend(histograms_router.registry)
 router.registry.extend(challenge_router.registry)
+router.registry.extend(data_taking_objects_router.registry)
 
 urlpatterns = [
     path("", include("home.urls")),

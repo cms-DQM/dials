@@ -1,8 +1,10 @@
+import time
+import logging
+import pandas as pd
 from django.core.management.base import BaseCommand
-
 from data_taking_objects.models import Run, Lumisection
 
-import pandas as pd
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -39,38 +41,52 @@ class Command(BaseCommand):
         )
 
         list_of_runs = sorted(df_rate.run_number.unique())
-        print(list_of_runs)
+        logger.info(f"Found {len(list_of_runs)} runs")
 
-        for run_number in list_of_runs:
+        # Create all runs in list_of_runs, ignore if already created
+        Run.objects.bulk_create(
+            [Run(run_number=run_number) for run_number in list_of_runs],
+            ignore_conflicts=True,
+        )
 
-            run, _ = Run.objects.get_or_create(run_number=run_number)
+        logger.info("Creating Lumisections in bulk..")
 
-            list_of_lumisections = sorted(
-                df_rate.query("run_number==@run_number").lumisection_number.unique()
-            )
-            print(list_of_lumisections)
-
-            lumisections_to_create_or_update = []
-
-            for lumisection_number in list_of_lumisections:
-                rate = df_rate.query(
-                    "(run_number==@run_number)&(lumisection_number==@lumisection_number)"
-                ).rate.values[0]
-
-                print(f"Adding {run_number} / {lumisection_number} / {rate} to the DB")
-
-                lumisection = Lumisection(
-                    run=run, ls_number=lumisection_number, oms_zerobias_rate=rate
+        # Bulk create the objects
+        Lumisection.objects.bulk_create(
+            [
+                Lumisection(
+                    run=Run.objects.get(
+                        run_number=row["run_number"],
+                    ),
+                    ls_number=row["lumisection_number"],
                 )
+                for index, row in df_rate[
+                    ["run_number", "lumisection_number"]
+                ].iterrows()
+            ],
+            ignore_conflicts=True,
+            batch_size=1000,
+        )
 
-                lumisections_to_create_or_update.append(lumisection)
+        # Prepare the queryset, select related objects and only keep required fields
+        lumisections = (
+            Lumisection.objects.filter(ls_number__in=df_rate["lumisection_number"])
+            .select_related("run")
+            .only("ls_number", "run")
+        )
 
-            print("Trying bulk creation of objects")
-            Lumisection.objects.bulk_create(
-                lumisections_to_create_or_update, ignore_conflicts=True
-            )
+        logger.info("Updating Lumisections..")
+        for lumisection in lumisections:
+            # Add extra fields/values to update here
+            try:
+                lumisection.oms_zerobias_rate = df_rate.query(
+                    "(lumisection_number == @lumisection.ls_number)&(run_number==@lumisection.run.run_number)"
+                )["rate"].values[0]
+            except IndexError:
+                lumisection.oms_zerobias_rate = 0  # ???
 
-            print("Trying bulk update of objects")
-            Lumisection.objects.bulk_update(
-                lumisections_to_create_or_update, ["oms_zerobias_rate"]
-            )
+        num_ls = Lumisection.objects.bulk_update(
+            lumisections, ["oms_zerobias_rate"], batch_size=1000
+        )
+
+        logger.info(f"Updated {num_ls} lumisections")

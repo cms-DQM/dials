@@ -224,3 +224,9 @@ REST_FRAMEWORK = {
 }
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
+
+
+DQM_PLAYGROUND_DS_HOST = config(
+    "DQM_PLAYGROUND_DS_ADDRESS", default="dqm-playground-ds", cast=str
+)
+DQM_PLAYGROUND_DS_PORT = config("DQM_PLAYGROUND_DS_SERVICE_PORT", default=8888)

@@ -1,6 +1,9 @@
+import asyncio
+import logging
 from django.db import models
 from django.db.models import UniqueConstraint
 from django.forms import ModelForm
+from django.conf import settings
 
 from data_taking_objects.models import Run, Lumisection
 
@@ -10,12 +13,32 @@ from histograms.models import (
     LumisectionHistogram2D,
 )
 
+logger = logging.getLogger(__name__)
+
+
+async def tcp_client(host, port, message):
+    reader, writer = await asyncio.open_connection(host, port)
+
+    logger.info(f"Sending to {host}:{port}: {message!r}")
+    writer.write(message.encode())
+
+    data = await reader.read(100)
+    logger.debug(f"Received from {host}:{port}: {data.decode()!r}")
+
+    logger.info("Closing the connection")
+    writer.close()
+
 
 class Task(models.Model):
     """
     Model describing a set of training and test data,
     both for runs and lumisections, which are used by Models
     """
+
+    DQM_PLAYGROUND_DS_COMMANDS = {
+        "quit": "QUIT",
+        "run_pipeline": "RUN_PIPELINE",
+    }
 
     name = models.CharField(max_length=200)
     training_runs = models.ManyToManyField(
@@ -53,6 +76,23 @@ class Task(models.Model):
 
     class Meta:
         constraints = [UniqueConstraint(fields=["name"], name="unique task name")]
+
+    def trigger_pipeline(self):
+        """
+        Trigger the DS project to run the Kedro pipelines
+        """
+        logger.debug(
+            f"Connecting to {settings.DQM_PLAYGROUND_DS_HOST}:{settings.DQM_PLAYGROUND_DS_PORT}"
+        )
+        asyncio.run(
+            tcp_client(
+                settings.DQM_PLAYGROUND_DS_HOST,
+                settings.DQM_PLAYGROUND_DS_PORT,
+                # f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']} {self.id}",
+                f"{self.DQM_PLAYGROUND_DS_COMMANDS['run_pipeline']}",
+            )
+        )
+
 
 
 class Strategy(models.Model):
