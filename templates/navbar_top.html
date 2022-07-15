@@ -21,6 +21,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'data_taking_objects:runs-view' %}">Runs</a>
+          <hr class="dropdown-divider">
           <a class="dropdown-item" href="{% url 'data_taking_objects:lumisections-view' %}">Lumisections</a>
         </div>
       </li>
@@ -38,6 +39,10 @@
           <a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">Lumisection 1D Histograms</a>
           <a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">Lumisection 2D Histograms</a>
         </div>
+      </li>
+
+      <li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
+        <a class="nav-link" href="{% url 'home:home' %}">Rates</a>
       </li>
 
       <li class="nav-item dropdown">
@@ -59,7 +64,9 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'challenge:create-task-view' %}">Task</a>
+          <hr class="dropdown-divider">
           <a class="dropdown-item" href="#">Prediction</a>
+          <hr class="dropdown-divider">
           <a class="dropdown-item" href="#">JSON Producer</a>
         </div>
       </li>

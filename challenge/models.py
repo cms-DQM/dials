@@ -48,6 +48,9 @@ class Task(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"task {self.name}"
+
     class Meta:
         constraints = [UniqueConstraint(fields=["name"], name="unique task name")]
 
