@@ -91,6 +91,7 @@ class Task(models.Model):
         )
 
 
+
 class Strategy(models.Model):
     """
     Model describing the ML Strategy used to make a Prediction, using

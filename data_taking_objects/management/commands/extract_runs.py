@@ -7,15 +7,14 @@ from data_taking_objects.models import Run
 
 
 class Command(BaseCommand):
-    help = 'Extracts runs from files'
+    help = "Extracts runs from files"
 
     def add_arguments(self, parser):
         parser.add_argument("file_path", type=str)
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        split_file_path = file_path.replace('.csv',
-                                            "").split('/')[-1].split('_')
+        split_file_path = file_path.replace(".csv", "").split("/")[-1].split("_")
         print(split_file_path)
 
         dataset = split_file_path[0]
@@ -28,4 +27,4 @@ class Command(BaseCommand):
             run_number=run_number,
             year=year,
         )
-        print(f'run {run_number} successfully added!')
+        print(f"run {run_number} successfully added!")

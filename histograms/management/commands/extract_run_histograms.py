@@ -51,7 +51,7 @@ class Command(BaseCommand):
         histos = []
 
         for index, row in df_melt.iterrows():
-            print(row['entries'], row['mean'], row['rms'])
+            print(row["entries"], row["mean"], row["rms"])
             histo = RunHistogram(
                 run=run,  # would be better with Run.objects.get_or_create(run_number=run_number)
                 primary_dataset=dataset,

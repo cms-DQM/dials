@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('histogram_file_manager', '0001_initial'),
+        ("histogram_file_manager", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='histogramdatafile',
-            name='filepath',
-            field=models.CharField(help_text='Path where the file is stored', max_length=255),
+            model_name="histogramdatafile",
+            name="filepath",
+            field=models.CharField(
+                help_text="Path where the file is stored", max_length=255
+            ),
         ),
     ]

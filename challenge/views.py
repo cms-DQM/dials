@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 from challenge.forms import TaskForm
 from challenge.models import Task
 
+
 logger = logging.getLogger(__name__)
 
 # TODO Check that this is the best option
@@ -14,6 +15,7 @@ def create_task_view(request):
     View for creating Task instances from
     list of testing runs and testing lumisections.
     """
+
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -47,3 +49,4 @@ class TaskDetailView(DetailView):
             logger.error(msg)
 
         return JsonResponse({"success": success, "message": msg})
+

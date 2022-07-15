@@ -18,17 +18,16 @@ def histogram_file_manager(request):
     # Convert all available choices to a dict so that JS can understand it
     field_choices = {
         field: dict(choices.choices)
-        for field, choices in
-        HistogramDataFileStartParsingForm().fields.items()
+        for field, choices in HistogramDataFileStartParsingForm().fields.items()
     }
 
     # Get filter to render on front-end
     hdf_filter = HistogramDataFileFilter(
-        request.GET, queryset=HistogramDataFile.objects.all())
+        request.GET, queryset=HistogramDataFile.objects.all()
+    )
 
-    return render(request,
-                  'histogram_file_manager/histogram_file_manager.html',
-                  context={
-                      'field_choices': field_choices,
-                      'filter': hdf_filter
-                  })
+    return render(
+        request,
+        "histogram_file_manager/histogram_file_manager.html",
+        context={"field_choices": field_choices, "filter": hdf_filter},
+    )

@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('challenge', '0003_task_name'),
+        ("challenge", "0003_task_name"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='task',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique task name'),
+            model_name="task",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique task name"
+            ),
         ),
     ]

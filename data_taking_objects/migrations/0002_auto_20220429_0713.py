@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_taking_objects', '0001_initial'),
+        ("data_taking_objects", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='lumisection',
-            options={'ordering': ['run__run_number', 'ls_number']},
+            name="lumisection",
+            options={"ordering": ["run__run_number", "ls_number"]},
         ),
         migrations.AlterModelOptions(
-            name='run',
-            options={'ordering': ['run_number']},
+            name="run",
+            options={"ordering": ["run_number"]},
         ),
     ]

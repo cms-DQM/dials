@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_taking_objects', '0002_auto_20220429_0713'),
+        ("data_taking_objects", "0002_auto_20220429_0713"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='run',
-            constraint=models.UniqueConstraint(fields=('run_number',), name='unique run number'),
+            model_name="run",
+            constraint=models.UniqueConstraint(
+                fields=("run_number",), name="unique run number"
+            ),
         ),
     ]

@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('histograms', '0005_auto_20220429_0949'),
+        ("histograms", "0005_auto_20220429_0949"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='runhistogram',
-            options={'ordering': ['title']},
+            name="runhistogram",
+            options={"ordering": ["title"]},
         ),
     ]

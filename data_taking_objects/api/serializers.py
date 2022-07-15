@@ -16,3 +16,4 @@ class LumisectionSerializer(serializers.ModelSerializer):
             "ls_number",
             "date",
         )
+
