@@ -5,7 +5,8 @@ app.component('table-pagination', {
 <nav aria-label="Page navigation example" v-show="is_enabled">
   <ul class="pagination">
     <li class="page-item"><a class="page-link" v-on:click="clicked_previous">Previous</a></li>
-    <!-- <li class="page-item" v-for="page_number in [...Array(total_pages).keys()]"><a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">{{ page_number + 1 }}</a></li> -->
+    <li class="page-item" v-for="page_number in [...Array(parseInt(total_pages)).keys()]"><a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">{{ page_number + 1 }}</a></li>
+	
     <li class="page-item"><a class="page-link" v-on:click="clicked_next">Next</a></li>
   </ul>
 </nav>
@@ -41,7 +42,6 @@ app.component('table-pagination', {
         },
         clicked_specific_page(page_number) {
             console.info(`Clicked page ${page_number}`);
-            alert('Not implemented');
             this.$emit('clicked-specific-page', page_number);
         },
     },

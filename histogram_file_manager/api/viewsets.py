@@ -78,7 +78,13 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
                     ][granularity],
                     args=(self.get_object().filepath,),
                 ).start()  # Comma is intentional
+            except KeyError as e:
+                return Response(
+                    f"Something possibly missing from HISTOGRAM_DIMENSIONS_CHOICES ({e})",
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             except Exception as e:
+                logger.exception(e)
                 return Response(
                     f"Error occurred: {e}", status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )

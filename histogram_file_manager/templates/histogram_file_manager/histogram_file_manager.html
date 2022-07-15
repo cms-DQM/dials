@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="{% static 'js/vue.global.js' %}"></script>
-<script src="{% static 'js/axios.min.js' %}"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="{% static 'js/utils.js' %}"></script>
 <script src="{% static 'histogram_file_manager/js/histogram_file_manager.js' %}"></script>
 <script src="{% static 'histogram_file_manager/js/components/file_table.js' %}"></script>
@@ -53,6 +53,7 @@ Histogram File Manager
 						:total_pages="total_pages"
 						@clicked-previous="fetch_previous_result_page"
 						@clicked-next="fetch_next_result_page"
+						@clicked-specific-page="fetch_specific_result_page" 
 						:class="{dimmed: waiting_for_data}"
 		></table-pagination>
 		<file-actions
