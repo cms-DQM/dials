@@ -3,11 +3,11 @@ app.component('file-table', {
         /*html*/
         `
 <div class="table-responsive">
- <table class="table table-sm table-hover table-striped">
-   <thead class="thead-dark">
-<tr>
-     <th scope="col"
-	   v-for="header in headers"
+  <table class="table table-sm table-hover table-striped">
+	<thead class="thead-dark">
+	  <tr>
+		<th scope="col"
+		   v-for="header in headers"
 	   :key="header">
 	   {{ header }}
 	 </th>
@@ -20,15 +20,11 @@ app.component('file-table', {
 	  {{ value }}
 	</td>
 	<td>
-	  <div class="col">
-		<div class="row">
 		  <button type="button" class="btn btn-primary"
 			v-on:click="file_actions_clicked(file_information)"
 			>
 			Actions
 		  </button>
-		</div>
-	  </div>
 	</td>
   </tr>
 </tbody>
