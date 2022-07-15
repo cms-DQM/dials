@@ -9,13 +9,21 @@ app.component('file-actions', {
 	<div class="modal-content">
 	  <div class="modal-header">
         <h5 class="modal-title">File actions (File {{ file_id }})</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clicked_close">
-          <span aria-hidden="true" >&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clicked_close">        </button>
 	  </div>
 	  <div class="modal-body">
 		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
-		 <!-- {{ Object.keys(file_information) }} -->
+		<div class="container-fluid">
+		  <table class="table table-hover table-striped">
+			<thead>
+			</thead>
+			<tbody>
+			  <th scope="row">File path</th>
+			  <td>{{ file_information['filepath'] }}</td>
+			</tbody>
+		  </table>
+		</div>
+		<!-- {{ Object.keys(file_information) }} -->
 		<form @submit.prevent="send_parse_file_command">
 		  <div class="form-group" v-for="(choices, field_name) in field_choices">
 			<label :for="field_name">{{ field_name }}</label>
@@ -25,11 +33,11 @@ app.component('file-actions', {
 			  </option>
 			</select>
 		  </div>
-		<input
-		  type="submit"
-		  class="btn btn-primary"
-		  :class="{disabled: file_information.percentage_processed === 100.0 }"
-		  value="Parse">
+		  <input
+			type="submit"
+			class="btn btn-primary mt-3"
+			:class="{disabled: file_information.percentage_processed === 100.0 }"
+			value="Parse">
 		</form>
       </div>
       <div class="modal-footer">

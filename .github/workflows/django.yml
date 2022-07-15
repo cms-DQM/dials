@@ -41,11 +41,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Lint with black
-      uses: psf/black@stable
-      with:
-        options: "--check --verbose"
-        src: "./"
+    # - name: Lint with black
+    #   uses: psf/black@stable
+    #   with:
+    #     options: "--check --verbose"
+    #     src: "./"
 
     - name: Lint with flake8
       run: |
