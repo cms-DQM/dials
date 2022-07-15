@@ -8,9 +8,7 @@ class RunSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("run_number", "date")
 
 
-class LumisectionSerializer(serializers.HyperlinkedModelSerializer):
-    run = serializers.IntegerField(source="run.run_number")
-
+class LumisectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lumisection
         fields = ("run", "ls_number", "date")

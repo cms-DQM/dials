@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Run(models.Model):
-    run_number = models.IntegerField(unique=True)
+    run_number = models.IntegerField(unique=True, primary_key=True)
     run_date = models.DateTimeField(blank=True, null=True)
 
     year = models.IntegerField(blank=True, null=True)
@@ -21,15 +21,12 @@ class Run(models.Model):
     class Meta:
         ordering = ["run_number"]
         constraints = [
-            models.UniqueConstraint(fields=['run_number'],
-                                    name='unique run number')
+            models.UniqueConstraint(fields=["run_number"], name="unique run number")
         ]
 
 
 class Lumisection(models.Model):
-    run = models.ForeignKey(Run,
-                            on_delete=models.CASCADE,
-                            related_name="lumisections")
+    run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="lumisections")
     ls_number = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
 
@@ -41,6 +38,7 @@ class Lumisection(models.Model):
     class Meta:
         ordering = ["run__run_number", "ls_number"]
         constraints = [
-            models.UniqueConstraint(fields=['run', 'ls_number'],
-                                    name='unique run/ls combination')
+            models.UniqueConstraint(
+                fields=["run", "ls_number"], name="unique run/ls combination"
+            )
         ]
