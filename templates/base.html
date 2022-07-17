@@ -32,8 +32,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-    <!-- Extra per-template head entries -->
-    <title> {% block title %} {% endblock %} </title>
+		<!-- Extra per-template head entries -->
+		<title> {% block title %} {% endblock %} </title>
+		<link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
 
     {% block style %}
     {% endblock %}

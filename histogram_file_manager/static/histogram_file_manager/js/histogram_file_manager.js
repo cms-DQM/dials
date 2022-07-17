@@ -5,10 +5,11 @@ const app = Vue.createApp({
             file_information: {},
             file_actions_is_visible: false,
             waiting_for_data: false,
-            page_next: null,
-            page_previous: null,
+            page_next_url: null,
+            page_previous_url: null,
             total_pages: 0,
-            page_current: '/api/histogram_data_files/',
+            api_base: '/api/histogram_data_files/',
+            page_current_url: '/api/histogram_data_files/',
             abort_controller: new AbortController(), // To cancel a request
         };
     },
@@ -33,6 +34,7 @@ const app = Vue.createApp({
         // via the API
         _update_data() {
             let url = this.request_url;
+            console.log(url);
             this.waiting_for_data = true;
 
             axios
@@ -41,8 +43,8 @@ const app = Vue.createApp({
                     // console.warn(response);
                     this.files_information = response.data.results;
                     this.page_count = response.data.count;
-                    this.page_next = response.data.next || null;
-                    this.page_previous = response.data.previous || null;
+                    this.page_next_url = response.data.next || null;
+                    this.page_previous_url = response.data.previous || null;
                     this.total_pages = response.data.total_pages || 0;
                 })
                 .catch((error) => console.error(error))
@@ -58,19 +60,33 @@ const app = Vue.createApp({
             this.file_actions_is_visible = false;
         },
         fetch_previous_result_page() {
-            this.page_current = this.page_previous;
+            this.page_current_url =
+                this.page_previous_url + window.location.search;
             this._cancel_request();
             this._update_data();
         },
         fetch_next_result_page() {
-            this.page_current = this.page_next;
+            this.page_current_url = this.page_next_url + window.location.search;
+            this._cancel_request();
+            this._update_data();
+        },
+        fetch_specific_result_page(page_number) {
+            this.page_current = page_number;
+            let u = new URLSearchParams(window.location.search);
+            u.set('page', page_number);
+            this.page_current_url = this.api_base + '?' + u.toString();
             this._cancel_request();
             this._update_data();
         },
     },
     computed: {
         request_url() {
-            return this.page_current + window.location.search;
+            // window.location.search contains the filters
+            // selected by the user in the filter form
+            return this.page_current_url;
+        },
+        url_arguments() {
+            return window.location.search;
         },
     },
 });

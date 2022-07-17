@@ -9,11 +9,10 @@ app.component('errors', {
 	v-for="error in errors">
 	<button
 	  type="button"
-	  class="close"
+	  class="btn-close"
 	  data-bs-dismiss="alert"
 	  aria-label="Close"
 	  v-on:click="dismiss_error(error)">
-      <span aria-hidden="true">&times;</span>
 	</button>
 	{{ error }}
 
