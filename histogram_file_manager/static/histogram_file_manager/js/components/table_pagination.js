@@ -5,7 +5,8 @@ app.component('table-pagination', {
 <nav aria-label="Page navigation example" v-show="is_enabled">
   <ul class="pagination">
     <li class="page-item"><a class="page-link" v-on:click="clicked_previous">Previous</a></li>
-    <!-- <li class="page-item" v-for="page_number in [...Array(total_pages).keys()]"><a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">{{ page_number + 1 }}</a></li> -->
+    <li class="page-item" v-for="page_number in [...Array(parseInt(total_pages)).keys()]"><a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">{{ page_number + 1 }}</a></li>
+	
     <li class="page-item"><a class="page-link" v-on:click="clicked_next">Next</a></li>
   </ul>
 </nav>
@@ -13,10 +14,10 @@ app.component('table-pagination', {
     props: {
         // Not actually used here, just keeping them
         // for checking if pagination should be shown
-        page_next: {
+        page_next_url: {
             required: true,
         },
-        page_previous: {
+        page_previous_url: {
             required: true,
         },
         total_pages: {
@@ -26,14 +27,14 @@ app.component('table-pagination', {
     },
     methods: {
         clicked_previous() {
-            if (this.page_previous === null) {
+            if (this.page_previous_url === null) {
                 // No previous page
                 return;
             }
             this.$emit('clicked-previous');
         },
         clicked_next() {
-            if (this.page_next === null) {
+            if (this.page_next_url === null) {
                 // No next page
                 return;
             }
@@ -41,14 +42,15 @@ app.component('table-pagination', {
         },
         clicked_specific_page(page_number) {
             console.info(`Clicked page ${page_number}`);
-            alert('Not implemented');
             this.$emit('clicked-specific-page', page_number);
         },
     },
     computed: {
         is_enabled() {
             // return true;
-            return this.page_next !== null || this.page_previous !== null;
+            return (
+                this.page_next_url !== null || this.page_previous_url !== null
+            );
         },
     },
 });
