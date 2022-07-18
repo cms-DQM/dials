@@ -32,9 +32,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-		<!-- Extra per-template head entries -->
-		<title> {% block title %} {% endblock %} </title>
-		<link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
+    <!-- Extra per-template head entries -->
+    <title> {% block title %} {% endblock %} </title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
 
     {% block style %}
     {% endblock %}
@@ -46,23 +46,20 @@
 
     <body>
 
-    <!-- Navigation -->
-    {% include "navbar_top.html" %}
+      <!-- Navigation -->
+      {% include "navbar_top.html" %}
 
-    <!-- Page Content -->
+      <!-- Page Content -->
       <div class='container container-main-page'>
-		  {% block content %}
+        {% block content %}
           Default Bootstrap Container.
-		  {% endblock %}
+        {% endblock %}
       </div>
 
-    <!-- {% include "navbar_bottom.html" %} -->
+      {% include "navbar_bottom.html" %}
 
-  </body>
+    </body>
 
-  {% block navbar_bottom %}
-  {% endblock navbar_bottom %}
-  
   {% block scripts %}
   {% endblock %}  
 
