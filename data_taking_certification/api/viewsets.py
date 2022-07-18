@@ -1,8 +1,14 @@
 from rest_framework import viewsets
 
 from data_taking_certification.models import RunCertification, LumisectionCertification
-from data_taking_certification.api.serializers import RunCertificationSerializer, LumisectionCertificationSerializer
-from data_taking_certification.api.filters import RunCertificationFilter, LumisectionCertificationFilter
+from data_taking_certification.api.serializers import (
+    RunCertificationSerializer,
+    LumisectionCertificationSerializer,
+)
+from data_taking_certification.api.filters import (
+    RunCertificationFilter,
+    LumisectionCertificationFilter,
+)
 
 
 class RunCertificationViewSet(viewsets.ModelViewSet):
