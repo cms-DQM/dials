@@ -62,44 +62,26 @@
 
 {% block navbar_bottom_tabs %}
 
-    <ul class="navbar-nav">
+  <li class="nav-item">
+    <a class="nav-link" href="https://cmsoms.cern.ch/cms/index/index">OMS</a>
+  </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="https://cmsoms.cern.ch/cms/index/index">OMS</a>
-      </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a>
+  </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="#">Histograms</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="#modalRuns" data-bs-toggle="modal" data-bs-target="#modalRuns">
-          Additional information
-        </a>
-      </li>
-
-    </ul>
-
-  <div class="modal fade" id="modalRuns" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Additional information</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Histograms were extracted from the ML4DQM csv files.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Histograms</a>
+  </li>
 
 {% endblock navbar_bottom_tabs %}
 
+{% block modal_tab %} Additional information {% endblock modal_tab %}
+
+{% block modal_title %} Additional information - runs {% endblock modal_title %}
+
+{% block modal_content %}
+
+The histograms for 2018 were extracted from the ML4DQM .csv files using <a href="https://github.com/XavierAtCERN/MLplayground/blob/master/histograms/management/commands/extract_run_histograms.py">the following script</a>.
+
+{% endblock modal_content %}
