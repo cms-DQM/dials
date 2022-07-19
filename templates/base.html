@@ -32,9 +32,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-		<!-- Extra per-template head entries -->
-		<title> {% block title %} {% endblock %} </title>
-		<link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
+    <!-- Extra per-template head entries -->
+    <title> {% block title %} {% endblock %} </title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
 
     {% block style %}
     {% endblock %}
@@ -46,23 +46,52 @@
 
     <body>
 
-    <!-- Navigation -->
-    {% include "navbar_top.html" %}
+      <!-- Navigation -->
+      {% include "navbar_top.html" %}
 
-    <!-- Page Content -->
+      <!-- Page Content -->
       <div class='container container-main-page'>
-		  {% block content %}
+        {% block content %}
           Default Bootstrap Container.
-		  {% endblock %}
+        {% endblock %}
       </div>
 
-    <!-- {% include "navbar_bottom.html" %} -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom px-4">
+        <a class="navbar-brand">Data Sources</a>
 
-  </body>
+          <ul class="navbar-nav">
 
-  {% block navbar_bottom %}
-  {% endblock navbar_bottom %}
-  
+          {% block navbar_bottom_tabs %}
+          {% endblock navbar_bottom_tabs %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="#modalRuns" data-bs-toggle="modal" data-bs-target="#modalRuns">
+                {% block modal_tab %} ... {% endblock modal_tab %}
+              </a>
+            </li>
+
+          </ul>
+      </nav>
+
+      <div class="modal fade" id="modalRuns" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{% block modal_title %} ... {% endblock modal_title %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p> {% block modal_content %} ... {% endblock modal_content %} </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </body>
+
   {% block scripts %}
   {% endblock %}  
 
