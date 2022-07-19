@@ -46,30 +46,30 @@
 
 {% block navbar_bottom_tabs %}
 
-    <ul class="navbar-nav">
+  <li class="nav-item">
+    <a class="nav-link">OMS</a>
+  </li>
 
-      <li class="nav-item">
-        <a class="nav-link">OMS</a>
-      </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Runs</a>
+  </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Runs</a>
-      </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates</a>
+  </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          Additional information
-        </a>
-      </li>
-
-    </ul>
+  <li class="nav-item">
+    <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates</a>
+  </li>
 
 {% endblock navbar_bottom_tabs %}
+
+{% block modal_tab %} Additional information {% endblock modal_tab %}
+
+{% block modal_title %} Additional information - run {% endblock modal_title %}
+
+{% block modal_content %}
+
+...
+
+{% endblock modal_content %}
