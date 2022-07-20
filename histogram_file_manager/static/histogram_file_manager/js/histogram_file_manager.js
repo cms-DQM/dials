@@ -9,7 +9,8 @@ const app = Vue.createApp({
             page_previous_url: null,
             total_pages: 0,
             api_base: '/api/histogram_data_files/',
-            page_current_url: '/api/histogram_data_files/',
+            page_current_url:
+                '/api/histogram_data_files/' + window.location.search,
             abort_controller: new AbortController(), // To cancel a request
         };
     },
@@ -18,6 +19,7 @@ const app = Vue.createApp({
         this._periodic_tasks();
         setInterval(this._periodic_tasks, 5000);
         this._update_data(); // Immediately update data on start
+        console.warn(window.location.search);
     },
     methods: {
         _periodic_tasks() {
@@ -60,13 +62,12 @@ const app = Vue.createApp({
             this.file_actions_is_visible = false;
         },
         fetch_previous_result_page() {
-            this.page_current_url =
-                this.page_previous_url + window.location.search;
+            this.page_current_url = this.page_previous_url;
             this._cancel_request();
             this._update_data();
         },
         fetch_next_result_page() {
-            this.page_current_url = this.page_next_url + window.location.search;
+            this.page_current_url = this.page_next_url;
             this._cancel_request();
             this._update_data();
         },
