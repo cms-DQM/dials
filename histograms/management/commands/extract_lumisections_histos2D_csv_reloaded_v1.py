@@ -1,8 +1,10 @@
 # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
 
+import sys
 import csv
 import json
 import random
+import multiprocessing
 
 from django.core.management import BaseCommand
 from django.utils import timezone
@@ -17,6 +19,8 @@ class Command(BaseCommand):
         parser.add_argument("file_path", type=str)
 
     def handle(self, *args, **options):
+
+        print(f"Number of CPUs is {multiprocessing.cpu_count()}")
 
         csv.field_size_limit(100000000)
 
@@ -38,13 +42,19 @@ class Command(BaseCommand):
             lumisections = []
             lumisectionHistogram2Ds = []
             for row in data[1:]:
-                print(f"run {row[0]} / lumisection {row[1]}")
+                print(row[2])
+                if row[2] not in list_of_mes:
+                    continue
+
+                print(f"run {row[0]} / lumisection {row[1]} / histogram {row[2]}")
                 run, _ = Run.objects.get_or_create(run_number=row[0])
+                pk = 10000*int(row[0])+int(row[1])
+                print(pk)
 
                 lumisection = Lumisection(
                     run=run, 
                     ls_number=row[1],
-                    pk=10000*row[0]+row[1]
+                    pk=pk
                 )
                 lumisections.append(lumisection)
 
@@ -56,11 +66,21 @@ class Command(BaseCommand):
                 )
                 lumisectionHistogram2Ds.append(lumisectionHistogram2D)
 
-            print("Starting bulk creation")
+                if len(lumisections) > 500:
+                    Lumisection.objects.bulk_create(lumisections, ignore_conflicts=True)
+                    lumisections = []
+                    print("Bulk created lumisections")
+                    LumisectionHistogram2D.objects.bulk_create(lumisectionHistogram2Ds)
+                    lumisectionHistogram2Ds = []
+                    print("Bulk created histograms")
+
+
+            print("Starting final bulk creation")
+            print(f"{len(lumisections)} remaining histograms")
             Lumisection.objects.bulk_create(lumisections, ignore_conflicts=True)  
-            print("Bulk created lumisections")  
+            print("Bulk created final lumisections")  
             LumisectionHistogram2D.objects.bulk_create(lumisectionHistogram2Ds)
-            print("Bulk created histograms")
+            print("Bulk created final histograms")
 
         end_time = timezone.now()
 
