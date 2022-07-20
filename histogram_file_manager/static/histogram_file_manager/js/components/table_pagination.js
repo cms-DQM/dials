@@ -5,7 +5,11 @@ app.component('table-pagination', {
 <nav aria-label="Page navigation example" v-show="is_enabled">
   <ul class="pagination">
     <li class="page-item"><a class="page-link" v-on:click="clicked_previous">Previous</a></li>
-    <li class="page-item" v-for="page_number in [...Array(parseInt(total_pages)).keys()]"><a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">{{ page_number + 1 }}</a></li>
+    <li class="page-item" v-for="page_number of page_iterator" :class="{active: page_number+1 == current_page_number}">
+	  <a aria-disabled="true" class="page-link" v-on:click="clicked_specific_page(page_number+1)">
+		{{ page_number + 1 }}
+	  </a>
+	</li>
 	
     <li class="page-item"><a class="page-link" v-on:click="clicked_next">Next</a></li>
   </ul>
@@ -21,6 +25,10 @@ app.component('table-pagination', {
             required: true,
         },
         total_pages: {
+            type: Number,
+            required: true,
+        },
+        current_page_number: {
             type: Number,
             required: true,
         },
@@ -51,6 +59,9 @@ app.component('table-pagination', {
             return (
                 this.page_next_url !== null || this.page_previous_url !== null
             );
+        },
+        page_iterator() {
+            return Array.from(Array(parseInt(this.total_pages)).keys());
         },
     },
 });

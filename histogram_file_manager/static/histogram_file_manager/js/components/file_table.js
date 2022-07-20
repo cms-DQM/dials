@@ -1,34 +1,37 @@
 app.component('file-table', {
-    template:
-        /*html*/
-        `
-<div class="table-responsive">
-  <table class="table table-sm table-hover table-striped">
-	<thead class="thead-dark">
-	  <tr>
-		<th scope="col"
-		   v-for="header in headers"
-	   :key="header">
-	   {{ header }}
-	 </th>
-     <th>Actions</th>
-</tr>
-   </thead>
-<tbody>
-  <tr v-for="file_information of files_information">
-    <td v-for="value of file_information">
-	  {{ value }}
-	</td>
-	<td>
-		  <button type="button" class="btn btn-primary"
-			v-on:click="file_actions_clicked(file_information)"
-			>
-			Actions
-		  </button>
-	</td>
-  </tr>
-</tbody>
- </table>   
+template:
+/*html*/
+`
+<div>
+  <h5>{{ results_count }} results </h5>
+  <div class="table-responsive">
+	<table class="table table-sm table-hover table-striped">
+	  <thead class="thead-dark">
+		<tr>
+		  <th scope="col"
+			  v-for="header in headers"
+			  :key="header">
+			{{ header }}
+		  </th>
+		  <th>Actions</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr v-for="file_information of files_information">
+		  <td v-for="value of file_information">
+			{{ value }}
+		  </td>
+		  <td>
+			<button type="button" class="btn btn-primary"
+					v-on:click="file_actions_clicked(file_information)"
+					>
+			  Actions
+			</button>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>   
+  </div>
 </div>
 `,
     methods: {
@@ -40,6 +43,10 @@ app.component('file-table', {
     props: {
         files_information: {
             type: Array,
+            required: true,
+        },
+        results_count: {
+            type: Number,
             required: true,
         },
     },

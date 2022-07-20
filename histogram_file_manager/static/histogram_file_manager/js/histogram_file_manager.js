@@ -1,12 +1,14 @@
 const app = Vue.createApp({
     data() {
         return {
+            results_count: 0,
             files_information: [],
             file_information: {},
             file_actions_is_visible: false,
             waiting_for_data: false,
             page_next_url: null,
             page_previous_url: null,
+            current_page_number: 1,
             total_pages: 0,
             api_base: '/api/histogram_data_files/',
             page_current_url:
@@ -19,7 +21,6 @@ const app = Vue.createApp({
         this._periodic_tasks();
         setInterval(this._periodic_tasks, 5000);
         this._update_data(); // Immediately update data on start
-        console.warn(window.location.search);
     },
     methods: {
         _periodic_tasks() {
@@ -32,22 +33,27 @@ const app = Vue.createApp({
                 this.abort_controller.abort();
             }
         },
+        _get_page_number(url = this.request_url) {
+            let u = new URLSearchParams(url);
+            return Number(u.get('page')) || 1;
+        },
         // Private method to fetch updated files information
         // via the API
         _update_data() {
             let url = this.request_url;
-            console.log(url);
             this.waiting_for_data = true;
 
             axios
                 .get(url, get_axios_config(this.abort_controller))
                 .then((response) => {
-                    // console.warn(response);
+                    // console.warn(response.data);
                     this.files_information = response.data.results;
                     this.page_count = response.data.count;
                     this.page_next_url = response.data.next || null;
                     this.page_previous_url = response.data.previous || null;
                     this.total_pages = response.data.total_pages || 0;
+                    this.results_count = response.data.total || 0;
+                    this.current_page_number = this._get_page_number();
                 })
                 .catch((error) => console.error(error))
                 .finally(() => {
@@ -85,9 +91,6 @@ const app = Vue.createApp({
             // window.location.search contains the filters
             // selected by the user in the filter form
             return this.page_current_url;
-        },
-        url_arguments() {
-            return window.location.search;
         },
     },
 });
