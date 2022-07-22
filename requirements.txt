@@ -1,4 +1,4 @@
-Django
+Django<5.0.0
 django-bootstrap3
 django-filter
 django-tables2
@@ -18,3 +18,4 @@ pyyaml
 uritemplate
 django-debug-toolbar
 flake8
+django-allauth

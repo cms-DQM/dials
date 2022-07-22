@@ -63,6 +63,11 @@ INSTALLED_APPS = [
     "challenge",
     "data_taking_objects",
     "data_taking_certification",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.cern",
+    "allauth.socialaccount.providers.github",
 ]
 
 SITE_ID = 1
@@ -230,3 +235,14 @@ DQM_PLAYGROUND_DS_HOST = config(
     "DQM_PLAYGROUND_DS_ADDRESS", default="dqm-playground-ds", cast=str
 )
 DQM_PLAYGROUND_DS_PORT = config("DQM_PLAYGROUND_DS_SERVICE_PORT", default=8888)
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+SITE_ID = config("SITE_ID", default=1, cast=int)
+
+ACCOUNT_EMAIL_VERIFICATION = "none"

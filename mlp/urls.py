@@ -24,7 +24,9 @@ from histogram_file_manager.api.routers import router as histogram_data_file_rou
 from histograms.api.routers import router as histograms_router
 from challenge.api.routers import router as challenge_router
 from data_taking_objects.api.routers import router as data_taking_objects_router
-from data_taking_certification.api.routers import router as data_taking_certification_router
+from data_taking_certification.api.routers import (
+    router as data_taking_certification_router,
+)
 
 # Create a router and extend it will all apps' api endpoints
 router = routers.DefaultRouter()
@@ -57,5 +59,6 @@ urlpatterns = [
         ),
         name="swagger-ui",
     ),
+    path("accounts/", include("allauth.urls")),
     # path('__debug__/', include('debug_toolbar.urls')),
 ]
