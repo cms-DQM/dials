@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.cern",
+    "allauth.socialaccount.providers.github",
 ]
 
 SITE_ID = 1
@@ -241,15 +242,5 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
-
-SOCIALACCOUNT_PROVIDERS = {
-    "cern": {
-        "APP": {
-            "client_id": "webframeworks-paas-ml4dqm-playground",
-            "secret": config("CERN_SSO_CLIENT_SECRET", ""),
-            "key": "",
-        }
-    }
-}
 
 SITE_ID = config("SITE_ID", default=1, cast=int)
