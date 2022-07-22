@@ -7,12 +7,19 @@ logger = logging.getLogger(__name__)
 
 
 class HistogramDataFileSerializer(serializers.ModelSerializer):
-    run_histograms = serializers.StringRelatedField(many=True, source="runhistogram")
-    lumisection_histograms_1d = serializers.StringRelatedField(
-        many=True, source="lumisectionhistogram1d"
+    # run_histograms = serializers.StringRelatedField(many=True, source="runhistogram")
+    # lumisection_histograms_1d = serializers.StringRelatedField(
+    #     many=True, source="lumisectionhistogram1d"
+    # )
+    # lumisection_histograms_2d = serializers.StringRelatedField(
+    #     many=True, source="lumisectionhistogram2d"
+    # )
+    run_histograms = serializers.IntegerField(source="runhistogram.count")
+    lumisection_histograms_1d = serializers.IntegerField(
+        source="lumisectionhistogram1d.count"
     )
-    lumisection_histograms_2d = serializers.StringRelatedField(
-        many=True, source="lumisectionhistogram2d"
+    lumisection_histograms_2d = serializers.IntegerField(
+        source="lumisectionhistogram2d.count"
     )
 
     class Meta:
