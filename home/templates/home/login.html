@@ -23,6 +23,11 @@
 {% block content %}
 
 <div class="container-fluid">
+	{% if user.is_authenticated %}
+	<div class="alert alert-primary" role="alert">
+		Hello {{ user.username }}! You are already logged in! <i class="bi bi-emoji-smile"></i>
+	</div>
+	{% else %}
 	<button class="btn btn-primary btn-cern"
 			onclick="window.location.href = '{% provider_login_url 'cern' %}'">
 		<img src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo"/><div class="mt-1">Login with CERN</div>
@@ -40,7 +45,7 @@
 			<button class ="btn btn-primary cern-button" type="submit" name="submit">Login</button>
 		</form>
 	</div>
-
+	{% endif %}
 </div>
 
 {% endblock content %}
