@@ -1,102 +1,100 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="/">
+			<img src="{% static 'img/favicon.png' %}" width="30" height="30" alt="" title="My Little Playground">
+			DQM Playground
+		</a>
 
-  <a class="navbar-brand" href="/">
-    <img src="{% static 'img/favicon.png' %}" width="30" height="30" alt="" title="My Little Playground">
-    DQM Playground
-  </a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
 
+				<li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
+					<a class="nav-link" href="{% url 'home:home' %}">Home</a>
+				</li>
 
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
+				{% if request.user.is_authenticated%}
 
-      <li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
-        <a class="nav-link" href="{% url 'home:home' %}">Home</a>
-      </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Granularity
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'data_taking_objects:runs-view' %}">Runs</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'data_taking_objects:lumisections-view' %}">Lumisections</a>
+					</div>
+				</li>
 
-      {% if request.user.is_authenticated%}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Histograms
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
+						<a class="dropdown-item" href="{% url 'histograms:run-histograms-plots-view' %}">Run Histograms Plots</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">Lumisection 1D Histograms</a>
+						<a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">Lumisection 2D Histograms</a>
+					</div>
+				</li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Granularity
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'data_taking_objects:runs-view' %}">Runs</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="{% url 'data_taking_objects:lumisections-view' %}">Lumisections</a>
-        </div>
-      </li>
+				<li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
+					<a class="nav-link" href="{% url 'home:home' %}">Rates</a>
+				</li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Histograms
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Management</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
-          <a class="dropdown-item" href="{% url 'histograms:run-histograms-plots-view' %}">Run Histograms Plots</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">Lumisection 1D Histograms</a>
-          <a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">Lumisection 2D Histograms</a>
-        </div>
-      </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Certification
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#">Overview</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'data_taking_certification:run-certification-view' %}">Run Certification</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'data_taking_certification:lumisection-certification-view' %}">Lumisection Certification</a>
+					</div>
+				</li>
 
-      <li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
-        <a class="nav-link" href="{% url 'home:home' %}">Rates</a>
-      </li>
+				<li class="nav-item dropdown {%if request.path == path_to_whatever%} active {% endif %}">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Challenges
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'challenge:create-task-view' %}">Task</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="#">Prediction</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="#">JSON Producer</a>
+					</div>
+				</li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Certification
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Overview</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="{% url 'data_taking_certification:run-certification-view' %}">Run Certification</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="{% url 'data_taking_certification:lumisection-certification-view' %}">Lumisection Certification</a>
-        </div>
-      </li>
+				<li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
+					<a class="nav-link" href="{% url 'data_taking_objects:diagnostic-view' %}">Diagnostic</a>
+				</li>
 
-      <li class="nav-item dropdown {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Challenges
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'challenge:create-task-view' %}">Task</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="#">Prediction</a>
-          <hr class="dropdown-divider">
-          <a class="dropdown-item" href="#">JSON Producer</a>
-        </div>
-      </li>
+				<li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
+					<a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
+				</li>
 
-      <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link" href="{% url 'data_taking_objects:diagnostic-view' %}">Diagnostic</a>
-      </li>
+				<li class="nav-item {%if request.path == path_to_logout%} active {% endif %}">
+					<a class="nav-link" href="{% url 'home:logout' %}">Logout ({{user.username}})</a>
+				</li>
 
-      <li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
-        <a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
-      </li>
+				{% else %}
 
-      <li class="nav-item {%if request.path == path_to_logout%} active {% endif %}">
-        <a class="nav-link" href="{% url 'home:logout' %}">Logout ({{user.username}})</a>
-      </li>
+				<li class="nav-item {%if request.path == path_to_login%} active {% endif %}">
+					<a class="nav-link" href="{% url 'home:login' %}">Login</a>
+				</li>
 
-      {% else %}
-
-      <li class="nav-item {%if request.path == path_to_login%} active {% endif %}">
-        <a class="nav-link" href="{% url 'home:login' %}">Login</a>
-      </li>
-
-      {% endif %}
-
-    </ul>
-  </div>
-
+				{% endif %}
+			</ul>
+		</div>
+	</div>
 </nav>
