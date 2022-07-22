@@ -14,12 +14,22 @@ app.component('file-actions', {
 	  <div class="modal-body">
 		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
 		<div class="container-fluid">
-		  <table class="table table-hover table-striped">
+		  <table class="table">
 			<thead>
 			</thead>
 			<tbody>
-			  <th scope="row">File path</th>
-			  <td>{{ file_information['filepath'] }}</td>
+			  <tr>
+				<th scope="row">Filepath</th>
+				<td><code>{{ file_information['filepath'] }}</code></td>
+			  </tr>
+			  <tr v-if="file_information['data_dimensionality'] !== 0">
+				<th scope="row">Dimensionality</th>
+				<td>{{ file_information['data_dimensionality'] }}</td>
+			  </tr>
+			  <tr v-if="file_information['granularity'] !== 'unk'">
+				<th scope="row">Granularity</th>
+				<td>{{ file_information['granularity'] }}</td>
+			  </tr>			  
 			</tbody>
 		  </table>
 		</div>
@@ -27,8 +37,8 @@ app.component('file-actions', {
 		<form @submit.prevent="send_parse_file_command">
 		  <div class="form-group" v-for="(choices, field_name) in field_choices">
 			<label :for="field_name">{{ field_name }}</label>
-			<select class="form-control" :id="field_name" v-model="$data[field_name]">
-			  <option v-for="(choice, choice_label) in choices">
+			<select class="form-select" :id="field_name" v-model="$data[field_name]">
+			  <option v-for="(choice_label, choice) in choices"  :value="choice">
 				{{ choice_label }}
 			  </option>
 			</select>
