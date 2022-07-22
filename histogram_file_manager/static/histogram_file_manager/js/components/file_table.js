@@ -49,9 +49,9 @@ app.component('file-table', {
                     return Number(value).toFixed(2) + '%';
                 },
                 data_dimensionality: function (value) {
-                    if (value === '2') {
+                    if (value === 2) {
                         return '2D';
-                    } else if (value === '1') {
+                    } else if (value === 1) {
                         return '1D';
                     }
                     return '-';
