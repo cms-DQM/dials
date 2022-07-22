@@ -22,8 +22,8 @@
     <!-- Bootstrap 5 -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>			
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-				integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-				crossorigin="anonymous"
+				 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+				 crossorigin="anonymous"
     >
     </script>
 
@@ -34,10 +34,10 @@
 
     <!-- Extra per-template head entries -->
     <title> {% block title %} {% endblock %} </title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
 
-    {% block style %}
-    {% endblock %}
+
 		
     {% block extra_head %}
     {% endblock %}
@@ -56,19 +56,20 @@
         {% endblock %}
       </div>
 
+	  <!-- Navbar bottom -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom px-4">
-        <a class="navbar-brand">Data Sources</a>
+          <a class="navbar-brand">Data Sources</a>
 
           <ul class="navbar-nav">
 
           {% block navbar_bottom_tabs %}
           {% endblock navbar_bottom_tabs %}
 
-            <li class="nav-item">
-              <a class="nav-link" href="#modalSources" data-bs-toggle="modal" data-bs-target="#modalSources">
-                {% block modal_tab %} ... {% endblock modal_tab %}
-              </a>
-            </li>
+              <li class="nav-item">
+				  <a class="nav-link" href="#modalSources" data-bs-toggle="modal" data-bs-target="#modalSources">
+					  {% block modal_tab %} ... {% endblock modal_tab %}
+				  </a>
+              </li>
 
           </ul>
       </nav>
@@ -84,7 +85,7 @@
               <p> {% block modal_content %} ... {% endblock modal_content %} </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -92,7 +93,8 @@
 
     </body>
 
-  {% block scripts %}
-  {% endblock %}  
-
+	{% block scripts %}
+	{% endblock %}  
+    {% block style %}
+    {% endblock %}
 </html>

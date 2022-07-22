@@ -3,18 +3,44 @@
 {% load socialaccount %}
 
 {% block title %} Login {% endblock title %}
+{% block style %}
+<style>
+.btn-cern {
+	background-color: #0033a0;
+	color: #ffffff;
+ }
+
+ .link-bland {
+	 color: #000000;
+	 text-decoration: none;
+ }
+ link-bland:hover {
+	 color: #0033a0;
+ }
+</style>
+{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
+	<button class="btn btn-primary btn-cern"
+			onclick="window.location.href = '{% provider_login_url 'cern' %}'">
+		<img src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo"/><div class="mt-1">Login with CERN</div>
+	</button>
 
-	<form method="POST" class="form">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<input class ="btn btn-primary" type="submit" name="submit" value="Login">
-	</form>
 
-	<a href="{% provider_login_url 'cern' %}">Login w/ CERN</a>
+	<hr></hr>
+	<a data-bs-toggle="collapse" href="#collapse_local_login" role="button" class="link-bland">
+		<h6>Or login with a local account<i class="bi bi-person-circle ms-1"></i></h6>
+	</a>
+	<div class="collapse mt-3" id="collapse_local_login">
+		<form method="POST" class="form">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button class ="btn btn-primary cern-button" type="submit" name="submit">Login</button>
+		</form>
+	</div>
+
 </div>
 
 {% endblock content %}
