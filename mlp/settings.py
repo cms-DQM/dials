@@ -244,3 +244,5 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = config("SITE_ID", default=1, cast=int)
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
