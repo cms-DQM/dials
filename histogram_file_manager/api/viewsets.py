@@ -35,7 +35,7 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
 
 class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
 
-    queryset = HistogramDataFile.objects.all()
+    queryset = HistogramDataFile.objects.all().order_by("id")
     serializer_class = HistogramDataFileSerializer
     filterset_class = HistogramDataFileFilter
 
@@ -81,7 +81,7 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
             except KeyError as e:
                 return Response(
                     f"Something possibly missing from HISTOGRAM_DIMENSIONS_CHOICES ({e})",
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
             except Exception as e:
                 logger.exception(e)
