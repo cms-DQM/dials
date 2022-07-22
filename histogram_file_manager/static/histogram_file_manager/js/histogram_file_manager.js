@@ -34,7 +34,8 @@ const app = Vue.createApp({
             }
         },
         _get_page_number(url = this.request_url) {
-            let u = new URLSearchParams(url);
+            url = new URL(window.location.origin + url);
+            let u = new URLSearchParams(url.search);
             return Number(u.get('page')) || 1;
         },
         // Private method to fetch updated files information
