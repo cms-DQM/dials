@@ -94,7 +94,6 @@ class Task(models.Model):
         )
 
 
-
 class Strategy(models.Model):
     """
     Model describing the ML Strategy used to make a Prediction, using
@@ -104,6 +103,9 @@ class Strategy(models.Model):
     model = models.CharField(
         max_length=100, help_text="Model used by the Strategy", null=False
     )
+
+    class Meta:
+        verbose_name_plural = "Strategies"
 
 
 class Prediction(models.Model):

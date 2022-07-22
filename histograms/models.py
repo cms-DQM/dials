@@ -181,6 +181,7 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
     # TODO
     class Meta:
+        verbose_name_plural = "Lumisection Histograms 1D"
         constraints = [
             models.UniqueConstraint(
                 fields=["lumisection", "title"],
@@ -331,6 +332,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
     class Meta:
+        verbose_name_plural = "Lumisection Histograms 2D"
         constraints = [
             models.UniqueConstraint(
                 fields=["lumisection", "title"],
