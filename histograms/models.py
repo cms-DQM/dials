@@ -165,7 +165,7 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 count = 0
                 lumisection_histos1D = []
 
-            time.sleep(0.1)  # Don't be greedy!
+            # time.sleep(0.1)  # Don't be greedy!
 
         if (
             lumisection_histos1D
@@ -303,7 +303,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 )
                 lumisection_histos2D.append(lumisection_histo2D)
 
-                time.sleep(0.1)  # Don't be greedy!
+                # time.sleep(0.1)  # Don't be greedy!
 
             LumisectionHistogram2D.objects.bulk_create(
                 lumisection_histos2D, ignore_conflicts=True
