@@ -174,7 +174,7 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 count = 0
                 lumisection_histos1D = []
 
-            time.sleep(0.1)  # Don't be greedy!
+            #time.sleep(0.1)  # Don't be greedy!
 
         if (
             lumisection_histos1D
