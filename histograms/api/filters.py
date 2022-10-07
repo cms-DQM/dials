@@ -32,6 +32,10 @@ class RunHistogramFilter(django_filters.rest_framework.FilterSet):
 
     run__run_number__in = InFilter(field_name="run__run_number", lookup_expr="in")
 
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
+    )
+
     class Meta:
         model = RunHistogram
         fields = {
@@ -80,6 +84,9 @@ class LumisectionHistogram1DFilter(django_filters.FilterSet):
     lumisection__run__run_number__in = InFilter(
         field_name="lumisection__run__run_number", lookup_expr="in"
     )
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
+    )
 
     class Meta:
         model = LumisectionHistogram1D
@@ -117,6 +124,9 @@ class LumisectionHistogram2DFilter(django_filters.FilterSet):
     )
     lumisection__run__run_number__in = InFilter(
         field_name="lumisection__run__run_number", lookup_expr="in"
+    )
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
     )
 
     class Meta:
