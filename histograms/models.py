@@ -3,6 +3,7 @@ import os.path
 import json
 import logging
 import pandas as pd  # https://betterprogramming.pub/3-techniques-for-importing-large-csv-files-into-a-django-app-2b6e5e47dba0
+import numpy as np
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -129,10 +130,15 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
             title = row["hname"]
             entries = row["entries"]
             data = json.loads(row["histo"])
+            hist_x_min  = row["Xmin"]
+            hist_x_max  = row["Xmax"]
+            hist_x_bins = row["Xbins"]
 
-            logger.debug(
-                f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}"
-            )
+            data = data[1:hist_x_bins+1]
+
+            #logger.debug(
+            #    f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}\tlength: {len(data)}"
+            #)
 
             # Get existing or create new Run entry
             run, _ = Run.objects.get_or_create(run_number=run_number)
@@ -148,6 +154,9 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 entries=entries,
                 data=data,
                 source_data_file=histogram_data_file,
+                x_min = hist_x_min,
+                x_max = hist_x_max,
+                x_bin = hist_x_bins,
             )
 
             lumisection_histos1D.append(lumisection_histo1D)
@@ -203,7 +212,14 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     Model containing 2D Lumisection Histogram information
     """
 
-    data = ArrayField(models.FloatField(), blank=True)
+    data = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            blank=True
+        ),
+        blank=True
+    )
+    #data_numpy = ArrayField(models.BinaryField())
     # ArrayField( ArrayField( models.IntegerField(blank=True), size=XX, ), size=XX,)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
@@ -285,9 +301,20 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 title = row["hname"]
                 entries = row["entries"]
                 data = json.loads(row["histo"])
-                # logger.debug(
-                #     f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}"
-                # )
+                hist_x_min = float(row["Xmin"])
+                hist_x_max = float(row["Xmax"])
+                hist_x_bins = int(row["Xbins"])
+                hist_y_min = float(row["Ymin"])
+                hist_y_max = float(row["Ymax"])
+                hist_y_bins = int(row["Ybins"])
+
+                data = np.reshape(np.asarray(data), (hist_y_bins+2, hist_x_bins+2))
+                data = data[1:hist_y_bins+1, 1:hist_x_bins+1]
+                data = data.tolist()
+
+                #logger.debug(
+                #    f"Run: {run_number}\tLumisection: {lumi_number}\tTitle: {title}\txbins: {hist_x_bins}\tybins: {hist_y_bins}\tshape: {np.asarray(data).shape}"
+                #)
 
                 run, _ = Run.objects.get_or_create(run_number=run_number)
                 lumisection, _ = Lumisection.objects.get_or_create(
@@ -300,6 +327,12 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     entries=entries,
                     data=data,
                     source_data_file=histogram_data_file,
+                    x_min = hist_x_min,
+                    x_max = hist_x_max,
+                    x_bin = hist_x_bins,
+                    y_min = hist_y_min,
+                    y_max = hist_y_max,
+                    y_bin = hist_y_bins,
                 )
                 lumisection_histos2D.append(lumisection_histo2D)
 
