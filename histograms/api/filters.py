@@ -35,27 +35,28 @@ class RunHistogramFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = RunHistogram
         fields = {
-            "run__run_number": [
-                "gte",
-                "lte",
-            ],
+            "run__run_number": ["gte", "lte", "exact"],
             "entries": [
                 "gte",
                 "lte",
             ],
             "mean": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "rms": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "skewness": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "kurtosis": [
+                "exact",
                 "gte",
                 "lte",
             ],
@@ -84,10 +85,12 @@ class LumisectionHistogram1DFilter(django_filters.FilterSet):
         model = LumisectionHistogram1D
         fields = {
             "lumisection__run__run_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "lumisection__ls_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
@@ -120,10 +123,12 @@ class LumisectionHistogram2DFilter(django_filters.FilterSet):
         model = LumisectionHistogram2D
         fields = {
             "lumisection__run__run_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "lumisection__ls_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
