@@ -32,30 +32,35 @@ class RunHistogramFilter(django_filters.rest_framework.FilterSet):
 
     run__run_number__in = InFilter(field_name="run__run_number", lookup_expr="in")
 
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
+    )
+
     class Meta:
         model = RunHistogram
         fields = {
-            "run__run_number": [
-                "gte",
-                "lte",
-            ],
+            "run__run_number": ["gte", "lte", "exact"],
             "entries": [
                 "gte",
                 "lte",
             ],
             "mean": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "rms": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "skewness": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "kurtosis": [
+                "exact",
                 "gte",
                 "lte",
             ],
@@ -79,15 +84,20 @@ class LumisectionHistogram1DFilter(django_filters.FilterSet):
     lumisection__run__run_number__in = InFilter(
         field_name="lumisection__run__run_number", lookup_expr="in"
     )
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
+    )
 
     class Meta:
         model = LumisectionHistogram1D
         fields = {
             "lumisection__run__run_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "lumisection__ls_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
@@ -115,15 +125,20 @@ class LumisectionHistogram2DFilter(django_filters.FilterSet):
     lumisection__run__run_number__in = InFilter(
         field_name="lumisection__run__run_number", lookup_expr="in"
     )
+    source_data_file__filepath__contains = django_filters.CharFilter(
+        field_name="source_data_file__filepath", lookup_expr="icontains"
+    )
 
     class Meta:
         model = LumisectionHistogram2D
         fields = {
             "lumisection__run__run_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
             "lumisection__ls_number": [
+                "exact",
                 "gte",
                 "lte",
             ],
