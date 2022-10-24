@@ -29,6 +29,15 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
         HistogramDataFile.DIMENSIONALITY_2D: {
             HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_csv
         },
+    },
+    HistogramDataFile.FILETYPE_NANODQM: {
+        HistogramDataFile.DIMENSIONALITY_1D: {
+            # HistogramDataFile.GRANULARITY_RUN:            RunHistogram.from_csv,  # Not implemented yet
+            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram1D.from_nanodqm
+        },
+        HistogramDataFile.DIMENSIONALITY_2D: {
+            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_nanodqm
+        },
     }
 }
 
