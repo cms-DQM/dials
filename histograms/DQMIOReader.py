@@ -56,13 +56,13 @@ def extractdatafromROOT(x, hist2array=False):
     #               note: option True is not yet supported (need to fix root_numpy import in SWAN)
     
     # first check for clear-cut data types such as ROOT strings, python ints and floats
-    if isinstance(x, ROOT.string): return unicode(x.data())
+    #if isinstance(x, ROOT.string): return unicode(x.data())
     if isinstance(x, int): return x
     if isinstance(x, float): return x
     # additional check for python long, which is only defined in python 2!
     # (gives error in python 3, so need to check version explicitly)
-    if sys.version_info[0]<3:
-        if isinstance(x, long): return x
+    #if sys.version_info[0]<3:
+    #    if isinstance(x, long): return x
     # at this point, if the function reaches to this stage,
     # the type of x is probably some kind of ROOT histogram
     # (more exceptions to be added above when encountered).
