@@ -6,10 +6,11 @@ rc=$?
 
 if [ $rc -eq 0 ]; then
     echo "After successful assembling"
-	wget https://root.cern/download/root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz
+	echo "Downloading $ROOT_PACKAGE_FILENAME"
+	wget https://root.cern/download/$ROOT_PACKAGE_FILENAME
 	mkdir -p /opt/app-root/src/
-    tar -xzvf root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz --directory /opt/app-root/src/
-    rm root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz
+    tar -xzvf $ROOT_PACKAGE_FILENAME --directory /opt/app-root/src/
+    rm $ROOT_PACKAGE_FILENAME
 else
     echo "After failed assembling"
 fi
