@@ -9,7 +9,6 @@ if [ $rc -eq 0 ]; then
 	wget https://root.cern/download/root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz
 	mkdir -p /opt/app-root/src/root
     tar -xzvf root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz --directory /opt/app-root/src/root
-    source /opt/app-root/src/root/bin/thisroot.sh
     rm root_v6.26.08.Linux-centos8-x86_64-gcc8.5.tar.gz
 else
     echo "After failed assembling"
