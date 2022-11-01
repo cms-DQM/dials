@@ -21,8 +21,11 @@ RUN dnf install -y http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/
  && dnf clean all 
 
 # Build ROOT
-RUN mkdir -p /opt/app-root/src/root/root_build /opt/app-root/src/root/root_install \
- &&	git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git /opt/app-root/src/root/root_src \
+RUN echo $ROOT_TAG_NAME \
+ && cmake --version \
+ && which cmake \
+ &&	mkdir -p /opt/app-root/src/root/root_build /opt/app-root/src/root/root_install \
+ &&	git clone --branch "v6-26-06" --depth=1 https://github.com/root-project/root.git /opt/app-root/src/root/root_src \
  && cd /opt/app-root/src/root/root_build \
  && cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src \
  && cmake --build . -- install -j4 
