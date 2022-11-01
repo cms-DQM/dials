@@ -21,14 +21,40 @@ RUN dnf install -y http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/
  && dnf clean all 
 
 # Build ROOT
-RUN echo $ROOT_TAG_NAME \
- && cmake --version \
- && which cmake \
- &&	mkdir -p /opt/app-root/src/root/root_build /opt/app-root/src/root/root_install \
- &&	git clone --branch "v6-26-06" --depth=1 https://github.com/root-project/root.git /opt/app-root/src/root/root_src \
- && cd /opt/app-root/src/root/root_build \
- && cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src \
- && cmake --build . -- install -j4 
+RUN cd /tmp \
+ && git clone --branch "$ROOT_TAG_NAME" https://github.com/root-project/root /usr/src/root \
+ && cmake3 /usr/src/root \
+	-Dall=ON \
+	-Dcxx11=ON \
+	-Dfail-on-missing=ON \
+	-Dgnuinstall=ON \
+	-Drpath=ON \
+	-Dbuiltin_afterimage=OFF \
+	-Dbuiltin_ftgl=OFF \
+	-Dbuiltin_gl2ps=OFF \
+	-Dbuiltin_glew=OFF \
+	-Dbuiltin_tbb=ON \
+	-Dbuiltin_unuran=OFF \
+	-Dbuiltin_vdt=ON \
+	-Dbuiltin_veccore=ON \
+	-Dbuiltin_xrootd=OFF \
+	-Darrow=OFF \
+	-Dcastor=OFF \
+	-Dchirp=OFF \
+	-Dgeocad=OFF \
+	-Dglite=OFF \
+	-Dhdfs=OFF \
+	-Dmonalisa=OFF \
+	-Doracle=OFF \
+	-Dpythia6=OFF \
+	-Drfio=OFF \
+	-Droot7=OFF \
+	-Dsapdb=OFF \
+	-Dsrp=OFF \
+	-Dvc=OFF \
+ && cmake3 --build . -- -j$(nproc) \
+ && cmake3 --build . --target install \
+ && rm -rf /usr/src/root /tmp/*
 
 # Run the final image as unprivileged user.
 # This is the base image's `default` user, but S2I requires a numerical user ID.
