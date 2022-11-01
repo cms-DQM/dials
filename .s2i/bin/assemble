@@ -6,11 +6,11 @@ rc=$?
 
 if [ $rc -eq 0 ]; then
     echo "After successful assembling"
-	echo "Downloading $ROOT_PACKAGE_FILENAME"
-	wget https://root.cern/download/$ROOT_PACKAGE_FILENAME
-	mkdir -p /opt/app-root/src/
-    tar -xzvf $ROOT_PACKAGE_FILENAME --directory /opt/app-root/src/
-    rm $ROOT_PACKAGE_FILENAME
+	# echo "Downloading $ROOT_PACKAGE_FILENAME"
+	# wget https://root.cern/download/$ROOT_PACKAGE_FILENAME
+	# mkdir -p /opt/app-root/src/
+    # tar -xzvf $ROOT_PACKAGE_FILENAME --directory /opt/app-root/src/
+    # rm $ROOT_PACKAGE_FILENAME
 else
     echo "After failed assembling"
 fi
