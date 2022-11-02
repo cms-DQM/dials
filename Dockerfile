@@ -28,7 +28,7 @@ RUN mkdir -p /opt/app-root/src/root/ /usr/src/root \
  && cd /tmp \
  && git clone --branch "$ROOT_TAG_NAME" --depth=1 https://github.com/root-project/root /usr/src/root \
  && cmake -DCMAKE_INSTALL_PREFIX=/opt/app-root/src/root/ /usr/src/root -DPython3_ROOT_DIR=`which python3` \
- && cmake --build . --target install -j `nproc` \
+ && cmake --build . --target install \
  && rm -rf /usr/src/root /tmp/*
 
 # Run the final image as unprivileged user.
