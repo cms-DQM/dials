@@ -10,53 +10,28 @@ FROM registry.access.redhat.com/ubi8/python-38
 # Temporarily switch to root user to install packages
 USER root
 
-
-
 # Install root dependencies
 # For other packages, edit the second `dnf install` line appropriately.
 
-RUN dnf install -y http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/centos-gpg-keys-8-6.el8s.cern.noarch.rpm http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/centos-linux-repos-8-6.el8s.cern.noarch.rpm http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/oracle-release-1.2-1.el8s.cern.noarch.rpm \
- && sed -i 's|gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle-ol8||' /etc/yum.repos.d/dbclients8.repo \
- && dnf install -y make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel \
- && dnf update cmake -y \
- && dnf clean all 
+RUN rpm --import https://linuxsoft.cern.ch/mirror/yum.oracle.com/RPM-GPG-KEY-oracle-ol8 \
+ && dnf install -y http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/centos-gpg-keys-8-6.el8s.cern.noarch.rpm http://linuxsoft.cern.ch/cern/centos/s8/CERN/x86_64/Packages/centos-linux-repos-8-6.el8s.cern.noarch.rpm \
+ && dnf install -y epel-release \
+ && dnf install -y libzstd-devel avahi-compat-libdns_sd-devel avahi-devel binutils cfitsio-devel cmake3 davix-devel dcap-devel fftw-devel ftgl-devel gcc gcc-c++ gcc-gfortran gfal2-all gfal2-devel giflib-devel git gl2ps-devel glew-devel gnu-free-mono-fonts gnu-free-sans-fonts gnu-free-serif-fonts graphviz-devel gsl-devel jemalloc-devel krb5-devel libAfterImage-devel libX11-devel libXext-devel libXft-devel libXpm-devel libiodbc-devel libtiff-devel libxml2-devel lz4-devel make ncurses-libs openldap-devel openssl-devel pcre-devel readline-devel redhat-rpm-config sqlite-devel srm-ifce-devel unixODBC-devel urw-fonts xorg-x11-fonts-ISO8859-1-75dpi xrootd-server-devel xxhash-devel xz-devel zlib-devel pythia8-devel mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel libuuid-devel qt5-qtwebengine-devel R-devel R-Rcpp-devel R-RInside-devel \
+ && dnf install -y redhat-lsb-core --tsflags=noscripts \
+ && dnf clean all \
+ && python3 -m pip install -U pip numpy
+ # mysql-devel 
 
 # Build ROOT
-RUN cd /tmp \
- && git clone --branch "$ROOT_TAG_NAME" https://github.com/root-project/root /usr/src/root \
- && cmake3 /usr/src/root \
-	-Dall=ON \
-	-Dcxx11=ON \
-	-Dfail-on-missing=ON \
-	-Dgnuinstall=ON \
-	-Drpath=ON \
-	-Dbuiltin_afterimage=OFF \
-	-Dbuiltin_ftgl=OFF \
-	-Dbuiltin_gl2ps=OFF \
-	-Dbuiltin_glew=OFF \
-	-Dbuiltin_tbb=ON \
-	-Dbuiltin_unuran=OFF \
-	-Dbuiltin_vdt=ON \
-	-Dbuiltin_veccore=ON \
-	-Dbuiltin_xrootd=OFF \
-	-Darrow=OFF \
-	-Dcastor=OFF \
-	-Dchirp=OFF \
-	-Dgeocad=OFF \
-	-Dglite=OFF \
-	-Dhdfs=OFF \
-	-Dmonalisa=OFF \
-	-Doracle=OFF \
-	-Dpythia6=OFF \
-	-Drfio=OFF \
-	-Droot7=OFF \
-	-Dsapdb=OFF \
-	-Dsrp=OFF \
-	-Dvc=OFF \
- && cmake3 --build . -- -j$(nproc) \
- && cmake3 --build . --target install \
+RUN mkdir -p /opt/app-root/src/root/ /usr/src/root \
+ && cd /tmp \
+ && git clone --branch "$ROOT_TAG_NAME" --depth=1 https://github.com/root-project/root /usr/src/root \
+ && cmake -DCMAKE_INSTALL_PREFIX=/opt/app-root/src/root/ /usr/src/root -DPython3_ROOT_DIR=`which python3` \
+ && cmake --build . --target install -j `nproc` \
  && rm -rf /usr/src/root /tmp/*
 
 # Run the final image as unprivileged user.
 # This is the base image's `default` user, but S2I requires a numerical user ID.
 USER 1001
+
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
