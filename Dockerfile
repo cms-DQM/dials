@@ -18,8 +18,7 @@ RUN rpm --import https://linuxsoft.cern.ch/mirror/yum.oracle.com/RPM-GPG-KEY-ora
  && dnf install -y epel-release \
  && dnf install -y libzstd-devel avahi-compat-libdns_sd-devel avahi-devel binutils cfitsio-devel cmake3 davix-devel dcap-devel fftw-devel ftgl-devel gcc gcc-c++ gcc-gfortran gfal2-all gfal2-devel giflib-devel git gl2ps-devel glew-devel gnu-free-mono-fonts gnu-free-sans-fonts gnu-free-serif-fonts graphviz-devel gsl-devel jemalloc-devel krb5-devel libAfterImage-devel libX11-devel libXext-devel libXft-devel libXpm-devel libiodbc-devel libtiff-devel libxml2-devel lz4-devel make ncurses-libs openldap-devel openssl-devel pcre-devel readline-devel redhat-rpm-config sqlite-devel srm-ifce-devel unixODBC-devel urw-fonts xorg-x11-fonts-ISO8859-1-75dpi xrootd-server-devel xxhash-devel xz-devel zlib-devel pythia8-devel mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel libuuid-devel qt5-qtwebengine-devel R-devel R-Rcpp-devel R-RInside-devel \
  && dnf install -y redhat-lsb-core --setopt=tsflags=noscripts \
- && dnf remove -y libarchive \
- && dnf install -y libarchive \
+ && dnf update -y libarchive \
  && dnf clean all \
  && python3 -m pip install -U pip numpy
  # mysql-devel 
@@ -36,4 +35,4 @@ RUN mkdir -p /opt/app-root/src/root/ /usr/src/root \
 # This is the base image's `default` user, but S2I requires a numerical user ID.
 USER 1001
 
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
