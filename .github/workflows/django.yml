@@ -43,14 +43,9 @@ jobs:
 
     - name: Install ROOT
       run: |
-        export CI_DIR=$(pwd)
-        mkdir /HEP
-        cd /HEP
         wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
-        mv root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
         tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
         source root/bin/thisroot.sh
-        cd $CI_DIR
 
     # - name: Lint with black
     #   uses: psf/black@stable
@@ -61,9 +56,9 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude root
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore=E50,F401,F403
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore=E50,F401,F403 --exclude root
 
     - name: Run Unit Tests
       env:
