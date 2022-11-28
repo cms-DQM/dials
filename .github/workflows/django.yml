@@ -9,11 +9,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: rootproject/root
     strategy:
       max-parallel: 4
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
+      #matrix:
+      #  python-version: [3.7, 3.8, 3.9]
 
     services:
       postgres:
@@ -31,25 +31,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+    #- name: Set up Python ${{ matrix.python-version }}
+    #  uses: actions/setup-python@v2
+    #  with:
+    #    python-version: ${{ matrix.python-version }}
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install ROOT
-      run: |
-        sudo apt install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev
-        git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git root_src
-        mkdir root_build root_install && cd root_build
-        cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src
-        cmake --build . -- install
-        source ../root_install/bin/thisroot.sh
-        cd ..
+    #- name: Install ROOT
+    #  run: |
+    #    sudo apt install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev
+    #    git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git root_src
+    #    mkdir root_build root_install && cd root_build
+    #    cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src
+    #    cmake --build . -- install
+    #    source ../root_install/bin/thisroot.sh
+    #    cd ..
 
       # wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
       # tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
@@ -65,9 +65,9 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude root
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore=E50,F401,F403 --exclude root
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore=E50,F401,F403
 
     - name: Run Unit Tests
       env:
@@ -78,7 +78,6 @@ jobs:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
       run: |
-        source root_install/bin/thisroot.sh
         python manage.py test --settings=mlp.test_ci_settings
 
     - name: Run Functional Tests with Selenium on Chrome
