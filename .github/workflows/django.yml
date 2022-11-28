@@ -43,9 +43,14 @@ jobs:
 
     - name: Install ROOT
       run: |
+        export CI_DIR=$(pwd)
+        mkdir /HEP
+        cd /HEP
         wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        mv root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
         tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
         source root/bin/thisroot.sh
+        cd $CI_DIR
 
     # - name: Lint with black
     #   uses: psf/black@stable
