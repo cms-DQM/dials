@@ -41,6 +41,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Install ROOT
+      run: |
+        wget https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        tar -xzvf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        source root/bin/thisroot.sh
+
     # - name: Lint with black
     #   uses: psf/black@stable
     #   with:
