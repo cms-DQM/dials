@@ -43,7 +43,7 @@ jobs:
 
     - name: Install ROOT
       run: |
-        apt install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev
+        sudo apt install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev
         git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git root_src
         mkdir root_build root_install && cd root_build
         cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src
