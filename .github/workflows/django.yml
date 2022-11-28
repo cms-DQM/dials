@@ -43,8 +43,8 @@ jobs:
 
     - name: Install ROOT
       run: |
-        wget https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
-        tar -xzvf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
         source root/bin/thisroot.sh
 
     # - name: Lint with black
