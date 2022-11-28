@@ -70,6 +70,7 @@ jobs:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
       run: |
+        echo $PYTHONPATH
         python manage.py test --settings=mlp.test_ci_settings
 
     - name: Run Functional Tests with Selenium on Chrome
