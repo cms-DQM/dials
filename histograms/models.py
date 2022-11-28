@@ -21,6 +21,14 @@ logger = logging.getLogger(__name__)
 # and one 20-line chunk.
 LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE = 50
 
+def NanoDQMIO_count_mes(file_path):
+    num_total_entries = 0
+    reader = histograms.DQMIOReader.DQMIOReader(file_path)
+    for run_fromreader, lumi_fromreader in reader.listLumis():
+        melist = reader.getMEsForLumi((run_fromreader, lumi_fromreader), "*")
+        for me in melist:
+            if me.type in [3, 4, 5, 6, 7, 8]: num_total_entries += 1
+    return num_total_entries
 
 class HistogramBase(models.Model):
     """
@@ -190,21 +198,25 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
     @staticmethod
     def from_nanodqm(file_path, data_era: str = ""):
         """
-        Import 2D Lumisection Histograms from a DQMIO file
+        Import 1D Lumisection Histograms from a DQMIO file
 
         Parameters:
-        - file_path: A path to a .root DQMIO file containing a 2D Lumisection Histogram
+        - file_path: A path to a .root DQMIO file containing a 1D Lumisection Histogram
         - data_era: The era that the data refers to (e.g. 2018A)
         """
         
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
-        reader = histograms.DQMIOReader(file_path)
+        if histogram_data_file.entries_total < 1:
+            histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
+            histogram_data_file.save()
+
+        reader = histograms.DQMIOReader.DQMIOReader(file_path)
 
         me_count = 0
         for run_fromreader, lumi_fromreader in reader.listLumis():
@@ -220,12 +232,14 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
 
                 hist_x_bins = me.data.GetNbinsX()
                 hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
-                hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins) + me.data.GetXaxis().GetBinWidth(hist_x_bins)
+                hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins+1) # Takes low edge of overflow bin instead.
 
-                data = me.data[1:hist_x_bins+1]
+                data = []
+                for i in range(1, hist_x_bins+1):
+                    data.append(me.data.GetBinContent(i))
 
-                run_obj = Run.objects.get_or_create(run_number=run_number)
-                lumisection_obj = Lumisection.objects.get_or_create(
+                run_obj, _ = Run.objects.get_or_create(run_number=run_number)
+                lumisection_obj, _ = Lumisection.objects.get_or_create(
                     run=run_obj, ls_number=lumi_number
                 )
 
@@ -244,10 +258,6 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
             LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
             logger.info(f"{len(lumisection_histos1D)} x 1D lumisection histos successfully added from file {file_path}.")
             histogram_data_file.entries_processed += len(lumisection_histos1D)
-            histogram_data_file.save()
-
-        if histogram_data_file.entries_total < 1:
-            histogram_data_file.entries_total = me_count
             histogram_data_file.save()
 
     def __str__(self):
@@ -427,7 +437,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 break
 
     @staticmethod
-    def from_nanodqm(file_path, data_era: str = ""):
+    def from_nanodqm(file_path, data_era: str = "", read_chunk_lumi: int = -1):
         """
         Import 2D Lumisection Histograms from a DQMIO file
 
@@ -443,9 +453,31 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
-        reader = histograms.DQMIOReader(file_path)
+        if histogram_data_file.entries_total < 1:
+            histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
+            histogram_data_file.save()
+
+        reader = histograms.DQMIOReader.DQMIOReader(file_path)
         me_count = 0
-        for run_fromreader, lumi_fromreader in reader.listLumis():
+        current_lumi = 0
+
+        lumilist = reader.listLumis()
+        lumilist_notread = []
+        for run_fromreader, lumi_fromreader in lumilist:
+            if len(Run.objects.filter(run_number=run_fromreader)) == 0:
+                lumilist_notread.append((run_fromreader, lumi_fromreader))
+                continue
+            run_obj, _ = Run.objects.get_or_create(run_number=run_fromreader)
+            if len(Lumisection.objects.filter(run=run_obj, ls_number=lumi_fromreader)) == 0:
+                lumilist_notread.append((run_fromreader, lumi_fromreader))
+                continue
+            lumisection_obj, _ = Lumisection.objects.get_or_create(
+                run=run_obj, ls_number=lumi_fromreader
+            )
+            if len(LumisectionHistogram2D.objects.filter(lumisection=lumisection_obj)) == 0:
+                lumilist_notread.append((run_fromreader, lumi_fromreader))
+
+        for run_fromreader, lumi_fromreader in lumilist_notread:
             lumisection_histos2D = []
             melist = reader.getMEsForLumi((run_fromreader, lumi_fromreader), "*")
             me_count += len(melist)
@@ -465,12 +497,19 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 hist_y_min = me.data.GetYaxis().GetBinLowEdge(1)
                 hist_y_max = me.data.GetYaxis().GetBinLowEdge(hist_y_bins) + me.data.GetYaxis().GetBinWidth(hist_y_bins)
 
-                data = np.reshape(np.asarray(me.data), (hist_y_bins+2, hist_x_bins+2))
-                data = data[1:hist_y_bins+1, 1:hist_x_bins+1]
-                data = data.tolist()
+                # data should be in the form of data[x][y]
+                data = []
+                for i in range(1, hist_y_bins+1):
+                    datarow = []
+                    for j in range(1, hist_x_bins+1):
+                        datarow.append(me.data.GetBinContent(j, i))
+                    data.append(datarow)
+                #data = np.reshape(np.asarray(me.data), (hist_y_bins+2, hist_x_bins+2))
+                #data = data[1:hist_y_bins+1, 1:hist_x_bins+1]
+                #data = data.tolist()
 
-                run_obj = Run.objects.get_or_create(run_number=run_number)
-                lumisection_obj = Lumisection.objects.get_or_create(
+                run_obj, _ = Run.objects.get_or_create(run_number=run_number)
+                lumisection_obj, _ = Lumisection.objects.get_or_create(
                     run=run_obj, ls_number=lumi_number
                 )
 
@@ -493,9 +532,13 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
             histogram_data_file.entries_processed += len(lumisection_histos2D)
             histogram_data_file.save()
 
-        if histogram_data_file.entries_total < 1:
-            histogram_data_file.entries_total = me_count
-            histogram_data_file.save()
+            current_lumi += 1
+            if read_chunk_lumi >= current_lumi:
+                logger.info(
+                    f"Read until requested lumi {read_chunk_lumi}, stopping"
+                )
+                break
+                
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
