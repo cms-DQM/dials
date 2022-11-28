@@ -43,10 +43,17 @@ jobs:
 
     - name: Install ROOT
       run: |
-        wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
-        tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
-        source root/bin/thisroot.sh
-        echo $PYTHONPATH
+        git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git root_src
+        mkdir root_build root_install && cd root_build
+        cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src
+        cmake --build . -- install
+        source ../root_install/bin/thisroot.sh
+        cd ..
+
+      # wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+      # tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+      # source root/bin/thisroot.sh
+      # echo $PYTHONPATH
 
     # - name: Lint with black
     #   uses: psf/black@stable
@@ -70,7 +77,7 @@ jobs:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         FILE_PATH_EOS_CMSML4DC: ${{ secrets.FILE_PATH_EOS_CMSML4DC }}
       run: |
-        source root/bin/thisroot.sh
+        source root_install/bin/thisroot.sh
         python manage.py test --settings=mlp.test_ci_settings
 
     - name: Run Functional Tests with Selenium on Chrome
