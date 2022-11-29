@@ -41,6 +41,7 @@ jobs:
       run: |
         apt update
         apt install -y --upgrade python3-pip
+        service postgresql restart
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
