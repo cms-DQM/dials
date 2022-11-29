@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: rootproject/root
+    runs-on: docker://rootproject/root
     strategy:
       max-parallel: 4
       #matrix:
