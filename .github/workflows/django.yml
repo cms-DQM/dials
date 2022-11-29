@@ -30,7 +30,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: docker://rootproject/root:6.26.02-ubuntu20.04
 
     #- name: Set up Python ${{ matrix.python-version }}
     #  uses: actions/setup-python@v2
@@ -71,6 +70,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore=E50,F401,F403
 
     - name: Run Unit Tests
+      uses: docker://rootproject/root:6.26.02-ubuntu20.04
       env:
         DIR_PATH_EOS_CMSML4DC: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
