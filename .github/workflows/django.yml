@@ -10,11 +10,11 @@ jobs:
   build:
 
     runs-on: ubuntu-20.04
-    container: rootproject/root:6.26.02-ubuntu20.04
+    #container: rootproject/root:6.26.02-ubuntu20.04
     strategy:
       max-parallel: 4
-      #matrix:
-      #  python-version: [3.7, 3.8, 3.9]
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
 
     services:
       postgres:
@@ -32,15 +32,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    #- name: Set up Python ${{ matrix.python-version }}
-    #  uses: actions/setup-python@v2
-    #  with:
-    #    python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: Install Dependencies
       run: |
-        wget https://bootstrap.pypa.io/get-pip.py
-        python get-pip.py
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 

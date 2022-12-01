@@ -6,6 +6,7 @@ import logging
 # import threading
 import pandas as pd
 from django.test import TestCase
+from unittest import skipIf
 
 # from django.core import management
 from histograms.models import (
@@ -284,6 +285,7 @@ class NanoDQMHistogramCompleteParsingTestCase(TestCase):
             LumisectionHistogram1D.from_nanodqm(file_path=f)
             LumisectionHistogram2D.from_nanodqm(file_path=f)
 
+    @skipIf(os.environ.get("GITHUB_WORKFLOW"), "Skipping nanoDQMIO tests on GitHub CI.")
     def test_nanodqmio_histogram_2d_parsing_resumption(self):
         """
         Try to partially read only 1 lumisection from a nanoDQMIO file.
@@ -314,7 +316,8 @@ class NanoDQMHistogramCompleteParsingTestCase(TestCase):
         logger.debug(f"{test_file_db.filepath}\t{test_file_db.entries_processed}\t{test_file_db.entries_total}\t{test_file_db.percentage_processed}")
         assert test_file_db.percentage_processed == 100.0
 
-    def test_csv_histogram_parsing_completeness(self):
+    @skipIf(os.environ.get("GITHUB_WORKFLOW"), "Skipping nanoDQMIO tests on GitHub CI.")
+    def test_nanodqm_histogram_parsing_completeness(self):
         """
         Read all the available test files, and try to parse them into
         LumisectionHistogram1D and LumisectionHistogram2D entries. 
@@ -338,6 +341,7 @@ class NanoDQMHistogramCompleteParsingTestCase(TestCase):
             logger.debug(f"{hdf.filepath}\t{hdf.entries_processed}\t{hdf.entries_total}\t{hdf.percentage_processed}")
             assert hdf.percentage_processed == 100.0
 
+    @skipIf(os.environ.get("GITHUB_WORKFLOW"), "Skipping nanoDQMIO tests on GitHub CI.")
     def test_duplicate_entries(self):
         """
         Make sure that re-reading the same nanoDQMIO file will not lead to duplicate entries
