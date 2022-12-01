@@ -16,7 +16,7 @@ from histograms.models import (
 )
 from histogram_file_manager.models import HistogramDataFile
 
-import histograms.DQMIOReader
+if not os.environ.get("GITHUB_WORKFLOW"): import histograms.DQMIOReader
 
 logger = logging.getLogger(__name__)
 
