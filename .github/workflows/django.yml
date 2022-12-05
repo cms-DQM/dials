@@ -9,7 +9,8 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    #container: rootproject/root:6.26.02-ubuntu20.04
     strategy:
       max-parallel: 4
       matrix:
@@ -40,6 +41,21 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+    #- name: Install ROOT
+    #  run: |
+    #    sudo apt install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev
+    #    git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git root_src
+    #    mkdir root_build root_install && cd root_build
+    #    cmake -DCMAKE_INSTALL_PREFIX=../root_install ../root_src
+    #    cmake --build . -- install
+    #    source ../root_install/bin/thisroot.sh
+    #    cd ..
+
+      # wget -q https://root.cern/download/root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+      # tar -xzf root_v6.26.10.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+      # source root/bin/thisroot.sh
+      # echo $PYTHONPATH
 
     # - name: Lint with black
     #   uses: psf/black@stable

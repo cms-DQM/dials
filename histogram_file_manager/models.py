@@ -17,7 +17,7 @@ class HistogramDataFile(models.Model):
 
     FILETYPE_UNKNOWN = "unk"
     FILETYPE_CSV = "csv"
-    # FILETYPE_NANODQDM = 'nanodqm'  # TODO
+    FILETYPE_NANODQM = 'nanodqm'  # TODO
     GRANULARITY_UNKNOWN = "unk"
     GRANULARITY_RUN = "run"
     GRANULARITY_LUMISECTION = "lum"
@@ -38,7 +38,7 @@ class HistogramDataFile(models.Model):
     DATAFILE_FORMAT_CHOICES = (
         # (FILETYPE_UNKNOWN, 'Unknown'), # Not needed
         (FILETYPE_CSV, "csv"),
-        # (FILETYPE_NANODQDM, 'nanoDQM')
+        (FILETYPE_NANODQM, 'nanoDQM')
     )
 
     # DISABLED DUE TO PERFORMANCE ISSUES (see issue #30)
