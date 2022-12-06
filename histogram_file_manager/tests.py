@@ -8,12 +8,15 @@ class HistogramDataFileTestCase(TestCase):
     def setUp(self):
         """
         Get the _choices list from the HistogramDataFileForm which
-        will populate the default directory setup in the models (DIR_PATH_EOS_CMSML4DC).
+        will populate the default directory setup in the models (DIR_PATH_DQMIO_STORAGE).
         """
         self.all_files = []
-        for root, dirs, files in sorted(os.walk(settings.DIR_PATH_EOS_CMSML4DC)):
-            for f in sorted(files):
-                self.all_files.append(os.path.join(root, f))
+        all_dirs = settings.DIR_PATH_DQMIO_STORAGE.split(":")
+
+        for dir in all_dirs:
+            for root, dirs, files in sorted(os.walk(dir)):
+                for f in sorted(files):
+                    self.all_files.append(os.path.join(root, f))
 
     def test_data_file_detection(self):
         """
