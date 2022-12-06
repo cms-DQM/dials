@@ -64,6 +64,7 @@ class RunHistogramFilter(django_filters.rest_framework.FilterSet):
                 "gte",
                 "lte",
             ],
+            "source_data_file": ["exact"],
         }
 
 
@@ -105,6 +106,7 @@ class LumisectionHistogram1DFilter(django_filters.FilterSet):
                 "gte",
                 "lte",
             ],
+            "source_data_file": ["exact"],
         }
 
 
@@ -146,4 +148,5 @@ class LumisectionHistogram2DFilter(django_filters.FilterSet):
                 "gte",
                 "lte",
             ],
+            "source_data_file": ["exact"],
         }
