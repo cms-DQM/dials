@@ -17,7 +17,7 @@ class HistogramDataFile(models.Model):
 
     FILETYPE_UNKNOWN = "unk"
     FILETYPE_CSV = "csv"
-    FILETYPE_NANODQM = 'nanodqm'  # TODO
+    FILETYPE_NANODQM = "root"  # TODO
     GRANULARITY_UNKNOWN = "unk"
     GRANULARITY_RUN = "run"
     GRANULARITY_LUMISECTION = "lum"
@@ -38,12 +38,12 @@ class HistogramDataFile(models.Model):
     DATAFILE_FORMAT_CHOICES = (
         # (FILETYPE_UNKNOWN, 'Unknown'), # Not needed
         (FILETYPE_CSV, "csv"),
-        (FILETYPE_NANODQM, 'nanoDQM')
+        (FILETYPE_NANODQM, "nanoDQM"),
     )
 
     # DISABLED DUE TO PERFORMANCE ISSUES (see issue #30)
     # Recurse in Root filepath where all the DQM files are stored
-    # filepath = models.FilePathField(path=settings.DIR_PATH_EOS_CMSML4DC,
+    # filepath = models.FilePathField(path=settings.DIR_PATH_DQMIO_STORAGE,
     #                                 help_text="Path where the file is stored",
     #                                 recursive=True,
     #                                 max_length=255,

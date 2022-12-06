@@ -9,6 +9,12 @@ sources (OMS, Run Registry, DQM GUI, static files from the ML4DQM effort)
 in order to ease model development and to provide a place to compare the
 predictions of the various models.
 
+## Requirements
+
+- A `postgresql` database.
+- A `ROOT` installation.
+- An `.env` file which contains the variables listed [below](#environmental-variables).
+
 ## Environmental variables
 
 All must be stored in a file named `.env`:
@@ -22,8 +28,17 @@ DJANGO_DATABASE_USER
 DJANGO_DATABASE_HOST
 DJANGO_DATABASE_PORT
 DJANGO_SECRET_KEY
-DIR_PATH_EOS_CMSML4DC
- ```
+DIR_PATH_DQMIO_STORAGE
+```
+### `DIR_PATH_DQMIO_STORAGE` (`str`)
+
+List of directories to look into for DQM files (csv, nanoDQMIO). Separate
+multiple directories with a colon (`:`), e.g.:
+
+``` python3
+DIR_PATH_DQMIO_STORAGE = "/dir/to/dqm/files:/this/is/another/dir"
+```
+
 
 ## Behavior
 
@@ -45,7 +60,7 @@ the newly read file
 
 ### `histogram_file_manager`
 
-- `discover_dqm_files`: Will scan `DIR_PATH_EOS_CMSML4DC` for files
+- `discover_dqm_files`: Will scan `DIR_PATH_DQMIO_STORAGE` for files
 and check if a `HistogramDataFile` has been stored in the DB for each file.
 
 ### `histograms`

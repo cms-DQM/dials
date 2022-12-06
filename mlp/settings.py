@@ -210,7 +210,7 @@ NOTEBOOK_ARGUMENTS = [
 ]
 
 # Root directory where DQM files are stored, no default for safety
-DIR_PATH_EOS_CMSML4DC = config("DIR_PATH_EOS_CMSML4DC")
+DIR_PATH_DQMIO_STORAGE = config("DIR_PATH_DQMIO_STORAGE")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

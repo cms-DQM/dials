@@ -75,7 +75,7 @@ jobs:
 
     - name: Run Unit Tests
       env:
-        DIR_PATH_EOS_CMSML4DC: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
+        DIR_PATH_DQMIO_STORAGE: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
@@ -86,7 +86,7 @@ jobs:
 
     - name: Run Functional Tests with Selenium on Chrome
       env:
-        DIR_PATH_EOS_CMSML4DC: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
+        DIR_PATH_DQMIO_STORAGE: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
@@ -98,7 +98,7 @@ jobs:
 
     - name: Run Functional Tests with Selenium on Firefox
       env:
-        DIR_PATH_EOS_CMSML4DC: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
+        DIR_PATH_DQMIO_STORAGE: /home/runner/work/MLplayground/MLplayground/histograms/test_files/
         DJANGO_DATABASE_ENGINE: ${{ secrets.DJANGO_DATABASE_ENGINE }}
         DJANGO_DATABASE_NAME: ${{ secrets.DJANGO_DATABASE_NAME }}
         DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
