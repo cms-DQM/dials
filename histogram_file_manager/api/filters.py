@@ -80,6 +80,7 @@ class HistogramDataFileFilter(filters.FilterSet):
     class Meta:
         model = HistogramDataFile
         fields = [
+            "id",
             "data_era",
             "data_dimensionality",
             "granularity",
