@@ -211,7 +211,10 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
+        if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
+            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
+        elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_2D:
+            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
@@ -261,13 +264,14 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 )
 
                 lumisection_histos1D.append(lumisection_histo1D)
-            LumisectionHistogram1D.objects.bulk_create(
-                lumisection_histos1D, ignore_conflicts=True
-            )
-            logger.info(
-                f"{len(lumisection_histos1D)} x 1D lumisection histos successfully added from file {file_path}."
-            )
-            histogram_data_file.entries_processed += len(lumisection_histos1D)
+            LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
+            logger.info(f"{len(lumisection_histos1D)} x 1D lumisection histos successfully added from file {file_path}.")
+            #histogram_data_file.entries_processed += len(lumisection_histos1D)
+
+            # Make sure that the number of processed entries is 1D + 2D hists combined.
+            l1d_set = LumisectionHistogram1D.objects.filter(source_data_file = histogram_data_file.id)
+            l2d_set = LumisectionHistogram2D.objects.filter(source_data_file = histogram_data_file.id)
+            histogram_data_file.entries_processed = len(l1d_set) + len(l2d_set)
             histogram_data_file.save()
 
     def __str__(self):
@@ -453,7 +457,11 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        #histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
+            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_1D:
+            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
         histogram_data_file.data_era = data_era
         histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
@@ -542,13 +550,14 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     y_bin=hist_y_bins,
                 )
                 lumisection_histos2D.append(lumisection_histo2D)
-            LumisectionHistogram2D.objects.bulk_create(
-                lumisection_histos2D, ignore_conflicts=True
-            )
-            logger.info(
-                f"{len(lumisection_histos2D)} x 2D lumisection histos successfully added from file {file_path}."
-            )
-            histogram_data_file.entries_processed += len(lumisection_histos2D)
+            LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
+            logger.info(f"{len(lumisection_histos2D)} x 2D lumisection histos successfully added from file {file_path}.")
+            #histogram_data_file.entries_processed += len(lumisection_histos2D)
+            
+            # Make sure that the number of processed entries is 1D + 2D hists combined.
+            l1d_set = LumisectionHistogram1D.objects.filter(source_data_file = histogram_data_file.id)
+            l2d_set = LumisectionHistogram2D.objects.filter(source_data_file = histogram_data_file.id)
+            histogram_data_file.entries_processed = len(l1d_set) + len(l2d_set)
             histogram_data_file.save()
 
             current_lumi += 1
