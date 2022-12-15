@@ -9,7 +9,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 from data_taking_objects.models import Run, Lumisection
-from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 
 import histograms.DQMIOReader
 
@@ -115,9 +115,16 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
         histogram_data_file.data_era = data_era
-        histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
+        #histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
+        #histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
+        histogram_data_file.save()
+        
+        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
+            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_1D,
+            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
+        )
+        histogram_data_file.contents.add(histogram_data_file_contents)
 
         # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
@@ -211,12 +218,20 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
-            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
-        elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_2D:
-            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
         histogram_data_file.data_era = data_era
-        histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
+        histogram_data_file.save()
+
+        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
+            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_1D,
+            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
+        )
+        histogram_data_file.contents.add(histogram_data_file_contents)
+
+        #if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
+        #    histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D
+        #elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_2D:
+        #    histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
+        #histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
         if histogram_data_file.entries_total < 1:
             histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
@@ -333,9 +348,15 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
         histogram_data_file.data_era = data_era
-        histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
+
+        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
+            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_2D,
+            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
+        )
+        histogram_data_file.contents.add(histogram_data_file_contents)
+        #histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        #histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
         # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
@@ -457,13 +478,20 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file, created = HistogramDataFile.objects.get_or_create(
             filepath=file_path
         )
-        #histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
-        if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
-            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
-        elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_1D:
-            histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
         histogram_data_file.data_era = data_era
-        histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
+        histogram_data_file.save()
+
+        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
+            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_2D,
+            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
+        )
+        histogram_data_file.contents.add(histogram_data_file_contents)
+        #histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        #if histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_UNKNOWN:
+        #    histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_2D
+        #elif histogram_data_file.data_dimensionality == HistogramDataFile.DIMENSIONALITY_1D:
+        #    histogram_data_file.data_dimensionality = HistogramDataFile.DIMENSIONALITY_1D2D
+        #histogram_data_file.granularity = HistogramDataFile.GRANULARITY_LUMISECTION
 
         if histogram_data_file.entries_total < 1:
             histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
