@@ -3,7 +3,7 @@ from django.db.models import F, Case, When, Value
 from django.db.models.fields import FloatField
 
 from django_filters import rest_framework as filters
-from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 
 
 class HistogramDataFileFilter(filters.FilterSet):
@@ -38,13 +38,13 @@ class HistogramDataFileFilter(filters.FilterSet):
     )
 
     data_dimensionality = filters.ChoiceFilter(
-        choices=HistogramDataFile.HISTOGRAM_DIMENSIONS_CHOICES,
+        choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES,
         field_name="data_dimensionality",
         widget=Select(attrs={"class": "form-control"}),
     )
 
     granularity = filters.ChoiceFilter(
-        choices=HistogramDataFile.DATAFILE_GRANULARITY_CHOICES,
+        choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES,
         field_name="granularity",
         widget=Select(attrs={"class": "form-control"}),
     )
