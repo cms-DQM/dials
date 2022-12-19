@@ -259,25 +259,23 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                     run=run_obj, ls_number=lumi_number
                 )
 
-                lumisection_histo1D = LumisectionHistogram1D(
-                    lumisection=lumisection_obj,
-                    title=title,
-                    entries=entries,
-                    data=data,
-                    source_data_file=histogram_data_file,
-                    x_min=hist_x_min,
-                    x_max=hist_x_max,
-                    x_bin=hist_x_bins,
-                )
+                if LumisectionHistogram1D.objects.filter(lumisection=lumisection_obj, title=title).count() == 0:
+                    lumisection_histo1D = LumisectionHistogram1D(
+                        lumisection=lumisection_obj,
+                        title=title,
+                        entries=entries,
+                        data=data,
+                        source_data_file=histogram_data_file,
+                        x_min=hist_x_min,
+                        x_max=hist_x_max,
+                        x_bin=hist_x_bins,
+                    )
 
-                lumisection_histos1D.append(lumisection_histo1D)
+                    lumisection_histos1D.append(lumisection_histo1D)
             created = LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
             logger.info(f"{len(created)} x 1D lumisection histos successfully added from file {file_path}.")
 
             # Make sure that the number of processed entries is 1D + 2D hists combined.
-            #l1d_set = LumisectionHistogram1D.objects.filter(source_data_file = histogram_data_file.id)
-            #l2d_set = LumisectionHistogram2D.objects.filter(source_data_file = histogram_data_file.id)
-            #histogram_data_file.entries_processed = l1d_set.count() + l2d_set.count()
             histogram_data_file.entries_processed += len(created)
             histogram_data_file.save()
 
@@ -485,29 +483,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         me_count = 0
         current_lumi = 0
 
-        lumilist = reader.listLumis()
-        lumilist_notread = []
-        for run_fromreader, lumi_fromreader in lumilist:
-            if len(Run.objects.filter(run_number=run_fromreader)) == 0:
-                lumilist_notread.append((run_fromreader, lumi_fromreader))
-                continue
-            run_obj, _ = Run.objects.get_or_create(run_number=run_fromreader)
-            if (
-                len(Lumisection.objects.filter(run=run_obj, ls_number=lumi_fromreader))
-                == 0
-            ):
-                lumilist_notread.append((run_fromreader, lumi_fromreader))
-                continue
-            lumisection_obj, _ = Lumisection.objects.get_or_create(
-                run=run_obj, ls_number=lumi_fromreader
-            )
-            if (
-                len(LumisectionHistogram2D.objects.filter(lumisection=lumisection_obj))
-                == 0
-            ):
-                lumilist_notread.append((run_fromreader, lumi_fromreader))
-
-        for run_fromreader, lumi_fromreader in lumilist_notread:
+        for run_fromreader, lumi_fromreader in reader.listLumis():
             lumisection_histos2D = []
             melist = reader.getMEsForLumi((run_fromreader, lumi_fromreader), "*")
             me_count += len(melist)
@@ -548,27 +524,25 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     run=run_obj, ls_number=lumi_number
                 )
 
-                lumisection_histo2D = LumisectionHistogram2D(
-                    lumisection=lumisection_obj,
-                    title=title,
-                    entries=entries,
-                    data=data,
-                    source_data_file=histogram_data_file,
-                    x_min=hist_x_min,
-                    x_max=hist_x_max,
-                    x_bin=hist_x_bins,
-                    y_min=hist_y_min,
-                    y_max=hist_y_max,
-                    y_bin=hist_y_bins,
-                )
-                lumisection_histos2D.append(lumisection_histo2D)
+                if LumisectionHistogram2D.objects.filter(lumisection=lumisection_obj, title=title).count() == 0:
+                    lumisection_histo2D = LumisectionHistogram2D(
+                        lumisection=lumisection_obj,
+                        title=title,
+                        entries=entries,
+                        data=data,
+                        source_data_file=histogram_data_file,
+                        x_min=hist_x_min,
+                        x_max=hist_x_max,
+                        x_bin=hist_x_bins,
+                        y_min=hist_y_min,
+                        y_max=hist_y_max,
+                        y_bin=hist_y_bins,
+                    )
+                    lumisection_histos2D.append(lumisection_histo2D)
             created = LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
             logger.info(f"{len(created)} x 2D lumisection histos successfully added from file {file_path}.")
             
             # Make sure that the number of processed entries is 1D + 2D hists combined.
-            #l1d_set = LumisectionHistogram1D.objects.filter(source_data_file = histogram_data_file.id)
-            #l2d_set = LumisectionHistogram2D.objects.filter(source_data_file = histogram_data_file.id)
-            #histogram_data_file.entries_processed = l1d_set.count() + l2d_set.count()
             histogram_data_file.entries_processed += len(created)
             histogram_data_file.save()
 
