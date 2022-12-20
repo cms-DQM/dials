@@ -119,7 +119,7 @@ app.component('file-actions', {
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.errors.push(`${error}: ${error.response.data.detail}`);
+                    this.errors.push(`${error}: ${error.response.data}`);
                 });
         },
         // Callback for error dismissal from errors component
