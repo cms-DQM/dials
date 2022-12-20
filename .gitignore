@@ -98,3 +98,8 @@ static/django_extensions/
 static/django_tables2/
 
 *~
+
+venv/
+node_modules/
+package.json
+package-lock.json

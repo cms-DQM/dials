@@ -355,6 +355,9 @@ class NanoDQMHistogramCompleteParsingTestCase(TestCase):
         assert LumisectionHistogram1D.objects.count() == self.num_total_entries_1D
         assert LumisectionHistogram2D.objects.count() == self.num_total_entries_2D
         assert LumisectionHistogram1D.objects.count() + LumisectionHistogram2D.objects.count() == self.num_total_entries
+        for hdf in HistogramDataFile.objects.all():
+            logger.debug(f"{hdf.filepath}\t{hdf.entries_processed}\t{hdf.entries_total}\t{hdf.percentage_processed}")
+            assert hdf.percentage_processed == 100.0
 
 # TODO: Add test which partially stores a Histogram file, then tries to resume
 # and verifies that it was added completely. Possible ways to do it:

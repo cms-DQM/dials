@@ -1,25 +1,33 @@
 # import time
 import logging
 from rest_framework import serializers
-from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 
 logger = logging.getLogger(__name__)
 
 
+class HistogramDataFileContentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistogramDataFileContents
+        fields = ["granularity", "data_dimensionality"]
+
+
 class HistogramDataFileSerializer(serializers.ModelSerializer):
-    # run_histograms = serializers.StringRelatedField(many=True, source="runhistogram")
-    # lumisection_histograms_1d = serializers.StringRelatedField(
-    #     many=True, source="lumisectionhistogram1d"
-    # )
-    # lumisection_histograms_2d = serializers.StringRelatedField(
-    #     many=True, source="lumisectionhistogram2d"
-    # )
-    run_histograms = serializers.IntegerField(source="runhistogram.count")
+    run_histograms = serializers.IntegerField(
+        source="runhistogram.count",
+        help_text="Total Run Histograms retrieved form this file",
+    )
     lumisection_histograms_1d = serializers.IntegerField(
-        source="lumisectionhistogram1d.count"
+        source="lumisectionhistogram1d.count",
+        help_text="Total Lumisection 1D Histograms retrieved form this file",
     )
     lumisection_histograms_2d = serializers.IntegerField(
-        source="lumisectionhistogram2d.count"
+        source="lumisectionhistogram2d.count",
+        help_text="Total Lumisection 2D Histograms retrieved form this file",
+    )
+    contents = HistogramDataFileContentsSerializer(
+        many=True,
+        help_text="The file's contents in regards to histogram type and dimensionality",
     )
 
     class Meta:
@@ -28,29 +36,14 @@ class HistogramDataFileSerializer(serializers.ModelSerializer):
             "id",
             "filepath",
             "filesize",
-            "data_dimensionality",
             "data_era",
             "entries_total",
             "entries_processed",
             "percentage_processed",
-            "granularity",
+            "contents",
             "created",
             "modified",
             "run_histograms",
             "lumisection_histograms_1d",
             "lumisection_histograms_2d",
         ]
-
-
-class HistogramDataFileSerializer_(serializers.Serializer):
-    id = serializers.IntegerField()
-    filepath = serializers.CharField()
-    filesize = serializers.FloatField()
-    data_dimensionality = serializers.IntegerField()
-    data_era = serializers.CharField()
-    entries_total = serializers.IntegerField()
-    entries_processed = serializers.IntegerField()
-    granularity = serializers.CharField()
-    created = serializers.DateTimeField()
-    modified = serializers.DateTimeField()
-    percentage_processed = serializers.DecimalField(max_digits=10, decimal_places=1)
