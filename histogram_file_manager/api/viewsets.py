@@ -38,11 +38,11 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
         HistogramDataFileContents.DIMENSIONALITY_2D: {
             HistogramDataFileContents.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_nanodqm
         },
-    }
+    },
 }
 
 
-class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
+class HistogramDataFileViewset(viewsets.ModelViewSet):
 
     queryset = HistogramDataFile.objects.all().order_by("id")
     serializer_class = HistogramDataFileSerializer

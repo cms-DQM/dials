@@ -49,6 +49,11 @@ app.component('file-actions', {
 			:class="{disabled: file_information.percentage_processed === 100.0 }"
 			value="Parse">
 		</form>
+		<!-- Delete from Database -->
+		<button @click="delete_file_command(file_id)"
+				class="btn btn-danger mt-3">
+		  <i class="bi bi-trash-fill"></i>Delete from DB
+		</button>		
       </div>
       <div class="modal-footer">
       </div>
@@ -114,7 +119,7 @@ app.component('file-actions', {
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.errors.push(`${error}: ${error.response.data}`);
+                    this.errors.push(`${error}: ${error.response.data.detail}`);
                 });
         },
         // Callback for error dismissal from errors component
@@ -125,6 +130,22 @@ app.component('file-actions', {
                     this.errors.splice(i, 1);
                 }
             }
+        },
+        // Callback for file deletion button
+        delete_file_command(file_id) {
+            console.debug(`Requested deletion of file with id=${file_id}`);
+            axios
+                .delete(
+                    `/api/histogram_data_files/${this.file_information.id}/`,
+                    get_axios_config(),
+                )
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.errors.push(`${error}: ${error.response.data.detail}`);
+                });
         },
     },
 });
