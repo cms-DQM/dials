@@ -110,3 +110,4 @@ class HistogramDataFileViewset(viewsets.ReadOnlyModelViewSet):
 
     class Meta:
         ordering = ["-id"]
+        fields = "__all__"

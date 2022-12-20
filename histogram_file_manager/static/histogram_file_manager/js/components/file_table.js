@@ -48,13 +48,21 @@ app.component('file-table', {
                 percentage_processed: function (value) {
                     return Number(value).toFixed(2) + '%';
                 },
-                data_dimensionality: function (value) {
-                    if (value === 2) {
-                        return '2D';
-                    } else if (value === 1) {
-                        return '1D';
+                contents: function (value) {
+                    let ret = '';
+                    if (value.length === 0) {
+                        return '-';
                     }
-                    return '-';
+                    for (let content of value) {
+                        let dd = content.data_dimensionality;
+                        let g = content.granularity;
+                        if (dd === 1 || dd === 2) {
+                            ret += g + ' ' + dd + 'D, ';
+                        } else {
+                            ret += `Unknown type: ${value},`;
+                        }
+                    }
+                    return ret;
                 },
             },
         };

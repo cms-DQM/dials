@@ -8,6 +8,10 @@ from histogram_file_manager.models import HistogramDataFile, HistogramDataFileCo
 
 class HistogramDataFileFilter(filters.FilterSet):
 
+    id = filters.NumberFilter(
+        field_name="id",
+        widget=NumberInput(attrs={"class": "form-control"}),
+    )
     entries_total__gt = filters.NumberFilter(
         field_name="entries_total",
         lookup_expr="gt",
@@ -39,13 +43,13 @@ class HistogramDataFileFilter(filters.FilterSet):
 
     data_dimensionality = filters.ChoiceFilter(
         choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES,
-        field_name="data_dimensionality",
+        field_name="contents__data_dimensionality",
         widget=Select(attrs={"class": "form-control"}),
     )
 
     granularity = filters.ChoiceFilter(
         choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES,
-        field_name="granularity",
+        field_name="contents__granularity",
         widget=Select(attrs={"class": "form-control"}),
     )
 
