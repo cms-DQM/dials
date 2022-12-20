@@ -3,6 +3,34 @@ from django.db import models
 
 # from django.conf import settings
 
+class HistogramDataFileContents(models.Model):
+    GRANULARITY_RUN = "run"
+    GRANULARITY_LUMISECTION = "lum"
+    DIMENSIONALITY_1D = 1
+    DIMENSIONALITY_2D = 2
+
+    HISTOGRAM_DIMENSIONS_CHOICES = (
+        (DIMENSIONALITY_1D, "1D"),
+        (DIMENSIONALITY_2D, "2D"),
+    )
+
+    DATAFILE_GRANULARITY_CHOICES = (
+        (GRANULARITY_RUN, "Run"),
+        (GRANULARITY_LUMISECTION, "Lumisection"),
+    )
+
+    data_dimensionality = models.PositiveIntegerField(
+        default = DIMENSIONALITY_1D, 
+        choices = HISTOGRAM_DIMENSIONS_CHOICES, 
+        blank   = True
+    )
+
+    granularity = models.CharField(
+        max_length = 3,
+        choices    = DATAFILE_GRANULARITY_CHOICES,
+        default    = GRANULARITY_RUN,
+        help_text  = "The granularity of the data contained in the data file (either whole run or lumisections)."
+    )
 
 class HistogramDataFile(models.Model):
     """
@@ -18,22 +46,6 @@ class HistogramDataFile(models.Model):
     FILETYPE_UNKNOWN = "unk"
     FILETYPE_CSV = "csv"
     FILETYPE_NANODQM = "root"  # TODO
-    GRANULARITY_UNKNOWN = "unk"
-    GRANULARITY_RUN = "run"
-    GRANULARITY_LUMISECTION = "lum"
-    DIMENSIONALITY_UNKNOWN = 0
-    DIMENSIONALITY_1D = 1
-    DIMENSIONALITY_2D = 2
-    HISTOGRAM_DIMENSIONS_CHOICES = (
-        (DIMENSIONALITY_UNKNOWN, "Unknown"),
-        (DIMENSIONALITY_1D, "1D"),
-        (DIMENSIONALITY_2D, "2D"),
-    )
-    DATAFILE_GRANULARITY_CHOICES = (
-        (GRANULARITY_UNKNOWN, "Unknown"),
-        (GRANULARITY_RUN, "Run"),
-        (GRANULARITY_LUMISECTION, "Lumisection"),
-    )
 
     DATAFILE_FORMAT_CHOICES = (
         # (FILETYPE_UNKNOWN, 'Unknown'), # Not needed
@@ -56,10 +68,6 @@ class HistogramDataFile(models.Model):
 
     filesize = models.FloatField(default=0, help_text="The data file's size (Mbytes)")
 
-    data_dimensionality = models.PositiveIntegerField(
-        default=DIMENSIONALITY_UNKNOWN, choices=HISTOGRAM_DIMENSIONS_CHOICES, blank=True
-    )
-
     data_era = models.CharField(
         blank=True,
         null=False,
@@ -76,13 +84,7 @@ class HistogramDataFile(models.Model):
         help_text="Number of histogram entries that have been extracted from the file",
     )
 
-    granularity = models.CharField(
-        max_length=3,
-        choices=DATAFILE_GRANULARITY_CHOICES,
-        default=GRANULARITY_UNKNOWN,
-        help_text="The granularity of the data contained in the "
-        "data file (either whole run or lumisections)",
-    )
+    contents = models.ManyToManyField(HistogramDataFileContents)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

@@ -1,5 +1,5 @@
 from django import forms
-from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 
 
 class HistogramDataFileStartParsingForm(forms.Form):
@@ -8,9 +8,9 @@ class HistogramDataFileStartParsingForm(forms.Form):
     """
 
     granularity = forms.ChoiceField(
-        choices=HistogramDataFile.DATAFILE_GRANULARITY_CHOICES
+        choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES
     )
     data_dimensionality = forms.ChoiceField(
-        choices=HistogramDataFile.HISTOGRAM_DIMENSIONS_CHOICES
+        choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES
     )
     file_format = forms.ChoiceField(choices=HistogramDataFile.DATAFILE_FORMAT_CHOICES)

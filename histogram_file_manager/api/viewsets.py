@@ -8,7 +8,7 @@ from django.core.signals import request_finished, request_started
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from histogram_file_manager.models import HistogramDataFile
+from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 from histogram_file_manager.api.serializers import HistogramDataFileSerializer
 from histogram_file_manager.api.filters import HistogramDataFileFilter
 from histograms.models import (
@@ -22,21 +22,21 @@ logger = logging.getLogger(__name__)
 
 HISTOGRAM_PARSING_FUNCTIONS_MAP = {
     HistogramDataFile.FILETYPE_CSV: {
-        HistogramDataFile.DIMENSIONALITY_1D: {
+        HistogramDataFileContents.DIMENSIONALITY_1D: {
             # HistogramDataFile.GRANULARITY_RUN:            RunHistogram.from_csv,  # Not implemented yet
-            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram1D.from_csv
+            HistogramDataFileContents.GRANULARITY_LUMISECTION: LumisectionHistogram1D.from_csv
         },
-        HistogramDataFile.DIMENSIONALITY_2D: {
-            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_csv
+        HistogramDataFileContents.DIMENSIONALITY_2D: {
+            HistogramDataFileContents.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_csv
         },
     },
     HistogramDataFile.FILETYPE_NANODQM: {
-        HistogramDataFile.DIMENSIONALITY_1D: {
+        HistogramDataFileContents.DIMENSIONALITY_1D: {
             # HistogramDataFile.GRANULARITY_RUN:            RunHistogram.from_csv,  # Not implemented yet
-            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram1D.from_nanodqm
+            HistogramDataFileContents.GRANULARITY_LUMISECTION: LumisectionHistogram1D.from_nanodqm
         },
-        HistogramDataFile.DIMENSIONALITY_2D: {
-            HistogramDataFile.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_nanodqm
+        HistogramDataFileContents.DIMENSIONALITY_2D: {
+            HistogramDataFileContents.GRANULARITY_LUMISECTION: LumisectionHistogram2D.from_nanodqm
         },
     }
 }
