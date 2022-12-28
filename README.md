@@ -42,26 +42,7 @@ DIR_PATH_DQMIO_STORAGE = "/dir/to/dqm/files:/this/is/another/dir"
 
 ## Behavior
 
-### Histogram File Manager
-
-- Currently, the choices for available files provided are only refreshed
-  every time the `discover_dqm_files` management command is run. To run it, login to
-  PaaS, select the `ml4dqm-playground` project, go to `Administrator`->`Pods`, select
-  the currently running pod, go to `Terminal` and run `python manage.py discover_dqm_files`
-
-**Known limitation**:
-
-- The `HistogramDataFile` entries can be deleted without affecting the
-Histograms loaded from the deleted files. However, re-reading the
-file will **NOT** update the existing Histogram entries to point to
-the newly read file
-
 ## Management Commands
-
-### `histogram_file_manager`
-
-- `discover_dqm_files`: Will scan `DIR_PATH_DQMIO_STORAGE` for files
-and check if a `HistogramDataFile` has been stored in the DB for each file.
 
 ### `histograms`
 

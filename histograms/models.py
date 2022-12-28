@@ -117,16 +117,10 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         )
         histogram_data_file.data_era = data_era
         histogram_data_file.save()
-        
-        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
-            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_1D,
-            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
-        )
-        histogram_data_file.contents.add(histogram_data_file_contents)
 
         # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
-
+        created = []
         # Get number of lines, this may take a "long" time, but
         # it's needed to record our progress while parsing the file
         if histogram_data_file.entries_total < 1:
@@ -183,7 +177,7 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
             # Bulk create every 50 entries
             if count == 50:
 
-                LumisectionHistogram1D.objects.bulk_create(
+                created = LumisectionHistogram1D.objects.bulk_create(
                     lumisection_histos1D, ignore_conflicts=True
                 )
                 logger.info("50 lumisections 1D histograms successfully added!")
@@ -192,16 +186,26 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 count = 0
                 lumisection_histos1D = []
 
-            # time.sleep(0.1)  # Don't be greedy!
-
         if (
             lumisection_histos1D
         ):  # If total entries not a multiple of 50, some will be left
-            LumisectionHistogram1D.objects.bulk_create(
+            created = LumisectionHistogram1D.objects.bulk_create(
                 lumisection_histos1D, ignore_conflicts=True
             )
             histogram_data_file.entries_processed += len(lumisection_histos1D)
             histogram_data_file.save()
+
+        # Only add new file contents type if actual data were read from
+        # the filei
+        if len(created) > 0:
+            (
+                histogram_data_file_contents,
+                _,
+            ) = HistogramDataFileContents.objects.get_or_create(
+                data_dimensionality=HistogramDataFileContents.DIMENSIONALITY_1D,
+                granularity=HistogramDataFileContents.GRANULARITY_LUMISECTION,
+            )
+            histogram_data_file.contents.add(histogram_data_file_contents)
 
     @staticmethod
     def from_nanodqm(file_path, data_era: str = ""):
@@ -219,23 +223,16 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
         histogram_data_file.data_era = data_era
         histogram_data_file.save()
 
-        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
-            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_1D,
-            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
-        )
-        histogram_data_file.contents.add(histogram_data_file_contents)
-
         if histogram_data_file.entries_total < 1:
             histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
             histogram_data_file.save()
 
         reader = histograms.DQMIOReader.DQMIOReader(file_path)
 
-        me_count = 0
+        created = []
         for run_fromreader, lumi_fromreader in reader.listLumis():
             lumisection_histos1D = []
             melist = reader.getMEsForLumi((run_fromreader, lumi_fromreader), "*")
-            me_count += len(melist)
             for me in melist:
                 if me.type not in [3, 4, 5]:
                     continue
@@ -259,7 +256,12 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                     run=run_obj, ls_number=lumi_number
                 )
 
-                if LumisectionHistogram1D.objects.filter(lumisection=lumisection_obj, title=title).count() == 0:
+                if (
+                    LumisectionHistogram1D.objects.filter(
+                        lumisection=lumisection_obj, title=title
+                    ).count()
+                    == 0
+                ):
                     lumisection_histo1D = LumisectionHistogram1D(
                         lumisection=lumisection_obj,
                         title=title,
@@ -272,17 +274,32 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                     )
 
                     lumisection_histos1D.append(lumisection_histo1D)
-            created = LumisectionHistogram1D.objects.bulk_create(lumisection_histos1D, ignore_conflicts=True)
-            logger.info(f"{len(created)} x 1D lumisection histos successfully added from file {file_path}.")
+            created = LumisectionHistogram1D.objects.bulk_create(
+                lumisection_histos1D, ignore_conflicts=True
+            )
+            logger.info(
+                f"{len(created)} x 1D lumisection histos successfully added from file {file_path}."
+            )
 
             # Make sure that the number of processed entries is 1D + 2D hists combined.
             histogram_data_file.entries_processed += len(created)
             histogram_data_file.save()
 
+        # Only add a new data_file_content entry if actual data were
+        # loaded from the file
+        if len(created) > 0:
+            (
+                histogram_data_file_contents,
+                _,
+            ) = HistogramDataFileContents.objects.get_or_create(
+                data_dimensionality=HistogramDataFileContents.DIMENSIONALITY_1D,
+                granularity=HistogramDataFileContents.GRANULARITY_LUMISECTION,
+            )
+            histogram_data_file.contents.add(histogram_data_file_contents)
+
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
 
-    # TODO
     class Meta:
         verbose_name_plural = "Lumisection Histograms 1D"
         constraints = [
@@ -340,12 +357,6 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         )
         histogram_data_file.data_era = data_era
 
-        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
-            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_2D,
-            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
-        )
-        histogram_data_file.contents.add(histogram_data_file_contents)
-
         # file_size = os.path.getsize(file_path)
         file_line_count = 0  # Total lines in CSV
 
@@ -376,6 +387,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         current_chunk = 0
         # Keep track of lines read
         num_lines_read = 0
+        created = []  # Variable to keep track of new Histograms created
         reader = pd.read_csv(file_path, chunksize=LUMISECTION_HISTOGRAM_2D_CHUNK_SIZE)
         for df in reader:
             if resume and current_chunk < last_chunk:
@@ -428,9 +440,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 )
                 lumisection_histos2D.append(lumisection_histo2D)
 
-                # time.sleep(0.1)  # Don't be greedy!
-
-            LumisectionHistogram2D.objects.bulk_create(
+            created = LumisectionHistogram2D.objects.bulk_create(
                 lumisection_histos2D, ignore_conflicts=True
             )
 
@@ -452,6 +462,16 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     f"Read until requested chunk {read_chunk_num_max}, stopping"
                 )
                 break
+        # Only add new file contnts to the file if actual data were read from it
+        if len(created) > 0:
+            (
+                histogram_data_file_contents,
+                _,
+            ) = HistogramDataFileContents.objects.get_or_create(
+                data_dimensionality=HistogramDataFileContents.DIMENSIONALITY_2D,
+                granularity=HistogramDataFileContents.GRANULARITY_LUMISECTION,
+            )
+            histogram_data_file.contents.add(histogram_data_file_contents)
 
     @staticmethod
     def from_nanodqm(file_path, data_era: str = "", read_chunk_lumi: int = -1):
@@ -469,24 +489,17 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
         histogram_data_file.data_era = data_era
         histogram_data_file.save()
 
-        histogram_data_file_contents, _ = HistogramDataFileContents.objects.get_or_create(
-            data_dimensionality = HistogramDataFileContents.DIMENSIONALITY_2D,
-            granularity = HistogramDataFileContents.GRANULARITY_LUMISECTION,
-        )
-        histogram_data_file.contents.add(histogram_data_file_contents)
-
         if histogram_data_file.entries_total < 1:
             histogram_data_file.entries_total = NanoDQMIO_count_mes(file_path)
             histogram_data_file.save()
 
         reader = histograms.DQMIOReader.DQMIOReader(file_path)
-        me_count = 0
+        created = []
         current_lumi = 0
 
         for run_fromreader, lumi_fromreader in reader.listLumis():
             lumisection_histos2D = []
             melist = reader.getMEsForLumi((run_fromreader, lumi_fromreader), "*")
-            me_count += len(melist)
             for me in melist:
                 if me.type not in [6, 7, 8]:
                     continue
@@ -515,16 +528,18 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                     for j in range(1, hist_x_bins + 1):
                         datarow.append(me.data.GetBinContent(j, i))
                     data.append(datarow)
-                # data = np.reshape(np.asarray(me.data), (hist_y_bins+2, hist_x_bins+2))
-                # data = data[1:hist_y_bins+1, 1:hist_x_bins+1]
-                # data = data.tolist()
 
                 run_obj, _ = Run.objects.get_or_create(run_number=run_number)
                 lumisection_obj, _ = Lumisection.objects.get_or_create(
                     run=run_obj, ls_number=lumi_number
                 )
 
-                if LumisectionHistogram2D.objects.filter(lumisection=lumisection_obj, title=title).count() == 0:
+                if (
+                    LumisectionHistogram2D.objects.filter(
+                        lumisection=lumisection_obj, title=title
+                    ).count()
+                    == 0
+                ):
                     lumisection_histo2D = LumisectionHistogram2D(
                         lumisection=lumisection_obj,
                         title=title,
@@ -539,9 +554,13 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                         y_bin=hist_y_bins,
                     )
                     lumisection_histos2D.append(lumisection_histo2D)
-            created = LumisectionHistogram2D.objects.bulk_create(lumisection_histos2D, ignore_conflicts=True)
-            logger.info(f"{len(created)} x 2D lumisection histos successfully added from file {file_path}.")
-            
+            created = LumisectionHistogram2D.objects.bulk_create(
+                lumisection_histos2D, ignore_conflicts=True
+            )
+            logger.info(
+                f"{len(created)} x 2D lumisection histos successfully added from file {file_path}."
+            )
+
             # Make sure that the number of processed entries is 1D + 2D hists combined.
             histogram_data_file.entries_processed += len(created)
             histogram_data_file.save()
@@ -550,6 +569,18 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
             if read_chunk_lumi >= current_lumi:
                 logger.info(f"Read until requested lumi {read_chunk_lumi}, stopping")
                 break
+
+        # Only add new file contents entry if data were actually loaded
+        # from the file
+        if len(created) > 0:
+            (
+                histogram_data_file_contents,
+                _,
+            ) = HistogramDataFileContents.objects.get_or_create(
+                data_dimensionality=HistogramDataFileContents.DIMENSIONALITY_2D,
+                granularity=HistogramDataFileContents.GRANULARITY_LUMISECTION,
+            )
+            histogram_data_file.contents.add(histogram_data_file_contents)
 
     def __str__(self):
         return f"run {self.lumisection.run.run_number} / lumisection {self.lumisection.ls_number} / name {self.title}"
