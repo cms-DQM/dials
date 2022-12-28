@@ -49,6 +49,7 @@
 	{% else %}
 
 	<div class="d-grid gap-2 col-4 mx-auto">
+		<h4>Log in</h4>
 		<form method="POST" class="form-signin">
 			{% csrf_token %}
 
@@ -62,7 +63,7 @@
 
 			<!--{{ form.as_p }}-->
 
-			<div class="form-floating mt-3">
+			<div class="form-floating mt-1">
 				<input type="username" name="username" autofocus autocapitalize="none" autocomplete="username" required class="form-control" id="{{ form.username.id_for_label }}" placeholder="username">
 				<label for="{{ form.username.id_for_label }}">Username</label>
 			</div>
@@ -73,7 +74,7 @@
 
 			<button class ="btn btn-outline-primary col-12" type="submit" name="submit">Log in</button>
 		</form>
-
+		
 		<hr>
 
 		<form action="{% provider_login_url 'cern' %}" method="post">
