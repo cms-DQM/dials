@@ -5,18 +5,36 @@
 {% block title %} Login {% endblock title %}
 {% block style %}
 <style>
-.btn-cern {
-	background-color: #0033a0;
-	color: #ffffff;
- }
+	.btn-cern {
+		background-color: #0033a0;
+		color: white;
+		border-color: #0033a0;
+	}
 
- .link-bland {
-	 color: #000000;
-	 text-decoration: none;
- }
- link-bland:hover {
-	 color: #0033a0;
- }
+	.btn-cern:hover, .btn-cern:active, .btn-cern:focus {
+		background-color: #0033a0;
+		border-color: #0033a0;
+	}
+
+	.link-bland {
+		color: #000000;
+		text-decoration: none;
+	}
+
+	.link-bland:hover {
+		color: #0033a0;
+	}
+
+	.form-signin input[type="username"] {
+		margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	.form-signin input[type="password"] {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
 </style>
 {% endblock %}
 
@@ -24,28 +42,63 @@
 
 <div class="container-fluid">
 	{% if user.is_authenticated %}
-	<div class="alert alert-primary" role="alert">
-		Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{user.username}}{% endif %}!
-		You are already logged in! <i class="bi bi-emoji-smile"></i>
+	<div class="alert alert-primary col-4 mx-auto" role="alert">
+		<h3><i class="bi bi-emoji-smile mr-3"></i> You are already logged in, {% if user.first_name %}{{ user.first_name }}{% else %}{{user.username}}{% endif %}.</h3>
+		Click on any button above to continue. 
 	</div>
 	{% else %}
-	<button class="btn btn-primary btn-cern"
-			onclick="window.location.href = '{% provider_login_url 'cern' %}'">
-		<img src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo"/><div class="mt-1">Login with CERN</div>
-	</button>
 
-
-	<hr></hr>
-	<a data-bs-toggle="collapse" href="#collapse_local_login" role="button" class="link-bland">
-		<h6>Or login with a local account<i class="bi bi-person-circle ms-1"></i></h6>
-	</a>
-	<div class="collapse mt-3" id="collapse_local_login">
-		<form method="POST" class="form">
+	<div class="d-grid gap-2 col-4 mx-auto">
+		<form method="POST" class="form-signin">
 			{% csrf_token %}
-			{{ form.as_p }}
-			<button class ="btn btn-primary cern-button" type="submit" name="submit">Login</button>
+
+			{% if form.non_field_errors %}
+				<div class="alert alert-danger container-fluid">
+					{% for error in form.non_field_errors %}
+						<strong>{{ error|escape }}</strong>
+					{% endfor %}
+				</div>
+			{% endif %}
+
+			<!--{{ form.as_p }}-->
+
+			<div class="form-floating mt-3">
+				<input type="username" name="username" autofocus autocapitalize="none" autocomplete="username" required class="form-control" id="{{ form.username.id_for_label }}" placeholder="username">
+				<label for="{{ form.username.id_for_label }}">Username</label>
+			</div>
+			<div class="form-floating mb-3">
+				<input type="password" name="password" autocomplete="current-password" required class="form-control" id="{{ form.password.id_for_label }}" placeholder="password">
+				<label for="{{ form.password.id_for_label }}">Password</label>
+			</div>
+
+			<button class ="btn btn-outline-primary" type="submit" name="submit">Log in</button>
 		</form>
+
+		<hr>
+		<button class="btn btn-primary btn-cern"
+		onclick="window.location.href = '{% provider_login_url 'cern' %}'">
+			<div class="d-flex gap-2">
+				<img class="cern-svg" src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo" style="height:3em;"/>
+				<div class="align-self-center">
+					<h6>Log in with CERN</h6>
+				</div>
+			</div>
+		</button>
+		<!--
+		<button class="btn btn-outline-primary btn-local" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_local_login">
+			<div class="d-flex gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
+					<path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+					<path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"/>
+				  </svg>
+				<div class="align-self-center">
+					<h6>Log in with a local account</h6>
+				</div>
+			</div>
+		</button>
+		-->
 	</div>
+
 	{% endif %}
 </div>
 
