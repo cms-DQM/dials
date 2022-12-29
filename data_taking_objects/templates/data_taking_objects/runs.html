@@ -6,55 +6,75 @@
 
 {% block content %}
 
-  <div>
-    {% if error_message %}
-      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-          {{ error_message }}
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="row">
+    <div class="col-9">
+      <div>
+        {% if error_message %}
+          <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            <div>
+              {{ error_message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
 
-  <div class='container-fluid'>
+      <div class='container-fluid'>
 
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Run number</th>
-          <th scope="col">OMS info</th>
-          <th scope="col">RR OMS info</th>
-          <th scope="col">Histograms</th>
-          <th scope="col">RR certification info</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for run in runs %}
-          <tr>
-            <th scope="row"> 
-              <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">
-                {{ run.run_number }}
-              </a>
-            </th>
-            <td>
-              <span class="badge bg-warning">Not available</span>
-            </td>
-            <td>
-              <span class="badge bg-success">Available</span>
-            </td>
-            <td>
-              <span class="badge bg-success"> {{ run.histograms.count }} histograms available</span>
-            </td>
-            <td>
-              <span class="badge bg-success">Available</span>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Run number</th>
+              <th scope="col">OMS info</th>
+              <th scope="col">RR OMS info</th>
+              <th scope="col">Histograms</th>
+              <th scope="col">RR certification info</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in runs %}
+              <tr>
+                <th scope="row"> 
+                  <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">
+                    {{ run.run_number }}
+                  </a>
+                </th>
+                <td>
+                  <span class="badge bg-warning">Not available</span>
+                </td>
+                <td>
+                  <span class="badge bg-success">Available</span>
+                </td>
+                <td>
+                  <span class="badge bg-success"> {{ run.histograms.count }} histograms available</span>
+                </td>
+                <td>
+                  <span class="badge bg-success">Available</span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="alert alert-info">
+        <h4>Additional information - runs</h4>
+        <hr>
+        <p>
+          The histograms for 2018 were extracted from the ML4DQM .csv files using <a href="https://github.com/XavierAtCERN/MLplayground/blob/master/histograms/management/commands/extract_run_histograms.py">the following script</a>.
+        </p>
+      </div>
+      <h4>Data sources</h4>
+      <hr>
+      <ul>
+        <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/index/index">OMS</a></li>
+        <li><a class="nav-link" href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a></li>
+        <li><a class="nav-link" href="#">Histograms</a></li>
+      </ul>
+    </div>
   </div>
 
 {% endblock content %}
