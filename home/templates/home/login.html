@@ -5,6 +5,14 @@
 {% block title %} Login {% endblock title %}
 {% block style %}
 <style>
+	.div-sign-in {
+		max-width: 300px;
+	}
+
+	.alert-signed-in {
+		max-width: 500px;
+	}
+
 	.btn-cern {
 		background-color: #0033a0;
 		color: white;
@@ -42,13 +50,13 @@
 
 <div class="container-fluid">
 	{% if user.is_authenticated %}
-	<div class="alert alert-primary col-4 mx-auto" role="alert">
+	<div class="allert-signed-in alert alert-primary col-4 mx-auto" role="alert">
 		<h3><i class="bi bi-emoji-smile mr-3"></i> You are already logged in, {% if user.first_name %}{{ user.first_name }}{% else %}{{user.username}}{% endif %}.</h3>
 		Click on any button above to continue. 
 	</div>
 	{% else %}
 
-	<div class="d-grid gap-2 col-4 mx-auto">
+	<div class="div-sign-in d-grid gap-2 col-lg-4 col-md-6 col-sm-8 col-xs-12 mx-auto">
 		<h4>Log in</h4>
 		<form method="POST" class="form-signin">
 			{% csrf_token %}
@@ -71,37 +79,43 @@
 				<input type="password" name="password" autocomplete="current-password" required class="form-control" id="{{ form.password.id_for_label }}" placeholder="password">
 				<label for="{{ form.password.id_for_label }}">Password</label>
 			</div>
-
-			<button class ="btn btn-outline-primary col-12" type="submit" name="submit">Log in</button>
+			
+			<div class="d-grid gap-2">
+				<button class ="btn btn-primary" type="submit" name="submit">Log in</button>
+			</div>
 		</form>
 		
 		<hr>
 
 		<form action="{% provider_login_url 'cern' %}" method="post">
 			{% csrf_token %}
-			<button class="btn btn-primary btn-cern col-12" type="submit">
-				<div class="d-flex gap-2">
-					<img class="cern-svg" src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo" style="height:3em;"/>
-					<div class="align-self-center">
-						<h6>Log in with CERN</h6>
+			<div class="d-grid">
+				<button class="btn btn-primary btn-cern" type="submit">
+					<div class="d-flex gap-2">
+						<img class="cern-svg" src="{% static 'img/LogoOutline-White.svg' %}" alt="CERN logo" style="height:3em;"/>
+						<div class="align-self-center">
+							<h6>Log in with CERN</h6>
+						</div>
 					</div>
-				</div>
-			</button>
+				</button>
+			</div>
 		</form>
 		<!-- Just in case we want to implement GitHub sign-in later. -->
 		<!--
 		<form action="{% provider_login_url 'github' %}" method="post">
 			{% csrf_token %}
-			<button class="btn btn-primary btn-dark col-12" type="submit">
-				<div class="d-flex gap-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="white" class="bi bi-github" viewBox="0 0 16 16">
-						<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-					</svg>
-					<div class="align-self-center">
-						<h6>Log in with GitHub</h6>
+			<div class="d-grid">
+				<button class="btn btn-primary btn-dark" type="submit">
+					<div class="d-flex gap-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="white" class="bi bi-github" viewBox="0 0 16 16">
+							<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+						</svg>
+						<div class="align-self-center">
+							<h6>Log in with GitHub</h6>
+						</div>
 					</div>
-				</div>
-			</button>
+				</button>
+			</div>
 		</form>
 		-->
 	</div>
