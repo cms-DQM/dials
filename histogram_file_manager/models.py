@@ -1,7 +1,6 @@
 from os.path import getsize
 from django.db import models
 
-# from django.conf import settings
 
 class HistogramDataFileContents(models.Model):
     GRANULARITY_RUN = "run"
@@ -20,17 +19,16 @@ class HistogramDataFileContents(models.Model):
     )
 
     data_dimensionality = models.PositiveIntegerField(
-        default = DIMENSIONALITY_1D, 
-        choices = HISTOGRAM_DIMENSIONS_CHOICES, 
-        blank   = True
+        default=DIMENSIONALITY_1D, choices=HISTOGRAM_DIMENSIONS_CHOICES, blank=True
     )
 
     granularity = models.CharField(
-        max_length = 3,
-        choices    = DATAFILE_GRANULARITY_CHOICES,
-        default    = GRANULARITY_RUN,
-        help_text  = "The granularity of the data contained in the data file (either whole run or lumisections)."
+        max_length=3,
+        choices=DATAFILE_GRANULARITY_CHOICES,
+        default=GRANULARITY_RUN,
+        help_text="The granularity of the data contained in the data file (either whole run or lumisections).",
     )
+
 
 class HistogramDataFile(models.Model):
     """

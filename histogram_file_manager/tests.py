@@ -1,7 +1,6 @@
 import os
 from django.test import TestCase
 from django.conf import settings
-from histogram_file_manager.models import HistogramDataFile
 
 
 class HistogramDataFileTestCase(TestCase):
@@ -13,8 +12,8 @@ class HistogramDataFileTestCase(TestCase):
         self.all_files = []
         all_dirs = settings.DIR_PATH_DQMIO_STORAGE.split(":")
 
-        for dir in all_dirs:
-            for root, dirs, files in sorted(os.walk(dir)):
+        for _ in all_dirs:
+            for root, _, files in sorted(os.walk(dir)):
                 for f in sorted(files):
                     self.all_files.append(os.path.join(root, f))
 
