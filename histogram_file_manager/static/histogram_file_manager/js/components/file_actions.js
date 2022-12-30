@@ -12,6 +12,7 @@ app.component('file-actions', {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clicked_close">        </button>
 	  </div>
 	  <div class="modal-body">
+    <success :success="success" @dismissed-success="dismiss_success"></success>
 		<errors :errors="errors" @dismissed-error="dismiss_error"></errors>
 		<div class="container-fluid">
 		  <table class="table">
@@ -64,6 +65,8 @@ app.component('file-actions', {
     data() {
         return {
             errors: [],
+            success: [],
+            message_id: 0,
         };
     },
     props: {
@@ -92,6 +95,9 @@ app.component('file-actions', {
     methods: {
         clicked_close() {
             console.debug('Modal was closed');
+            this.errors = [];
+            this.success = [];
+            this.message_id = 0;
             this.$emit('clicked-close');
         },
         // Callback for form submission (file parsing)
@@ -116,20 +122,20 @@ app.component('file-actions', {
                 )
                 .then((response) => {
                     console.log(response);
+                    this.success.push({
+                      id: this.message_id,
+                      message: `File id ${this.file_information.id} is being parsed.`
+                    });
+                    this.message_id += 1;
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.errors.push(`${error}: ${error.response.data}`);
+                    this.errors.push({
+                      id: this.message_id,
+                      message: `${error}: ${error.response.data.detail}`
+                    });
+                    this.message_id += 1;
                 });
-        },
-        // Callback for error dismissal from errors component
-        dismiss_error(error) {
-            console.debug(error);
-            for (var i = 0; i < this.errors.length; i++) {
-                if (this.errors[i] === error) {
-                    this.errors.splice(i, 1);
-                }
-            }
         },
         // Callback for file deletion button
         delete_file_command(file_id) {
@@ -141,11 +147,41 @@ app.component('file-actions', {
                 )
                 .then((response) => {
                     console.log(response);
+                    this.success.push({
+                      id: this.message_id,
+                      message: `File id ${file_id} is successfully deleted.`
+                    });
+                    this.message_id += 1;
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.errors.push(`${error}: ${error.response.data.detail}`);
+                    this.errors.push({
+                      id: this.message_id,
+                      message: `${error}: ${error.response.data.detail}`
+                    });
+                    this.message_id += 1;
                 });
+        },
+        // Callback for error dismissal from errors component
+        dismiss_error(error) {
+            console.debug(`this.errors is ${this.errors}`)
+            console.debug(`Dismissing error alert with ID ${error.id}`);
+            for (var i = 0; i < this.errors.length; i++) {
+                if (this.errors[i].id === error.id) {
+                  this.errors.splice(i, 1);
+                  i -= 1;
+                }
+            }
+            console.debug(`Now this.errors is ${this.errors}`)
+        },
+        dismiss_success(s) {
+          console.debug(`Dismissing success alert with ID ${s.id}`);
+          for (var i = 0; i < this.success.length; i++) {
+              if (this.success[i].id === s.id) {
+                  this.success.splice(i, 1);
+                  i -= 1;
+              }
+          }
         },
     },
 });

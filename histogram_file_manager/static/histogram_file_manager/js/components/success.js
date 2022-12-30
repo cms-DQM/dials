@@ -1,12 +1,12 @@
-app.component('errors', {
+app.component('success', {
     template:
         /*html*/
         `
-<div v-show="has_errors">
+<div v-show="has_success">
   <div 
 	role="alert"
-	class="alert alert-danger alert-dismissable fade show"
-	v-for="error in errors">
+	class="alert alert-success alert-dismissable fade show"
+	v-for="s in success">
     <div class="row">
       <div class="col-1">
         <button
@@ -17,7 +17,7 @@ app.component('errors', {
         </button>
       </div>
       <div class="col-11">
-        {{ error.message }}
+        {{ s.message }}
       </div>
     </div>
 
@@ -25,19 +25,19 @@ app.component('errors', {
 </div>
 		`,
     props: {
-        errors: {
+        success: {
             type: Array,
             required: true,
         },
     },
     computed: {
-        has_errors() {
-            return this.errors.length > 0;
+        has_success() {
+            return this.success.length > 0;
         },
     },
     methods: {
-        dismiss_error(error) {
-            this.$emit('dismissed-error', error);
+        dismiss_success(success) {
+            this.$emit('dismissed-success', success);
         },
     },
 });
