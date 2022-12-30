@@ -1,13 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 
 {% block title %} Runs {% endblock title %}
 
 
-{% block content %}
-
-  <div class="row">
-    <div class="col-lg-9 col-12">
+{% block maincontent %}
       <div>
         {% if error_message %}
           <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
@@ -58,8 +55,9 @@
         </table>
 
       </div>
-    </div>
-    <div class="col-lg-3 col-12">
+{% endblock maincontent %}
+
+{% block sidebar %}
       <div class="alert alert-info">
         <h4>Additional information - runs</h4>
         <hr>
@@ -74,11 +72,7 @@
         <li><a class="nav-link" href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a></li>
         <li><a class="nav-link" href="#">Histograms</a></li>
       </ul>
-    </div>
-  </div>
-
-{% endblock content %}
-
+{% endblock sidebar%}
 
 {% block navbar_bottom_tabs %}
 

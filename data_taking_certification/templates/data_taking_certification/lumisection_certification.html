@@ -1,12 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 
 {% block title %} Lumisection certification with queryset {% endblock title %}
 
 
-{% block content %}
-  <div class="row">
-    <div class="col-lg-9 col-12">
+{% block maincontent %}
       <div class='container-fluid'>
 
       <div>
@@ -61,10 +59,11 @@
             {% endfor %}
           </tbody>
         </table>
-
       </div>
-    </div>
-    <div class="col-lg-3 col-12">
+
+{% endblock maincontent %}
+
+{% block sidebar %}
       <div class="alert alert-info">
         <h4>Additional information - lumisections certification</h4>
         <hr>
@@ -72,10 +71,7 @@
           Per lumisection flag was obtained for all subdetectors / objects separately using the Run Registry. They were then merged into a single file which is used to fill the DB. The individual files can be found here: /afs/cern.ch/user/x/xcoubez/public/ML4DQM/json_XXX_subdetector_good.json (the name corresponds to the numbering scheme in the RR and the name of the subdetector/object) and the final file is the following: /afs/cern.ch/user/x/xcoubez/public/ML4DQM/LS_flags.pkl.
         </p>
       </div>
-    </div>
-  </div>
-
-{% endblock content %}
+{% endblock sidebar %}
 
 
 {% block navbar_bottom_tabs %}

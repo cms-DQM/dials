@@ -1,13 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 
 {% block title %} Run {{ run.run_number }} {% endblock title %}
 
 
-{% block content %}
-
-  <div class="row">
-    <div class="col-lg-9 col-12">
+{% block maincontent %}
     <div>
       {% if error_message %}
         <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
@@ -42,19 +39,18 @@
       </table>
 
     </div>
-    </div>
-    <div class="col-lg-3 col-12">
-      <h4>More from OMS</h4>
-      <hr>
-      <ol>
-        <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Run {{run.run_number}}</a></li>
-        <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates from run {{run.run_number}}</a></li>
-        <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates from run {{run.run_number}}</a></li>
-      </ol>
-    </div>
-  </div>
 
-{% endblock content %}
+{% endblock maincontent %}
+
+{% block sidebar %}
+  <h4>More from OMS</h4>
+  <hr>
+  <ol>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Run {{run.run_number}}</a></li>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates from run {{run.run_number}}</a></li>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates from run {{run.run_number}}</a></li>
+  </ol>
+{% endblock sidebar %}
 
 
 {% block navbar_bottom_tabs %}
