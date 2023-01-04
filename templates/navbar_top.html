@@ -83,18 +83,31 @@
 					<a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
 				</li>
 
-				<li class="nav-item {%if request.path == path_to_logout%} active {% endif %}">
-					<a class="nav-link" href="{% url 'home:logout' %}">Logout ({{user.username}})</a>
-				</li>
-
-				{% else %}
-
-				<li class="nav-item {%if request.path == path_to_login%} active {% endif %}">
-					<a class="nav-link" href="{% url 'home:login' %}">Login</a>
-				</li>
-
 				{% endif %}
 			</ul>
+		</div>
+		<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+			<ul class="navbar-nav">
+				{% if request.user.is_authenticated%}
+	
+				<li class="nav-item dropdown {%if request.path == path_to_logout%} active {% endif %}">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true", aria-expanded="false">
+						{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+					</a>
+					<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item disabled" aria-disabled="true">Logged in as {{ user.username }}</a>
+						<a class="dropdown-item" href="{% url 'home:logout' %}">Log out</a>
+					</div>
+				</li>
+	
+				{% else %}
+	
+				<li class="nav-item {%if request.path == path_to_login%} active {% endif %}">
+					<a class="nav-link" href="{% url 'home:login' %}">Log in</a>
+				</li>
+	
+				{% endif %}
+				</ul>
 		</div>
 	</div>
 </nav>
