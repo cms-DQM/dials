@@ -50,7 +50,7 @@
 
 <div class="container-fluid">
 	{% if user.is_authenticated %}
-	<div class="allert-signed-in alert alert-primary col-4 mx-auto" role="alert">
+	<div class="alert-signed-in alert alert-primary col-4 mx-auto" role="alert">
 		<h3><i class="bi bi-emoji-smile mr-3"></i> You are already logged in, {% if user.first_name %}{{ user.first_name }}{% else %}{{user.username}}{% endif %}.</h3>
 		Click on any button above to continue. 
 	</div>
