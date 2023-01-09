@@ -24,7 +24,7 @@ lumisection 1D histograms
     {% if lumisectionHistos1D_table %}
     <!-- div class="overflow-auto scrollbar border-light shadow m-1 bg-white" id="style-1"-->
     <div class="overflow-auto px-3 bg-white" id="style-1">
-        {% render_table lumisectionHistos1D_table 'django_tables2/bootstrap.html'%}
+        {% render_table lumisectionHistos1D_table 'histograms/bootstrap.html' %}
     </div>
     {% else %}
         <div class="alert alert-danger" role="alert">No Table found.</div>

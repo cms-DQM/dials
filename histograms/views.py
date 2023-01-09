@@ -182,7 +182,7 @@ def LumisectionHistogram1DList(request):
         lumisectionHistos1D_filter.qs[:50]
     )
 
-    RequestConfig(request).configure(lumisectionHistos1D_table)
+    RequestConfig(request, paginate={"per_page": 25}).configure(lumisectionHistos1D_table)
 
     context["lumisectionHistos1D_table"] = lumisectionHistos1D_table
     context["filter"] = lumisectionHistos1D_filter
@@ -202,7 +202,7 @@ def LumisectionHistogram2DList(request):
         lumisectionHistos2D_filter.qs[:50]
     )
 
-    RequestConfig(request).configure(lumisectionHistos2D_table)
+    RequestConfig(request, paginate={"per_page": 25}).configure(lumisectionHistos2D_table)
 
     context["lumisectionHistos2D_table"] = lumisectionHistos2D_table
     context["filter"] = lumisectionHistos2D_filter

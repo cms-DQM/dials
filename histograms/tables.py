@@ -28,11 +28,12 @@ class LumisectionHistogram1DTable(tables.Table):
     title = tables.Column()
     entries = tables.Column()
     data = tables.Column(verbose_name="Histogram Data")
+    paginator_class = tables.LazyPaginator
 
     class Meta:
         model = LumisectionHistogram1D
         fields = ()
-        attrs = {"class": "table table-hover table-bordered"}
+        attrs = {"class": "table table-hover table-striped"}
 
 
 class LumisectionHistogram2DTable(tables.Table):
@@ -40,8 +41,9 @@ class LumisectionHistogram2DTable(tables.Table):
     lumisection = tables.Column(accessor="lumisection.ls_number")
     title = tables.Column()
     entries = tables.Column()
+    paginator_class = tables.LazyPaginator
 
     class Meta:
         model = LumisectionHistogram2D
         fields = ()
-        attrs = {"class": "table table-hover table-bordered"}
+        attrs = {"class": "table table-hover table-striped"}
