@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-9 col-12">
+      {% block maincontent %}
+        Default Bootstrap Container.
+      {% endblock %}
+    </div>
+    <div class="col-lg-3 col-12">
+      {% block sidebar %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock content %}

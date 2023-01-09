@@ -1,68 +1,77 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 
 {% block title %} Lumisection certification with queryset {% endblock title %}
 
 
-{% block content %}
-  <div class='container-fluid'>
+{% block maincontent %}
+      <div class='container-fluid'>
 
-  <div>
-    {% if error_message %}
-      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-          {{ error_message }}
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div>
+        {% if error_message %}
+          <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            <div>
+              {{ error_message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
 
-  </div>
+      </div>
 
-  <div class='container-fluid'>
+      <div class='container-fluid'>
 
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Run number</th>
-          <th scope="col">Lumisection number</th>
-          <th scope="col">Pixel GOOD</th>
-          <th scope="col">Strip GOOD</th>
-          <th scope="col">Track GOOD</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for certification in lumisection_certifications %}
-          <tr>
-            <th scope="row">
-              <a href="{% url 'data_taking_objects:run-view' run_number=certification.lumisection.run.run_number %}">
-                {{ certification.lumisection.run.run_number }}
-              </a>
-            </th>
-            <th>
-              <a href="{% url 'data_taking_objects:lumisection-view' run_number=certification.lumisection.run.run_number lumi_number=certification.lumisection.ls_number %}">
-                {{ certification.lumisection.ls_number }}
-              </a>
-            </th>
-            <td>
-              {{ certification.rr_is_pixel_good }}
-            </td>
-            <td>
-              {{ certification.rr_is_strip_good }}
-            </td>
-            <td>
-              {{ certification.rr_is_tracking_good }}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Run number</th>
+              <th scope="col">Lumisection number</th>
+              <th scope="col">Pixel GOOD</th>
+              <th scope="col">Strip GOOD</th>
+              <th scope="col">Track GOOD</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for certification in lumisection_certifications %}
+              <tr>
+                <th scope="row">
+                  <a href="{% url 'data_taking_objects:run-view' run_number=certification.lumisection.run.run_number %}">
+                    {{ certification.lumisection.run.run_number }}
+                  </a>
+                </th>
+                <th>
+                  <a href="{% url 'data_taking_objects:lumisection-view' run_number=certification.lumisection.run.run_number lumi_number=certification.lumisection.ls_number %}">
+                    {{ certification.lumisection.ls_number }}
+                  </a>
+                </th>
+                <td>
+                  {{ certification.rr_is_pixel_good }}
+                </td>
+                <td>
+                  {{ certification.rr_is_strip_good }}
+                </td>
+                <td>
+                  {{ certification.rr_is_tracking_good }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-  </div>
+{% endblock maincontent %}
 
-{% endblock content %}
+{% block sidebar %}
+      <div class="alert alert-info">
+        <h4>Additional information - lumisections certification</h4>
+        <hr>
+        <p>
+          Per lumisection flag was obtained for all subdetectors / objects separately using the Run Registry. They were then merged into a single file which is used to fill the DB. The individual files can be found here: /afs/cern.ch/user/x/xcoubez/public/ML4DQM/json_XXX_subdetector_good.json (the name corresponds to the numbering scheme in the RR and the name of the subdetector/object) and the final file is the following: /afs/cern.ch/user/x/xcoubez/public/ML4DQM/LS_flags.pkl.
+        </p>
+      </div>
+{% endblock sidebar %}
 
 
 {% block navbar_bottom_tabs %}

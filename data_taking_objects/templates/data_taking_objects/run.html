@@ -1,47 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 
 {% block title %} Run {{ run.run_number }} {% endblock title %}
 
 
-{% block content %}
-
-  <div>
-    {% if error_message %}
-      <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-          {{ error_message }}
+{% block maincontent %}
+    <div>
+      {% if error_message %}
+        <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+          <div>
+            {{ error_message }}
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endif %}
-  </div>
+      {% endif %}
+    </div>
 
-  <div class='container-fluid'>
+    <div class='container-fluid'>
 
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Run number</th>
-          <th scope="col">Number of lumisections</th>
-          <th scope="col">Integrated luminosity</th>
-          <th scope="col">Initial ZeroBias rate</th>
-        </tr>
-      </thead>
-      <tbody>
+      <table class="table">
+        <thead class="thead-dark">
           <tr>
-            <th scope="row">{{ run.run_number }}</th>
-            <td>XXX</td>
-            <td>XXX</td>
-            <td>XXX</td>
+            <th scope="col">Run number</th>
+            <th scope="col">Number of lumisections</th>
+            <th scope="col">Integrated luminosity</th>
+            <th scope="col">Initial ZeroBias rate</th>
           </tr>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+            <tr>
+              <th scope="row">{{ run.run_number }}</th>
+              <td>XXX</td>
+              <td>XXX</td>
+              <td>XXX</td>
+            </tr>
+        </tbody>
+      </table>
 
-  </div>
+    </div>
 
-{% endblock content %}
+{% endblock maincontent %}
+
+{% block sidebar %}
+  <h4>More from OMS</h4>
+  <hr>
+  <ol>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Run {{run.run_number}}</a></li>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates from run {{run.run_number}}</a></li>
+    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates from run {{run.run_number}}</a></li>
+  </ol>
+{% endblock sidebar %}
 
 
 {% block navbar_bottom_tabs %}
