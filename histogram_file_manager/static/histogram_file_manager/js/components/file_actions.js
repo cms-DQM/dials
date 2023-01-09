@@ -132,7 +132,7 @@ app.component('file-actions', {
                     console.error(error);
                     this.errors.push({
                       id: this.message_id,
-                      message: `${error}: ${error.response.data.detail}`
+                      message: `${error}: ${error.response.data}`
                     });
                     this.message_id += 1;
                 });
@@ -157,7 +157,7 @@ app.component('file-actions', {
                     console.error(error);
                     this.errors.push({
                       id: this.message_id,
-                      message: `${error}: ${error.response.data.detail}`
+                      message: `${error}: ${error.response.data}`
                     });
                     this.message_id += 1;
                 });
