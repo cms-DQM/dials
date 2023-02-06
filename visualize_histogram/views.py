@@ -71,10 +71,10 @@ def visualize_histogram_dummy(request):
 
     # Convert all available choices to a dict so that JS can understand it
     dummy_hist = LumisectionHistogram1D.objects.latest("lumisection_id")
-    #return redirect("visualize_histogram", runnr=dummy_hist.lumisection.run_id, 
-    #    lumisection=dummy_hist.lumisection.ls_number, 
-    #    title=dummy_hist.title
-    #)
+    return redirect("visualize_histogram:visualize_histogram", runnr=dummy_hist.lumisection.run_id, 
+        lumisection=dummy_hist.lumisection.ls_number, 
+        title=dummy_hist.title
+    )
     return visualize_histogram(request, runnr=dummy_hist.lumisection.run_id, 
         lumisection=dummy_hist.lumisection.ls_number, 
         title=dummy_hist.title)
