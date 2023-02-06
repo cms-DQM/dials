@@ -75,6 +75,3 @@ def visualize_histogram_dummy(request):
         lumisection=dummy_hist.lumisection.ls_number, 
         title=dummy_hist.title
     )
-    return visualize_histogram(request, runnr=dummy_hist.lumisection.run_id, 
-        lumisection=dummy_hist.lumisection.ls_number, 
-        title=dummy_hist.title)
