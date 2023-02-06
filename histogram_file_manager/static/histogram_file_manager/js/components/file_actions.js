@@ -53,7 +53,7 @@ app.component('file-actions', {
 		<!-- Delete from Database -->
 		<button @click="delete_file_command(file_id)"
 				class="btn btn-danger mt-3">
-		  <i class="bi bi-trash-fill"></i>Delete from DB
+		  <i class="bi bi-trash-fill"></i> Delete from DB
 		</button>		
       </div>
       <div class="modal-footer">

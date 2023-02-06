@@ -26,7 +26,7 @@ class RunHistogramTable(tables.Table):
 class OneDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <div id="histogram-{}" style="height: 100pt; width: 300pt;">
+        <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
                     {{
@@ -50,7 +50,7 @@ class OneDimensionHistogramColumn(tables.Column):
 class TwoDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <div id="histogram-{}" style="height: 100pt; width: 300pt;">
+        <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
                     {{
@@ -76,7 +76,7 @@ class LumisectionHistogram1DTable(tables.Table):
     id = tables.Column()
     run = tables.Column(accessor="lumisection.run.run_number")
     lumisection = tables.Column(accessor="lumisection.ls_number")
-    title = tables.Column()
+    title = tables.Column(attrs={"td":{"style" : "min-width: 300px; word-break: break-all;" }})
     entries = tables.Column()
     data = OneDimensionHistogramColumn(verbose_name="Histogram Data")
     paginator_class = tables.LazyPaginator
@@ -91,7 +91,7 @@ class LumisectionHistogram2DTable(tables.Table):
     id = tables.Column()
     run = tables.Column(accessor="lumisection.run.run_number")
     lumisection = tables.Column(accessor="lumisection.ls_number")
-    title = tables.Column()
+    title = tables.Column(attrs={"td":{"style" : "min-width: 300px; word-break: break-all;" }})
     entries = tables.Column()
     data = TwoDimensionHistogramColumn(verbose_name="Histogram Data")
     paginator_class = tables.LazyPaginator

@@ -71,9 +71,8 @@ class RunHistogramFilter(django_filters.rest_framework.FilterSet):
 class LumisectionHistogram1DFilter(django_filters.FilterSet):
 
     title = django_filters.filters.AllValuesMultipleFilter(
-        widget=forms.SelectMultiple(
+        widget=forms.CheckboxSelectMultiple(
             attrs={
-                "class": "form-control",
                 "size": "10",
             }
         )
@@ -113,9 +112,8 @@ class LumisectionHistogram1DFilter(django_filters.FilterSet):
 class LumisectionHistogram2DFilter(django_filters.FilterSet):
 
     title = django_filters.filters.AllValuesMultipleFilter(
-        widget=forms.SelectMultiple(
+        widget=forms.CheckboxSelectMultiple(
             attrs={
-                "class": "form-control",
                 "size": "10",
             }
         )
