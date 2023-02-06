@@ -26,6 +26,7 @@ class RunHistogramTable(tables.Table):
 class OneDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
+        <a href="/visualize/{}/{}/{}">
         <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
@@ -45,11 +46,13 @@ class OneDimensionHistogramColumn(tables.Column):
                 }}, {{staticPlot: true}});
             </script>
         </div>
-        """, record.id, record.data, record.id)
+        </a>
+        """, record.lumisection.run_id, record.lumisection.ls_number, record.title, record.id, record.data, record.id)
 
 class TwoDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
+        <a href="/visualize/{}/{}/{}">
         <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
@@ -70,7 +73,8 @@ class TwoDimensionHistogramColumn(tables.Column):
                 }}, {{staticPlot: true}});
             </script>
         </div>
-        """, record.id, record.data, record.id)
+        </a>
+        """, record.lumisection.run.run_number, record.lumisection.ls_number, record.title, record.id, record.data, record.id)
 
 class LumisectionHistogram1DTable(tables.Table):
     id = tables.Column()
