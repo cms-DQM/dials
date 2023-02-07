@@ -5,7 +5,7 @@ from histograms.models import (
     LumisectionHistogram1D,
     LumisectionHistogram2D,
 )
-
+from django.urls import reverse
 
 class RunHistogramTable(tables.Table):
     run = tables.Column(accessor="run.run_number")
@@ -26,7 +26,7 @@ class RunHistogramTable(tables.Table):
 class OneDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <a href="/visualize/{}/{}/{}">
+        <a href="{}">
         <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
@@ -48,12 +48,14 @@ class OneDimensionHistogramColumn(tables.Column):
             </script>
         </div>
         </a>
-        """, record.lumisection.run_id, record.lumisection.ls_number, record.title, record.id, record.data, record.id)
+        """, 
+        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        record.id, record.data, record.id)
 
 class TwoDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <a href="/visualize/{}/{}/{}">
+        <a href="{}">
         <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
@@ -75,7 +77,9 @@ class TwoDimensionHistogramColumn(tables.Column):
             </script>
         </div>
         </a>
-        """, record.lumisection.run.run_number, record.lumisection.ls_number, record.title, record.id, record.data, record.id)
+        """,
+        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        record.id, record.data, record.id)
 
 class LumisectionHistogram1DTable(tables.Table):
     id = tables.Column()
