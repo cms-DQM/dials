@@ -27,6 +27,8 @@ Histogram File Manager
 	<!-- Filter form, rendered by django -->
 	<div class="row">
 		<div class="col-lg-3 col-12">
+			{% include "histogram_file_manager/filter_histogram_file_manager.html" %}
+			<!--
 			<h2>Histogram File Manager</h2>
 			<form id="file_filter_form" method="get" action="">
 				<div class="form-group">
@@ -36,9 +38,9 @@ Histogram File Manager
 					<button type="submit" class="btn btn-primary mt-3">Apply filters</button>
 				</div>
 			</form>
+			-->
 		</div>
 		<div class="col-lg-9 col-12">
-			<h4>Available Histogram Files</h4>
 			<!-- Vue js app -->
 			<div id="app" >
 				<file-table

@@ -1,5 +1,6 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+<!--<nav class="navbar navbar-expand-lg px-4" style="background-color: #cdd6ed;">-->
+<nav class="navbar navbar-expand-lg px-4 bg-dark navbar-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">
 			<img src="{% static 'img/favicon.png' %}" width="30" height="30" alt="" title="My Little Playground">
@@ -19,10 +20,10 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Manage
 					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Histogram files</a>
 						<!--<hr class="dropdown-divider">-->
-						<a class="dropdown-item" href="{% url 'histograms:run-histograms-plots-view' %}">Run Histograms Plots</a>
+						<a class="dropdown-item" href="{% url 'histograms:run-histograms-plots-view' %}">Run Histograms</a>
 						<!-- This should go under Discover. -->
 						<!--
 						-->
@@ -36,7 +37,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Discover
 					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">Visualise histogram</a>
 						<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
 						<a class="dropdown-item" href="#">Movie</a>
@@ -48,7 +49,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Challenge
 					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="#">Tasks</a>
 						<a class="dropdown-item" href="#">Your models</a>
 						<!--<hr class="dropdown-divider">-->
@@ -132,7 +133,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true", aria-expanded="false">
 						{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
 					</a>
-					<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item disabled" aria-disabled="true">Logged in as {{ user.username }}</a>
 						<a class="dropdown-item" href="{% url 'home:logout' %}">Log out</a>
 					</div>

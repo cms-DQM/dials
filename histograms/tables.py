@@ -32,7 +32,8 @@ class OneDimensionHistogramColumn(tables.Column):
                 var data = [
                     {{
                         y: {},
-                        type: 'bar'
+                        type: 'bar',
+                        marker: {{color: '#0033A0'}}
                     }}
                 ];
 

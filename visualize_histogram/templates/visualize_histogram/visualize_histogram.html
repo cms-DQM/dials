@@ -12,12 +12,13 @@
 
 {% block maincontent %}
 {% if data %}
-<div id="histogram-show" style="height: 700px;">
+<div id="histogram-show" style="height: 80vh;">
     <script>
         var trace = {
             x: {{ bins }},
             y: {{ data }},
-            type: 'bar'
+            type: 'bar',
+            marker: {color: '#0033A0'}
         };
         var data = [trace];
 
@@ -35,7 +36,7 @@
     </script>
 </div>
 {% elif data2d %}
-<div id="histogram-show" style="height: 700px;">
+<div id="histogram-show" style="height: 80vh;">
     <script>
         var data = [
             {
