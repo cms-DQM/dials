@@ -5,30 +5,48 @@
 
 <form id="ls_histos-filter-form" action="" method="get" class="form my-1">
     <h4>Run number</h4>
-    From: 
-    {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control" %}
-    To:
-    {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control" %}
+    <div class="row">
+        <div class="col-6">
+            From
+            {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            To
+            {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control" %}
+        </div>
+    </div>
     Comma-separated list:
     {% render_field filter.form.lumisection__run__run_number__in|add_class:"form-control" %}
 
     <hr/>
 
     <h4>Lumisection number</h4>
-    From:
-    {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control" %}
-    To:
-    {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control" %}
-    Comma-separated list:
+    <div class="row">
+        <div class="col-6">
+            From
+            {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            To
+            {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control" %}
+        </div>
+    </div>
+    Comma-separated list
     {% render_field filter.form.lumisection__ls_number__in|add_class:"form-control" %}
 
     <hr/>
 
     <h4>Entries</h4>
-    <strong>>=</strong>:
-    {% render_field filter.form.entries__gte|add_class:"form-control" %}
-    <strong><=</strong>:
-    {% render_field filter.form.entries__lte|add_class:"form-control" %}
+    <div class="row">
+        <div class="col-6">
+            Greater than
+            {% render_field filter.form.entries__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            Less than
+            {% render_field filter.form.entries__lte|add_class:"form-control" %}
+        </div>
+    </div>
 
     <hr/>
 

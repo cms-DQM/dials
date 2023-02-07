@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-Visualize histograms
+{{ title }}, run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}
 {% endblock %}
 
 {% block maincontent %}
@@ -27,7 +27,7 @@ Visualize histograms
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             title: {
-                text:'{{ title }}<br>Run {{ runnr }}, lumisection {{ lumisection }}',
+                text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
                 xref: 'paper',
                 x: 0
             }
@@ -52,7 +52,7 @@ Visualize histograms
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             title: {
-                text:'{{ title }}<br>Run {{ runnr }}, lumisection {{ lumisection }}',
+                text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
                 xref: 'paper',
                 x: 0
             }
