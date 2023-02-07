@@ -62,8 +62,8 @@
 </div>
 {% else %}
 <div class="alert alert-danger">
-    <h2>No histogram found.</h2>
-    Check the spelling of the above URL and try again. Based on the URL, here are the queries you have requested:
+    <h2>No histogram found</h2>
+    Check the spelling of your query and try again. Here are the queries you have requested:
     <ol>
         <li>Run: <code>{{runnr}}</code></li>
         {% if lumisection %}<li>Lumisection: <code>{{lumisection}}</code></li>{% endif %}
@@ -74,10 +74,34 @@
 {% endblock %}
 
 {% block sidebar %}
-<h2>More from OMS</h2>
-<a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{runnr}}">Run {{runnr}}</a>
-<a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{runnr}}">L1 rates from run {{runnr}}</a>
-<a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{runnr}}">HLT rates from run {{runnr}}</a>
+<h3>More from OMS</h3>
+<ul>
+    <li><a href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{runnr}}">Run {{runnr}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{runnr}}">L1 rates from run {{runnr}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{runnr}}">HLT rates from run {{runnr}}</a></li>
+</ul>
+<hr>
+
+<h3>Jump again</h3>
+<form action="" method="GET" class="row">
+    <div class="col-6">
+        <label for="{{ form.runnr.id_for_label }}">Run</label>
+        {{ form.runnr }}
+    </div>
+    <div class="col-6">
+        <label for="{{ form.lumisection.id_for_label }}">Lumisection</label>
+        {{ form.lumisection }}
+    </div>
+    <div class="col-12">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+    </div>
+    <div class="col-12">
+        <div class="d-grid" style="margin-top: 5pt">
+            <button class="btn btn-primary" type="submit">Go</button>
+        </div>
+    </div>
+</form>
 
 {% endblock %}
 

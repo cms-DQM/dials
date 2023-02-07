@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from data_taking_objects.models import Lumisection
 
 from histograms.models import LumisectionHistogram1D, LumisectionHistogram2D
+from .forms import QuickJumpForm
+
 import numpy as np
 
 # Create your views here.
@@ -15,7 +17,34 @@ def visualize_histogram(request, runnr, lumisection, title):
     parsing status
     """
 
-    # Convert all available choices to a dict so that JS can understand it
+    if request.method == 'GET':
+        form = QuickJumpForm(request.GET)
+        if form.is_valid():
+            runnr = form.cleaned_data["runnr"]
+            lumisection = form.cleaned_data["lumisection"]
+            title = form.cleaned_data["title"]
+            return redirect("visualize_histogram:visualize_histogram",
+                runnr=runnr, 
+                lumisection=lumisection, 
+                title=title
+            )
+        else: 
+            form = QuickJumpForm(
+                initial = {
+                    "runnr": runnr,
+                    "lumisection": lumisection,
+                    "title": title
+                }
+            )
+    else: 
+        form = QuickJumpForm(
+            initial = {
+                "runnr": runnr,
+                "lumisection": lumisection,
+                "title": title
+            }
+        )
+
     try:
         target_lumi = Lumisection.objects.get(run_id = runnr, ls_number = lumisection)
         lumi1d_searchresults = LumisectionHistogram1D.objects.filter(title=title, lumisection=target_lumi)
@@ -30,7 +59,8 @@ def visualize_histogram(request, runnr, lumisection, title):
                     "bins": np.linspace(histobj.x_min, histobj.x_max, histobj.x_bin+1).tolist(), 
                     "title": histobj.title,
                     "runnr": target_lumi.run_id,
-                    "lumisection": target_lumi.ls_number
+                    "lumisection": target_lumi.ls_number,
+                    "form": form
                 }
             )
         elif len(lumi2d_searchresults) == 1: 
@@ -44,22 +74,22 @@ def visualize_histogram(request, runnr, lumisection, title):
                     "ybins": np.linspace(histobj.y_min, histobj.y_max, histobj.y_bin+1).tolist(), 
                     "title": histobj.title,
                     "runnr": target_lumi.run_id,
-                    "lumisection": target_lumi.ls_number
+                    "lumisection": target_lumi.ls_number,
+                    "form": form
                 }
             )
         else: 
-            histobj = None
             return render(
                 request,
                 "visualize_histogram/visualize_histogram.html",
-                {"data": None, "runnr": runnr, "lumisection": lumisection, "title": title}
+                {"data": None, "runnr": runnr, "lumisection": lumisection, "title": title, "form": form}
             )
     except (Lumisection.DoesNotExist):
         # Return with no context
-        render(
+        return render(
             request,
             "visualize_histogram/visualize_histogram.html",
-            {"data": None}
+            {"data": None, "runnr": runnr, "lumisection": lumisection, "title": title, "form": form}
         )
     
 @login_required
@@ -69,9 +99,25 @@ def visualize_histogram_dummy(request):
     parsing status
     """
 
-    # Convert all available choices to a dict so that JS can understand it
-    dummy_hist = LumisectionHistogram1D.objects.latest("lumisection_id")
-    return redirect("visualize_histogram:visualize_histogram", runnr=dummy_hist.lumisection.run_id, 
-        lumisection=dummy_hist.lumisection.ls_number, 
-        title=dummy_hist.title
-    )
+    if request.method == 'GET':
+        form = QuickJumpForm(request.GET)
+        if form.is_valid():
+            runnr = form.cleaned_data["runnr"]
+            lumisection = form.cleaned_data["lumisection"]
+            title = form.cleaned_data["title"]
+            return redirect("visualize_histogram:visualize_histogram",
+                runnr=runnr, 
+                lumisection=lumisection, 
+                title=title
+            )
+        else: form = QuickJumpForm()
+    else:
+        form = QuickJumpForm()
+
+    # dummy_hist = LumisectionHistogram1D.objects.latest("lumisection_id")
+    # return redirect("visualize_histogram:visualize_histogram", runnr=dummy_hist.lumisection.run_id, 
+    #     lumisection=dummy_hist.lumisection.ls_number, 
+    #     title=dummy_hist.title
+    # )
+    print(request.GET)
+    return render(request, "visualize_histogram/visualize_firstpage.html", {"form": form})
