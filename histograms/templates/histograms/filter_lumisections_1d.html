@@ -8,11 +8,11 @@
     <div class="row">
         <div class="col-6">
             From
-            {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control" %}
+            {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control"|attr:"min=0" %}
         </div>
         <div class="col-6">
             To
-            {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control" %}
+            {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control"|attr:"min=0" %}
         </div>
     </div>
     Comma-separated list:
@@ -24,11 +24,11 @@
     <div class="row">
         <div class="col-6">
             From
-            {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control" %}
+            {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control"|attr:"min=0" %}
         </div>
         <div class="col-6">
             To
-            {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control" %}
+            {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control"|attr:"min=0" %}
         </div>
     </div>
     Comma-separated list
@@ -40,11 +40,11 @@
     <div class="row">
         <div class="col-6">
             Greater than
-            {% render_field filter.form.entries__gte|add_class:"form-control" %}
+            {% render_field filter.form.entries__gte|add_class:"form-control"|attr:"min=0" %}
         </div>
         <div class="col-6">
             Less than
-            {% render_field filter.form.entries__lte|add_class:"form-control" %}
+            {% render_field filter.form.entries__lte|add_class:"form-control"|attr:"min=0" %}
         </div>
     </div>
 

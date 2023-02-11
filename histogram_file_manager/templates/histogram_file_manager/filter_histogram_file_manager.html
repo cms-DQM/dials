@@ -17,11 +17,11 @@
     <div class="row">
         <div class="col-6">
             Entries greater than
-            {% render_field filter.form.entries_total__gt|add_class:"form-control" %}
+            {% render_field filter.form.entries_total__gt|add_class:"form-control"|attr:"min=0" %}
         </div>
         <div class="col-6">
             Entries less than
-            {% render_field filter.form.entries_total__lt|add_class:"form-control" %}
+            {% render_field filter.form.entries_total__lt|add_class:"form-control"|attr:"min=0" %}
         </div>
     </div>
     Filepath contains
