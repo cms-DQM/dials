@@ -6,6 +6,8 @@ from data_taking_objects.models import Lumisection
 from histograms.models import LumisectionHistogram1D, LumisectionHistogram2D
 from .forms import QuickJumpForm
 
+import data_taking_objects.views
+
 import numpy as np
 
 # Create your views here.
@@ -121,3 +123,21 @@ def visualize_histogram_dummy(request):
     # )
     print(request.GET)
     return render(request, "visualize_histogram/visualize_firstpage.html", {"form": form})
+
+@login_required
+def redirect_lumisection(request, runnr, lumisection):
+    """
+    View for histogram file manager. Lists all available datafiles and their
+    parsing status
+    """
+
+    return data_taking_objects.views.lumisection_view(request, runnr, lumisection)
+
+@login_required
+def redirect_run(request, runnr):
+    """
+    View for histogram file manager. Lists all available datafiles and their
+    parsing status
+    """
+
+    return data_taking_objects.views.run_view(request, runnr)

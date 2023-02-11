@@ -5,6 +5,31 @@
 
 
 {% block maincontent %}
+<h2>Jump quickly</h2>
+<form action="" method="GET" class="row">
+    <div class="col-6 col-lg-2">
+        {{ form.runnr.errors }}
+        <label for="{{ form.runnr.id_for_label }}">Run</label>
+        {{ form.runnr }}
+    </div>
+    <div class="col-6 col-lg-2">
+        {{ form.lumisection.errors }}
+        <label for="{{ form.lumisection.id_for_label }}">Lumisection</label>
+        {{ form.lumisection }}
+    </div>
+    <div class="col-12 col-lg-7">
+        {{ form.title.errors }}
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+    </div>
+    <div class="col-12 col-lg-1">
+        <br>
+        <div class="d-grid">
+            <button class="btn btn-primary" type="submit">Go</button>
+        </div>
+    </div>
+</form>
+
       <div>
         {% if error_message %}
           <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
@@ -25,7 +50,7 @@
               <th scope="col">Run number</th>
               <th scope="col">OMS info</th>
               <th scope="col">RR OMS info</th>
-              <th scope="col">Histograms</th>
+              <th scope="col">Run level histograms</th>
               <th scope="col">RR certification info</th>
             </tr>
           </thead>
@@ -33,21 +58,21 @@
             {% for run in runs %}
               <tr>
                 <th scope="row"> 
-                  <a href="{% url 'data_taking_objects:run-view' run_number=run.run_number %}">
+                  <a href="{% url 'visualize_histogram:redirect_run' runnr=run.run_number %}">
                     {{ run.run_number }}
                   </a>
                 </th>
                 <td>
-                  <span class="badge bg-warning">Not available</span>
+                  <i class="bi bi-x-lg"></i>
                 </td>
                 <td>
-                  <span class="badge bg-success">Available</span>
+                  <i class="bi bi-check-lg"></i>
                 </td>
                 <td>
-                  <span class="badge bg-success"> {{ run.histograms.count }} histograms available</span>
+                  {{ run.histograms.count }}
                 </td>
                 <td>
-                  <span class="badge bg-success">Available</span>
+                  <i class="bi bi-check-lg"></i>
                 </td>
               </tr>
             {% endfor %}
@@ -68,9 +93,9 @@
       <h4>Data sources</h4>
       <hr>
       <ul>
-        <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/index/index">OMS</a></li>
-        <li><a class="nav-link" href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a></li>
-        <li><a class="nav-link" href="#">Histograms</a></li>
+        <li><a href="https://cmsoms.cern.ch/cms/index/index">OMS</a></li>
+        <li><a href="https://cmsrunregistry.web.cern.ch/offline/datasets/global">Run Registry</a></li>
+        <li><a href="#">Histograms</a></li>
       </ul>
 {% endblock sidebar%}
 
