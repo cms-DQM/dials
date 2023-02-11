@@ -1,6 +1,6 @@
 {% load static %}
 <!--<nav class="navbar navbar-expand-lg px-4" style="background-color: #cdd6ed;">-->
-<nav class="navbar navbar-expand-lg px-4 bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg px-4 navbar-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">
 			<img src="{% static 'img/favicon.png' %}" width="30" height="30" alt="" title="My Little Playground">
@@ -41,6 +41,9 @@
 						<a class="dropdown-item" href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">Visualise histogram</a>
 						<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
 						<a class="dropdown-item" href="#">Movie</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'data_taking_certification:run-certification-view' %}">Run Certification</a>
+						<a class="dropdown-item" href="{% url 'data_taking_certification:lumisection-certification-view' %}">Lumisection Certification</a>
 						<!--<hr class="dropdown-divider">-->
 					</div>
 				</li>
