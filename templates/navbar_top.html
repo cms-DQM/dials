@@ -39,7 +39,7 @@
 					</a>
 					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">Visualise histogram</a>
-						<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>
+						<!--<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>-->
 						<a class="dropdown-item" href="#">Movie</a>
 						<hr class="dropdown-divider">
 						<a class="dropdown-item" href="{% url 'data_taking_certification:run-certification-view' %}">Run Certification</a>
@@ -57,6 +57,10 @@
 						<a class="dropdown-item" href="#">Your models</a>
 						<!--<hr class="dropdown-divider">-->
 					</div>
+				</li>
+
+				<li class="nav-item active">
+					<a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
 				</li>
 
 				<!--

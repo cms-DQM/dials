@@ -3,6 +3,9 @@
 {% block title %} Run {{ runnr }}, lumisection {{ lumi_number }} {% endblock title %}
 
 {% block maincontent %}
+<div class='container-fluid'>
+  <i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a> / <a href="{% url 'visualize_histogram:redirect_run' runnr=runnr %}">Run {{ runnr }}</a>
+</div>
 
   <div>
     {% if error_message %}
@@ -19,7 +22,7 @@
   <div class='container-fluid'>
 
 
-    <h2><a href="{% url 'visualize_histogram:redirect_run' runnr=runnr %}">Run {{ runnr }}</a>, lumisection {{ lumi_number }}</h2>
+    <h2>Run {{ runnr }}, lumisection {{ lumi_number }}</h2>
     {% if n_hist1d != 0 %}
     <hr>
     <h3>1D histograms</h3>

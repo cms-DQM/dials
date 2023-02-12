@@ -12,56 +12,61 @@
 
 {% block maincontent %}
 {% if data %}
-<i class="bi bi-arrow-left"></i> <a href="{% url 'data_taking_objects:run-view' run_number=runnr %}">Run {{ runnr }}</a>, <a href="{% url 'data_taking_objects:lumisection-view' run_number=runnr lumi_number=lumisection %}">lumisection {{ lumisection }}</a>
-<div id="histogram-show" style="height: 80vh;">
-    <script>
-        var trace = {
-            x: {{ bins }},
-            y: {{ data }},
-            type: 'bar',
-            marker: {color: '#0033A0'}
-        };
-        var data = [trace];
+<i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a> 
+/ <a href="{% url 'visualize_histogram:redirect_run' runnr=runnr %}">Run {{ runnr }}</a> 
+/ <a href="{% url 'data_taking_objects:lumisection-view' run_number=runnr lumi_number=lumisection %}">lumisection {{ lumisection }}</a>
 
-        Plotly.newPlot('histogram-show', data, 
-        {
-            bargap: 0, 
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            title: {
-                text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
-                xref: 'paper',
-                x: 0
-            }
-        }, {responsive: true});
-    </script>
-</div>
-{% elif data2d %}
-<i class="bi bi-arrow-left"></i> <a href="{% url 'data_taking_objects:run-view' run_number=runnr %}">Run {{ runnr }}</a>, <a href="{% url 'data_taking_objects:lumisection-view' run_number=runnr lumi_number=lumisection %}">lumisection {{ lumisection }}</a>
-<div id="histogram-show" style="height: 80vh;">
-    <script>
-        var data = [
+    {% if is2d %}
+    <div id="histogram-show" style="height: 80vh;">
+        <script>
+            var data = [
+                {
+                    z: {{ data }},
+                    x: {{ xbins }},
+                    y: {{ ybins }},
+                    type: 'heatmap',
+                    colorscale: 'Viridis'
+                }
+            ];
+
+            Plotly.newPlot('histogram-show', data, 
             {
-                z: {{ data2d }},
-                x: {{ xbins }},
-                y: {{ ybins }},
-                type: 'heatmap',
-                colorscale: 'Viridis'
-            }
-        ];
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                title: {
+                    text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
+                    xref: 'paper',
+                    x: 0
+                }
+            }, {responsive: true});
+        </script>
+    </div>
+    {% else %}
+    <div id="histogram-show" style="height: 80vh;">
+        <script>
+            var trace = {
+                x: {{ bins }},
+                y: {{ data }},
+                type: 'bar',
+                marker: {color: '#0033A0'}
+            };
+            var data = [trace];
 
-        Plotly.newPlot('histogram-show', data, 
-        {
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            title: {
-                text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
-                xref: 'paper',
-                x: 0
-            }
-        }, {responsive: true});
-    </script>
-</div>
+            Plotly.newPlot('histogram-show', data, 
+            {
+                bargap: 0, 
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                title: {
+                    text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
+                    xref: 'paper',
+                    x: 0
+                }
+            }, {responsive: true});
+        </script>
+    </div>
+    {% endif %}
+
 {% else %}
 <div class="alert alert-danger">
     <h2>No histogram found</h2>

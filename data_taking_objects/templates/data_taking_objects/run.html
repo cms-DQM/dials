@@ -7,7 +7,7 @@
 {% block maincontent %}
 
     <div class='container-fluid'>
-      <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}"><i class="bi bi-arrow-left"></i> Back to all runs</a>
+      <i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a>
       <h2>Run {{ runnr }} has {{ num_lumisections }} {% if num_lumisections != 1 %}lumisections{% else %}lumisection{% endif %}</h2>
 
       <div>

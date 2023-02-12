@@ -58,6 +58,7 @@ def visualize_histogram(request, runnr, lumisection, title):
                 "visualize_histogram/visualize_histogram.html",
                 {
                     "data": histobj.data,
+                    "is2d": False,
                     "bins": np.linspace(histobj.x_min, histobj.x_max, histobj.x_bin+1).tolist(), 
                     "title": histobj.title,
                     "runnr": target_lumi.run_id,
@@ -71,7 +72,8 @@ def visualize_histogram(request, runnr, lumisection, title):
                 request,
                 "visualize_histogram/visualize_histogram.html",
                 {
-                    "data2d": histobj.data,
+                    "data": histobj.data,
+                    "is2d": True,
                     "xbins": np.linspace(histobj.x_min, histobj.x_max, histobj.x_bin+1).tolist(), 
                     "ybins": np.linspace(histobj.y_min, histobj.y_max, histobj.y_bin+1).tolist(), 
                     "title": histobj.title,
