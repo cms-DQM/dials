@@ -1,24 +1,69 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+<!--<nav class="navbar navbar-expand-lg px-4" style="background-color: #cdd6ed;">-->
+<nav class="navbar fixed-top navbar-expand-lg px-4 navbar-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">
 			<img src="{% static 'img/favicon.png' %}" width="30" height="30" alt="" title="My Little Playground">
 			DQM Playground
 		</a>
 
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" data-bs-theme="dark">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
 
-				<li class="nav-item {%if request.path == path_to_home%} active {% endif %}">
-					<a class="nav-link" href="{% url 'home:home' %}">Home</a>
-				</li>
-
 				{% if request.user.is_authenticated%}
 
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Manage
+					</a>
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'histogram_file_manager:file_manager' %}">Histogram files</a>
+						<!--<hr class="dropdown-divider">-->
+						<a class="dropdown-item" href="{% url 'histograms:runs_list' %}">Run Histograms</a>
+						<!-- This should go under Discover. -->
+						<!--
+						-->
+						<!--<hr class="dropdown-divider">-->
+						<a class="dropdown-item" href="{% url 'histograms:lumisections_1D_list' %}">1D Lumisection histograms</a>
+						<a class="dropdown-item" href="{% url 'histograms:lumisections_2D_list' %}">2D Lumisection Histograms</a>
+					</div>
+				</li>
+
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Discover
+					</a>
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">Visualise histogram</a>
+						<!--<a class="dropdown-item" href="{% url 'histograms:run-histograms-view' %}">Run Histograms</a>-->
+						<a class="dropdown-item" href="#">Movie</a>
+						<hr class="dropdown-divider">
+						<a class="dropdown-item" href="{% url 'data_taking_certification:run-certification-view' %}">Run Certification</a>
+						<a class="dropdown-item" href="{% url 'data_taking_certification:lumisection-certification-view' %}">Lumisection Certification</a>
+						<!--<hr class="dropdown-divider">-->
+					</div>
+				</li>
+
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Challenge
+					</a>
+					<div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#">Tasks</a>
+						<a class="dropdown-item" href="#">Your models</a>
+						<!--<hr class="dropdown-divider">-->
+					</div>
+				</li>
+
+				<li class="nav-item active">
+					<a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
+				</li>
+
+				<!--
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Granularity
@@ -82,6 +127,7 @@
 				<li class="nav-item {%if request.path == path_to_whatever%} active {% endif %}">
 					<a class="nav-link" href="{% url 'api:api-root' %}">APIs</a>
 				</li>
+				-->
 
 				{% endif %}
 			</ul>
@@ -94,7 +140,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true", aria-expanded="false">
 						{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
 					</a>
-					<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item disabled" aria-disabled="true">Logged in as {{ user.username }}</a>
 						<a class="dropdown-item" href="{% url 'home:logout' %}">Log out</a>
 					</div>

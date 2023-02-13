@@ -8,9 +8,14 @@ class HistogramDataFileStartParsingForm(forms.Form):
     """
 
     granularity = forms.ChoiceField(
-        choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES
+        choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
     data_dimensionality = forms.ChoiceField(
-        choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES
+        choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
-    file_format = forms.ChoiceField(choices=HistogramDataFile.DATAFILE_FORMAT_CHOICES)
+    file_format = forms.ChoiceField(
+        choices=HistogramDataFile.DATAFILE_FORMAT_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "dataset_tables.apps.DatasetTablesConfig",
     "histograms",
     "histogram_file_manager",
+    "visualize_histogram",
     "challenge",
     "data_taking_objects",
     "data_taking_certification",

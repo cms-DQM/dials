@@ -5,38 +5,59 @@
 
 
 {% block maincontent %}
-    <div>
-      {% if error_message %}
-        <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
-          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-          <div>
-            {{ error_message }}
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endif %}
-    </div>
 
     <div class='container-fluid'>
+      <i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a>
+      <h2>Run {{ runnr }} has {{ num_lumisections }} {% if num_lumisections != 1 %}lumisections{% else %}lumisection{% endif %}</h2>
 
+      <div>
+        {% if error_message %}
+          <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            <div>
+              {{ error_message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if lumisections %}
       <table class="table">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Run number</th>
-            <th scope="col">Number of lumisections</th>
+            <th scope="col">Lumisection</th>
+            <th scole="col">1D histograms</th>
+            <th scole="col">2D histograms</th>
             <th scope="col">Integrated luminosity</th>
             <th scope="col">Initial ZeroBias rate</th>
           </tr>
         </thead>
         <tbody>
-            <tr>
-              <th scope="row">{{ run.run_number }}</th>
-              <td>XXX</td>
-              <td>XXX</td>
-              <td>XXX</td>
-            </tr>
+            {% for lumisection in lumisections %}
+              <tr>
+                <th>
+                  <a href="{% url 'visualize_histogram:redirect_lumisection' runnr=run.run_number lumisection=lumisection.ls_number%}">
+                    {{ lumisection.ls_number }}
+                  </a>
+                </th>
+                <td>
+                  {{ lumisection.histograms_lumisectionhistogram1d_histograms.count }}
+                </td>
+                <td>
+                  {{ lumisection.histograms_lumisectionhistogram2d_histograms.count }}
+                </td>
+                <td>
+                  ?
+                </td>
+                <td>
+                  ?
+                </td>
+              </tr>
+            {% endfor %}
         </tbody>
       </table>
+      {% endif %}
 
     </div>
 
@@ -45,33 +66,12 @@
 {% block sidebar %}
   <h4>More from OMS</h4>
   <hr>
-  <ol>
-    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Run {{run.run_number}}</a></li>
-    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates from run {{run.run_number}}</a></li>
-    <li><a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates from run {{run.run_number}}</a></li>
-  </ol>
+  <ul>
+    <li><a href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Run {{run.run_number}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates from run {{run.run_number}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates from run {{run.run_number}}</a></li>
+  </ul>
 {% endblock sidebar %}
-
-
-{% block navbar_bottom_tabs %}
-
-  <li class="nav-item">
-    <a class="nav-link">OMS</a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{run.run_number}}">Runs</a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{run.run_number}}">L1 rates</a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{run.run_number}}">HLT rates</a>
-  </li>
-
-{% endblock navbar_bottom_tabs %}
 
 {% block modal_tab %} Additional information {% endblock modal_tab %}
 

@@ -8,24 +8,24 @@ app.component('file-table', {
 	<table class="table table-sm table-hover table-striped">
 	  <thead class="thead-dark">
 		<tr>
-		  <th scope="col"
-			  v-for="header in headers"
-			  :key="header">
-			{{ header }}
-		  </th>
-		  <th>Actions</th>
+        <th>Actions</th>
+		<th scope="col"
+			v-for="header in headers"
+			:key="header">
+		    {{ header }}
+		</th>
 		</tr>
 	  </thead>
 	  <tbody>
 		<tr v-for="file_information of files_information">
+          <td>
+          <button type="button" class="btn btn-outline-primary"
+                  v-on:click="file_actions_clicked(file_information)"
+                  >
+            <i class="bi bi-wrench-adjustable"></i>
+          </button>
+          </td>
 		  <td v-for="(value, i) of file_information" v-html="get_formatted_value(i, value)">
-		  </td>
-		  <td>
-			<button type="button" class="btn btn-primary"
-					v-on:click="file_actions_clicked(file_information)"
-					>
-			  Actions
-			</button>
 		  </td>
 		</tr>
 	  </tbody>

@@ -1,4 +1,71 @@
 {% load widget_tweaks %}
+
+<h2>2D lumisection histograms</h2>
+<hr/>
+
+<form id="ls_histos-filter-form" action="" method="get" class="form my-1">
+    <h4>Run number</h4>
+    <div class="row">
+        <div class="col-6">
+            From
+            {% render_field filter.form.lumisection__run__run_number__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            To
+            {% render_field filter.form.lumisection__run__run_number__lte|add_class:"form-control" %}
+        </div>
+    </div>
+    Comma-separated list:
+    {% render_field filter.form.lumisection__run__run_number__in|add_class:"form-control" %}
+
+    <hr/>
+
+    <h4>Lumisection number</h4>
+    <div class="row">
+        <div class="col-6">
+            From
+            {% render_field filter.form.lumisection__ls_number__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            To
+            {% render_field filter.form.lumisection__ls_number__lte|add_class:"form-control" %}
+        </div>
+    </div>
+    Comma-separated list
+    {% render_field filter.form.lumisection__ls_number__in|add_class:"form-control" %}
+
+    <hr/>
+
+    <h4>Entries</h4>
+    <div class="row">
+        <div class="col-6">
+            Greater than
+            {% render_field filter.form.entries__gte|add_class:"form-control" %}
+        </div>
+        <div class="col-6">
+            Less than
+            {% render_field filter.form.entries__lte|add_class:"form-control" %}
+        </div>
+    </div>
+
+    <hr/>
+
+    <h4>Title</h4>
+    <div style="overflow-y: scroll; height: 400px; word-break: break-all;">
+        {% render_field filter.form.title %}
+    </div>
+
+    <div class="d-grid" style="margin-top: 5pt">
+        <button type="submit" id="id_btn_filter" class="btn btn-primary" style="margin-top: 5pt">
+            Filter
+        </button>
+        <a href="{% url 'histograms:lumisections_2D_list' %}" class="btn btn-danger" id="clear-filters" style="margin-top: 5pt">
+            Reset
+        </a>
+    </div>
+</form>
+
+<!--
 <div class="container">
     <div class="card border-light shadow p-3 bg-white rounded mb-4" style="margin: 0 auto 10px; width: 800px;">
         <form id="ls_histos-filter-form" action="" method="get" class="form my-1">
@@ -186,3 +253,4 @@
             </div>
 
         </form>
+-->

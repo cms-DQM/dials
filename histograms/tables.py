@@ -5,7 +5,7 @@ from histograms.models import (
     LumisectionHistogram1D,
     LumisectionHistogram2D,
 )
-
+from django.urls import reverse
 
 class RunHistogramTable(tables.Table):
     run = tables.Column(accessor="run.run_number")
@@ -26,12 +26,14 @@ class RunHistogramTable(tables.Table):
 class OneDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <div id="histogram-{}" style="height: 100pt; width: 300pt;">
+        <a href="{}">
+        <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
                     {{
                         y: {},
-                        type: 'bar'
+                        type: 'bar',
+                        marker: {{color: '#0033A0'}}
                     }}
                 ];
 
@@ -45,12 +47,16 @@ class OneDimensionHistogramColumn(tables.Column):
                 }}, {{staticPlot: true}});
             </script>
         </div>
-        """, record.id, record.data, record.id)
+        </a>
+        """, 
+        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        record.id, record.data, record.id)
 
 class TwoDimensionHistogramColumn(tables.Column):
     def render(self, record):
         return format_html("""
-        <div id="histogram-{}" style="height: 100pt; width: 300pt;">
+        <a href="{}">
+        <div id="histogram-{}" style="height: 100pt; width: 200pt;">
             <script>
                 var data = [
                     {{
@@ -70,13 +76,16 @@ class TwoDimensionHistogramColumn(tables.Column):
                 }}, {{staticPlot: true}});
             </script>
         </div>
-        """, record.id, record.data, record.id)
+        </a>
+        """,
+        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        record.id, record.data, record.id)
 
 class LumisectionHistogram1DTable(tables.Table):
     id = tables.Column()
     run = tables.Column(accessor="lumisection.run.run_number")
     lumisection = tables.Column(accessor="lumisection.ls_number")
-    title = tables.Column()
+    title = tables.Column(attrs={"td":{"style" : "min-width: 300px; word-break: break-all;" }})
     entries = tables.Column()
     data = OneDimensionHistogramColumn(verbose_name="Histogram Data")
     paginator_class = tables.LazyPaginator
@@ -91,7 +100,7 @@ class LumisectionHistogram2DTable(tables.Table):
     id = tables.Column()
     run = tables.Column(accessor="lumisection.run.run_number")
     lumisection = tables.Column(accessor="lumisection.ls_number")
-    title = tables.Column()
+    title = tables.Column(attrs={"td":{"style" : "min-width: 300px; word-break: break-all;" }})
     entries = tables.Column()
     data = TwoDimensionHistogramColumn(verbose_name="Histogram Data")
     paginator_class = tables.LazyPaginator

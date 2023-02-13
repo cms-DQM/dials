@@ -1,0 +1,118 @@
+{% extends 'base_with_sidebar.html' %}
+{% load static %}
+
+{% block extra_head %}
+<!-- <script src="https://unpkg.com/vue@3"></script> -->
+<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+{% endblock %}
+
+{% block title %}
+{{ title }}, run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}
+{% endblock %}
+
+{% block maincontent %}
+{% if data %}
+<i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a> 
+/ <a href="{% url 'visualize_histogram:redirect_run' runnr=runnr %}">Run {{ runnr }}</a> 
+/ <a href="{% url 'data_taking_objects:lumisection-view' run_number=runnr lumi_number=lumisection %}">lumisection {{ lumisection }}</a>
+
+    {% if is2d %}
+    <div id="histogram-show" style="height: 80vh;">
+        <script>
+            var data = [
+                {
+                    z: {{ data }},
+                    x: {{ xbins }},
+                    y: {{ ybins }},
+                    type: 'heatmap',
+                    colorscale: 'Viridis'
+                }
+            ];
+
+            Plotly.newPlot('histogram-show', data, 
+            {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                title: {
+                    text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
+                    xref: 'paper',
+                    x: 0
+                }
+            }, {responsive: true});
+        </script>
+    </div>
+    {% else %}
+    <div id="histogram-show" style="height: 80vh;">
+        <script>
+            var trace = {
+                x: {{ bins }},
+                y: {{ data }},
+                type: 'bar',
+                marker: {color: '#0033A0'}
+            };
+            var data = [trace];
+
+            Plotly.newPlot('histogram-show', data, 
+            {
+                bargap: 0, 
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                title: {
+                    text:'{{ title }}<br>Run {{ runnr }}{% if lumisection %}, lumisection {{ lumisection }}{% endif %}',
+                    xref: 'paper',
+                    x: 0
+                }
+            }, {responsive: true});
+        </script>
+    </div>
+    {% endif %}
+
+{% else %}
+<div class="alert alert-danger">
+    <h2>No histogram found</h2>
+    Check the spelling of your query and try again. Here are the queries you have requested:
+    <ol>
+        <li>Run: <code>{{runnr}}</code></li>
+        {% if lumisection %}<li>Lumisection: <code>{{lumisection}}</code></li>{% endif %}
+        <li>Title: <code>{{title}}</code></li>
+    </ol>
+    <a class="btn btn-primary" href="{% url 'visualize_histogram:visualize_histogram_dummy' %}"><i class="bi bi-arrow-left"></i> Go back</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<h3>More from OMS</h3>
+<ul>
+    <li><a href="https://cmsoms.cern.ch/cms/runs/report?cms_run={{runnr}}">Run {{runnr}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run={{runnr}}">L1 rates from run {{runnr}}</a></li>
+    <li><a href="https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run={{runnr}}">HLT rates from run {{runnr}}</a></li>
+</ul>
+<hr>
+
+<h3>Jump again</h3>
+<form action="" method="GET" class="row">
+    <div class="col-6">
+        <label for="{{ form.runnr.id_for_label }}">Run</label>
+        {{ form.runnr }}
+    </div>
+    <div class="col-6">
+        <label for="{{ form.lumisection.id_for_label }}">Lumisection</label>
+        {{ form.lumisection }}
+    </div>
+    <div class="col-12">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+    </div>
+    <div class="col-12">
+        <div class="d-grid" style="margin-top: 5pt">
+            <button class="btn btn-primary" type="submit">Go</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

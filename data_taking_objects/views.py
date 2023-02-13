@@ -1,18 +1,40 @@
 import logging
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from rest_framework import viewsets
 
 from data_taking_objects.models import Run, Lumisection
 from data_taking_objects.api.serializers import RunSerializer
 
+from histograms.models import LumisectionHistogram1D, LumisectionHistogram2D
+
 from .forms import DiagnosticForm
+from visualize_histogram.forms import QuickJumpForm
 
 logger = logging.getLogger(__name__)
 
 
 def runs_view(request):
+    """
+    View for histogram file manager. Lists all available datafiles and their
+    parsing status
+    """
+
+    if request.method == 'GET':
+        form = QuickJumpForm(request.GET)
+        if form.is_valid():
+            runnr = form.cleaned_data["runnr"]
+            lumisection = form.cleaned_data["lumisection"]
+            title = form.cleaned_data["title"]
+            return redirect("visualize_histogram:visualize_histogram",
+                runnr=runnr, 
+                lumisection=lumisection, 
+                title=title
+            )
+        else: form = QuickJumpForm()
+    else:
+        form = QuickJumpForm()
 
     error_message = None
 
@@ -27,6 +49,7 @@ def runs_view(request):
     context = {
         "error_message": error_message,
         "runs": runs,
+        "form": form
     }
     return render(request, "data_taking_objects/runs.html", context)
 
@@ -35,18 +58,31 @@ def run_view(request, run_number):
 
     error_message = None
 
-    run = Run.objects.filter(run_number=run_number)
+    try:
+        run = Run.objects.get(run_number=run_number)
+        lumisections = Lumisection.objects.filter(run_id=run_number)
+        num_lumisections = lumisections.count()
 
-    if run:
-        logger.info(f"loading following run: {run}")
-    else:
-        error_message = "This run is not in the DB"
+        if run:
+            logger.info(f"loading following run: {run}")
+        else:
+            error_message = f"Run {run_number} is not in the DB"
 
-    context = {
-        "error_message": error_message,
-        "run": run[0],
-    }
-    return render(request, "data_taking_objects/run.html", context)
+        context = {
+            "error_message": error_message,
+            "run": run,
+            "runnr": run.run_number,
+            "lumisections": lumisections,
+            "num_lumisections": num_lumisections
+        }
+        return render(request, "data_taking_objects/run.html", context)
+    except Run.DoesNotExist:
+        context = {
+            "error_message": f"Run {run_number} is not in the DB",
+            "runnr": run_number,
+            "num_lumisections": 0
+        }
+        return render(request, "data_taking_objects/run.html", context)
 
 
 def lumisections_view(request):
@@ -72,21 +108,44 @@ def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
 
-    lumisection = Lumisection.objects.filter(
-        ls_number=lumi_number, run__run_number=run_number
-    )
+    try:
+        lumisection = Lumisection.objects.get(
+            ls_number=lumi_number, run__run_number=run_number
+        )
 
-    if lumisection:
-        logger.info(f"loading following lumisection: {lumisection}")
-    else:
-        error_message = "This lumisection is not in the DB"
+        hist1d = LumisectionHistogram1D.objects.filter(lumisection=lumisection)
+        hist2d = LumisectionHistogram2D.objects.filter(lumisection=lumisection)
 
-    context = {
-        "error_message": error_message,
-        "lumisection": lumisection[0],
-    }
+        n_hist1d = hist1d.count()
+        n_hist2d = hist2d.count()
 
-    return render(request, "data_taking_objects/lumisection.html", context)
+        if lumisection:
+            logger.info(f"loading following lumisection: {lumisection}")
+        else:
+            error_message = "This lumisection is not in the DB"
+
+        context = {
+            "error_message": error_message,
+            "runnr": run_number,
+            "lumi_number": lumi_number,
+            "lumisection": lumisection,
+            "hist1d": hist1d,
+            "hist2d": hist2d,
+            "n_hist1d": n_hist1d,
+            "n_hist2d": n_hist2d
+        }
+
+        return render(request, "data_taking_objects/lumisection.html", context)
+    except Lumisection.DoesNotExist:
+        context = {
+            "error_message": f"Run {run_number}, lumisection {lumi_number} is not in the DB",
+            "runnr": run_number,
+            "lumi_number": lumi_number,
+            "n_hist1d": 0,
+            "n_hist2d": 0
+        }
+
+        return render(request, "data_taking_objects/lumisection.html", context)
 
 
 def diagnostic_view(request):
