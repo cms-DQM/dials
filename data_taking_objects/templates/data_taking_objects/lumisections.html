@@ -46,16 +46,16 @@
               </a>
             </th>
             <td>
-              <span class="badge bg-warning">Not available</span>
+              <i class="bi bi-x-lg"></i>
             </td>
             <td>
-              <span class="badge bg-success"> {{ lumisection.histograms_lumisectionhistogram1d_histograms.count }} 1D histograms</span>
+              {{ lumisection.histograms_lumisectionhistogram1d_histograms.count }}
             </td>
             <td>
-              <span class="badge bg-success"> {{ lumisection.histograms_lumisectionhistogram2d_histograms.count }} 2D histograms</span>
+              {{ lumisection.histograms_lumisectionhistogram2d_histograms.count }}
             </td>
             <td>
-              <span class="badge bg-success">Available</span>
+              <i class="bi bi-check-lg"></i>
             </td>
           </tr>
         {% endfor %}

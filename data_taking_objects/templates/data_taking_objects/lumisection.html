@@ -1,8 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
-{% block title %} Run {{lumisection.run.run_number}} - Lumisection {{lumisection.ls_number}} {% endblock title %}
+{% block title %} Run {{ runnr }}, lumisection {{ lumi_number }} {% endblock title %}
 
-{% block content %}
+{% block maincontent %}
+<div class='container-fluid'>
+  <i class="bi bi-chevron-left"></i> <a href="{% url 'visualize_histogram:visualize_histogram_dummy' %}">All runs</a> / <a href="{% url 'visualize_histogram:redirect_run' runnr=runnr %}">Run {{ runnr }}</a>
+</div>
 
   <div>
     {% if error_message %}
@@ -18,25 +21,101 @@
 
   <div class='container-fluid'>
 
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Run number</th>
-          <th scope="col">Lumisection number</th>
-          <th scope="col">Integrated luminosity</th>
-          <th scope="col">Initial ZeroBias rate</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <th scope="row"> {{ lumisection.run.run_number }} </th>
-            <th> {{ lumisection.ls_number}} </th>
-            <td>XXX</td>
-            <td>XXX</td>
-          </tr>
-      </tbody>
-    </table>
+
+    <h2>Run {{ runnr }}, lumisection {{ lumi_number }}</h2>
+    {% if n_hist1d != 0 %}
+    <hr>
+    <h3>1D histograms</h3>
+    <div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for hist in hist1d %}
+        <div class="col">
+          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title=hist.title %}">
+            <div class="card-img-top" id="histogram-id-{{hist.id}}" style="height: 200px;">
+              <script>
+                  var trace = {
+                      y: {{ hist.data }},
+                      type: 'bar',
+                      marker: {color: '#0033A0'}
+                  };
+                  var data = [trace];
+
+                  Plotly.newPlot("histogram-id-{{hist.id}}", data, 
+                  {
+                      margin: {t: 10, b: 10, l: 10, r: 10},
+                      yaxis: {"visible": false}, 
+                      xaxis: {"visible": false}, 
+                      bargap: 0, 
+                      paper_bgcolor: 'rgba(0,0,0,0)',
+                      plot_bgcolor: 'rgba(0,0,0,0)'
+                }, {staticPlot: true});
+              </script>
+            </div>
+            <div class="card-body">
+              {{ hist.title }}
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if n_hist2d != 0 %}
+    <hr>
+    <h3>2D histograms</h3>
+    <div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for hist in hist2d %}
+        <div class="col">
+          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title=hist.title %}">
+            <div class="card-img-top" id="histogram-id-{{hist.id}}" style="height: 200px;">
+              <script>
+                  var data = [
+                      {
+                          z: {{ hist.data }},
+                          type: 'heatmap',
+                          colorscale: 'Viridis'
+                      }
+                  ];
+  
+                  Plotly.newPlot("histogram-id-{{hist.id}}", data, 
+                  {
+                    margin: {t: 10, b: 10, l: 10, r: 10}, 
+                    yaxis: {"visible": false}, 
+                    xaxis: {"visible": false}, 
+                    bargap: 0, 
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)'
+                  }, {staticPlot: true});
+              </script>
+            </div>
+            <div class="card-body">
+              {{ hist.title }}
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
 
   </div>
 
-{% endblock content %}
+{% endblock maincontent %}
+
+{% block sidebar %}
+  <table class="table">
+    <tbody>
+      <tr>
+        <th scope="col">Integrated luminosity</th>
+        <td>XXX</td>
+      </tr>
+      <tr>
+        <th scope="col">Initial ZeroBias rate</th>
+        <td>XXX</td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock sidebar %}

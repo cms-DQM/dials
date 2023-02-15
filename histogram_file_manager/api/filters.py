@@ -27,7 +27,7 @@ class HistogramDataFileFilter(filters.FilterSet):
     processing_complete = filters.BooleanFilter(
         label="Processing complete",
         method="filter_processing_complete",
-        widget=NullBooleanSelect(attrs={"class": "form-control"}),
+        widget=NullBooleanSelect(attrs={"class": "form-select"}),
     )
 
     filepath__contains = filters.CharFilter(
@@ -44,13 +44,13 @@ class HistogramDataFileFilter(filters.FilterSet):
     data_dimensionality = filters.ChoiceFilter(
         choices=HistogramDataFileContents.HISTOGRAM_DIMENSIONS_CHOICES,
         field_name="contents__data_dimensionality",
-        widget=Select(attrs={"class": "form-control"}),
+        widget=Select(attrs={"class": "form-select"}),
     )
 
     granularity = filters.ChoiceFilter(
         choices=HistogramDataFileContents.DATAFILE_GRANULARITY_CHOICES,
         field_name="contents__granularity",
-        widget=Select(attrs={"class": "form-control"}),
+        widget=Select(attrs={"class": "form-select"}),
     )
 
     def filter_processing_complete(self, queryset, name, value):

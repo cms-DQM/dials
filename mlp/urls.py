@@ -45,6 +45,7 @@ urlpatterns = [
     path("challenge/", include("challenge.urls")),
     path("admin/", admin.site.urls),
     path("histogram_file_manager/", include("histogram_file_manager.urls")),
+    path("visualize/", include("visualize_histogram.urls")),
     path("api/", include((router.urls, "api"), namespace="api"), name="api"),
     path(
         "openapi",

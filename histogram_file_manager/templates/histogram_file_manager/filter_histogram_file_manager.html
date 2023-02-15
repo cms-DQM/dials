@@ -1,0 +1,38 @@
+{% load widget_tweaks %}
+
+<h2>Histogram file manager</h2>
+<hr/>
+
+<form id="file_filter_form" action="" method="get" class="form my-1"> 
+    ID
+    {% render_field filter.form.id %}
+    Data era
+    {% render_field filter.form.data_era %}
+    Data dimensionality
+    {% render_field filter.form.data_dimensionality %}
+    Granularity
+    {% render_field filter.form.granularity %}
+    Processing complete
+    {% render_field filter.form.processing_complete|add_class:"form-control" %}
+    <div class="row">
+        <div class="col-6">
+            Entries greater than
+            {% render_field filter.form.entries_total__gt|add_class:"form-control"|attr:"min=0" %}
+        </div>
+        <div class="col-6">
+            Entries less than
+            {% render_field filter.form.entries_total__lt|add_class:"form-control"|attr:"min=0" %}
+        </div>
+    </div>
+    Filepath contains
+    {% render_field filter.form.filepath__contains|add_class:"form-control" %}
+
+    <div class="d-grid">
+        <button type="submit" id="id_btn_filter" class="btn btn-primary" style="margin-top: 5pt">
+            Filter
+        </button>
+        <a href="{% url 'histogram_file_manager:file_manager' %}" class="btn btn-danger" id="clear-filters" style="margin-top: 5pt">
+            Reset
+        </a>
+    </div>
+</form>

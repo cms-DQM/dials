@@ -1,0 +1,26 @@
+{%extends 'base.html' %}
+
+{% block content %}
+<h2>Jump quickly</h2>
+<form action="" method="GET" class="row">
+    <div class="col-6 col-lg-1">
+        <label for="formQuickJumpRun">Run</label>
+        {{ form.runnr }}
+    </div>
+    <div class="col-6 col-lg-1">
+        <label for="formQuickJumpLS">Lumisection</label>
+        {{ form.lumisection }}
+    </div>
+    <div class="col-12 col-lg-9">
+        <label for="formQuickJumpTitle">Title</label>
+        {{ form.title }}
+    </div>
+    <div class="col-12 col-lg-1">
+        <br>
+        <div class="d-grid">
+            <button class="btn btn-primary" type="submit">Go</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

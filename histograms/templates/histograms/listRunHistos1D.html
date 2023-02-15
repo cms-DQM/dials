@@ -12,23 +12,23 @@ Run histograms
 {% block content %}
     {% load render_table from django_tables2 %}
     {% load bootstrap3 %}
-    <h1 class="my-3" align="center">1D Histograms for Run based data</h1>
-    <div class="container">
-        {% if filter %}
-            {% include "run_histos/filter.html" %}
-        {% else %}
-            <div class="alert alert-danger" role="alert">No Filter found.</div>
-        {% endif %}
+    
+    <div class="row">
+        <div class="col-lg-3 col-12">
+            <h2>Under construction</h2>
+            Please come back later.
+        </div>
+        <div class="col-lg-9 col-12">
+            {% if runHistos_table %}
+            <!-- div class="overflow-auto scrollbar border-light shadow m-1 bg-white" id="style-1"-->
+            <div class="overflow-auto px-3" id="style-1">
+                {% render_table runHistos_table 'django_tables2/bootstrap.html'%}
+            </div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">No Table found.</div>
+            {% endif %}
+        </div>
     </div>
-
-    {% if runHistos_table %}
-    <!-- div class="overflow-auto scrollbar border-light shadow m-1 bg-white" id="style-1"-->
-    <div class="overflow-auto px-3 bg-white" id="style-1">
-        {% render_table runHistos_table 'django_tables2/bootstrap.html'%}
-    </div>
-    {% else %}
-        <div class="alert alert-danger" role="alert">No Table found.</div>
-    {% endif %}
 
 
 {% endblock content %}
