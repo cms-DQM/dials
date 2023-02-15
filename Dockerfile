@@ -18,7 +18,7 @@ RUN rpm --import https://linuxsoft.cern.ch/mirror/yum.oracle.com/RPM-GPG-KEY-ora
  && dnf install -y ${EXTRA_REPOS} \
  && dnf install -y epel-release \
  && dnf install -y git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel openssl-devel \
- && dnf install -y gcc-gfortran pcre-devel mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel fftw-devel cfitsio-devel graphviz-devel libuuid-devel avahi-compat-libdns_sd-devel openldap-devel python3-numpy libxml2-devel gsl-devel readline-devel R-devel R-Rcpp-devel R-RInside-devel \
+ && dnf install -y gcc-gfortran pcre-devel mesa-libGL-devel mesa-libGLU-devel glew-devel ftgl-devel fftw-devel cfitsio-devel graphviz-devel libuuid-devel avahi-compat-libdns_sd-devel openldap-devel python3-numpy libxml2-devel gsl-devel readline-devel R-devel R-Rcpp-devel R-RInside-devel xrootd-client\
  && dnf install -y redhat-lsb-core --setopt=tsflags=noscripts \
  && dnf update -y libarchive \
  && dnf clean all \
