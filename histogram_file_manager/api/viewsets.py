@@ -1,13 +1,12 @@
-import time
 import logging
 import threading
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
-from django.core.signals import request_finished, request_started
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 from histogram_file_manager.api.serializers import HistogramDataFileSerializer
 from histogram_file_manager.api.filters import HistogramDataFileFilter
@@ -17,6 +16,7 @@ from histograms.models import (
     LumisectionHistogram2D,
 )
 from histogram_file_manager.forms import HistogramDataFileStartParsingForm
+from django.core.management import call_command
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,6 @@ HISTOGRAM_PARSING_FUNCTIONS_MAP = {
 
 
 class HistogramDataFileViewset(viewsets.ModelViewSet):
-
     queryset = HistogramDataFile.objects.all().order_by("id")
     serializer_class = HistogramDataFileSerializer
     filterset_class = HistogramDataFileFilter
@@ -105,6 +104,28 @@ class HistogramDataFileViewset(viewsets.ModelViewSet):
 
         # logger.info(
         # f"Requested parsing of {self.get_object()} as {file_format}")
+
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=False, permission_classes=[IsAdminUser])
+    def discover(self, request):
+        """
+        Action which starts the management command responsible for discovering DQMIO files.
+        TODO: Do not run if an already running request is underway.
+        TODO: Add unit test for this.
+        """
+
+        logger.info(
+            f"Received command to start DQMIO files discovery by {request.user}."
+        )
+        try:
+            threading.Thread(
+                target=call_command,
+                args=("discover_dqm_files",),  # Comma is intentional
+            ).start()
+        except Exception as e:
+            logger.error(f"Error when launching DQMIO file discovery: {repr(e)}")
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
