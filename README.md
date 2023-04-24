@@ -82,3 +82,14 @@ the CSRF token which you can get by accessing the cookies stored in the current
 page. [https://docs.djangoproject.com/en/4.0/ref/csrf/#ajax]
 
 [https://www.django-rest-framework.org/topics/ajax-csrf-cors/]
+
+
+### Building the Dockerfile locally
+
+If outside the CERN GPN, you will need to create a bridge (via, e.g. `sshuttle`) first.
+
+Then, `cd` into the directory where the `Dockerfile` is and run:
+
+```bash
+sudo docker build . --build-arg ROOT_TAG_NAME=v6-24-08 --network="host"
+```
