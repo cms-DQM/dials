@@ -3,6 +3,7 @@ import altair as alt
 
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from django_tables2 import RequestConfig
 
@@ -27,6 +28,7 @@ from histograms.api.filters import (
 
 # Could be a duplicate of RunHistogramList...
 # Just checking a few things
+@login_required
 def run_histograms_view(request):
 
     error_message = None
@@ -43,6 +45,7 @@ def run_histograms_view(request):
 
 
 # TODO refactor
+@login_required
 def run_histograms_plots_view(request):
 
     error_message = None
@@ -92,6 +95,7 @@ def run_histograms_plots_view(request):
     return render(request, "histograms/run_histograms_plots.html", context)
 
 
+@login_required
 def run_histogram_time_serie_view(request, histogram_name):
 
     error_message = None
@@ -131,6 +135,7 @@ def run_histogram_time_serie_view(request, histogram_name):
     return render(request, "histograms/run_histogram_time_serie.html", context)
 
 
+@login_required
 def altair_chart_view(request):
 
     # chart = {}
@@ -153,6 +158,7 @@ def altair_chart_view(request):
     return JsonResponse(chart_obj, safe=False)
 
 
+@login_required
 def RunHistogramList(request):
     """
     View to list the filtered 1D histograms for Runs
@@ -169,6 +175,7 @@ def RunHistogramList(request):
     return render(request, "histograms/listRunHistos1D.html", context)
 
 
+@login_required
 def LumisectionHistogram1DList(request):
     """
     View to list the filtered 1D histograms for Lumisections
@@ -189,6 +196,7 @@ def LumisectionHistogram1DList(request):
     return render(request, "histograms/listLumisectionHistos1D.html", context)
 
 
+@login_required
 def LumisectionHistogram2DList(request):
     """
     View to list the filtered 2D histograms for Lumisections

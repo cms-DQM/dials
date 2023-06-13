@@ -1,6 +1,7 @@
 import logging
 
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
 
@@ -14,7 +15,7 @@ from visualize_histogram.forms import QuickJumpForm
 
 logger = logging.getLogger(__name__)
 
-
+@login_required
 def runs_view(request):
     """
     View for histogram file manager. Lists all available datafiles and their
@@ -53,7 +54,7 @@ def runs_view(request):
     }
     return render(request, "data_taking_objects/runs.html", context)
 
-
+@login_required
 def run_view(request, run_number):
 
     error_message = None
@@ -84,7 +85,7 @@ def run_view(request, run_number):
         }
         return render(request, "data_taking_objects/run.html", context)
 
-
+@login_required
 def lumisections_view(request):
 
     error_message = None
@@ -104,6 +105,7 @@ def lumisections_view(request):
     return render(request, "data_taking_objects/lumisections.html", context)
 
 
+@login_required
 def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
@@ -147,7 +149,7 @@ def lumisection_view(request, run_number, lumi_number):
 
         return render(request, "data_taking_objects/lumisection.html", context)
 
-
+@login_required
 def diagnostic_view(request):
 
     error_message = None
