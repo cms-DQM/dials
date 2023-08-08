@@ -276,3 +276,6 @@ SOCIALACCOUNT_PROVIDERS = {
 CERN_SSO_JWKS_URI = (
     "https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/certs"
 )
+
+# Needed for redirections after logging in
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
