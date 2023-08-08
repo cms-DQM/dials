@@ -69,11 +69,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.cern",
-    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.openid_connect",
 ]
-
-SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -249,3 +246,36 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = config("SITE_ID", default=1, cast=int)
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        "SERVERS": [
+            {
+                "id": "cern",  # 30 characters or less
+                "name": "CERN",
+                "server_url": "https://auth.cern.ch/auth/realms/cern",
+                # Optional token endpoint authentication method.
+                # May be one of "client_secret_basic", "client_secret_post"
+                # If omitted, a method from the the server's
+                # token auth methods list is used
+                "token_auth_method": "client_secret_post",
+                "APP": {
+                    "client_id": config("CERN_SSO_REGISTRATION_CLIENT_ID"),
+                    "secret": config("CERN_SSO_REGISTRATION_CLIENT_SECRET"),
+                },
+            },
+        ]
+    }
+}
+
+# This is used to get the public key and decode access tokens
+# for users when they login. The URL can be found under the
+# jwks_uri key of the JSON pointed to by the server_url of
+# CERN's well-known config URL:
+# https://auth.cern.ch/auth/realms/cern/.well-known/openid-configuration
+CERN_SSO_JWKS_URI = (
+    "https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/certs"
+)
+
+# Needed for redirections after logging in
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
