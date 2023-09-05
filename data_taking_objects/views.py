@@ -13,6 +13,8 @@ from histograms.models import LumisectionHistogram1D, LumisectionHistogram2D
 from .forms import DiagnosticForm
 from visualize_histogram.forms import QuickJumpForm
 
+from urllib.parse import quote
+
 logger = logging.getLogger(__name__)
 
 @login_required
@@ -27,7 +29,7 @@ def runs_view(request):
         if form.is_valid():
             runnr = form.cleaned_data["runnr"]
             lumisection = form.cleaned_data["lumisection"]
-            title = form.cleaned_data["title"]
+            title = quote(form.cleaned_data["title"], safe='')
             return redirect("visualize_histogram:visualize_histogram",
                 runnr=runnr, 
                 lumisection=lumisection, 

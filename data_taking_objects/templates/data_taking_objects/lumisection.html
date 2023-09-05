@@ -30,7 +30,7 @@
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {% for hist in hist1d %}
         <div class="col">
-          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title=hist.title %}">
+          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title_sanitised=hist.title_sanitised %}">
             <div class="card-img-top" id="histogram-id-{{hist.id}}" style="height: 200px;">
               <script>
                   var trace = {
@@ -68,7 +68,7 @@
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {% for hist in hist2d %}
         <div class="col">
-          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title=hist.title %}">
+          <a class="card" href="{% url 'visualize_histogram:visualize_histogram' runnr=runnr lumisection=lumi_number title_sanitised=hist.title_sanitised %}">
             <div class="card-img-top" id="histogram-id-{{hist.id}}" style="height: 200px;">
               <script>
                   var data = [

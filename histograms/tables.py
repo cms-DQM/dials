@@ -6,6 +6,7 @@ from histograms.models import (
     LumisectionHistogram2D,
 )
 from django.urls import reverse
+from urllib.parse import quote
 
 class RunHistogramTable(tables.Table):
     run = tables.Column(accessor="run.run_number")
@@ -49,7 +50,10 @@ class OneDimensionHistogramColumn(tables.Column):
         </div>
         </a>
         """, 
-        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        reverse("visualize_histogram:visualize_histogram", 
+                args=(record.lumisection.run_id, 
+                      record.lumisection.ls_number, 
+                      quote(record.title, safe=''))),
         record.id, record.data, record.id)
 
 class TwoDimensionHistogramColumn(tables.Column):
@@ -78,7 +82,10 @@ class TwoDimensionHistogramColumn(tables.Column):
         </div>
         </a>
         """,
-        reverse("visualize_histogram:visualize_histogram", args=(record.lumisection.run_id, record.lumisection.ls_number, record.title)),
+        reverse("visualize_histogram:visualize_histogram", 
+                args=(record.lumisection.run_id, 
+                      record.lumisection.ls_number, 
+                      quote(record.title, safe=''))),
         record.id, record.data, record.id)
 
 class LumisectionHistogram1DTable(tables.Table):
