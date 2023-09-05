@@ -103,3 +103,8 @@ venv/
 node_modules/
 package.json
 package-lock.json
+
+
+*.crt
+*.key
+.env_*
