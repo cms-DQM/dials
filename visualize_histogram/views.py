@@ -9,11 +9,12 @@ from .forms import QuickJumpForm
 import data_taking_objects.views
 
 import numpy as np
+from urllib.parse import quote, unquote
 
 # Create your views here.
 
 @login_required
-def visualize_histogram(request, runnr, lumisection, title):
+def visualize_histogram(request, runnr, lumisection, title_sanitised):
     """
     View for histogram file manager. Lists all available datafiles and their
     parsing status
@@ -25,17 +26,18 @@ def visualize_histogram(request, runnr, lumisection, title):
             runnr = form.cleaned_data["runnr"]
             lumisection = form.cleaned_data["lumisection"]
             title = form.cleaned_data["title"]
+            title_sanitised = quote(title, safe='')
             return redirect("visualize_histogram:visualize_histogram",
                 runnr=runnr, 
                 lumisection=lumisection, 
-                title=title
+                title_sanitised=title_sanitised
             )
         else: 
             form = QuickJumpForm(
                 initial = {
                     "runnr": runnr,
                     "lumisection": lumisection,
-                    "title": title
+                    "title": unquote(title_sanitised)
                 }
             )
     else: 
@@ -43,11 +45,12 @@ def visualize_histogram(request, runnr, lumisection, title):
             initial = {
                 "runnr": runnr,
                 "lumisection": lumisection,
-                "title": title
+                "title": unquote(title_sanitised)
             }
         )
 
     try:
+        title = unquote(title_sanitised)
         target_lumi = Lumisection.objects.get(run_id = runnr, ls_number = lumisection)
         lumi1d_searchresults = LumisectionHistogram1D.objects.filter(title=title, lumisection=target_lumi)
         lumi2d_searchresults = LumisectionHistogram2D.objects.filter(title=title, lumisection=target_lumi)
@@ -108,11 +111,11 @@ def visualize_histogram_dummy(request):
         if form.is_valid():
             runnr = form.cleaned_data["runnr"]
             lumisection = form.cleaned_data["lumisection"]
-            title = form.cleaned_data["title"]
+            title_sanitised = quote(form.cleaned_data["title"], safe='')
             return redirect("visualize_histogram:visualize_histogram",
                 runnr=runnr, 
                 lumisection=lumisection, 
-                title=title
+                title_sanitised=title_sanitised
             )
         else: form = QuickJumpForm()
     else:

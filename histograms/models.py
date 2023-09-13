@@ -12,6 +12,7 @@ from data_taking_objects.models import Run, Lumisection
 from histogram_file_manager.models import HistogramDataFile, HistogramDataFileContents
 
 import histograms.DQMIOReader
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,9 @@ class HistogramBase(models.Model):
         help_text="Source data file that the specific Histogram was read from, if any",
         related_name="%(class)s",
     )
+
+    def title_sanitised(self):
+        return quote(self.title, safe='')
 
     class Meta:
         abstract = True

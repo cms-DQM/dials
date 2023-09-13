@@ -1,6 +1,7 @@
 import logging
 
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
 
@@ -12,9 +13,11 @@ from histograms.models import LumisectionHistogram1D, LumisectionHistogram2D
 from .forms import DiagnosticForm
 from visualize_histogram.forms import QuickJumpForm
 
+from urllib.parse import quote
+
 logger = logging.getLogger(__name__)
 
-
+@login_required
 def runs_view(request):
     """
     View for histogram file manager. Lists all available datafiles and their
@@ -26,7 +29,7 @@ def runs_view(request):
         if form.is_valid():
             runnr = form.cleaned_data["runnr"]
             lumisection = form.cleaned_data["lumisection"]
-            title = form.cleaned_data["title"]
+            title = quote(form.cleaned_data["title"], safe='')
             return redirect("visualize_histogram:visualize_histogram",
                 runnr=runnr, 
                 lumisection=lumisection, 
@@ -53,7 +56,7 @@ def runs_view(request):
     }
     return render(request, "data_taking_objects/runs.html", context)
 
-
+@login_required
 def run_view(request, run_number):
 
     error_message = None
@@ -84,7 +87,7 @@ def run_view(request, run_number):
         }
         return render(request, "data_taking_objects/run.html", context)
 
-
+@login_required
 def lumisections_view(request):
 
     error_message = None
@@ -104,6 +107,7 @@ def lumisections_view(request):
     return render(request, "data_taking_objects/lumisections.html", context)
 
 
+@login_required
 def lumisection_view(request, run_number, lumi_number):
 
     error_message = None
@@ -147,7 +151,7 @@ def lumisection_view(request, run_number, lumi_number):
 
         return render(request, "data_taking_objects/lumisection.html", context)
 
-
+@login_required
 def diagnostic_view(request):
 
     error_message = None
