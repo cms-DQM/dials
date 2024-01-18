@@ -58,3 +58,22 @@ docker run -d \
 	postgres
 ```
 
+### Running Redis
+
+```bash
+docker run -d --name redis_local -p 6379:6379 redis
+```
+
+### Running Celery Workers
+
+Starting the worker for dqmio_file_indexer queue:
+
+```bash
+celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue
+```
+
+
+Starting the worker for dqmio_etl queue:
+```bash
+celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue
+```

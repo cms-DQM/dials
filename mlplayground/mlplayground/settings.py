@@ -51,8 +51,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
+    'django_celery_results',
     'dqmio_file_indexer.apps.DqmioDataIndexerConfig',
-    'dqmio_etl.apps.DqmioEtlConfig'
+    'dqmio_etl.apps.DqmioEtlConfig',
+    'dqmio_celery_tasks.apps.DqmioCeleryTasksConfig'
 ]
 
 REST_FRAMEWORK = {
@@ -170,3 +172,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery configuration options
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
