@@ -9,7 +9,7 @@ import Home from './components/Home';
 function App() {
   return (
     <>
-      <Navbar expand="lg" className="bg-dark" variant="dark" sticky="top">
+      <Navbar expand="lg" bg="dark" variant="dark" sticky="top">
         <Navbar.Brand as={NavLink} to='/'>
           <img
             src={logo}
