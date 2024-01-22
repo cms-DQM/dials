@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Carousel } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import Carousel from 'react-bootstrap/Carousel';
 
 import RawImg from '../assets/img/AnomalyDetection.jpg';
 import AnomalyDetectedImg from '../assets/img/AnomalyDetectionV2.jpg';
@@ -23,7 +24,7 @@ const Home = () => {
           />
         </Carousel.Item>
       </Carousel>
-      </Container>
+    </Container>
   )
 };
 

@@ -1,6 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Routes, Route, NavLink } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import logo from './assets/img/logo.svg';
 import Home from './components/Home';
