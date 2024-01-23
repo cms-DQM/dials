@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import Card from 'react-bootstrap/Card';
-import Spinner from 'react-bootstrap/Spinner';
-import BootstrapTable from 'react-bootstrap-table-next';
 
+import Table from '../../components/table';
 import { getLatestTasks } from '../../services/api';
 
 const LatestTasksCard = () => {
@@ -44,16 +43,14 @@ const LatestTasksCard = () => {
     <Card className="text-center">
       <Card.Header><h4>Latest tasks in queues</h4></Card.Header>
       <Card.Body>
-        {
-          isLoadingTasks ? (
-            <Spinner animation="border" role="status" />
-          ) : (
-            <>
-              <Card.Text>Entries are updated each 30 seconds</Card.Text>
-              <BootstrapTable keyField='id' data={latestTasks} columns={tasksColumns} bordered={false} />
-            </>
-          )
-        }
+      <Table
+          keyField='id'
+          isLoading={isLoadingTasks}
+          data={latestTasks}
+          columns={tasksColumns}
+          bordered={false}
+          hover={true}
+        />
       </Card.Body>
     </Card>
   )

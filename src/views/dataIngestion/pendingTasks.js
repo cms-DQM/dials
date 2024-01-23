@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import Card from 'react-bootstrap/Card';
-import Spinner from 'react-bootstrap/Spinner';
-import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
+import Table from '../../components/table';
 import { getPendingTasks } from '../../services/api';
 
 const PendingTasksCard = () => {
@@ -15,6 +14,7 @@ const PendingTasksCard = () => {
     { dataField: "id", text: "ID", type: "string" },
     { dataField: "queue", text: "Queue", type: "string" }
   ]
+  const pagination = paginationFactory({ sizePerPage: 5, paginationSize: 2, hideSizePerPage: true })
 
   const handlePendingTasks = () => {
     setLoadingTasks(true)
@@ -43,24 +43,15 @@ const PendingTasksCard = () => {
     <Card className="text-center">
       <Card.Header><h4>Pending tasks in queues</h4></Card.Header>
       <Card.Body>
-        {
-          isLoadingTasks ? (
-            <Spinner animation="border" role="status" />
-          ) : (
-            <>
-              <Card.Text>Entries are updated each 30 seconds</Card.Text>
-              <BootstrapTable
-                keyField='id'
-                data={pendingTasks}
-                columns={tasksColumns}
-                bordered={false}
-                pagination={
-                  paginationFactory({sizePerPage: 5, paginationSize: 2, hideSizePerPage: true})
-                }
-              />
-            </>
-          )
-        }
+        <Table
+          keyField='id'
+          isLoading={isLoadingTasks}
+          data={pendingTasks}
+          columns={tasksColumns}
+          bordered={false}
+          hover={true}
+          pagination={pagination}
+        />
       </Card.Body>
     </Card>
   )
