@@ -1,0 +1,38 @@
+[
+  {
+    "id": "cf5d2bd0-13b6-41dc-94ca-e8ed945e3e73",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  },
+  {
+    "id": "699b3fd2-0514-436f-986a-665cf5374a47",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  },
+  {
+    "id": "4cffa749-064b-4770-8d07-139cc7337d36",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  },
+  {
+    "id": "99e85f8d-6194-4472-af74-25ded9135e8d",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  },
+  {
+    "id": "28e5e982-fd13-4ceb-8a8c-52e3117b6fda",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  },
+  {
+    "id": "1fb3aa39-f86f-472f-9faa-e91083bfbc23",
+    "name": "dqmio_file_indexer.tasks.search_dqmio_storages",
+    "queue": "dqmio_file_indexer_queue",
+    "worker": "celery@worker1"
+  }
+]
