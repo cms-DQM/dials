@@ -7,13 +7,10 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import { FILE_INDEX_STATUSES } from '../../../services/api'
-
 const Histograms1DFilter = () => {
   const [titleContains, setTitleContains] = useState();
   const [lumisectionId, setLumisectionId] = useState();
   const [minEntries, setMinEntries] = useState(0);
-  const [fileStatus, setFileStatus] = useState();
 
   const handleClick = () => { }
 
