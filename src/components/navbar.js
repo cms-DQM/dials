@@ -17,10 +17,10 @@ const Navbar = () => {
         <Nav className="me-auto">
           <Nav.Link as={NavLink} to="/ingest">Data Ingestion</Nav.Link>
           <NavDropdown title="Data Explorer">
-            <NavDropdown.Item as={NavLink} to="/indexedFiles">Indexed files</NavDropdown.Item>
+            <NavDropdown.Item as={NavLink} to="/file-index">Indexed files</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item as={NavLink} to="/histograms1d">Histograms 1D</NavDropdown.Item>
-            <NavDropdown.Item as={NavLink} to="/histograms2d">Histograms 2D</NavDropdown.Item>
+            <NavDropdown.Item as={NavLink} to="/histograms-1d">Histograms 1D</NavDropdown.Item>
+            <NavDropdown.Item as={NavLink} to="/histograms-2d">Histograms 2D</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item as={NavLink} to="/runs">Runs</NavDropdown.Item>
             <NavDropdown.Item as={NavLink} to="/lumisections">Lumisections</NavDropdown.Item>
