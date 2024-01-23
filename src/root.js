@@ -1,7 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
 
 import { Navbar } from './components';
-import { Home, DataIngestion, FileIndex, Histograms1D } from './views';
+import {
+  Home,
+  DataIngestion,
+  FileIndex,
+  Histograms1D,
+  Histograms2D
+} from './views';
 
 const Root = () => {
   return (
@@ -12,6 +18,7 @@ const Root = () => {
         <Route path="/ingest" element={<DataIngestion />} />
         <Route path="/file-index" element={<FileIndex />} />
         <Route path="/histograms-1d" element={<Histograms1D />} />
+        <Route path="/histograms-2d" element={<Histograms2D />} />
       </Routes>
     </>
   );
