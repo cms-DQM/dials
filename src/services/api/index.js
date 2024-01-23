@@ -6,6 +6,9 @@ import tasksPending from '../mocks/tasksPending.json'
 import fileIndexPage1 from '../mocks/fileIndex-page1.json'
 import fileIndexPage2 from '../mocks/fileIndex-page2.json'
 import fileIndexPage3 from '../mocks/fileIndex-page3.json'
+import histograms1DPage1 from '../mocks/histograms1d-page1.json'
+import histograms1DPage2 from '../mocks/histograms1d-page2.json'
+import histograms1DPage3 from '../mocks/histograms1d-page3.json'
 
 const FILE_INDEX_STATUSES = [
   "INDEXED",
@@ -38,9 +41,20 @@ const getFileIndexByPage = async (page) => {
   return mockedResponse[[page]]
 }
 
+const getHistograms1DByPage = async (page) => {
+  await sleep(1);
+  const mockedResponse = {
+    1: histograms1DPage1,
+    2: histograms1DPage2,
+    3: histograms1DPage3
+  }
+  return mockedResponse[[page]]
+}
+
 export {
   FILE_INDEX_STATUSES,
   getLatestTasks,
   getPendingTasks,
-  getFileIndexByPage
+  getFileIndexByPage,
+  getHistograms1DByPage
 }

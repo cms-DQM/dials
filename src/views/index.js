@@ -1,9 +1,10 @@
 import Home from './home';
 import DataIngestion from './dataIngestion';
-import { FileIndex } from './dataExplorer';
+import { FileIndex, Histograms1D } from './dataExplorer';
 
 export {
     Home,
     DataIngestion,
-    FileIndex
+    FileIndex,
+    Histograms1D
 }
