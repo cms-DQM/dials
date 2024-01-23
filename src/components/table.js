@@ -20,6 +20,8 @@ const Table = (props) => {
             bordered={props?.bordered}
             hover={props?.hover}
             pagination={props?.pagination}
+            remote={props?.remote}
+            onTableChange={props?.onTableChange}
           />
         )
       }

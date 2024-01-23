@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import React from 'react';
