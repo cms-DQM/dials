@@ -1,9 +1,12 @@
 from datetime import datetime
 
+import django.utils.timezone as timezone
 from rest_framework import serializers
 from django_celery_results.models import TaskResult
 from celery import states
 from drf_spectacular.utils import extend_schema_field
+
+APP_TZ = timezone.get_default_timezone()
 
 
 class TaskResponseBase:
@@ -51,5 +54,5 @@ class DQMIOCeleryTasksSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.IntegerField)
     def compute_elapsed_time(self, obj) -> int:
         is_ready = obj.status in states.READY_STATES
-        ftime = ftime = obj.date_done if is_ready else datetime.now()
+        ftime = ftime = obj.date_done if is_ready else timezone.make_aware(datetime.now(), APP_TZ)
         return (ftime - obj.date_created).total_seconds()

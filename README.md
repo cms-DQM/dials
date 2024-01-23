@@ -4,24 +4,14 @@
 
 * DQMIO File Indexer (DFI)
 * DQMIO ETL (DETL)
-* DQMIO Data-visualizer (DDV)
 
 ### DFI
 
-Component responsible for keeping track of data (DQMIO rootfiles) stored in EOS using a database table. It should store files metadata (run number, primary dataset, ...), filepath in EOS filesystem, processing status and some statistics. We must provide automatic updates to our knowledge base and offer a button to let a user trigger the indexer on-demand.
-
-NOTE: the indexer should be executed only one at a given time, so a job queue must be used to ensure no duplicated threads exists.
+Component responsible for keeping track of data (DQMIO rootfiles) stored in EOS using a database table. It should store files metadata (run number, primary dataset, ...), filepath in EOS filesystem, processing status and some statistics. We must provide automatic updates to our knowledge base and offer a button to let a user trigger the indexer on-demand. In or to snure that no duplicated threads exists each processing will happen one at a time using a job queue.
 
 ### DETL
 
-Component responsible for executing our ETL (Extract-Transform-Load) pipeline based on files not yet processed stored by DDI.
-
-NOTE: as some DQMIO files can be big, we will also need a job queue to limit how many pipelines can run parallelly in background.
-
-### DDV
-
-Component responsible for reading data processed by DETL and rendering histograms.
-
+Component responsible for executing our ETL (Extract-Transform-Load) pipeline based on files not yet processed stored by DFI. Given the fact that DQMIO files vary in size, it is not possible to forecast how much computer resources would be enough for processing multiple files at the sime time, then the processing will happen one at a time using a job queue.
 
 ## Local development
 
@@ -45,7 +35,7 @@ rm -rf $HOME/data_mlplayground_dqmio
 
 ### Running PostgresSQL
 
-Considering the main application will only communicate with the database using PostgreSQL DBMS (i.e. not messing with database files directly), running the DBMS decoupled from the main application is less stressful and simulates the production environment. It goes without saying that is much easier to run Postgres using Docker and using the `-v` flag we can bind-mount the data stored inside the container in the host in order to have a persitent database accross development sessions.
+Considering the main application will only communicate with the database using PostgreSQL DBMS (i.e. not messing with database files directly), running the DBMS decoupled from the main application is less stressful and simulates the production environment. It goes without saying that is much easier to run Postgres using Docker. Using the `-v` flag we can bind-mount the data stored inside the container in the host in order to have a persitent database accross development sessions.
 
 ```bash
 docker run -d \
@@ -61,7 +51,11 @@ docker run -d \
 ### Running Redis
 
 ```bash
-docker run -d --name redis_local -p 6379:6379 redis
+docker run -d \
+	--restart always \
+	--name redis_local \
+	-p 6379:6379 \
+	redis
 ```
 
 ### Running Celery Workers

@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 inspect = celery_app.control.inspect()
 
 
-class DQMIOCeleryTasksViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class DQMIOCeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Runs metadata
     """
-    queryset = TaskResult.objects.all().order_by("id")
+    queryset = TaskResult.objects.all().order_by("-date_done")
     serializer_class = DQMIOCeleryTasksSerializer
     lookup_field = "task_id"
 
@@ -35,32 +35,6 @@ class DQMIOCeleryTasksViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet
     def check_queued_tasks(self, request):
         result = []
         for worker, tasks in inspect.reserved().items():
-            for task in tasks:
-                    result.append(InspectResponseBase(
-                        id=task.get("id"),
-                        name=task.get("name"),
-                        queue=task.get("delivery_info", {}).get("routing_key"),
-                        worker=worker
-                    ))
-
-        result = InspectResponseSerializer(result, many=True)
-        return Response(result.data)
-
-
-    @extend_schema(
-        request=InspectInputSerializer,
-        responses={200: InspectResponseSerializer(many=True)}
-    )
-    @action(
-        detail=False,
-        methods=["get"],
-        name="List started tasks",
-        url_path=r"active",
-        pagination_class=None
-    )
-    def check_active_tasks(self, request):
-        result = []
-        for worker, tasks in inspect.active().items():
             for task in tasks:
                     result.append(InspectResponseBase(
                         id=task.get("id"),
