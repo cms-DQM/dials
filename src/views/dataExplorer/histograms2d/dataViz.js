@@ -34,7 +34,6 @@ const Histograms2DViz = () => {
       setLoading(true)
       getHistograms2DByPage(page)
         .then(response => {
-          console.log(response.results)
           const results = response.results.map(item => {
             const data = [{ z: item.data, type: 'heatmap', colorscale: 'Viridis' }]
             const layout = {

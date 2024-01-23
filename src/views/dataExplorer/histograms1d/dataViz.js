@@ -34,7 +34,6 @@ const Histograms1DViz = () => {
       setLoading(true)
       getHistograms1DByPage(page)
         .then(response => {
-          console.log(response.results)
           const results = response.results.map(item => {
             const data = [{ y: item.data, type: 'bar' }]
             const layout = {
