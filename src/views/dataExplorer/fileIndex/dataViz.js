@@ -45,7 +45,6 @@ const FileIndexViz = () => {
           })
           setData(results)
           setTotalSize(response.count)
-          console.log('results', results)
         })
         .catch(error => {
           console.error(error)
