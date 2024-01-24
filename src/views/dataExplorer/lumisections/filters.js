@@ -16,7 +16,7 @@ const LumisectionsFilter = () => {
 
   return (
     <Card>
-      <Card.Header className="text-center"><h4>Filter</h4></Card.Header>
+      <Card.Header className="text-center" as='h4'>Filters</Card.Header>
       <Card.Body>
         <Form.Group className="mb-3" controlId="formMinRun">
           <Form.Label>Lumisection Range</Form.Label>

@@ -50,7 +50,7 @@ const RunsViz = () => {
 
   return (
     <Card className="text-center">
-      <Card.Header><h4>Runs</h4></Card.Header>
+      <Card.Header as='h4'>Runs</Card.Header>
       <Card.Body>
         <Table
           keyField='file_path'

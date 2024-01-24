@@ -73,7 +73,7 @@ const IngestionTasks = () => {
     <Row className="px-4 my-5">
       <Col sm={7}>
         <Card className="text-center">
-          <Card.Header><h4>Latest tasks in queues</h4></Card.Header>
+          <Card.Header>Latest tasks in queues</Card.Header>
           <Card.Body>
             <Table
               keyField='id'
@@ -88,7 +88,7 @@ const IngestionTasks = () => {
       </Col>
       <Col sm={5}>
         <Card className="text-center">
-          <Card.Header><h4>Pending tasks in queues</h4></Card.Header>
+          <Card.Header>Pending tasks in queues</Card.Header>
           <Card.Body>
             <Table
               keyField='id'

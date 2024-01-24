@@ -58,7 +58,7 @@ const FileIndexViz = () => {
 
   return (
     <Card className="text-center">
-      <Card.Header><h4>Files</h4></Card.Header>
+      <Card.Header as='h4'>Files</Card.Header>
       <Card.Body>
         <Table
           keyField='file_path'

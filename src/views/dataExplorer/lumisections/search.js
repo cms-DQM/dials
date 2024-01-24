@@ -12,7 +12,7 @@ const LumisectionsSearch = () => {
 
   return (
     <Card>
-      <Card.Header className="text-center"><h4>Search</h4></Card.Header>
+      <Card.Header className="text-center" as='h4'>Search</Card.Header>
       <Card.Body>
         <Form.Group className="mb-3" controlId="formRunNumber">
           <Form.Label>Lumisection Number</Form.Label>

@@ -46,7 +46,7 @@ const LumisectionsViz = () => {
 
   return (
     <Card className="text-center">
-      <Card.Header><h4>Lumisections</h4></Card.Header>
+      <Card.Header as='h4'>Lumisections</Card.Header>
       <Card.Body>
         <Table
           keyField='file_path'

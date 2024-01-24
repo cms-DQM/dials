@@ -70,7 +70,7 @@ const Histograms2DViz = () => {
 
   return (
     <Card className="text-center">
-      <Card.Header><h4>Luminosity-granularity 2D histograms</h4></Card.Header>
+      <Card.Header as='h4'>Luminosity-granularity 2D histograms</Card.Header>
       <Card.Body>
         <Table
           keyField='file_path'

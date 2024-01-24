@@ -16,7 +16,7 @@ const Histograms1DFilter = () => {
 
   return (
     <Card>
-      <Card.Header className="text-center"><h4>Filter</h4></Card.Header>
+      <Card.Header className="text-center" as='h4'>Filters</Card.Header>
       <Card.Body>
         <Form.Group className="mb-3" controlId="formTitleContains">
           <Form.Label>Title contains</Form.Label>
