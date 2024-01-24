@@ -75,7 +75,7 @@ const IngestionStatistics = () => {
 
   return (
     <>
-      <Row className="px-4 my-5">
+      <Row className="mt-5 mb-3">
         <Col sm={4}>
           <Card className="text-center">
             <Card.Header>Files</Card.Header>
@@ -96,7 +96,7 @@ const IngestionStatistics = () => {
         </Col>
       </Row >
 
-      <Row className="px-4 my-5">
+      <Row className="mb-3">
         <Col>
           <Card className="text-center">
             <Card.Header>Indexed files by status</Card.Header>
@@ -110,7 +110,7 @@ const IngestionStatistics = () => {
         </Col>
       </Row>
 
-      <Row className="px-4 my-5">
+      <Row className="mb-3">
         <Col sm={6}>
           <Card className="text-center">
             <Card.Header>1D Histograms by subsystem</Card.Header>

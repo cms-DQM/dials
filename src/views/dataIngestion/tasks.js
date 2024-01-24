@@ -70,7 +70,7 @@ const IngestionTasks = () => {
   }, [])
 
   return (
-    <Row className="px-4 my-5">
+    <Row className="mb-3">
       <Col sm={7}>
         <Card className="text-center">
           <Card.Header>Latest tasks in queues</Card.Header>
