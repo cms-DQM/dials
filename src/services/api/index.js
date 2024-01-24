@@ -14,6 +14,9 @@ import histograms2DPage2 from '../mocks/histograms2d-page2.json'
 import histograms2DPage3 from '../mocks/histograms2d-page3.json'
 import runsPage1 from '../mocks/runs-page1.json'
 import runsPage2 from '../mocks/runs-page2.json'
+import lumisectionsPage1 from '../mocks/lumisections-page1.json'
+import lumisectionsPage2 from '../mocks/lumisections-page2.json'
+import lumisectionsPage3 from '../mocks/lumisections-page3.json'
 
 const FILE_INDEX_STATUSES = [
   "INDEXED",
@@ -75,6 +78,16 @@ const getRunsByPage = async (page) => {
   return mockedResponse[[page]]
 }
 
+const getLumisectionsByPage = async (page) => {
+  await sleep(1);
+  const mockedResponse = {
+    1: lumisectionsPage1,
+    2: lumisectionsPage2,
+    3: lumisectionsPage3
+  }
+  return mockedResponse[[page]]
+}
+
 export {
   FILE_INDEX_STATUSES,
   getLatestTasks,
@@ -82,5 +95,6 @@ export {
   getFileIndexByPage,
   getHistograms1DByPage,
   getHistograms2DByPage,
-  getRunsByPage
+  getRunsByPage,
+  getLumisectionsByPage
 }

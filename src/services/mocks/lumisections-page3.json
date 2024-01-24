@@ -1,0 +1,77 @@
+{
+  "count": 30,
+  "next": null,
+  "previous": "http://localhost:8000/api/lumisection/?page=2",
+  "results": [
+    {
+      "id": 21,
+      "ls_number": 110,
+      "date": "2024-01-17T15:08:44.446981Z",
+      "oms_zerobias_rate": null,
+      "run": 352572
+    },
+    {
+      "id": 22,
+      "ls_number": 3,
+      "date": "2024-01-17T15:08:44.691048Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 23,
+      "ls_number": 4,
+      "date": "2024-01-17T15:08:44.933978Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 24,
+      "ls_number": 5,
+      "date": "2024-01-17T15:08:45.168489Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 25,
+      "ls_number": 6,
+      "date": "2024-01-17T15:08:45.395028Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 26,
+      "ls_number": 7,
+      "date": "2024-01-17T15:08:45.633536Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 27,
+      "ls_number": 8,
+      "date": "2024-01-17T15:08:45.892385Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 28,
+      "ls_number": 9,
+      "date": "2024-01-17T15:08:46.184828Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 29,
+      "ls_number": 10,
+      "date": "2024-01-17T15:08:46.558551Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    },
+    {
+      "id": 30,
+      "ls_number": 11,
+      "date": "2024-01-17T15:08:46.799582Z",
+      "oms_zerobias_rate": null,
+      "run": 352900
+    }
+  ]
+}

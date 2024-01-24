@@ -7,7 +7,8 @@ import {
   FileIndex,
   Histograms1D,
   Histograms2D,
-  Runs
+  Runs,
+  Lumisections
 } from './views';
 
 const Root = () => {
@@ -21,6 +22,7 @@ const Root = () => {
         <Route path="/histograms-1d" element={<Histograms1D />} />
         <Route path="/histograms-2d" element={<Histograms2D />} />
         <Route path="/runs" element={<Runs />} />
+        <Route path="/lumisections" element={<Lumisections />} />
       </Routes>
     </>
   );

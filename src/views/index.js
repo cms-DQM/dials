@@ -4,7 +4,8 @@ import {
   FileIndex,
   Histograms1D,
   Histograms2D,
-  Runs
+  Runs,
+  Lumisections
 } from './dataExplorer';
 
 export {
@@ -13,5 +14,6 @@ export {
   FileIndex,
   Histograms1D,
   Histograms2D,
-  Runs
+  Runs,
+  Lumisections
 }
