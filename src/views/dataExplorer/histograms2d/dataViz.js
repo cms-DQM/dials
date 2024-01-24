@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import Card from 'react-bootstrap/Card';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import Plot from 'react-plotly.js';
 
 import Table from '../../../components/table';
+import ResponsivePlot from '../../../components/responsivePlot';
 import { getHistograms2DByPage } from '../../../services/api';
 
 const Histograms2DViz = () => {
@@ -37,7 +37,6 @@ const Histograms2DViz = () => {
           const results = response.results.map(item => {
             const data = [{ z: item.data, type: 'heatmap', colorscale: 'Viridis' }]
             const layout = {
-              width: 250, height: 200,
               margin: { t: 10, b: 10, l: 10, r: 10 },
               yaxis: { visible: false },
               xaxis: { visible: false },
@@ -48,7 +47,7 @@ const Histograms2DViz = () => {
             return {
               ...item,
               plot: (
-                <Plot
+                <ResponsivePlot
                   data={data}
                   layout={layout}
                   config={{ staticPlot: true }}
