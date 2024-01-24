@@ -7,7 +7,7 @@ import FileIndexViz from './dataViz'
 
 const FileIndex = () => {
   return (
-    <Row className="px-4 my-5 m-0">
+    <Row className="mt-5 mb-3 m-3">
       <Col sm={3}>
         <FileIndexFilter/>
       </Col>

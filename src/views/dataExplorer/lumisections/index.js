@@ -8,7 +8,7 @@ import LumisectionsViz from './dataViz'
 
 const Lumisections = () => {
   return (
-    <Row className="px-4 my-5 m-0">
+    <Row className="mt-5 mb-3 m-3">
       <Col sm={3}>
         <div className='mb-4'><LumisectionsFilter /></div>
         <div><LumisectionsSearch /></div>
