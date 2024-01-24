@@ -63,10 +63,11 @@ const FileIndexFilter = () => {
         <Form.Group className="mb-3" controlId="formFileStatus">
           <Form.Label>Status</Form.Label>
           <Form.Select
-            aria-label="Select file status"
+            default=''
             value={fileStatus}
             onChange={e => setFileStatus(e.target.value)}
           >
+            <option key='blankChoice' hidden value/>
             {
               FILE_INDEX_STATUSES.map(item => {
                 return (<option value={item}>{item}</option>)
