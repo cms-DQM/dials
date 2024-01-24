@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 const RunsFilter = () => {
   const [minRun, setMinRun] = useState();
@@ -15,21 +17,25 @@ const RunsFilter = () => {
       <Card.Header className="text-center"><h4>Filter</h4></Card.Header>
       <Card.Body>
         <Form.Group className="mb-3" controlId="formMinRun">
-          <Form.Label>Minimum Run Number</Form.Label>
-          <Form.Control
-            type="number"
-            value={minRun}
-            onChange={e => setMinRun(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formMaxRun">
-          <Form.Label>Maximum Run Number</Form.Label>
-          <Form.Control
-            type="number"
-            value={maxRun}
-            onChange={e => setMaxRun(e.target.value)}
-          />
+          <Form.Label>Run Range</Form.Label>
+          <Row>
+            <Col xs={6}>
+              <Form.Control
+                type="number"
+                value={minRun}
+                placeholder='Min'
+                onChange={e => setMinRun(e.target.value)}
+              />
+            </Col>
+            <Col xs={6}>
+              <Form.Control
+                type="number"
+                value={maxRun}
+                placeholder='Max'
+                onChange={e => setMaxRun(e.target.value)}
+              />
+            </Col>
+          </Row>
         </Form.Group>
 
         <Button
