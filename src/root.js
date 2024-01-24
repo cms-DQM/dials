@@ -6,7 +6,8 @@ import {
   DataIngestion,
   FileIndex,
   Histograms1D,
-  Histograms2D
+  Histograms2D,
+  Runs
 } from './views';
 
 const Root = () => {
@@ -19,6 +20,7 @@ const Root = () => {
         <Route path="/file-index" element={<FileIndex />} />
         <Route path="/histograms-1d" element={<Histograms1D />} />
         <Route path="/histograms-2d" element={<Histograms2D />} />
+        <Route path="/runs" element={<Runs />} />
       </Routes>
     </>
   );

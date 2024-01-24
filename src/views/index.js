@@ -3,7 +3,8 @@ import DataIngestion from './dataIngestion';
 import {
   FileIndex,
   Histograms1D,
-  Histograms2D
+  Histograms2D,
+  Runs
 } from './dataExplorer';
 
 export {
@@ -11,5 +12,6 @@ export {
   DataIngestion,
   FileIndex,
   Histograms1D,
-  Histograms2D
+  Histograms2D,
+  Runs
 }
