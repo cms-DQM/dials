@@ -10,7 +10,8 @@ import {
   Runs,
   Lumisections,
   CreatePipelines,
-  RunPipelines
+  RunPipelines,
+  ModelPredict
 } from './views';
 
 const Root = () => {
@@ -27,6 +28,7 @@ const Root = () => {
         <Route path="/lumisections" element={<Lumisections />} />
         <Route path="/create" element={<CreatePipelines />} />
         <Route path="/train" element={<RunPipelines />} />
+        <Route path="/predict" element={<ModelPredict />} />
       </Routes>
     </>
   );

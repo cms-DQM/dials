@@ -9,7 +9,8 @@ import {
 } from './dataExplorer';
 import {
   CreatePipelines,
-  RunPipelines
+  RunPipelines,
+  ModelPredict
 } from './machineLearning'
 
 export {
@@ -21,5 +22,6 @@ export {
   Runs,
   Lumisections,
   CreatePipelines,
-  RunPipelines
+  RunPipelines,
+  ModelPredict
 }
