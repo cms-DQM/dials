@@ -8,7 +8,8 @@ import {
   Histograms1D,
   Histograms2D,
   Runs,
-  Lumisections
+  Lumisections,
+  CreatePipelines
 } from './views';
 
 const Root = () => {
@@ -23,6 +24,7 @@ const Root = () => {
         <Route path="/histograms-2d" element={<Histograms2D />} />
         <Route path="/runs" element={<Runs />} />
         <Route path="/lumisections" element={<Lumisections />} />
+        <Route path="/create" element={<CreatePipelines />} />
       </Routes>
     </>
   );

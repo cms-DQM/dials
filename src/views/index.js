@@ -7,6 +7,7 @@ import {
   Runs,
   Lumisections
 } from './dataExplorer';
+import { CreatePipelines } from './machineLearning'
 
 export {
   Home,
@@ -15,5 +16,6 @@ export {
   Histograms1D,
   Histograms2D,
   Runs,
-  Lumisections
+  Lumisections,
+  CreatePipelines
 }

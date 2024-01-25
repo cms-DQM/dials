@@ -26,10 +26,9 @@ const Navbar = () => {
             <NavDropdown.Item as={NavLink} to="/lumisections">Lumisections</NavDropdown.Item>
           </NavDropdown>
           <NavDropdown title="Machine Learning">
+            <NavDropdown.Item as={NavLink} to="/create">Create</NavDropdown.Item>
             <NavDropdown.Item as={NavLink} to="/train">Train</NavDropdown.Item>
             <NavDropdown.Item as={NavLink} to="/predict">Predict</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item as={NavLink} to="/history">History</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </BootstrapNavbar.Collapse>
