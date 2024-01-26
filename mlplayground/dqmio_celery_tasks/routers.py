@@ -1,9 +1,9 @@
 from rest_framework import routers
 
-from .viewsets import DQMIOCeleryTasksViewSet
+from .viewsets import CeleryTasksViewSet
 
 
 router = routers.SimpleRouter()
 router.register(
-    r"celeryTasks", DQMIOCeleryTasksViewSet, basename="celeryTasks"
+    r"celeryTasks", CeleryTasksViewSet, basename="celeryTasks"
 )

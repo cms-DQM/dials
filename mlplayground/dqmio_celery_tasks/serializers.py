@@ -41,7 +41,7 @@ class InspectResponseSerializer(serializers.Serializer):
     worker = serializers.CharField()
 
 
-class DQMIOCeleryTasksSerializer(serializers.ModelSerializer):
+class CeleryTasksSerializer(serializers.ModelSerializer):
     elapsed_time = serializers.SerializerMethodField(
         method_name="compute_elapsed_time"
     )

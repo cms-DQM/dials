@@ -7,18 +7,18 @@ from drf_spectacular.utils import extend_schema
 from django_celery_results.models import TaskResult
 from mlplayground import celery_app
 
-from .serializers import DQMIOCeleryTasksSerializer, InspectResponseBase, InspectInputSerializer, InspectResponseSerializer
+from .serializers import CeleryTasksSerializer, InspectResponseBase, InspectInputSerializer, InspectResponseSerializer
 
 logger = logging.getLogger(__name__)
 inspect = celery_app.control.inspect()
 
 
-class DQMIOCeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Runs metadata
     """
     queryset = TaskResult.objects.all().order_by("-date_done")
-    serializer_class = DQMIOCeleryTasksSerializer
+    serializer_class = CeleryTasksSerializer
     lookup_field = "task_id"
 
     @extend_schema(
