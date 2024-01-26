@@ -4,6 +4,4 @@ from .viewsets import FileIndexViewSet
 
 
 router = routers.SimpleRouter()
-router.register(
-    r"fileIndex", FileIndexViewSet, basename="fileIndex"
-)
+router.register(r"file-index", FileIndexViewSet, basename="file-index")

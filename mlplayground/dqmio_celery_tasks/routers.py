@@ -4,6 +4,4 @@ from .viewsets import CeleryTasksViewSet
 
 
 router = routers.SimpleRouter()
-router.register(
-    r"celeryTasks", CeleryTasksViewSet, basename="celeryTasks"
-)
+router.register(r"celery-tasks", CeleryTasksViewSet, basename="celery-tasks")

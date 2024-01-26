@@ -9,15 +9,7 @@ from .viewsets import (
 
 
 router = routers.SimpleRouter()
-router.register(
-    r"run", RunViewSet, basename="run"
-)
-router.register(
-    r"lumisection", LumisectionViewSet, basename="lumisection"
-)
-router.register(
-    r"lumisectionHistogram1D", LumisectionHistogram1DViewSet, basename="lumisectionHistogram1D"
-)
-router.register(
-    r"lumisectionHistogram2D", LumisectionHistogram2DViewSet, basename="lumisectionHistogram2D"
-)
+router.register(r"run", RunViewSet, basename="run")
+router.register(r"lumisection", LumisectionViewSet, basename="lumisection")
+router.register(r"lumisection-h1d", LumisectionHistogram1DViewSet, basename="lumisection-h1d")
+router.register(r"lumisection-h2d", LumisectionHistogram2DViewSet, basename="lumisection-h2d")
