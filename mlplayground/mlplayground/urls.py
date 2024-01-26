@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -13,7 +12,6 @@ router.registry.extend(dqmio_etl_router.registry)
 router.registry.extend(dqmio_celery_tasks_router.registry)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path("api/", include((router.urls, "api"), namespace="api"), name="api"),
 
     # OpenAPI 3 documentation with Swagger UI

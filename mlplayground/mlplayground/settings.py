@@ -43,15 +43,19 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # Django built-in apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party apps
     'rest_framework',
     'drf_spectacular',
     'django_celery_results',
+
+    # Project apps
     'dqmio_file_indexer.apps.DqmioDataIndexerConfig',
     'dqmio_etl.apps.DqmioEtlConfig',
     'dqmio_celery_tasks.apps.DqmioCeleryTasksConfig'
