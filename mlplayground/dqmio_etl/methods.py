@@ -61,10 +61,11 @@ class HistIngestion:
                     ))
 
             n_ingested = len(LumisectionHistogram1D.objects.bulk_create(h1d_list, ignore_conflicts=True))
+            entries_ingested += n_ingested
             logger.debug(f"{n_ingested} x 1D lumisection histos successfully added from file {self.file_index.file_path}.")
 
-            self.file_index.update_entries("n_entries", self.file_index.n_entries_ingested + n_ingested)
-            entries_ingested += n_ingested
+            self.file_index.n_entries_ingested += n_ingested
+            self.file_index.save()
 
         return entries_ingested
 
@@ -121,10 +122,11 @@ class HistIngestion:
                     ))
 
             n_ingested = len(LumisectionHistogram2D.objects.bulk_create(h2d_list, ignore_conflicts=True))
+            entries_ingested += n_ingested
             logger.debug(f"{n_ingested} x 2D lumisection histos successfully added from file {self.file_index.file_path}.")
 
-            self.file_index.update_entries("n_entries", self.file_index.n_entries_ingested + n_ingested)
-            entries_ingested += n_ingested
+            self.file_index.n_entries_ingested += n_ingested
+            self.file_index.save()
 
             current_lumi += 1
             if read_chunk_lumi >= current_lumi:
