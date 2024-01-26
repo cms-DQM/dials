@@ -16,18 +16,18 @@ class TaskResponseBase:
         self.ready = ready
 
 
-class TaskResponseSerializer(serializers.Serializer):
-    id = serializers.CharField()
-    state = serializers.CharField()
-    ready = serializers.BooleanField()
-
-
 class InspectResponseBase:
     def __init__(self, id, name, queue, worker):
         self.id = id
         self.name = name
         self.queue = queue
         self.worker = worker
+
+
+class TaskResponseSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    state = serializers.CharField()
+    ready = serializers.BooleanField()
 
 
 class InspectInputSerializer(serializers.Serializer):
