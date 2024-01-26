@@ -65,11 +65,10 @@ class RawDataIndexer:
             file_path=str(file),
             data_era=RawDataIndexer.__infer_data_era(file.name),
             st_size=lstat.st_size,
-            st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone()),
-            st_mtime=datetime.fromtimestamp(lstat.st_mtime, tz=timezone.get_current_timezone())
+            st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone())
         )
         message = f"Indexed new file in DB: {file}" if created else f"File {file} already exists in the database!"
-        logger.info(message)
+        logger.debug(message)
         return int(created)
 
     @staticmethod
