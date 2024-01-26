@@ -5,10 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import FileIndexSerializer, FileIndexInputSerializer
 from .models import FileIndex
 from .tasks import index_raw_data
+from .filters import FileIndexFilter
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,8 @@ logger = logging.getLogger(__name__)
 class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = FileIndex.objects.all().order_by("st_itime")
     serializer_class = FileIndexSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FileIndexFilter
 
     @extend_schema(
         request=FileIndexInputSerializer,
