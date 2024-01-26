@@ -11,9 +11,23 @@ class FileIndexResponseBase:
         self.added = added
 
 
+class FileIndexStatus:
+    INDEXED = "INDEXED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    PROCESSED = "PROCESSED"
+    FAILED = "FAILED"
+
+    @staticmethod
+    def all():
+        return [
+            key for key in FileIndexStatus.__dict__.keys()
+            if key[:1] != '_' and key != "all"
+        ]
+
+
 class FileIndex(models.Model):
     VALID_FILE_EXTS = [".root"]
-    VALID_FILE_STATUS = {"indexed": "INDEXED", "pending": "PENDING", "running": "RUNNING", "ok": "OK", "failed": "FAILED"}
     is_cleaned = False
 
     file_path = models.CharField(
@@ -41,34 +55,15 @@ class FileIndex(models.Model):
     st_ctime = models.DateTimeField(
         help_text="Time of files's last status change in filesystem"
     )
-    st_mtime = models.DateTimeField(
-        help_text="Time of files's last modification in filesystem"
-    )
     st_itime = models.DateTimeField(
         auto_now_add=True,
         help_text="Time when file was indexed in database"
     )
-    st_imtime = models.DateTimeField(
-        auto_now=True,
-        help_text="Time when index entry was modified in database"
-    )
-    status_rh = models.CharField(
-        default=VALID_FILE_STATUS.get("indexed"),
+    status = models.CharField(
+        default=FileIndexStatus.INDEXED,
         null=False,
-        max_length=30,
+        max_length=max(len(v) for v in FileIndexStatus.all()),
         help_text="Indicate the processing status of run-histogram within the file"
-    )
-    status_h1d = models.CharField(
-        default=VALID_FILE_STATUS.get("indexed"),
-        null=False,
-        max_length=30,
-        help_text="Indicate the processing status of 1d-histograms within the file"
-    )
-    status_h2d = models.CharField(
-        default=VALID_FILE_STATUS.get("indexed"),
-        null=False,
-        max_length=30,
-        help_text="Indicate the processing status of 2d-histograms within the file"
     )
 
     def __str__(self):
@@ -81,12 +76,8 @@ class FileIndex(models.Model):
             raise ValidationError("File is empty")
     
     def handle_status(self):
-        if self.status_rh not in self.VALID_FILE_STATUS.values():
-            raise ValidationError("Invalid status for status_rh")
-        if self.status_h1d not in self.VALID_FILE_STATUS.values():
-            raise ValidationError("Invalid status for status_h1d")
-        if self.status_h2d not in self.VALID_FILE_STATUS.values():
-            raise ValidationError("Invalid status for status_h2d")
+        if self.status not in FileIndexStatus.all():
+            raise ValidationError("Invalid status")
 
     def handle_file_ext(self):
         if Path(self.file_path).suffix not in self.VALID_FILE_EXTS:
@@ -110,12 +101,15 @@ class FileIndex(models.Model):
 
         super().save(*args, **kwargs)
 
-    def update_status(self, field, key):
-        value = self.VALID_FILE_STATUS.get(key)
-        if value is None:
-            raise ValidationError("Invalid entry status")
-        if "status" not in field:
-            raise ValueError("This function only update fields with 'status' in their name")
+    def update_status(self, value):
+        if value not in FileIndexStatus.all():
+            raise ValidationError("Invalid status entry")
+        setattr(self, "status", value)
+        self.save()
+
+    def update_entries(self, field, value):
+        if "entries" not in field:
+            raise ValueError("This function only update fields with 'entries' in their name")
         setattr(self, field, value)
         self.save()
 

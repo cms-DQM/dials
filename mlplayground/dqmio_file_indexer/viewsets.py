@@ -8,7 +8,7 @@ from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSeriali
 
 from .serializers import FileIndexSerializer, FileIndexInputSerializer
 from .models import FileIndex
-from .tasks import search_dqmio_storages
+from .tasks import index_raw_data
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
         pagination_class=None
     )
     def search_files_and_index(self, request):
-        task = search_dqmio_storages.delay()
+        task = index_raw_data.delay()
         task = TaskResponseBase(id=task.id, state=task.state, ready=task.ready())
         task = TaskResponseSerializer(task)
         return Response(task.data)
