@@ -5,6 +5,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
 from dqmio_file_indexer.models import FileIndex, FileIndexStatus
 
@@ -21,6 +22,12 @@ from .serializers import (
     DQMIOLumisectionHistogram2DSerializer,
     DQMIOLumisectionHistogramsIngetionInputSerializer
 )
+from .filters import (
+    RunFilter,
+    LumisectionFilter,
+    LumisectionHistogram1DFilter,
+    LumisectionHistogram2DFilter
+)
 from .tasks import ingest_function
 
 logger = logging.getLogger(__name__)
@@ -32,6 +39,8 @@ class DQMIORunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets
     """
     queryset = Run.objects.all().order_by("run_number")
     serializer_class = DQMIORunSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RunFilter
 
 
 class DQMIOLumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -40,6 +49,8 @@ class DQMIOLumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, 
     """
     queryset = Lumisection.objects.all().order_by("id")
     serializer_class = DQMIOLumisectionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = LumisectionFilter
 
     @extend_schema(
         request=DQMIOLumisectionHistogramsIngetionInputSerializer,
@@ -75,6 +86,8 @@ class DQMIOLumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListM
     """
     queryset = LumisectionHistogram1D.objects.all().order_by("id")
     serializer_class = DQMIOLumisectionHistogram1DSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = LumisectionHistogram1DFilter
 
 
 class DQMIOLumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -83,3 +96,5 @@ class DQMIOLumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListM
     """
     queryset = LumisectionHistogram2D.objects.all().order_by("id")
     serializer_class = DQMIOLumisectionHistogram2DSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = LumisectionHistogram2DFilter

@@ -2,7 +2,6 @@ from urllib.parse import quote
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-
 from dqmio_file_indexer.models import FileIndex
 
 
