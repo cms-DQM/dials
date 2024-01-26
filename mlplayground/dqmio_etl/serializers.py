@@ -8,29 +8,29 @@ from .models import (
 )
 
 
-class DQMIORunSerializer(serializers.ModelSerializer):
+class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
         fields = "__all__"
 
 
-class DQMIOLumisectionSerializer(serializers.ModelSerializer):
+class LumisectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lumisection
         fields = "__all__"
 
 
-class DQMIOLumisectionHistogram1DSerializer(serializers.ModelSerializer):
+class LumisectionHistogram1DSerializer(serializers.ModelSerializer):
     class Meta:
         model = LumisectionHistogram1D
         fields = "__all__"
 
 
-class DQMIOLumisectionHistogram2DSerializer(serializers.ModelSerializer):
+class LumisectionHistogram2DSerializer(serializers.ModelSerializer):
     class Meta:
         model = LumisectionHistogram2D
         fields = "__all__"
 
 
-class DQMIOLumisectionHistogramsIngetionInputSerializer(serializers.Serializer):
+class LumisectionHistogramsIngetionInputSerializer(serializers.Serializer):
     id = serializers.IntegerField()

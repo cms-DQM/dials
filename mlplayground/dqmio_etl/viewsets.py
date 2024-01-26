@@ -16,11 +16,11 @@ from .models import (
     LumisectionHistogram2D,
 )
 from .serializers import (
-    DQMIORunSerializer,
-    DQMIOLumisectionSerializer,
-    DQMIOLumisectionHistogram1DSerializer,
-    DQMIOLumisectionHistogram2DSerializer,
-    DQMIOLumisectionHistogramsIngetionInputSerializer
+    RunSerializer,
+    LumisectionSerializer,
+    LumisectionHistogram1DSerializer,
+    LumisectionHistogram2DSerializer,
+    LumisectionHistogramsIngetionInputSerializer
 )
 from .filters import (
     RunFilter,
@@ -33,27 +33,27 @@ from .tasks import ingest_function
 logger = logging.getLogger(__name__)
 
 
-class DQMIORunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Runs metadata
     """
     queryset = Run.objects.all().order_by("run_number")
-    serializer_class = DQMIORunSerializer
+    serializer_class = RunSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RunFilter
 
 
-class DQMIOLumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Lumisections metadata
     """
     queryset = Lumisection.objects.all().order_by("id")
-    serializer_class = DQMIOLumisectionSerializer
+    serializer_class = LumisectionSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionFilter
 
     @extend_schema(
-        request=DQMIOLumisectionHistogramsIngetionInputSerializer,
+        request=LumisectionHistogramsIngetionInputSerializer,
         responses={200: TaskResponseSerializer}
     )
     @action(
@@ -80,21 +80,21 @@ class DQMIOLumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, 
         return Response(task.data)
 
 
-class DQMIOLumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested 1d-histograms at lumisection granularity-level
     """
     queryset = LumisectionHistogram1D.objects.all().order_by("id")
-    serializer_class = DQMIOLumisectionHistogram1DSerializer
+    serializer_class = LumisectionHistogram1DSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram1DFilter
 
 
-class DQMIOLumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested 2d-histograms at lumisection granularity-level
     """
     queryset = LumisectionHistogram2D.objects.all().order_by("id")
-    serializer_class = DQMIOLumisectionHistogram2DSerializer
+    serializer_class = LumisectionHistogram2DSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram2DFilter
