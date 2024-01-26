@@ -3,9 +3,8 @@ from rest_framework import routers
 from .viewsets import (
     DQMIORunViewSet,
     DQMIOLumisectionViewSet,
-    DQMIORunHistogramViewSet,
     DQMIOLumisectionHistogram1DViewSet,
-    DQMIOLumisectionHistogram2DViewSet,
+    DQMIOLumisectionHistogram2DViewSet
 )
 
 
@@ -15,9 +14,6 @@ router.register(
 )
 router.register(
     r"lumisection", DQMIOLumisectionViewSet, basename="lumisection"
-)
-router.register(
-    r"runHistogram", DQMIORunHistogramViewSet, basename="runHistogram"
 )
 router.register(
     r"lumisectionHistogram1D", DQMIOLumisectionHistogram1DViewSet, basename="lumisectionHistogram1D"

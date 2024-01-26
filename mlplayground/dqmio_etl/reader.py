@@ -89,10 +89,6 @@ class DQMIOReader:
         self.__read_index_tables()
         logger.debug("DQMIOReader.__init__: List of monitored elements made.")
 
-        # Creating attributes that will be used by some methods
-        #self.index = None
-        #self.index_keys = None
-
     def __get_me_type(self, metype):
         """
         Convert integer monitoring element type to string representation
@@ -179,17 +175,20 @@ class DQMIOReader:
         """
         return self.index_keys
 
-    def get_mes_for_lumi(self, runlumi, *name_patterns):
+    def get_mes_for_lumi(self, run, lumi, *name_patterns):
         """
         Get selected monitoring elements for a given lumisection
 
         args:
-        - runlumi: a tuple of the form (run number, lumisection number)
+        - run: run number
+        - lumi: lumisection number
         - namepatterns: a wildcard pattern (or multiple) to select monitoring elements
 
         returns:
         - a list of named tuples of type MonitorElement
         """
+        runlumi = (run, lumi)
+
         # Get the data for the requested lumisection
         entries = self.index.get(runlumi, None)
         if entries is None: 
@@ -221,7 +220,7 @@ class DQMIOReader:
                 me_tree.GetEntry(x, 1)
                 value = me_tree.Value
                 value = self.__extract_data_from_ROOT(value)
-                me = self.MonitorElement(runlumi[0], runlumi[1], me_name, entry.type, value)
+                me = self.MonitorElement(run, lumi, me_name, entry.type, value)
                 result.append(me)
 
         return result
@@ -231,8 +230,8 @@ class DQMIOReader:
         Count how many monitoring elements exists given ME selection
         """
         num_total_entries = 0
-        for run_lumi_tuple in self.list_lumis():
-            melist = self.get_mes_for_lumi(run_lumi_tuple, "*")
+        for run, lumi in self.list_lumis():
+            melist = self.get_mes_for_lumi(run, lumi, "*")
             for me in melist:
                 if me.type in me_selection:
                     num_total_entries += 1

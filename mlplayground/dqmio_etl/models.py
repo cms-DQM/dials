@@ -82,32 +82,6 @@ class LumisectionHistogramBase(HistogramBase):
         abstract = True
 
 
-class RunHistogram(HistogramBase):
-    """
-    Model containing Run granularity-level data (histogram information)
-    """
-    run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="histograms")
-    primary_dataset = models.CharField(max_length=220)
-    path = models.CharField(max_length=220)
-    entries = models.BigIntegerField(null=True)
-    mean = models.FloatField(null=True)
-    rms = models.FloatField(null=True)
-    skewness = models.FloatField(null=True)
-    kurtosis = models.FloatField(null=True)
-
-    def __str__(self):
-        return f"run: {self.run.run_number} / dataset: {self.primary_dataset} / histo: {self.title}"
-
-    class Meta:
-        ordering = ["title"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["run", "primary_dataset", "title"],
-                name="unique run/dataset/histogram combination",
-            )
-        ]
-
-
 class LumisectionHistogram1D(LumisectionHistogramBase):
     """
     Model containing 1D Lumisection granularity-level data (histogram information)
@@ -153,8 +127,3 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 name="unique run / ls / 2d histogram combination",
             )
         ]
-
-
-class IngestHistogramsResponseBase:
-    def __init__(self, entries_ingested):
-        self.entries_ingested = entries_ingested
