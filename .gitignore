@@ -76,19 +76,17 @@ target/
 profile_default/
 ipython_config.py
 
-
-### Virtual Environment ###
+# Virtual Environment
 mlp-env/
 
-### WSGI
+# WSGI
 wsgi/static/
 
 # Celery
 celerybeat-schedule
 
-#Test Scripts
+# Others
 test_script.txt
-
 .env
 db_extended
 static/admin/
@@ -98,15 +96,33 @@ mlp_database
 Development-Docs/MacOSInstructions.md
 static/django_extensions/
 static/django_tables2/
-
 *~
-
 venv/
 node_modules/
 package.json
 package-lock.json
-
-
 *.crt
 *.key
 .env_*
+
+# JS dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# JS testing
+/coverage
+
+# JS production
+/build
+
+# JS misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
