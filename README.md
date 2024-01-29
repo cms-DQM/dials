@@ -71,3 +71,11 @@ Starting the worker for dqmio_etl queue:
 ```bash
 celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue
 ```
+
+### Running Celery Beat
+
+Start the beat scheduler:
+
+```bash
+celery -A mlplayground beat -l INFO
+```

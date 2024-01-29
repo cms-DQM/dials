@@ -17,3 +17,4 @@ class FileIndexResponseSerializer(serializers.Serializer):
     storage = serializers.CharField()
     total = serializers.IntegerField()
     added = serializers.IntegerField()
+    ingested_ids = serializers.ListField(child=serializers.IntegerField())

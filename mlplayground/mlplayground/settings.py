@@ -186,3 +186,9 @@ CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_BEAT_SCHEDULE = {
+    "Index new files and schedule ingestions": {
+        "task": "dqmio_file_indexer.tasks.chain_index_and_ingestion",
+        "schedule": 600
+    }
+}

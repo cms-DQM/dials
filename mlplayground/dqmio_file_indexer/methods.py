@@ -61,27 +61,43 @@ class RawDataIndexer:
     @staticmethod
     def __index_file_in_database(file):
         lstat = file.lstat()
-        _, created = FileIndex.objects.get_or_create(
+        file_index, created = FileIndex.objects.get_or_create(
             file_path=str(file),
             data_era=RawDataIndexer.__infer_data_era(file.name),
             st_size=lstat.st_size,
             st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone())
         )
-        message = f"Indexed new file in DB: {file}" if created else f"File {file} already exists in the database!"
-        logger.debug(message)
-        return int(created)
+
+        # Do not return anything, next function will check if returned value is None
+        if created is False:
+            logger.debug(f"File {file} already exists in the database!")
+            return
+
+        logger.debug(f"Indexed new file in DB: {file}")
+        return file_index.id
 
     @staticmethod
     def __search_dqmio_files(storage_dir):
         path = Path(storage_dir)
         files = [file for file in path.rglob("*") if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()]
+        total_files = len(files)
         files = [RawDataIndexer.__index_file_in_database(file) for file in files]
-        return sum(files), len(files)
+        indexed_files_id = [file_id for file_id in files if file_id is not None]
+        return {
+            "total_files": total_files,
+            "total_added_files": len(indexed_files_id),
+            "indexed_files_id": indexed_files_id,
+        }
 
     def start(self):
         stats = []
         for dir in self.STORAGE_DIRS:
             logger.debug(f"Getting recursive file list for path '{dir}'")
-            added_files, total_files = RawDataIndexer.__search_dqmio_files(dir)
-            stats.append(FileIndexResponseBase(storage=dir, total=total_files, added=added_files))
+            dir_result = RawDataIndexer.__search_dqmio_files(dir)
+            stats.append(FileIndexResponseBase(
+                storage=dir,
+                total=dir_result["total_files"],
+                added=dir_result["total_added_files"],
+                ingested_ids=dir_result["indexed_files_id"]
+            ))
         return stats

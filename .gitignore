@@ -83,6 +83,8 @@ mlp-env/
 ### WSGI
 wsgi/static/
 
+# Celery
+celerybeat-schedule
 
 #Test Scripts
 test_script.txt
