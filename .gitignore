@@ -76,8 +76,10 @@ target/
 profile_default/
 ipython_config.py
 
-# Virtual Environment
+# Python Virtual Environment
 mlp-env/
+venv/
+.venv/
 
 # WSGI
 wsgi/static/
@@ -85,28 +87,14 @@ wsgi/static/
 # Celery
 celerybeat-schedule
 
-# Others
-test_script.txt
+# Environment files
 .env
-db_extended
-static/admin/
-static/home/
-db_extended.sqlite3
-mlp_database
-Development-Docs/MacOSInstructions.md
-static/django_extensions/
-static/django_tables2/
-*~
-venv/
-node_modules/
-package.json
-package-lock.json
-*.crt
-*.key
+.env-*
 .env_*
+.env.*
 
 # JS dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -126,3 +114,17 @@ package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Others
+test_script.txt
+db_extended
+static/admin/
+static/home/
+db_extended.sqlite3
+mlp_database
+Development-Docs/MacOSInstructions.md
+static/django_extensions/
+static/django_tables2/
+*~
+*.crt
+*.key
