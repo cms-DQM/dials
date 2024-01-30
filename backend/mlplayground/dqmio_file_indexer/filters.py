@@ -4,15 +4,9 @@ from .models import FileIndex, FileIndexStatus
 
 
 class FileIndexFilter(filters.FilterSet):
-    path_contains = filters.CharFilter(
-        label="File path contains", field_name="file_path", lookup_expr="contains"
-    )
-    era = filters.CharFilter(
-        label="Data era", field_name="data_era", lookup_expr="exact"
-    )
-    min_size = filters.NumberFilter(
-        label="Minimum file size", field_name="st_size", lookup_expr="gte"
-    )
+    path_contains = filters.CharFilter(label="File path contains", field_name="file_path", lookup_expr="contains")
+    era = filters.CharFilter(label="Data era", field_name="data_era", lookup_expr="exact")
+    min_size = filters.NumberFilter(label="Minimum file size", field_name="st_size", lookup_expr="gte")
     status = filters.ChoiceFilter(
         label="File contents ingestion status",
         field_name="status",

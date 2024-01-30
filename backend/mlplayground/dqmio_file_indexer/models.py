@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import List
 
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 
 
 class FileIndexResponseBase:
@@ -22,20 +22,14 @@ class FileIndexStatus:
 
     @staticmethod
     def all():
-        return [
-            key
-            for key in FileIndexStatus.__dict__.keys()
-            if key[:1] != "_" and key != "all"
-        ]
+        return [key for key in FileIndexStatus.__dict__.keys() if key[:1] != "_" and key != "all"]
 
 
 class FileIndex(models.Model):
     VALID_FILE_EXTS = [".root"]
     is_cleaned = False
 
-    file_path = models.CharField(
-        help_text="Path where the file is stored", max_length=255
-    )
+    file_path = models.CharField(help_text="Path where the file is stored", max_length=255)
     data_era = models.CharField(
         default="Unknown",
         null=False,
@@ -50,12 +44,8 @@ class FileIndex(models.Model):
         help_text="Number of histogram entries that have been extracted from the file",
     )
     st_size = models.FloatField(default=0, help_text="The data file's size in bytes")
-    st_ctime = models.DateTimeField(
-        help_text="Time of files's last status change in filesystem"
-    )
-    st_itime = models.DateTimeField(
-        auto_now_add=True, help_text="Time when file was indexed in database"
-    )
+    st_ctime = models.DateTimeField(help_text="Time of files's last status change in filesystem")
+    st_itime = models.DateTimeField(auto_now_add=True, help_text="Time when file was indexed in database")
     status = models.CharField(
         default=FileIndexStatus.INDEXED,
         null=False,
@@ -101,18 +91,14 @@ class FileIndex(models.Model):
     def update_status(self, value):
         if value not in FileIndexStatus.all():
             raise ValidationError("Invalid status entry")
-        setattr(self, "status", value)
+        self.status = value
         self.save()
 
     def update_entries(self, field, value):
         if "entries" not in field:
-            raise ValueError(
-                "This function only update fields with 'entries' in their name"
-            )
+            raise ValueError("This function only update fields with 'entries' in their name")
         setattr(self, field, value)
         self.save()
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["file_path"], name="unique_file_path")
-        ]
+        constraints = [models.UniqueConstraint(fields=["file_path"], name="unique_file_path")]

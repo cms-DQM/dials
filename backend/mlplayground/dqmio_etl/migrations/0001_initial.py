@@ -97,9 +97,7 @@ class Migration(migrations.Migration):
                 ("entries", models.IntegerField(blank=True, null=True)),
                 (
                     "data",
-                    django.contrib.postgres.fields.ArrayField(
-                        base_field=models.FloatField(), blank=True, size=None
-                    ),
+                    django.contrib.postgres.fields.ArrayField(base_field=models.FloatField(), blank=True, size=None),
                 ),
                 ("x_min", models.FloatField(blank=True, null=True)),
                 ("x_max", models.FloatField(blank=True, null=True)),
@@ -185,9 +183,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="run",
-            constraint=models.UniqueConstraint(
-                fields=("run_number",), name="unique run number"
-            ),
+            constraint=models.UniqueConstraint(fields=("run_number",), name="unique run number"),
         ),
         migrations.AddField(
             model_name="lumisection",
@@ -235,9 +231,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="lumisection",
-            constraint=models.UniqueConstraint(
-                fields=("run", "ls_number"), name="unique run/ls combination"
-            ),
+            constraint=models.UniqueConstraint(fields=("run", "ls_number"), name="unique run/ls combination"),
         ),
         migrations.AddConstraint(
             model_name="runhistogram",

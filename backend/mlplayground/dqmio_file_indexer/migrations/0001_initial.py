@@ -24,9 +24,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "file_path",
-                    models.CharField(
-                        help_text="Path where the file is stored", max_length=255
-                    ),
+                    models.CharField(help_text="Path where the file is stored", max_length=255),
                 ),
                 (
                     "data_era",
@@ -52,21 +50,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "st_size",
-                    models.FloatField(
-                        default=0, help_text="The data file's size in bytes"
-                    ),
+                    models.FloatField(default=0, help_text="The data file's size in bytes"),
                 ),
                 (
                     "st_ctime",
-                    models.DateTimeField(
-                        help_text="Time of files's last status change in filesystem"
-                    ),
+                    models.DateTimeField(help_text="Time of files's last status change in filesystem"),
                 ),
                 (
                     "st_mtime",
-                    models.DateTimeField(
-                        help_text="Time of files's last modification in filesystem"
-                    ),
+                    models.DateTimeField(help_text="Time of files's last modification in filesystem"),
                 ),
                 (
                     "st_itime",
@@ -110,8 +102,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="fileindex",
-            constraint=models.UniqueConstraint(
-                fields=("file_path",), name="unique_file_path"
-            ),
+            constraint=models.UniqueConstraint(fields=("file_path",), name="unique_file_path"),
         ),
     ]

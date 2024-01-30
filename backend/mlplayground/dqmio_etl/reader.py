@@ -1,26 +1,19 @@
-# **Class for reading (nano)DQMIO files and extracting histograms**
-#
-# Originally copied from here: https://github.com/cms-DQM/ML4DQM-DC_SharedTools/blob/master/dqmio/moredqmiodata.ipynb
+"""
+**Class for reading (nano)DQMIO files and extracting histograms**
 
-from fnmatch import fnmatch
-from collections import namedtuple
-from collections import defaultdict
-from multiprocessing.pool import ThreadPool
+Originally copied from here: https://github.com/cms-DQM/ML4DQM-DC_SharedTools/blob/master/dqmio/moredqmiodata.ipynb
+
+Notes:
+* Should import root_numpy (efficient interface between ROOT and numpy), but it is not available on SWAN
+* fnmatch provides support for unix shell-style wildcards, which are not the same as regular expressions in python
+"""
+
 import logging
+from collections import defaultdict, namedtuple
+from fnmatch import fnmatch
+from multiprocessing.pool import ThreadPool
 
 import ROOT
-
-# import root_numpy
-# disable temporary since not available on SWAN, for now just define manual conversion function from root to numpy array
-
-### Import notes
-# note: root_numpy provides an efficient interface between ROOT and numpy
-# note: fnmatch provides support for unix shell-style wildcards, which are not the same as regular expressions in python
-# note: a namedtuple is a pseudo-class consisting of a tuple with named fields
-# note: a defaultdict is like a regular python dictionary but providing default values for missing keys instead of throwing execptions
-# note: ThreadPool is used for parallel processing, calling the same function on parallel inputs and collecting the results in a list
-# note: timeit is only used for callback method to print the progress of getSingleMes
-# note: pandas is only used for conversion into dataframe
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +34,7 @@ class DQMIOReader:
         - nthreads: number of threads for multithreaded processing.
     """
 
-    IndexEntry = namedtuple(
-        "IndexEntry", ["run", "lumi", "type", "file", "firstidx", "lastidx"]
-    )
+    IndexEntry = namedtuple("IndexEntry", ["run", "lumi", "type", "file", "firstidx", "lastidx"])
     # an instance of IndexEntry represents one "entry" in a DQMIO file.
     # this "entry" corresponds to a single lumisection (characterized by run and lumi)
     # and a single type (e.g. TH1F, TH2F, etc.).
@@ -53,9 +44,7 @@ class DQMIOReader:
     #       so multiple IndexEntries for the same lumisection (but different type) can have overlapping indices,
     #       but multiple IndexEntries for the same type and file but different lumisections have disjoint indices!
 
-    MonitorElement = namedtuple(
-        "MonitorElement", ["run", "lumi", "name", "type", "data"]
-    )
+    MonitorElement = namedtuple("MonitorElement", ["run", "lumi", "name", "type", "data"])
     # an instance of MonitorElement represents one monitor element, with all associated information:
     # - the run and lumisection number
     # - the full name of the monitoring element
@@ -106,7 +95,8 @@ class DQMIOReader:
         """
         Read file index from one file
         """
-        idx_tree = getattr(f, "Indices")
+        # idx_tree = getattr(f, "Indices")
+        idx_tree = f.Indices
 
         for i in range(idx_tree.GetEntries()):
             idx_tree.GetEntry(i)
@@ -199,7 +189,8 @@ class DQMIOReader:
         entries = self.index.get(runlumi, None)
         if entries is None:
             raise IndexError(
-                f"ERROR in DQMIOReader.get_mes_for_lumi: requested to read data for lumisection {runlumi}, but no data was found for this lumisection in the current DQMIOReader."
+                f"ERROR in DQMIOReader.get_mes_for_lumi: requested to read data for lumisection {runlumi}"
+                ", but no data was found for this lumisection in the current DQMIOReader."
             )
 
         # loop over all entries for this lumisection;
@@ -219,9 +210,7 @@ class DQMIOReader:
             # loop over entries for this tree
             for x in range(entry.firstidx, entry.lastidx + 1):
                 me_tree.GetEntry(x)
-                me_name = str(
-                    me_tree.FullName
-                )  # extract the monitoring element name and check if it is needed
+                me_name = str(me_tree.FullName)  # extract the monitoring element name and check if it is needed
                 if not self.__is_me_name_matching_selections(me_name, name_patterns):
                     continue
 
@@ -233,7 +222,7 @@ class DQMIOReader:
 
         return result
 
-    def count_mes(self, me_selection=[3, 4, 5, 6, 7, 8]):
+    def count_mes(self, me_selection=(3, 4, 5, 6, 7, 8)):
         """
         Count how many monitoring elements exists given ME selection
         """

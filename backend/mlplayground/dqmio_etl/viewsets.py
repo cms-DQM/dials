@@ -1,34 +1,24 @@
 import logging
 
-from django.db.models import Count, Func, F, Value, TextField
+from django.db.models import Count, F, Func, TextField, Value
 from django.http import HttpResponseBadRequest
-from rest_framework import viewsets, mixins
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
 from dqmio_file_indexer.models import FileIndex, FileIndexStatus
+from drf_spectacular.utils import extend_schema
+from rest_framework import mixins, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from .models import (
-    Run,
-    Lumisection,
-    LumisectionHistogram1D,
-    LumisectionHistogram2D,
-)
+from .filters import LumisectionFilter, LumisectionHistogram1DFilter, LumisectionHistogram2DFilter, RunFilter
+from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run
 from .serializers import (
-    RunSerializer,
-    LumisectionSerializer,
     LumisectionHistogram1DSerializer,
     LumisectionHistogram2DSerializer,
     LumisectionHistogramsIngetionInputSerializer,
     LumisectionHistogramsSubsystemCountSerializer,
-)
-from .filters import (
-    RunFilter,
-    LumisectionFilter,
-    LumisectionHistogram1DFilter,
-    LumisectionHistogram2DFilter,
+    LumisectionSerializer,
+    RunSerializer,
 )
 from .tasks import ingest_function
 
@@ -40,9 +30,7 @@ class SplitPart(Func):
     arity = 3
 
 
-class RunViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Runs metadata
     """
@@ -53,9 +41,7 @@ class RunViewSet(
     filterset_class = RunFilter
 
 
-class LumisectionViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Lumisections metadata
     """
@@ -93,9 +79,7 @@ class LumisectionViewSet(
         return Response(task.data)
 
 
-class LumisectionHistogram1DViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested 1d-histograms at lumisection granularity-level
     """
@@ -105,9 +89,7 @@ class LumisectionHistogram1DViewSet(
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram1DFilter
 
-    @extend_schema(
-        responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)}
-    )
+    @extend_schema(responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)})
     @action(
         detail=False,
         methods=["get"],
@@ -128,9 +110,7 @@ class LumisectionHistogram1DViewSet(
         return Response(data)
 
 
-class LumisectionHistogram2DViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class LumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested 2d-histograms at lumisection granularity-level
     """
@@ -140,9 +120,7 @@ class LumisectionHistogram2DViewSet(
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram2DFilter
 
-    @extend_schema(
-        responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)}
-    )
+    @extend_schema(responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)})
     @action(
         detail=False,
         methods=["get"],

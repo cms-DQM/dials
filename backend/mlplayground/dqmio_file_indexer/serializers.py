@@ -9,9 +9,6 @@ class FileIndexSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class FileIndexInputSerializer(serializers.Serializer): ...
-
-
 class FileIndexResponseSerializer(serializers.Serializer):
     storage = serializers.CharField()
     total = serializers.IntegerField()

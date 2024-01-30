@@ -1,26 +1,19 @@
 import logging
 
-from rest_framework import viewsets, mixins
+from django_celery_results.models import TaskResult
+from drf_spectacular.utils import extend_schema
+from mlplayground import celery_app
+from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
-from django_celery_results.models import TaskResult
-from mlplayground import celery_app
 
-from .serializers import (
-    CeleryTasksSerializer,
-    InspectResponseBase,
-    InspectInputSerializer,
-    InspectResponseSerializer,
-)
+from .serializers import CeleryTasksSerializer, InspectResponseBase, InspectResponseSerializer
 
 logger = logging.getLogger(__name__)
 inspect = celery_app.control.inspect()
 
 
-class CeleryTasksViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     You can see all ingested Runs metadata
     """
@@ -30,7 +23,7 @@ class CeleryTasksViewSet(
     lookup_field = "task_id"
 
     @extend_schema(
-        request=InspectInputSerializer,
+        request=serializers.Serializer,
         responses={200: InspectResponseSerializer(many=True)},
     )
     @action(

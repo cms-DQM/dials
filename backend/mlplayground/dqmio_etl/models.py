@@ -1,7 +1,7 @@
 from urllib.parse import quote
 
-from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from dqmio_file_indexer.models import FileIndex
 
 
@@ -21,9 +21,7 @@ class Run(models.Model):
 
     class Meta:
         ordering = ["run_number"]
-        constraints = [
-            models.UniqueConstraint(fields=["run_number"], name="unique run number")
-        ]
+        constraints = [models.UniqueConstraint(fields=["run_number"], name="unique run number")]
 
 
 class Lumisection(models.Model):
@@ -37,11 +35,7 @@ class Lumisection(models.Model):
 
     class Meta:
         ordering = ["run__run_number", "ls_number"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["run", "ls_number"], name="unique run/ls combination"
-            )
-        ]
+        constraints = [models.UniqueConstraint(fields=["run", "ls_number"], name="unique run/ls combination")]
 
 
 class HistogramBase(models.Model):

@@ -1,8 +1,8 @@
-from mlplayground import celery_app
 from dqmio_etl.tasks import ingest_function
+from mlplayground import celery_app
 
-from .models import FileIndex, FileIndexStatus
 from .methods import RawDataIndexer
+from .models import FileIndex, FileIndexStatus
 from .serializers import FileIndexResponseSerializer
 
 

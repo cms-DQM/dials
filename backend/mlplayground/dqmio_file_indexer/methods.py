@@ -1,7 +1,7 @@
-from pathlib import Path
-from datetime import datetime
 import logging
 import re
+from datetime import datetime
+from pathlib import Path
 
 from django.conf import settings
 from django.utils import timezone
@@ -65,9 +65,7 @@ class RawDataIndexer:
             file_path=str(file),
             data_era=RawDataIndexer.__infer_data_era(file.name),
             st_size=lstat.st_size,
-            st_ctime=datetime.fromtimestamp(
-                lstat.st_ctime, tz=timezone.get_current_timezone()
-            ),
+            st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone()),
         )
 
         # Do not return anything, next function will check if returned value is None
@@ -81,11 +79,7 @@ class RawDataIndexer:
     @staticmethod
     def __search_dqmio_files(storage_dir):
         path = Path(storage_dir)
-        files = [
-            file
-            for file in path.rglob("*")
-            if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()
-        ]
+        files = [file for file in path.rglob("*") if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()]
         total_files = len(files)
         files = [RawDataIndexer.__index_file_in_database(file) for file in files]
         indexed_files_id = [file_id for file_id in files if file_id is not None]

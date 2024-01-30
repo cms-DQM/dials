@@ -35,9 +35,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    os.getenv("CSRF_TRUSTED_ORIGINS", "https://ml4dqm-playground.web.cern.ch")
-]
+CSRF_TRUSTED_ORIGINS = [os.getenv("CSRF_TRUSTED_ORIGINS", "https://ml4dqm-playground.web.cern.ch")]
 
 
 # Application definition
@@ -65,9 +63,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-SPECTACULAR_SETTINGS = {
-    "PREPROCESSING_HOOKS": ["mlplayground.spectacular.preprocessing_filter_spec"]
-}
+SPECTACULAR_SETTINGS = {"PREPROCESSING_HOOKS": ["mlplayground.spectacular.preprocessing_filter_spec"]}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -1,7 +1,7 @@
 import logging
 
-from mlplayground import celery_app
 from dqmio_file_indexer.models import FileIndex
+from mlplayground import celery_app
 
 from .methods import HistIngestion
 

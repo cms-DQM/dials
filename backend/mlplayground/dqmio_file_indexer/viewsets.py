@@ -1,31 +1,27 @@
 import logging
 
-from rest_framework import viewsets, mixins
+from django_filters.rest_framework import DjangoFilterBackend
+from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
+from drf_spectacular.utils import extend_schema
+from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
-from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 
-from .serializers import FileIndexSerializer, FileIndexInputSerializer
-from .models import FileIndex
-from .tasks import index_raw_data
 from .filters import FileIndexFilter
+from .models import FileIndex
+from .serializers import FileIndexSerializer
+from .tasks import index_raw_data
 
 logger = logging.getLogger(__name__)
 
 
-class FileIndexViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = FileIndex.objects.all().order_by("st_itime")
     serializer_class = FileIndexSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = FileIndexFilter
 
-    @extend_schema(
-        request=FileIndexInputSerializer, responses={200: TaskResponseSerializer}
-    )
+    @extend_schema(request=serializers.Serializer, responses={200: TaskResponseSerializer})
     @action(
         detail=False,
         methods=["post"],
