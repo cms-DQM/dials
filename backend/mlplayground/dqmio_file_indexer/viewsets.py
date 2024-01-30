@@ -3,7 +3,7 @@ import logging
 from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
 from drf_spectacular.utils import extend_schema
-from rest_framework import mixins, serializers, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -21,7 +21,7 @@ class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
     filter_backends = [DjangoFilterBackend]
     filterset_class = FileIndexFilter
 
-    @extend_schema(request=serializers.Serializer, responses={200: TaskResponseSerializer})
+    @extend_schema(request=None, responses={200: TaskResponseSerializer})
     @action(
         detail=False,
         methods=["post"],

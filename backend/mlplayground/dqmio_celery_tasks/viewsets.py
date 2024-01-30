@@ -3,7 +3,7 @@ import logging
 from django_celery_results.models import TaskResult
 from drf_spectacular.utils import extend_schema
 from mlplayground import celery_app
-from rest_framework import mixins, serializers, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -23,7 +23,7 @@ class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     lookup_field = "task_id"
 
     @extend_schema(
-        request=serializers.Serializer,
+        request=None,
         responses={200: InspectResponseSerializer(many=True)},
     )
     @action(
