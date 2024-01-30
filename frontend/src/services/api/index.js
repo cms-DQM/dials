@@ -1,34 +1,19 @@
 import sleep from '../../utils/sleep';
 import dateFormat from '../../utils/date';
 
-import tasksResults from '../mocks/tasksResults.json'
-import tasksPending from '../mocks/tasksPending.json'
-import fileIndexPage1 from '../mocks/fileIndex-page1.json'
-import fileIndexPage2 from '../mocks/fileIndex-page2.json'
-import fileIndexPage3 from '../mocks/fileIndex-page3.json'
-import histograms1DPage1 from '../mocks/histograms1d-page1.json'
-import histograms1DPage2 from '../mocks/histograms1d-page2.json'
-import histograms1DPage3 from '../mocks/histograms1d-page3.json'
-import histograms2DPage1 from '../mocks/histograms2d-page1.json'
-import histograms2DPage2 from '../mocks/histograms2d-page2.json'
-import histograms2DPage3 from '../mocks/histograms2d-page3.json'
-import runsPage1 from '../mocks/runs-page1.json'
-import runsPage2 from '../mocks/runs-page2.json'
-import lumisectionsPage1 from '../mocks/lumisections-page1.json'
-import lumisectionsPage2 from '../mocks/lumisections-page2.json'
-import lumisectionsPage3 from '../mocks/lumisections-page3.json'
+import Mock from '../mocks'
 
 const FILE_INDEX_STATUSES = [
   "INDEXED",
   "PENDING",
   "RUNNING",
-  "OK",
+  "PROCESSED",
   "FAILED"
 ]
 
 const getLatestTasks = async () => {
   await sleep(1);
-  const tasks = tasksResults.results.slice(0, 5).map(item => {
+  const tasks = Mock.tasksResults.results.slice(0, 5).map(item => {
     return { ...item, date_created: dateFormat(item.date_created, 'dd.MM.yyyy HH:mm:ss') }
   })
   return tasks
@@ -36,15 +21,15 @@ const getLatestTasks = async () => {
 
 const getPendingTasks = async () => {
   await sleep(1);
-  return tasksPending
+  return Mock.tasksPending
 }
 
 const getFileIndexByPage = async (page) => {
   await sleep(1);
   const mockedResponse = {
-    1: fileIndexPage1,
-    2: fileIndexPage2,
-    3: fileIndexPage3
+    1: Mock.fileIndexPage1,
+    2: Mock.fileIndexPage2,
+    3: Mock.fileIndexPage3
   }
   return mockedResponse[[page]]
 }
@@ -52,9 +37,9 @@ const getFileIndexByPage = async (page) => {
 const getHistograms1DByPage = async (page) => {
   await sleep(1);
   const mockedResponse = {
-    1: histograms1DPage1,
-    2: histograms1DPage2,
-    3: histograms1DPage3
+    1: Mock.histograms1DPage1,
+    2: Mock.histograms1DPage2,
+    3: Mock.histograms1DPage3
   }
   return mockedResponse[[page]]
 }
@@ -62,9 +47,9 @@ const getHistograms1DByPage = async (page) => {
 const getHistograms2DByPage = async (page) => {
   await sleep(1);
   const mockedResponse = {
-    1: histograms2DPage1,
-    2: histograms2DPage2,
-    3: histograms2DPage3
+    1: Mock.histograms2DPage1,
+    2: Mock.histograms2DPage2,
+    3: Mock.histograms2DPage3
   }
   return mockedResponse[[page]]
 }
@@ -72,8 +57,8 @@ const getHistograms2DByPage = async (page) => {
 const getRunsByPage = async (page) => {
   await sleep(1);
   const mockedResponse = {
-    1: runsPage1,
-    2: runsPage2
+    1: Mock.runsPage1,
+    2: Mock.runsPage2
   }
   return mockedResponse[[page]]
 }
@@ -81,9 +66,9 @@ const getRunsByPage = async (page) => {
 const getLumisectionsByPage = async (page) => {
   await sleep(1);
   const mockedResponse = {
-    1: lumisectionsPage1,
-    2: lumisectionsPage2,
-    3: lumisectionsPage3
+    1: Mock.lumisectionsPage1,
+    2: Mock.lumisectionsPage2,
+    3: Mock.lumisectionsPage3
   }
   return mockedResponse[[page]]
 }
