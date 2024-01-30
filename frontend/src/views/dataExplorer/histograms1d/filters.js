@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import RangeSlider from 'react-bootstrap-range-slider';
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import RangeSlider from 'react-bootstrap-range-slider'
 
 const Histograms1DFilter = () => {
-  const [titleContains, setTitleContains] = useState();
-  const [lumisectionId, setLumisectionId] = useState();
-  const [minEntries, setMinEntries] = useState(0);
+  const [titleContains, setTitleContains] = useState()
+  const [lumisectionId, setLumisectionId] = useState()
+  const [minEntries, setMinEntries] = useState(0)
 
   const handleClick = () => { }
 
   return (
     <Card>
-      <Card.Header className="text-center" as='h4'>Filters</Card.Header>
+      <Card.Header className='text-center' as='h4'>Filters</Card.Header>
       <Card.Body>
-        <Form.Group className="mb-3" controlId="formTitleContains">
+        <Form.Group className='mb-3' controlId='formTitleContains'>
           <Form.Label>Title contains</Form.Label>
           <Form.Control
-            type="string"
-            placeholder="Enter title substring"
+            type='string'
+            placeholder='Enter title substring'
             value={titleContains}
             onChange={e => setTitleContains(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formLumisectionId">
+        <Form.Group className='mb-3' controlId='formLumisectionId'>
           <Form.Label>Lumisection Id</Form.Label>
           <Form.Control
-            type="string"
-            placeholder="Enter lumisection id"
+            type='string'
+            placeholder='Enter lumisection id'
             value={lumisectionId}
             onChange={e => setLumisectionId(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formMinEntries" as={Row}>
+        <Form.Group className='mb-3' controlId='formMinEntries' as={Row}>
           <Form.Label>Minimum number of entries</Form.Label>
           <Col xs={3}>
             <Form.Control
-              type="number"
+              type='number'
               value={minEntries}
               onChange={e => setMinEntries(e.target.value)}
             />
@@ -58,8 +58,8 @@ const Histograms1DFilter = () => {
         </Form.Group>
 
         <Button
-          variant="primary"
-          type="submit"
+          variant='primary'
+          type='submit'
           onClick={handleClick}
         >
           Submit
@@ -67,6 +67,6 @@ const Histograms1DFilter = () => {
       </Card.Body>
     </Card>
   )
-};
+}
 
-export default Histograms1DFilter;
+export default Histograms1DFilter

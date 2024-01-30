@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
-import Card from 'react-bootstrap/Card';
-import paginationFactory from 'react-bootstrap-table2-paginator';
+import Card from 'react-bootstrap/Card'
+import paginationFactory from 'react-bootstrap-table2-paginator'
 
-import Table from '../../../components/table';
-import { getRunsByPage } from '../../../services/api';
+import Table from '../../../components/table'
+import { getRunsByPage } from '../../../services/api'
 
 const RunsViz = () => {
-  const [page, setPage] = useState(1);
-  const [data, setData] = useState([]);
-  const [totalSize, setTotalSize] = useState();
-  const [isLoading, setLoading] = useState(true);
+  const [page, setPage] = useState(1)
+  const [data, setData] = useState([])
+  const [totalSize, setTotalSize] = useState()
+  const [isLoading, setLoading] = useState(true)
 
   const columns = [
-    { dataField: "run_number", text: "Run", type: "string" },
-    { dataField: "year", text: "Year", type: "string" },
-    { dataField: "period", text: "Period", type: "string" },
-    { dataField: "oms_fill", text: "OMS Fill", type: "string" },
-    { dataField: "oms_lumisections", text: "OMS Lumisections", type: "string" },
-    { dataField: "oms_initial_lumi", text: "OMS Initial Lumi", type: "string" },
-    { dataField: "oms_end_lumi", text: "OMS End Lumi", type: "string" }
+    { dataField: 'run_number', text: 'Run', type: 'string' },
+    { dataField: 'year', text: 'Year', type: 'string' },
+    { dataField: 'period', text: 'Period', type: 'string' },
+    { dataField: 'oms_fill', text: 'OMS Fill', type: 'string' },
+    { dataField: 'oms_lumisections', text: 'OMS Lumisections', type: 'string' },
+    { dataField: 'oms_initial_lumi', text: 'OMS Initial Lumi', type: 'string' },
+    { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' }
   ]
-  const pagination = paginationFactory({ page: page, totalSize: totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
-    if (type === "pagination") {
+    if (type === 'pagination') {
       setPage(page)
     }
   }
@@ -49,7 +49,7 @@ const RunsViz = () => {
   }, [page])
 
   return (
-    <Card className="text-center">
+    <Card className='text-center'>
       <Card.Header as='h4'>Runs</Card.Header>
       <Card.Body>
         <Table
@@ -66,6 +66,6 @@ const RunsViz = () => {
       </Card.Body>
     </Card>
   )
-};
+}
 
-export default RunsViz;
+export default RunsViz

@@ -1,18 +1,20 @@
-import React from 'react';
+import React from 'react'
 
-import Spinner from 'react-bootstrap/Spinner';
-import BootstrapTable from 'react-bootstrap-table-next';
+import Spinner from 'react-bootstrap/Spinner'
+import BootstrapTable from 'react-bootstrap-table-next'
 
 const Table = (props) => {
   return (
     <>
       {
-        props.isLoading ? (
+        props.isLoading
+          ? (
           <Spinner
-            animation="border"
-            role="status"
+            animation='border'
+            role='status'
           />
-        ) : (
+            )
+          : (
           <BootstrapTable
             keyField={props.keyField}
             data={props.data}
@@ -23,10 +25,10 @@ const Table = (props) => {
             remote={props?.remote}
             onTableChange={props?.onTableChange}
           />
-        )
+            )
       }
     </>
   )
 }
 
-export default Table;
+export default Table

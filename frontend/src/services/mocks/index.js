@@ -31,7 +31,7 @@ const Mock = {
   runsPage2,
   lumisectionsPage1,
   lumisectionsPage2,
-  lumisectionsPage3,
-};
+  lumisectionsPage3
+}
 
-export default Mock;
+export default Mock

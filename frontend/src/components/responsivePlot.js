@@ -1,3 +1,4 @@
+import React from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import Plot from 'react-plotly.js'
 
@@ -10,10 +11,10 @@ const ResponsivePlot = (props) => {
       <Plot
         data={data}
         layout={{
-          ...layout, 
+          ...layout,
           ...{
-            width: width, 
-            height: height
+            width,
+            height
           }
         }}
         config={config}
@@ -22,4 +23,4 @@ const ResponsivePlot = (props) => {
   )
 }
 
-export default ResponsivePlot;
+export default ResponsivePlot

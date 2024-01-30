@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 const HorizontalDivider = () => {
   return (
-    <hr class="hr" />
+    <hr className='hr' />
   )
 }
 
-export default HorizontalDivider;
+export default HorizontalDivider

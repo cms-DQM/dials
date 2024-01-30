@@ -1,26 +1,25 @@
-import React from 'react';
+import React from 'react'
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
-import Card from 'react-bootstrap/Card';
-import ResponsivePlot from '../../components/responsivePlot';
+import Card from 'react-bootstrap/Card'
+import ResponsivePlot from '../../components/responsivePlot'
 
 const IngestionStatistics = () => {
-
   const totalFiles = 13548
   const totalRuns = 56
   const totalLumisections = 1235
 
   const indexedFilesByStatus = [
-    { "label": "INDEXED", "count": 7500 },
-    { "label": "PENDING", "count": 5000 },
-    { "label": "RUNNING", "count": 1 },
-    { "label": "OK", "count": 847 },
-    { "label": "FAILED", "count": 200 }
+    { label: 'INDEXED', count: 7500 },
+    { label: 'PENDING', count: 5000 },
+    { label: 'RUNNING', count: 1 },
+    { label: 'OK', count: 847 },
+    { label: 'FAILED', count: 200 }
   ]
   const dataFilesPlot = [
-    { 
+    {
       y: indexedFilesByStatus.map(item => item.count),
       x: indexedFilesByStatus.map(item => item.label),
       type: 'bar',
@@ -29,14 +28,14 @@ const IngestionStatistics = () => {
   ]
 
   const ingestedH1DBySubsytem = [
-    { "subsytem": "EcalBarrel", "count": 1386 },
-    { "subsytem": "EcalEndcap", "count": 1406 },
-    { "subsytem": "HLT", "count": 1376 },
-    { "subsytem": "JetMET", "count": 32038 },
-    { "subsytem": "OfflinePV", "count": 5464 },
-    { "subsytem": "PixelPhase1", "count": 32904 },
-    { "subsytem": "SiStrip", "count": 97076 },
-    { "subsytem": "Tracking", "count": 5464 }
+    { subsytem: 'EcalBarrel', count: 1386 },
+    { subsytem: 'EcalEndcap', count: 1406 },
+    { subsytem: 'HLT', count: 1376 },
+    { subsytem: 'JetMET', count: 32038 },
+    { subsytem: 'OfflinePV', count: 5464 },
+    { subsytem: 'PixelPhase1', count: 32904 },
+    { subsytem: 'SiStrip', count: 97076 },
+    { subsytem: 'Tracking', count: 5464 }
   ]
   const dataH1DPlot = [
     {
@@ -53,11 +52,11 @@ const IngestionStatistics = () => {
   }
 
   const ingestedH2DBySubsytem = [
-    { "subsytem": "EcalEndcap", "count": 396 },
-    { "subsytem": "JetMET", "count": 10 },
-    { "subsytem": "PixelPhase1", "count": 2068 },
-    { "subsytem": "EcalBarrel", "count": 558 },
-    { "subsytem": "Hcal", "count": 3008 },
+    { subsytem: 'EcalEndcap', count: 396 },
+    { subsytem: 'JetMET', count: 10 },
+    { subsytem: 'PixelPhase1', count: 2068 },
+    { subsytem: 'EcalBarrel', count: 558 },
+    { subsytem: 'Hcal', count: 3008 }
   ]
   const dataH2DPlot = [
     {
@@ -75,30 +74,30 @@ const IngestionStatistics = () => {
 
   return (
     <>
-      <Row className="mt-5 mb-3">
+      <Row className='mt-5 mb-3'>
         <Col sm={4}>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>Files</Card.Header>
             <Card.Body><h1>{totalFiles}</h1></Card.Body>
           </Card>
         </Col>
         <Col sm={4}>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>Runs</Card.Header>
             <Card.Body><h1>{totalRuns}</h1></Card.Body>
           </Card>
         </Col>
         <Col sm={4}>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>Lumisections</Card.Header>
             <Card.Body><h1>{totalLumisections}</h1></Card.Body>
           </Card>
         </Col>
       </Row >
 
-      <Row className="mb-3">
+      <Row className='mb-3'>
         <Col>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>Indexed files by status</Card.Header>
             <Card.Body>
               <ResponsivePlot
@@ -110,9 +109,9 @@ const IngestionStatistics = () => {
         </Col>
       </Row>
 
-      <Row className="mb-3">
+      <Row className='mb-3'>
         <Col sm={6}>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>1D Histograms by subsystem</Card.Header>
             <Card.Body>
               <ResponsivePlot
@@ -124,7 +123,7 @@ const IngestionStatistics = () => {
           </Card>
         </Col>
         <Col sm={6}>
-          <Card className="text-center">
+          <Card className='text-center'>
             <Card.Header>2D Histograms by subsystem</Card.Header>
             <Card.Body>
               <ResponsivePlot
@@ -138,7 +137,6 @@ const IngestionStatistics = () => {
       </Row >
     </>
   )
-
 }
 
-export default IngestionStatistics;
+export default IngestionStatistics

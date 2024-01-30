@@ -1,8 +1,8 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
+import React from 'react'
+import Container from 'react-bootstrap/Container'
 
-import IngestionStatistics from './stats';
-import IngestionTasks from "./tasks";
+import IngestionStatistics from './stats'
+import IngestionTasks from './tasks'
 
 const DataIngestion = () => {
   return (
@@ -13,4 +13,4 @@ const DataIngestion = () => {
   )
 }
 
-export default DataIngestion;
+export default DataIngestion

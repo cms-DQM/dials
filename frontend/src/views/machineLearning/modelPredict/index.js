@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 const ModelPredict = () => {
-  const [modelName, setModelName] = useState(null);
-  const [infra, setInfra] = useState(null);
+  const [modelName, setModelName] = useState(null)
+  const [infra, setInfra] = useState(null)
 
   const availablePipelines = [
     'polarisationclassifier',
@@ -30,14 +30,14 @@ const ModelPredict = () => {
   return (
     <Container>
 
-      <Row className="mt-5 mb-3">
+      <Row className='mt-5 mb-3'>
         <Col sm={3}></Col>
         <Col sm={6} className='align-self-center'>
           <Card>
-            <Card.Header as="h4" className='text-center'>Model predict</Card.Header>
+            <Card.Header as='h4' className='text-center'>Model predict</Card.Header>
             <Card.Body>
 
-              <Form.Group className="mb-3">
+              <Form.Group className='mb-3'>
                 <Form.Label>Select a model</Form.Label>
                 <Form.Select
                   default=''
@@ -47,13 +47,13 @@ const ModelPredict = () => {
                   <option key='blankChoice' hidden value />
                   {
                     availablePipelines.map(item => {
-                      return (<option value={item}>{item}</option>)
+                      return (<option key={item} value={item}>{item}</option>)
                     })
                   }
                 </Form.Select>
               </Form.Group>
 
-              <Form.Group className="mb-3">
+              <Form.Group className='mb-3'>
                 <Form.Label>Select a infrastructure</Form.Label>
                 <Form.Select
                   default=''
@@ -63,7 +63,7 @@ const ModelPredict = () => {
                   <option key='blankChoice' hidden value />
                   {
                     availableInfrastructures.map(item => {
-                      return (<option value={item}>{item}</option>)
+                      return (<option key={item} value={item}>{item}</option>)
                     })
                   }
                 </Form.Select>
@@ -81,4 +81,4 @@ const ModelPredict = () => {
   )
 }
 
-export default ModelPredict;
+export default ModelPredict

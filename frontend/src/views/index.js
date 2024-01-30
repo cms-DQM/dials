@@ -1,12 +1,12 @@
-import Home from './home';
-import DataIngestion from './dataIngestion';
+import Home from './home'
+import DataIngestion from './dataIngestion'
 import {
   FileIndex,
   Histograms1D,
   Histograms2D,
   Runs,
   Lumisections
-} from './dataExplorer';
+} from './dataExplorer'
 import {
   CreatePipelines,
   RunPipelines,
