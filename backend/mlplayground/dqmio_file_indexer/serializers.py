@@ -9,8 +9,7 @@ class FileIndexSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class FileIndexInputSerializer(serializers.Serializer):
-    ...
+class FileIndexInputSerializer(serializers.Serializer): ...
 
 
 class FileIndexResponseSerializer(serializers.Serializer):

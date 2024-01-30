@@ -1,11 +1,6 @@
 from rest_framework import serializers
 
-from .models import (
-    Run,
-    Lumisection,
-    LumisectionHistogram1D,
-    LumisectionHistogram2D
-)
+from .models import Run, Lumisection, LumisectionHistogram1D, LumisectionHistogram2D
 
 
 class RunSerializer(serializers.ModelSerializer):

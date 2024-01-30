@@ -48,6 +48,7 @@ class HistogramBase(models.Model):
     """
     Abstract Base model to be inherited from Run and Lumisection Histograms
     """
+
     date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=220)
     source_data_file = models.ForeignKey(
@@ -60,7 +61,7 @@ class HistogramBase(models.Model):
     )
 
     def title_sanitised(self):
-        return quote(self.title, safe='')
+        return quote(self.title, safe="")
 
     class Meta:
         abstract = True
@@ -70,6 +71,7 @@ class LumisectionHistogramBase(HistogramBase):
     """
     Abstract Base model that both 1D and 2D Histograms inherit from.
     """
+
     lumisection = models.ForeignKey(
         Lumisection,
         on_delete=models.CASCADE,
@@ -85,6 +87,7 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
     """
     Model containing 1D Lumisection granularity-level data (histogram information)
     """
+
     data = ArrayField(models.FloatField(), blank=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
@@ -107,6 +110,7 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
     """
     Model containing 2D Lumisection granularity-level data (histogram information)
     """
+
     data = ArrayField(ArrayField(models.FloatField(), blank=True), blank=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)

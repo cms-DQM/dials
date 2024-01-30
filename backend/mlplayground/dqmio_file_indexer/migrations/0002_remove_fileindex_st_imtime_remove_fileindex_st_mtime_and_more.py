@@ -6,33 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dqmio_file_indexer', '0001_initial'),
+        ("dqmio_file_indexer", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='fileindex',
-            name='st_imtime',
+            model_name="fileindex",
+            name="st_imtime",
         ),
         migrations.RemoveField(
-            model_name='fileindex',
-            name='st_mtime',
+            model_name="fileindex",
+            name="st_mtime",
         ),
         migrations.RemoveField(
-            model_name='fileindex',
-            name='status_h1d',
+            model_name="fileindex",
+            name="status_h1d",
         ),
         migrations.RemoveField(
-            model_name='fileindex',
-            name='status_h2d',
+            model_name="fileindex",
+            name="status_h2d",
         ),
         migrations.RemoveField(
-            model_name='fileindex',
-            name='status_rh',
+            model_name="fileindex",
+            name="status_rh",
         ),
         migrations.AddField(
-            model_name='fileindex',
-            name='status',
-            field=models.CharField(default='INDEXED', help_text='Indicate the processing status of run-histogram within the file', max_length=9),
+            model_name="fileindex",
+            name="status",
+            field=models.CharField(
+                default="INDEXED",
+                help_text="Indicate the processing status of run-histogram within the file",
+                max_length=9,
+            ),
         ),
     ]

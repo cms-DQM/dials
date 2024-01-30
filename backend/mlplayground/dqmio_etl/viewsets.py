@@ -22,13 +22,13 @@ from .serializers import (
     LumisectionHistogram1DSerializer,
     LumisectionHistogram2DSerializer,
     LumisectionHistogramsIngetionInputSerializer,
-    LumisectionHistogramsSubsystemCountSerializer
+    LumisectionHistogramsSubsystemCountSerializer,
 )
 from .filters import (
     RunFilter,
     LumisectionFilter,
     LumisectionHistogram1DFilter,
-    LumisectionHistogram2DFilter
+    LumisectionHistogram2DFilter,
 )
 from .tasks import ingest_function
 
@@ -40,20 +40,26 @@ class SplitPart(Func):
     arity = 3
 
 
-class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class RunViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     You can see all ingested Runs metadata
     """
+
     queryset = Run.objects.all().order_by("run_number")
     serializer_class = RunSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RunFilter
 
 
-class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     You can see all ingested Lumisections metadata
     """
+
     queryset = Lumisection.objects.all().order_by("id")
     serializer_class = LumisectionSerializer
     filter_backends = [DjangoFilterBackend]
@@ -61,13 +67,13 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
 
     @extend_schema(
         request=LumisectionHistogramsIngetionInputSerializer,
-        responses={200: TaskResponseSerializer}
+        responses={200: TaskResponseSerializer},
     )
     @action(
         detail=False,
         methods=["post"],
         name="Trigger ETL pipeline for histograms at lumisection granularity-level",
-        url_path=r"ingest-histograms"
+        url_path=r"ingest-histograms",
     )
     def run(self, request):
         file_index_id = request.data.get("id")
@@ -87,10 +93,13 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
         return Response(task.data)
 
 
-class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionHistogram1DViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     You can see all ingested 1d-histograms at lumisection granularity-level
     """
+
     queryset = LumisectionHistogram1D.objects.all().order_by("id")
     serializer_class = LumisectionHistogram1DSerializer
     filter_backends = [DjangoFilterBackend]
@@ -105,27 +114,27 @@ class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelM
         name="Get number of h1d ingested by subsystem",
         url_path=r"count-by-subsystem",
         pagination_class=False,
-        filterset_class=False
+        filterset_class=False,
     )
     def count_by_subsystem(self, request):
-        subsystem = SplitPart(
-            F("title"),
-            Value("/"),
-            1,
-            output_field=TextField()
+        subsystem = SplitPart(F("title"), Value("/"), 1, output_field=TextField())
+        data = (
+            LumisectionHistogram1D.objects.annotate(subsystem=subsystem)
+            .values("subsystem")
+            .annotate(count=Count("subsystem"))
+            .order_by()
         )
-        data = LumisectionHistogram1D.objects\
-            .annotate(subsystem=subsystem)\
-            .values('subsystem')\
-            .annotate(count=Count('subsystem')).order_by()
         data = list(data)
         return Response(data)
 
 
-class LumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class LumisectionHistogram2DViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     You can see all ingested 2d-histograms at lumisection granularity-level
     """
+
     queryset = LumisectionHistogram2D.objects.all().order_by("id")
     serializer_class = LumisectionHistogram2DSerializer
     filter_backends = [DjangoFilterBackend]
@@ -140,18 +149,15 @@ class LumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelM
         name="Get number of h2d ingested by subsystem",
         url_path=r"count-by-subsystem",
         pagination_class=False,
-        filterset_class=False
+        filterset_class=False,
     )
     def count_by_subsystem(self, request):
-        subsystem = SplitPart(
-            F("title"),
-            Value("/"),
-            1,
-            output_field=TextField()
+        subsystem = SplitPart(F("title"), Value("/"), 1, output_field=TextField())
+        data = (
+            LumisectionHistogram2D.objects.annotate(subsystem=subsystem)
+            .values("subsystem")
+            .annotate(count=Count("subsystem"))
+            .order_by()
         )
-        data = LumisectionHistogram2D.objects\
-            .annotate(subsystem=subsystem)\
-            .values('subsystem')\
-            .annotate(count=Count('subsystem')).order_by()
         data = list(data)
         return Response(data)

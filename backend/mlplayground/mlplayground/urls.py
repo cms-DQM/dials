@@ -13,5 +13,9 @@ router.registry.extend(dqmio_celery_tasks_router.registry)
 urlpatterns = [
     path(r"api/v1/", include(router.urls), name="api-v1"),
     path(r"api/v1/schema", SpectacularAPIView.as_view(), name="schema-v1"),
-    path(r"api/v1/swagger", SpectacularSwaggerView.as_view(url_name="schema-v1"), name="swagger-v1")
+    path(
+        r"api/v1/swagger",
+        SpectacularSwaggerView.as_view(url_name="schema-v1"),
+        name="swagger-v1",
+    ),
 ]

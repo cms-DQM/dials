@@ -1,14 +1,15 @@
-# **Class for reading (nano)DQMIO files and extracting histograms**  
-# 
+# **Class for reading (nano)DQMIO files and extracting histograms**
+#
 # Originally copied from here: https://github.com/cms-DQM/ML4DQM-DC_SharedTools/blob/master/dqmio/moredqmiodata.ipynb
 
-from fnmatch import fnmatch 
+from fnmatch import fnmatch
 from collections import namedtuple
 from collections import defaultdict
 from multiprocessing.pool import ThreadPool
 import logging
 
 import ROOT
+
 # import root_numpy
 # disable temporary since not available on SWAN, for now just define manual conversion function from root to numpy array
 
@@ -39,7 +40,10 @@ class DQMIOReader:
         - melist: separate list of medict keys for sortabiltiy in python2.
         - nthreads: number of threads for multithreaded processing.
     """
-    IndexEntry = namedtuple('IndexEntry', ['run', 'lumi', 'type', 'file', 'firstidx', 'lastidx'])
+
+    IndexEntry = namedtuple(
+        "IndexEntry", ["run", "lumi", "type", "file", "firstidx", "lastidx"]
+    )
     # an instance of IndexEntry represents one "entry" in a DQMIO file.
     # this "entry" corresponds to a single lumisection (characterized by run and lumi)
     # and a single type (e.g. TH1F, TH2F, etc.).
@@ -49,14 +53,16 @@ class DQMIOReader:
     #       so multiple IndexEntries for the same lumisection (but different type) can have overlapping indices,
     #       but multiple IndexEntries for the same type and file but different lumisections have disjoint indices!
 
-    MonitorElement = namedtuple('MonitorElement', ['run', 'lumi', 'name', 'type', 'data'])
+    MonitorElement = namedtuple(
+        "MonitorElement", ["run", "lumi", "name", "type", "data"]
+    )
     # an instance of MonitorElement represents one monitor element, with all associated information:
     # - the run and lumisection number
     # - the full name of the monitoring element
     # - the type (e.g. TH1F, TH2F, etc., see function __get_me_type below for all allowed types)
     # - the actual data
 
-    TREE_NAMES = { 
+    TREE_NAMES = {
         0: "Ints",
         1: "Floats",
         2: "Strings",
@@ -136,7 +142,7 @@ class DQMIOReader:
         # in case of defaultdict they are added to the index as empty lists of IndexEntries)
         self.index = dict(self.index)
         self.index_keys = list(self.index.keys())
- 
+
     def __extract_data_from_ROOT(self, root_obj, hist2array=False):
         """
         Extract ROOT-type data into useful formats, depending on the data type
@@ -191,11 +197,11 @@ class DQMIOReader:
 
         # Get the data for the requested lumisection
         entries = self.index.get(runlumi, None)
-        if entries is None: 
+        if entries is None:
             raise IndexError(
                 f"ERROR in DQMIOReader.get_mes_for_lumi: requested to read data for lumisection {runlumi}, but no data was found for this lumisection in the current DQMIOReader."
             )
-        
+
         # loop over all entries for this lumisection;
         # this corresponds to looping over all types of monitoring elements
         # (see the documentation of IndexEntry for more info).
@@ -211,9 +217,11 @@ class DQMIOReader:
             me_tree.SetBranchStatus("FullName", 1)
 
             # loop over entries for this tree
-            for x in range(entry.firstidx, entry.lastidx+1):
+            for x in range(entry.firstidx, entry.lastidx + 1):
                 me_tree.GetEntry(x)
-                me_name = str(me_tree.FullName) # extract the monitoring element name and check if it is needed
+                me_name = str(
+                    me_tree.FullName
+                )  # extract the monitoring element name and check if it is needed
                 if not self.__is_me_name_matching_selections(me_name, name_patterns):
                     continue
 

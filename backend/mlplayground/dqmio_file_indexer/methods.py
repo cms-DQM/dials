@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class RawDataIndexer:
     STORAGE_DIRS = settings.DIR_PATH_DQMIO_STORAGE.split(":")
-    
+
     @staticmethod
     def __infer_era_from_string(era_string):
         if len(era_string) == 8 and "Run" in era_string:
@@ -36,7 +36,7 @@ class RawDataIndexer:
             return None
         else:
             return RawDataIndexer.__infer_era_from_string(era_string)
-        
+
     @staticmethod
     def __search_era_with_regex(filename):
         try:
@@ -55,7 +55,7 @@ class RawDataIndexer:
         era = RawDataIndexer.__search_era_with_regex(filename)
         if era:
             return era
-        
+
         return "Unknown"
 
     @staticmethod
@@ -65,7 +65,9 @@ class RawDataIndexer:
             file_path=str(file),
             data_era=RawDataIndexer.__infer_data_era(file.name),
             st_size=lstat.st_size,
-            st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone())
+            st_ctime=datetime.fromtimestamp(
+                lstat.st_ctime, tz=timezone.get_current_timezone()
+            ),
         )
 
         # Do not return anything, next function will check if returned value is None
@@ -79,7 +81,11 @@ class RawDataIndexer:
     @staticmethod
     def __search_dqmio_files(storage_dir):
         path = Path(storage_dir)
-        files = [file for file in path.rglob("*") if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()]
+        files = [
+            file
+            for file in path.rglob("*")
+            if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()
+        ]
         total_files = len(files)
         files = [RawDataIndexer.__index_file_in_database(file) for file in files]
         indexed_files_id = [file_id for file_id in files if file_id is not None]
@@ -94,10 +100,12 @@ class RawDataIndexer:
         for dir in self.STORAGE_DIRS:
             logger.debug(f"Getting recursive file list for path '{dir}'")
             dir_result = RawDataIndexer.__search_dqmio_files(dir)
-            stats.append(FileIndexResponseBase(
-                storage=dir,
-                total=dir_result["total_files"],
-                added=dir_result["total_added_files"],
-                ingested_ids=dir_result["indexed_files_id"]
-            ))
+            stats.append(
+                FileIndexResponseBase(
+                    storage=dir,
+                    total=dir_result["total_files"],
+                    added=dir_result["total_added_files"],
+                    ingested_ids=dir_result["indexed_files_id"],
+                )
+            )
         return stats

@@ -2,12 +2,7 @@ import logging
 
 from dqmio_file_indexer.models import FileIndex, FileIndexStatus
 
-from .models import (
-    Run,
-    Lumisection,
-    LumisectionHistogram1D,
-    LumisectionHistogram2D
-)
+from .models import Run, Lumisection, LumisectionHistogram1D, LumisectionHistogram2D
 from .reader import DQMIOReader
 
 logger = logging.getLogger(__name__)
@@ -33,7 +28,7 @@ class HistIngestion:
             for me in me_list:
                 if me.type not in self.H1D_VALID_MES:
                     continue
-            
+
                 entries = me.data.GetEntries()
                 hist_x_bins = me.data.GetNbinsX()
                 hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
@@ -47,22 +42,32 @@ class HistIngestion:
                     run=run_obj, ls_number=me.lumi
                 )
 
-                count_lumih1d = LumisectionHistogram1D.objects.filter(lumisection=lumi_obj, title=me.name).count()
+                count_lumih1d = LumisectionHistogram1D.objects.filter(
+                    lumisection=lumi_obj, title=me.name
+                ).count()
                 if count_lumih1d == 0:
-                    h1d_list.append(LumisectionHistogram1D(
-                        lumisection=lumi_obj,
-                        title=me.name,
-                        entries=entries,
-                        data=data,
-                        source_data_file=self.file_index,
-                        x_min=hist_x_min,
-                        x_max=hist_x_max,
-                        x_bin=hist_x_bins,
-                    ))
+                    h1d_list.append(
+                        LumisectionHistogram1D(
+                            lumisection=lumi_obj,
+                            title=me.name,
+                            entries=entries,
+                            data=data,
+                            source_data_file=self.file_index,
+                            x_min=hist_x_min,
+                            x_max=hist_x_max,
+                            x_bin=hist_x_bins,
+                        )
+                    )
 
-            n_ingested = len(LumisectionHistogram1D.objects.bulk_create(h1d_list, ignore_conflicts=True))
+            n_ingested = len(
+                LumisectionHistogram1D.objects.bulk_create(
+                    h1d_list, ignore_conflicts=True
+                )
+            )
             entries_ingested += n_ingested
-            logger.debug(f"{n_ingested} x 1D lumisection histos successfully added from file {self.file_index.file_path}.")
+            logger.debug(
+                f"{n_ingested} x 1D lumisection histos successfully added from file {self.file_index.file_path}."
+            )
 
             self.file_index.n_entries_ingested += n_ingested
             self.file_index.save()
@@ -105,25 +110,35 @@ class HistIngestion:
                     run=run_obj, ls_number=me.lumi
                 )
 
-                count_lumih2d = LumisectionHistogram2D.objects.filter(lumisection=lumi_obj, title=me.name).count()
+                count_lumih2d = LumisectionHistogram2D.objects.filter(
+                    lumisection=lumi_obj, title=me.name
+                ).count()
                 if count_lumih2d == 0:
-                    h2d_list.append(LumisectionHistogram2D(
-                        lumisection=lumi_obj,
-                        title=me.name,
-                        entries=entries,
-                        data=data,
-                        source_data_file=self.file_index,
-                        x_min=hist_x_min,
-                        x_max=hist_x_max,
-                        x_bin=hist_x_bins,
-                        y_min=hist_y_min,
-                        y_max=hist_y_max,
-                        y_bin=hist_y_bins,
-                    ))
+                    h2d_list.append(
+                        LumisectionHistogram2D(
+                            lumisection=lumi_obj,
+                            title=me.name,
+                            entries=entries,
+                            data=data,
+                            source_data_file=self.file_index,
+                            x_min=hist_x_min,
+                            x_max=hist_x_max,
+                            x_bin=hist_x_bins,
+                            y_min=hist_y_min,
+                            y_max=hist_y_max,
+                            y_bin=hist_y_bins,
+                        )
+                    )
 
-            n_ingested = len(LumisectionHistogram2D.objects.bulk_create(h2d_list, ignore_conflicts=True))
+            n_ingested = len(
+                LumisectionHistogram2D.objects.bulk_create(
+                    h2d_list, ignore_conflicts=True
+                )
+            )
             entries_ingested += n_ingested
-            logger.debug(f"{n_ingested} x 2D lumisection histos successfully added from file {self.file_index.file_path}.")
+            logger.debug(
+                f"{n_ingested} x 2D lumisection histos successfully added from file {self.file_index.file_path}."
+            )
 
             self.file_index.n_entries_ingested += n_ingested
             self.file_index.save()
@@ -132,7 +147,7 @@ class HistIngestion:
             if read_chunk_lumi >= current_lumi:
                 logger.debug(f"Read until requested lumi {read_chunk_lumi}, stopping")
                 break
-        
+
         return entries_ingested
 
     def run(self):
@@ -147,8 +162,8 @@ class HistIngestion:
         except Exception as err:
             self.file_index.update_status(FileIndexStatus.FAILED)
             raise err
-        
+
         return {
             "h1d_entries": ingested_h1d_entries,
-            "h2d_entries": ingested_h2d_entries
+            "h2d_entries": ingested_h2d_entries,
         }
