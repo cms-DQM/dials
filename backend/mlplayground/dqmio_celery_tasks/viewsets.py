@@ -35,16 +35,19 @@ class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     )
     def check_queued_tasks(self, request):
         result = []
-        for worker, tasks in inspect.reserved().items():
-            for task in tasks:
-                result.append(
-                    InspectResponseBase(
-                        id=task.get("id"),
-                        name=task.get("name"),
-                        queue=task.get("delivery_info", {}).get("routing_key"),
-                        worker=worker,
+        reserved = inspect.reserved()
+
+        if reserved is not None:
+            for worker, tasks in inspect.reserved().items():
+                for task in tasks:
+                    result.append(
+                        InspectResponseBase(
+                            id=task.get("id"),
+                            name=task.get("name"),
+                            queue=task.get("delivery_info", {}).get("routing_key"),
+                            worker=worker,
+                        )
                     )
-                )
 
         result = InspectResponseSerializer(result, many=True)
         return Response(result.data)
