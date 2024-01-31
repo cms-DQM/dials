@@ -13,6 +13,7 @@ class RunFilter(filters.FilterSet):
 
 
 class LumisectionFilter(filters.FilterSet):
+    run_number = filters.NumberFilter(label="Run number", field_name="run__run_number", lookup_expr="exact")
     min_ls_number = filters.NumberFilter(label="Minimum lumisection number", field_name="ls_number", lookup_expr="gte")
     max_ls_number = filters.NumberFilter(label="Maximum lumisection number", field_name="ls_number", lookup_expr="lte")
     min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_id", lookup_expr="gte")
@@ -20,24 +21,32 @@ class LumisectionFilter(filters.FilterSet):
 
     class Meta:
         model = Lumisection
-        fields = ["min_ls_number", "max_ls_number", "min_run_number", "max_run_number"]
+        fields = ["run_number", "min_ls_number", "max_ls_number", "min_run_number", "max_run_number"]
 
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
+    run_number = filters.NumberFilter(label="Run number", field_name="lumisection__run", lookup_expr="exact")
+    ls_number = filters.NumberFilter(
+        label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
+    )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     lumisection_id = filters.CharFilter(label="Lumisection id", field_name="lumisection_id", lookup_expr="exact")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
 
     class Meta:
         model = LumisectionHistogram1D
-        fields = ["title_contains", "lumisection_id", "min_entries"]
+        fields = ["run_number", "ls_number", "title_contains", "lumisection_id", "min_entries"]
 
 
 class LumisectionHistogram2DFilter(filters.FilterSet):
+    run_number = filters.NumberFilter(label="Run number", field_name="lumisection__run", lookup_expr="exact")
+    ls_number = filters.NumberFilter(
+        label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
+    )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     lumisection_id = filters.CharFilter(label="Lumisection id", field_name="lumisection_id", lookup_expr="exact")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
 
     class Meta:
         model = LumisectionHistogram2D
-        fields = ["title_contains", "lumisection_id", "min_entries"]
+        fields = ["run_number", "ls_number", "title_contains", "lumisection_id", "min_entries"]
