@@ -70,7 +70,7 @@ const Runs = () => {
           <Card>
             <Card.Header className='text-center' as='h4'>Filters</Card.Header>
             <Card.Body>
-              <Form.Group className='mb-3' controlId='formMinRun'>
+              <Form.Group className='mb-3' controlId='formRunRange'>
                 <Form.Label>Run Range</Form.Label>
                 <Row>
                   <Col xs={6}>
