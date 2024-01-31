@@ -29,6 +29,21 @@ const getFileIndex = async ({ page, era, minSize, pathContains, status }) => {
   return response.data
 }
 
+const getRun = async ({ page, maxRun, minRun }) => {
+  const endpoint = `${API_URL}/run/`
+  const response = await axios.get(endpoint, {
+    params: {
+      page,
+      max_run_number: toUndefined(maxRun, ''),
+      min_run_number: toUndefined(minRun, '')
+    },
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  return response.data
+}
+
 const getLumisection = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
   const response = await axios.get(endpoint, {
@@ -46,27 +61,17 @@ const getLumisection = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   return response.data
 }
 
-const getRun = async ({ page, maxRun, minRun }) => {
-  const endpoint = `${API_URL}/run/`
+const getLumisectionHist = async (dim, { page, run, ls, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
+  const endpoint = `${API_URL}/lumisection-h${dim}d/`
   const response = await axios.get(endpoint, {
     params: {
       page,
+      run_number: toUndefined(run, ''),
+      ls_number: toUndefined(ls, ''),
+      max_ls_number: toUndefined(maxLs, ''),
       max_run_number: toUndefined(maxRun, ''),
-      min_run_number: toUndefined(minRun, '')
-    },
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-  return response.data
-}
-
-const getLumisectionH1D = async ({ page, lumisectionId, minEntries, titleContains }) => {
-  const endpoint = `${API_URL}/lumisection-h1d/`
-  const response = await axios.get(endpoint, {
-    params: {
-      page,
-      lumisection_id: toUndefined(lumisectionId, ''),
+      min_ls_number: toUndefined(minLs, ''),
+      min_run_number: toUndefined(minRun, ''),
       min_entries: toUndefined(minEntries, ''),
       title_contains: toUndefined(titleContains, '')
     },
@@ -77,34 +82,8 @@ const getLumisectionH1D = async ({ page, lumisectionId, minEntries, titleContain
   return response.data
 }
 
-const getLumisectionH2D = async ({ page, lumisectionId, minEntries, titleContains }) => {
-  const endpoint = `${API_URL}/lumisection-h2d/`
-  const response = await axios.get(endpoint, {
-    params: {
-      page,
-      lumisection_id: toUndefined(lumisectionId, ''),
-      min_entries: toUndefined(minEntries, ''),
-      title_contains: toUndefined(titleContains, '')
-    },
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-  return response.data
-}
-
-const getLumisectionH1DSubsystemCount = async () => {
-  const endpoint = `${API_URL}/lumisection-h1d/count-by-subsystem/`
-  const response = await axios.get(endpoint, {
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-  return response.data
-}
-
-const getLumisectionH2DSubsystemCount = async () => {
-  const endpoint = `${API_URL}/lumisection-h2d/count-by-subsystem/`
+const getLumisectionHistSubsystemCount = async (dim) => {
+  const endpoint = `${API_URL}/lumisection-h${dim}d/count-by-subsystem/`
   const response = await axios.get(endpoint, {
     headers: {
       Accept: 'application/json'
@@ -143,10 +122,8 @@ const API = {
   },
   lumisection: {
     get: getLumisection,
-    getH1D: getLumisectionH1D,
-    getH2D: getLumisectionH2D,
-    getH1DSSCount: getLumisectionH1DSubsystemCount,
-    getH2DSSCount: getLumisectionH2DSubsystemCount
+    getHist: getLumisectionHist,
+    getSubsystemCount: getLumisectionHistSubsystemCount
   },
   run: {
     get: getRun

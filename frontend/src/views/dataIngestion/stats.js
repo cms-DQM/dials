@@ -43,7 +43,7 @@ const IngestionStatistics = () => {
     }
 
     const handleH1DCounts = async () => {
-      const data = await API.lumisection.getH1DSSCount()
+      const data = await API.lumisection.getSubsystemCount(1)
       setDataH1DPlot([
         {
           values: data.map(item => item.count),
@@ -60,7 +60,7 @@ const IngestionStatistics = () => {
     }
 
     const handleH2DCounts = async () => {
-      const data = await API.lumisection.getH2DSSCount()
+      const data = await API.lumisection.getSubsystemCount(2)
       setDataH2DPlot([
         {
           values: data.map(item => item.count),
