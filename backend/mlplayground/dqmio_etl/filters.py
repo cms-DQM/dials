@@ -29,8 +29,15 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
     ls_number = filters.NumberFilter(
         label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
     )
+    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="lumisection__run", lookup_expr="gte")
+    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="lumisection__run", lookup_expr="lte")
+    min_ls_number = filters.NumberFilter(
+        label="Minimum lumisection number", field_name="lumisection__ls_number", lookup_expr="gte"
+    )
+    max_ls_number = filters.NumberFilter(
+        label="Maximum lumisection number", field_name="lumisection__ls_number", lookup_expr="lte"
+    )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
-    lumisection_id = filters.CharFilter(label="Lumisection id", field_name="lumisection_id", lookup_expr="exact")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
 
     class Meta:
@@ -43,8 +50,15 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
     ls_number = filters.NumberFilter(
         label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
     )
+    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="lumisection__run", lookup_expr="gte")
+    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="lumisection__run", lookup_expr="lte")
+    min_ls_number = filters.NumberFilter(
+        label="Minimum lumisection number", field_name="lumisection__ls_number", lookup_expr="gte"
+    )
+    max_ls_number = filters.NumberFilter(
+        label="Maximum lumisection number", field_name="lumisection__ls_number", lookup_expr="lte"
+    )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
-    lumisection_id = filters.CharFilter(label="Lumisection id", field_name="lumisection_id", lookup_expr="exact")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
 
     class Meta:
