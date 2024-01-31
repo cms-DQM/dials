@@ -4,8 +4,8 @@ from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D,
 
 
 class RunFilter(filters.FilterSet):
-    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_id", lookup_expr="gte")
-    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_id", lookup_expr="lte")
+    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_number", lookup_expr="gte")
+    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_number", lookup_expr="lte")
 
     class Meta:
         model = Run
