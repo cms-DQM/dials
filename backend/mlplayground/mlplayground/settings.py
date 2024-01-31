@@ -17,12 +17,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Discover which environment the server is running
+ENV = os.getenv("ENV")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
@@ -30,16 +29,32 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = [
-    os.getenv("DJANGO_ALLOWED_HOSTS", "localhost"),
-    "127.0.0.1",
-]
+# A list of strings representing the host/domain names that this Django site can serve
+ALLOWED_HOSTS = []
+if ENV == "development":
+    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
+else:
+    ALLOWED_HOSTS.append(os.getenv("DJANGO_ALLOWED_HOSTS"))
 
-CSRF_TRUSTED_ORIGINS = [os.getenv("CSRF_TRUSTED_ORIGINS", "https://ml4dqm-playground.web.cern.ch")]
+# A list of trusted origins for unsafe requests (e.g. POST).
+CSRF_TRUSTED_ORIGINS = []
+if ENV == "development":
+    CSRF_TRUSTED_ORIGINS.append(os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost:3000"))
+else:
+    CSRF_TRUSTED_ORIGINS.append(os.getenv("CSRF_TRUSTED_ORIGINS"))
 
+# Cors
+CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` will not have any effect
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = []
+if ENV == "development":
+    CORS_ALLOWED_ORIGINS.append(os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000"))
+else:
+    CORS_ALLOWED_ORIGINS.append(os.getenv("CORS_ALLOWED_ORIGINS"))
 
 # Application definition
-
 INSTALLED_APPS = [
     # Django built-in apps
     "django.contrib.auth",
@@ -51,20 +66,24 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "django_celery_results",
+    "corsheaders",
     # Project apps
     "dqmio_file_indexer.apps.DqmioDataIndexerConfig",
     "dqmio_etl.apps.DqmioEtlConfig",
     "dqmio_celery_tasks.apps.DqmioCeleryTasksConfig",
 ]
 
+# Django Rest Framework (DRF) configuration
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+# DRF-Spectacular configuration
 SPECTACULAR_SETTINGS = {"PREPROCESSING_HOOKS": ["mlplayground.spectacular.preprocessing_filter_spec"]}
 
+# A list of middleware (framework of hooks into Django’s request/response processing) to use
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -73,10 +92,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
+# A string representing the full Python import path to your root URLconf
 ROOT_URLCONF = "mlplayground.urls"
 
+# A list containing the settings for all template engines to be used with Django
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -93,12 +115,11 @@ TEMPLATES = [
     },
 ]
 
+# Indicate entrypoint for starting ASGI server
 ASGI_APPLICATION = "mlplayground.asgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+# Database configuration
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DJANGO_DATABASE_ENGINE"),
@@ -112,8 +133,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -131,8 +150,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -144,7 +161,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Logging
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -163,16 +179,10 @@ LOGGING = {
     },
 }
 
-DIR_PATH_DQMIO_STORAGE = os.getenv("DIR_PATH_DQMIO_STORAGE")
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = "static/"
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery configuration options
@@ -186,3 +196,6 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": 600,
     }
 }
+
+# Path used in dqmio_file_indexer app to discover DQMIO files
+DIR_PATH_DQMIO_STORAGE = os.getenv("DIR_PATH_DQMIO_STORAGE")
