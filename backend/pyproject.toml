@@ -20,6 +20,10 @@ django-cors-headers = "^4.3.1"
 [tool.poetry.group.dev.dependencies]
 python-dotenv = "^1.0.0"
 pre-commit = "^3.6.0"
+poethepoet = "^0.24.4"
+
+[tool.poe.tasks]
+start = "./scripts/start.sh"
 
 [build-system]
 requires = ["poetry-core"]
