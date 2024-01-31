@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import sleep from '../../utils/sleep'
 import toUndefined from '../../utils/sanitizer'
-import Mock from '../mocks'
 import { API_URL } from '../../config/env'
 
 const FILE_INDEX_STATUSES = [
@@ -135,65 +134,6 @@ const getEnqueuedTasks = async () => {
     }
   })
   return response.data
-}
-
-export const getLatestTasks = async () => {
-  await sleep(1)
-  return Mock.tasksResults
-}
-
-export const getPendingTasks = async () => {
-  await sleep(1)
-  return Mock.tasksPending
-}
-
-export const getFileIndexByPage = async (page) => {
-  await sleep(1)
-  const mockedResponse = {
-    1: Mock.fileIndexPage1,
-    2: Mock.fileIndexPage2,
-    3: Mock.fileIndexPage3
-  }
-  return mockedResponse[[page]]
-}
-
-export const getHistograms1DByPage = async (page) => {
-  await sleep(1)
-  const mockedResponse = {
-    1: Mock.histograms1DPage1,
-    2: Mock.histograms1DPage2,
-    3: Mock.histograms1DPage3
-  }
-  return mockedResponse[[page]]
-}
-
-export const getHistograms2DByPage = async (page) => {
-  await sleep(1)
-  const mockedResponse = {
-    1: Mock.histograms2DPage1,
-    2: Mock.histograms2DPage2,
-    3: Mock.histograms2DPage3
-  }
-  return mockedResponse[[page]]
-}
-
-export const getRunsByPage = async (page) => {
-  await sleep(1)
-  const mockedResponse = {
-    1: Mock.runsPage1,
-    2: Mock.runsPage2
-  }
-  return mockedResponse[[page]]
-}
-
-export const getLumisectionsByPage = async (page) => {
-  await sleep(1)
-  const mockedResponse = {
-    1: Mock.lumisectionsPage1,
-    2: Mock.lumisectionsPage2,
-    3: Mock.lumisectionsPage3
-  }
-  return mockedResponse[[page]]
 }
 
 const API = {
