@@ -6,7 +6,8 @@ import Col from 'react-bootstrap/Col'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 
 import Table from '../../components/table'
-import { getLatestTasks, getPendingTasks } from '../../services/api'
+import API from '../../services/api'
+import dateFormat from '../../utils/date'
 
 const IngestionTasks = () => {
   const [latestTasks, setLatestTasks] = useState([])
@@ -28,44 +29,24 @@ const IngestionTasks = () => {
     sizePerPage: 5, paginationSize: 2, hideSizePerPage: true
   })
 
-  const handleLatestTasks = () => {
-    setLoadingLatestTasks(true)
-    getLatestTasks()
-      .then(tasks => {
-        setLatestTasks(tasks)
-      })
-      .catch(error => {
-        console.error(error)
-      })
-      .finally(() => {
-        setLoadingLatestTasks(false)
-      })
-  }
-
-  const handlePendingTasks = () => {
-    setLoadingPendingTasks(true)
-    getPendingTasks()
-      .then(tasks => {
-        setPendingTasks(tasks)
-      })
-      .catch(error => {
-        console.error(error)
-      })
-      .finally(() => {
-        setLoadingPendingTasks(false)
-      })
-  }
-
   useEffect(() => {
-    handleLatestTasks()
-    handlePendingTasks()
-    const interval = setInterval(() => {
-      handleLatestTasks()
-      handlePendingTasks()
-    }, 30000)
-    return () => {
-      clearInterval(interval)
+    const handleTrackedTasks = async () => {
+      const response = await API.jobQueue.tracked({})
+      const result = response.results.slice(0, 5).map(item => {
+        return { ...item, date_created: dateFormat(item.date_created, 'dd.MM.yyyy HH:mm:ss') }
+      })
+      setLatestTasks(result)
+      setLoadingLatestTasks(false)
     }
+
+    const handleEnqueuedTasks = async () => {
+      const response = await API.jobQueue.enqueued()
+      setPendingTasks(response)
+      setLoadingPendingTasks(false)
+    }
+
+    handleTrackedTasks()
+    handleEnqueuedTasks()
   }, [])
 
   return (
