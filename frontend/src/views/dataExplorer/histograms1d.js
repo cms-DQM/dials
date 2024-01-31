@@ -28,7 +28,7 @@ const Histograms1D = () => {
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
-    { dataField: 'title', text: 'Title', type: 'string' },
+    { dataField: 'title', text: 'Title', type: 'string', headerStyle: { 'min-width': '300px', 'word-break': 'break-all' } },
     { dataField: 'entries', text: 'Entries', type: 'number' },
     { dataField: 'source_data_file', text: 'Source File Id', type: 'number' },
     { dataField: 'lumisection', text: 'Lumisection Id', type: 'number' },
@@ -49,7 +49,7 @@ const Histograms1D = () => {
       API.lumisection.getH1D({ page, titleContains, lumisectionId, minEntries })
         .then(response => {
           const results = response.results.map(item => {
-            const data = [{ y: item.data, type: 'bar' }]
+            const data = [{ y: item.data, type: 'bar', marker: { color: '#0033A0' } }]
             const layout = {
               margin: { t: 10, b: 10, l: 10, r: 10 },
               yaxis: { visible: false },
@@ -65,6 +65,8 @@ const Histograms1D = () => {
                   data={data}
                   layout={layout}
                   config={{ staticPlot: true }}
+                  boxWidth={'200pt'}
+                  boxHeight={'100pt'}
                 />
               )
             }
@@ -145,7 +147,7 @@ const Histograms1D = () => {
       <Card.Header as='h4'>Luminosity-granularity 1D histograms</Card.Header>
       <Card.Body>
         <Table
-          keyField='file_path'
+          keyField='id'
           isLoading={isLoading}
           data={data}
           columns={columns}

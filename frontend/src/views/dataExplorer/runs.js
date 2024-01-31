@@ -134,7 +134,7 @@ const Runs = () => {
           <Card.Header as='h4'>Runs</Card.Header>
           <Card.Body>
             <Table
-              keyField='file_path'
+              keyField='run_number'
               isLoading={isLoading}
               data={data}
               columns={columns}

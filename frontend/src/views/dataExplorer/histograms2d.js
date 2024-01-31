@@ -28,7 +28,7 @@ const Histograms2D = () => {
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
-    { dataField: 'title', text: 'Title', type: 'string' },
+    { dataField: 'title', text: 'Title', type: 'string', headerStyle: { 'min-width': '300px', 'word-break': 'break-all' } },
     { dataField: 'entries', text: 'Entries', type: 'number' },
     { dataField: 'source_data_file', text: 'Source File Id', type: 'number' },
     { dataField: 'lumisection', text: 'Lumisection Id', type: 'number' },
@@ -65,6 +65,8 @@ const Histograms2D = () => {
                   data={data}
                   layout={layout}
                   config={{ staticPlot: true }}
+                  boxWidth={'200pt'}
+                  boxHeight={'100pt'}
                 />
               )
             }
@@ -145,7 +147,7 @@ const Histograms2D = () => {
       <Card.Header as='h4'>Luminosity-granularity 2D histograms</Card.Header>
       <Card.Body>
         <Table
-          keyField='file_path'
+          keyField='id'
           isLoading={isLoading}
           data={data}
           columns={columns}
