@@ -57,7 +57,7 @@ const Run = () => {
       <Row className='mt-5 mb-3 m-3'>
         <Breadcrumb>
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>All runs</Breadcrumb.Item>
-          <Breadcrumb.Item active>{runNumber}</Breadcrumb.Item>
+          <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
