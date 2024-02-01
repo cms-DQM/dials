@@ -9,6 +9,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 
 import Table from '../../components/table'
 import API from '../../services/api'
+import CMSOMSCard from '../../components/cmsOMSCard'
 
 const Run = () => {
   const { runNumber } = useParams()
@@ -18,7 +19,20 @@ const Run = () => {
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
-    { dataField: 'ls_number', text: 'Lumisection', type: 'number' },
+    {
+      dataField: 'ls_number',
+      text: 'Lumisection',
+      type: 'number',
+      formatter: (cell, row) => {
+        const linkTo = {
+          pathname: `/lumisections/${row.ls_number}`,
+          search: `?runNumber=${runNumber}`
+        }
+        return (
+          <Link to={linkTo}>{row.ls_number}</Link>
+        )
+      }
+    },
     { dataField: 'hist1d_count', text: '1D Histograms', type: 'number' },
     { dataField: 'hist2d_count', text: '2D Histograms', type: 'number' },
     { dataField: 'int_lumi', text: 'Initial Luminosity', type: 'number' },
@@ -80,38 +94,7 @@ const Run = () => {
           </Card>
         </Col>
         <Col sm={3}>
-          <Card>
-            <Card.Header>More from OMS</Card.Header>
-            <Card.Body>
-              <Card.Text>
-                <a
-                  href={`https://cmsoms.cern.ch/cms/runs/report?cms_run=${runNumber}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  {`Run ${runNumber}`}
-                </a>
-              </Card.Text>
-              <Card.Text>
-                <a
-                  href={`https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run=${runNumber}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  {`L1 rates from run ${runNumber}`}
-                </a>
-              </Card.Text>
-              <Card.Text>
-                <a
-                  href={`https://cmsoms.cern.ch/cms/triggers/hlt_trigger_rates?cms_run=${runNumber}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  {`HLT rates from run ${runNumber}`}
-                </a>
-              </Card.Text>
-            </Card.Body>
-          </Card>
+          <CMSOMSCard runNumber={runNumber}/>
         </Col>
       </Row>
     </>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
@@ -12,6 +12,8 @@ import Table from '../../components/table'
 import API from '../../services/api'
 
 const Lumisections = () => {
+  const navigate = useNavigate()
+
   // Loading indicator and filter props
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -21,8 +23,10 @@ const Lumisections = () => {
   const [maxRun, setMaxRun] = useState()
 
   // Search props
-  const [lumisectionNumber, setLumisectionNumber] = useState()
   const [runNumber, setRunNumber] = useState()
+  const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
+  const [lsNumberIsInvalid, setLsNumberIsInvalid] = useState()
+  const [lsNumber, setLsNumber] = useState()
 
   // Actual data after fetching
   const [data, setData] = useState([])
@@ -36,14 +40,27 @@ const Lumisections = () => {
       dataField: 'run',
       text: 'Run',
       type: 'number',
-      formatter: (cell, row, rowIndex, extraData) => {
+      formatter: (cell, row) => {
         const linkTo = `/runs/${row.run}`
         return (
           <Link to={linkTo}>{row.run}</Link>
         )
       }
     },
-    { dataField: 'ls_number', text: 'Lumisection', type: 'number' },
+    {
+      dataField: 'ls_number',
+      text: 'Lumisection',
+      type: 'number',
+      formatter: (cell, row) => {
+        const linkTo = {
+          pathname: `/lumisections/${row.ls_number}`,
+          search: `?runNumber=${row.run}`
+        }
+        return (
+          <Link to={linkTo}>{row.ls_number}</Link>
+        )
+      }
+    },
     { dataField: 'oms_zerobias_rate', text: 'OMS ZeroBias Rate', type: 'string' }
   ]
   const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
@@ -137,38 +154,62 @@ const Lumisections = () => {
             </Card.Body>
           </Card>
         </div>
-        {/* TODO: Integrate search form to fetch exactly one lumisection and display a page for it */}
-        {/* <div>
+        <div>
           <Card>
             <Card.Header className='text-center' as='h4'>Search</Card.Header>
             <Card.Body>
-              <Form.Group className='mb-3' controlId='formRunNumber'>
-                <Form.Label>Lumisection Number</Form.Label>
-                <Form.Control
-                  type='number'
-                  value={lumisectionNumber}
-                  onChange={e => setLumisectionNumber(e.target.value)}
-                />
-              </Form.Group>
-
               <Form.Group className='mb-3' controlId='formRunNumber'>
                 <Form.Label>Run Number</Form.Label>
                 <Form.Control
                   type='number'
                   value={runNumber}
                   onChange={e => setRunNumber(e.target.value)}
+                  isInvalid={runNumberIsInvalid}
                 />
+                <Form.Control.Feedback type='invalid'>Run number cannot be empty</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formRunNumber'>
+                <Form.Label>Lumisection Number</Form.Label>
+                <Form.Control
+                  type='number'
+                  value={lsNumber}
+                  onChange={e => setLsNumber(e.target.value)}
+                  isInvalid={lsNumberIsInvalid}
+                />
+                <Form.Control.Feedback type='invalid'>Lumisection number cannot be empty</Form.Control.Feedback>
               </Form.Group>
 
               <Button
                 variant='primary'
                 type='submit'
+                onClick={() => {
+                  const isNumericNonZero = (num) => {
+                    return !isNaN(num) && +num > 0
+                  }
+                  let doNavigation = true
+
+                  if (!isNumericNonZero(runNumber)) {
+                    doNavigation = false
+                    setRunNumberIsInvalid(true)
+                  }
+                  if (!isNumericNonZero(lsNumber)) {
+                    doNavigation = false
+                    setLsNumberIsInvalid(true)
+                  }
+
+                  if (!doNavigation) {
+                    return
+                  }
+
+                  return navigate({ pathname: lsNumber, search: `?runNumber=${runNumber}` })
+                }}
               >
-                Submit
+                Go
               </Button>
             </Card.Body>
           </Card>
-        </div> */}
+        </div>
       </Col>
       <Col sm={9}>
         <Card className='text-center'>

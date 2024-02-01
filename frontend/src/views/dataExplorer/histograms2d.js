@@ -36,14 +36,27 @@ const Histograms2D = () => {
       dataField: 'run_number',
       text: 'Run',
       type: 'number',
-      formatter: (cell, row, rowIndex, extraData) => {
+      formatter: (cell, row) => {
         const linkTo = `/runs/${row.run_number}`
         return (
           <Link to={linkTo}>{row.run_number}</Link>
         )
       }
     },
-    { dataField: 'ls_number', text: 'Lumisection', type: 'number' },
+    {
+      dataField: 'ls_number',
+      text: 'Lumisection',
+      type: 'number',
+      formatter: (cell, row) => {
+        const linkTo = {
+          pathname: `/lumisections/${row.ls_number}`,
+          search: `?runNumber=${row.run_number}`
+        }
+        return (
+          <Link to={linkTo}>{row.ls_number}</Link>
+        )
+      }
+    },
     { dataField: 'title', text: 'Title', type: 'string', headerStyle: { 'min-width': '300px', 'word-break': 'break-all' } },
     { dataField: 'entries', text: 'Entries', type: 'number' },
     { dataField: 'plot', text: 'Plot' }

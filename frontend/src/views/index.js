@@ -2,11 +2,12 @@ import Home from './home'
 import DataIngestion from './dataIngestion'
 import {
   FileIndex,
-  Histograms1D,
-  Histograms2D,
   Runs,
+  Run,
   Lumisections,
-  Run
+  Lumisection,
+  Histograms1D,
+  Histograms2D
 } from './dataExplorer'
 import {
   CreatePipelines,
@@ -24,10 +25,11 @@ const Views = {
   dataExplorer: {
     fileIndex: FileIndex,
     runs: Runs,
+    run: Run,
     lumisections: Lumisections,
+    lumisection: Lumisection,
     h1d: Histograms1D,
-    h2d: Histograms2D,
-    run: Run
+    h2d: Histograms2D
   },
   machineLearning: {
     createPipelines: CreatePipelines,

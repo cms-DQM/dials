@@ -1,15 +1,17 @@
 import FileIndex from './fileIndex'
+import Runs from './runs'
+import Run from './run'
+import Lumisections from './lumisections'
+import Lumisection from './lumisection'
 import Histograms1D from './histograms1d'
 import Histograms2D from './histograms2d'
-import Runs from './runs'
-import Lumisections from './lumisections'
-import Run from './run'
 
 export {
   FileIndex,
-  Histograms1D,
-  Histograms2D,
   Runs,
+  Run,
   Lumisections,
-  Run
+  Lumisection,
+  Histograms1D,
+  Histograms2D
 }

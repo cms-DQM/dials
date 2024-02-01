@@ -16,7 +16,10 @@ const Root = () => {
           <Route index element={<Views.dataExplorer.runs />}/>
           <Route path=':runNumber' element={<Views.dataExplorer.run />}/>
         </Route>
-        <Route path='/lumisections' element={<Views.dataExplorer.lumisections />} />
+        <Route path='/lumisections'>
+          <Route index element={<Views.dataExplorer.lumisections />}/>
+          <Route path=':lsNumber' element={<Views.dataExplorer.lumisection />}/>
+        </Route>
         <Route path='/histograms-1d' element={<Views.dataExplorer.h1d />} />
         <Route path='/histograms-2d' element={<Views.dataExplorer.h2d />} />
         <Route path='/create' element={<Views.machineLearning.createPipelines />} />
