@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
+import { Link } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Card from 'react-bootstrap/Card'
@@ -31,7 +32,17 @@ const Histograms1D = () => {
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
-    { dataField: 'run_number', text: 'Run', type: 'number' },
+    {
+      dataField: 'run_number',
+      text: 'Run',
+      type: 'number',
+      formatter: (cell, row, rowIndex, extraData) => {
+        const linkTo = `/runs/${row.run_number}`
+        return (
+          <Link to={linkTo}>{row.run_number}</Link>
+        )
+      }
+    },
     { dataField: 'ls_number', text: 'Lumisection', type: 'number' },
     { dataField: 'title', text: 'Title', type: 'string', headerStyle: { 'min-width': '300px', 'word-break': 'break-all' } },
     { dataField: 'entries', text: 'Entries', type: 'number' },

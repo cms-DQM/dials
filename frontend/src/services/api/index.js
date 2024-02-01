@@ -43,6 +43,19 @@ const getRun = async ({ page, maxRun, minRun }) => {
   return response.data
 }
 
+const getRunLumisections = async ({ page, runNumber }) => {
+  const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
+  const response = await axios.get(endpoint, {
+    params: {
+      page
+    },
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  return response.data
+}
+
 const getLumisection = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
   const response = await axios.get(endpoint, {
@@ -125,7 +138,8 @@ const API = {
     getSubsystemCount: getLumisectionHistSubsystemCount
   },
   run: {
-    get: getRun
+    get: getRun,
+    getLumis: getRunLumisections
   },
   jobQueue: {
     tracked: getTrackedTasks,

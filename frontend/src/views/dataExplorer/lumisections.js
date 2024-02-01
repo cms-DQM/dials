@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
+import { Link } from 'react-router-dom'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
@@ -31,8 +32,18 @@ const Lumisections = () => {
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
+    {
+      dataField: 'run',
+      text: 'Run',
+      type: 'number',
+      formatter: (cell, row, rowIndex, extraData) => {
+        const linkTo = `/runs/${row.run}`
+        return (
+          <Link to={linkTo}>{row.run}</Link>
+        )
+      }
+    },
     { dataField: 'ls_number', text: 'Lumisection', type: 'number' },
-    { dataField: 'run', text: 'Run', type: 'number' },
     { dataField: 'oms_zerobias_rate', text: 'OMS ZeroBias Rate', type: 'string' }
   ]
   const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })

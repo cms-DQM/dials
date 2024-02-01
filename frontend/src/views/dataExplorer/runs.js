@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
+import { Link, useNavigate } from 'react-router-dom'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -11,6 +12,8 @@ import Table from '../../components/table'
 import API from '../../services/api'
 
 const Runs = () => {
+  const navigate = useNavigate()
+
   // Loading indicator and filter props
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -28,7 +31,17 @@ const Runs = () => {
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
-    { dataField: 'run_number', text: 'Run', type: 'string' },
+    {
+      dataField: 'run_number',
+      text: 'Run',
+      type: 'number',
+      formatter: (cell, row) => {
+        const linkTo = row.run_number.toString()
+        return (
+          <Link to={linkTo}>{row.run_number}</Link>
+        )
+      }
+    },
     { dataField: 'year', text: 'Year', type: 'string' },
     { dataField: 'period', text: 'Period', type: 'string' },
     { dataField: 'oms_fill', text: 'OMS Fill', type: 'string' },
@@ -105,8 +118,7 @@ const Runs = () => {
             </Card.Body>
           </Card>
         </div>
-        {/* TODO: Integrate search form to fetch exactly one run and display a page for it */}
-        {/* <div>
+        <div>
           <Card>
             <Card.Header className='text-center' as='h4'>Search</Card.Header>
             <Card.Body>
@@ -122,12 +134,13 @@ const Runs = () => {
               <Button
                 variant='primary'
                 type='submit'
+                onClick={() => navigate(runNumber?.toString())}
               >
-                Submit
+                Go
               </Button>
             </Card.Body>
           </Card>
-        </div> */}
+        </div>
       </Col>
       <Col sm={9}>
         <Card className='text-center'>

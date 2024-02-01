@@ -3,11 +3,13 @@ import Histograms1D from './histograms1d'
 import Histograms2D from './histograms2d'
 import Runs from './runs'
 import Lumisections from './lumisections'
+import Run from './run'
 
 export {
   FileIndex,
   Histograms1D,
   Histograms2D,
   Runs,
-  Lumisections
+  Lumisections,
+  Run
 }

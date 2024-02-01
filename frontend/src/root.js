@@ -2,34 +2,26 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import { Navbar } from './components'
-import {
-  Home,
-  DataIngestion,
-  FileIndex,
-  Histograms1D,
-  Histograms2D,
-  Runs,
-  Lumisections,
-  CreatePipelines,
-  RunPipelines,
-  ModelPredict
-} from './views'
+import Views from './views'
 
 const Root = () => {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/ingest' element={<DataIngestion />} />
-        <Route path='/file-index' element={<FileIndex />} />
-        <Route path='/histograms-1d' element={<Histograms1D />} />
-        <Route path='/histograms-2d' element={<Histograms2D />} />
-        <Route path='/runs' element={<Runs />} />
-        <Route path='/lumisections' element={<Lumisections />} />
-        <Route path='/create' element={<CreatePipelines />} />
-        <Route path='/train' element={<RunPipelines />} />
-        <Route path='/predict' element={<ModelPredict />} />
+        <Route path='/' element={<Views.home.index />} />
+        <Route path='/ingest' element={<Views.dataIngestion.index />} />
+        <Route path='/file-index' element={<Views.dataExplorer.fileIndex />} />
+        <Route path='/runs'>
+          <Route index element={<Views.dataExplorer.runs />}/>
+          <Route path=':runNumber' element={<Views.dataExplorer.run />}/>
+        </Route>
+        <Route path='/lumisections' element={<Views.dataExplorer.lumisections />} />
+        <Route path='/histograms-1d' element={<Views.dataExplorer.h1d />} />
+        <Route path='/histograms-2d' element={<Views.dataExplorer.h2d />} />
+        <Route path='/create' element={<Views.machineLearning.createPipelines />} />
+        <Route path='/train' element={<Views.machineLearning.runPipelines />} />
+        <Route path='/predict' element={<Views.machineLearning.predict />} />
       </Routes>
     </>
   )
