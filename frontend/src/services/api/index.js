@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-import sleep from '../../utils/sleep'
 import toUndefined from '../../utils/sanitizer'
 import { API_URL } from '../../config/env'
 
