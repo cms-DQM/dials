@@ -40,3 +40,11 @@ class LumisectionHistogramsIngetionInputSerializer(serializers.Serializer):
 class LumisectionHistogramsSubsystemCountSerializer(serializers.Serializer):
     subsystem = serializers.CharField()
     count = serializers.IntegerField()
+
+
+class RunLumisectionsSerializer(serializers.Serializer):
+    ls_number = serializers.IntegerField()
+    hist1d_count = serializers.IntegerField()
+    hist2d_count = serializers.IntegerField()
+    int_lumi = serializers.IntegerField()
+    oms_zerobias_rate = serializers.IntegerField()

@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import Count, F, Func, TextField, Value
+from django.db.models import Count, F, TextField, Value
 from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
@@ -18,16 +18,13 @@ from .serializers import (
     LumisectionHistogramsIngetionInputSerializer,
     LumisectionHistogramsSubsystemCountSerializer,
     LumisectionSerializer,
+    RunLumisectionsSerializer,
     RunSerializer,
 )
 from .tasks import ingest_function
+from .utils import SplitPart, paginate
 
 logger = logging.getLogger(__name__)
-
-
-class SplitPart(Func):
-    function = "split_part"
-    arity = 3
 
 
 class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -39,6 +36,32 @@ class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Gene
     serializer_class = RunSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RunFilter
+
+    @extend_schema(
+        responses={200: RunLumisectionsSerializer(many=True)},
+    )
+    @paginate(page_size=10, serializer_class=RunLumisectionsSerializer)
+    @action(
+        detail=True,
+        methods=["get"],
+        name="Get all lumisections inside a Run",
+        url_path=r"lumisections",
+        filterset_class=None,
+    )
+    def list_lumisection(self, request, pk=None):
+        result = []
+        lumis = Lumisection.objects.filter(run_id=pk)
+        for lumi in lumis:
+            result.append(
+                {
+                    "ls_number": lumi.ls_number,
+                    "hist1d_count": lumi.dqmio_etl_lumisectionhistogram1d_histograms.count(),
+                    "hist2d_count": lumi.dqmio_etl_lumisectionhistogram2d_histograms.count(),
+                    "int_lumi": None,
+                    "oms_zerobias_rate": lumi.oms_zerobias_rate,
+                }
+            )
+        return result
 
 
 class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
