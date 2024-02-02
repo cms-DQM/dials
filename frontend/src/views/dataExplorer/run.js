@@ -78,7 +78,7 @@ const Run = () => {
       <Row className='mt-1 mb-3 m-3'>
         <Col sm={9}>
           <Card className='text-center'>
-            <Card.Header as='h4'>{`This run has ${totalSize} lumisections`}</Card.Header>
+            <Card.Header as='h4'>{isLoading ? 'Loading run...' : `This run has ${totalSize} lumisections`}</Card.Header>
             <Card.Body>
               <Table
                 keyField='id'
@@ -95,7 +95,7 @@ const Run = () => {
           </Card>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard runNumber={runNumber}/>
+          <CMSOMSCard isLoading={isLoading} runNumber={runNumber}/>
         </Col>
       </Row>
     </>
