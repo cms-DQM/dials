@@ -83,7 +83,7 @@ const Lumisection = () => {
         <Col sm={9}>
           <Accordion>
             <Accordion.Item eventKey='0'>
-              <Accordion.Header>{`1D Histograms - ${h1dTotalSize} monitoring elements`}</Accordion.Header>
+              <Accordion.Header>{isH1DLoading ? 'Loading 1D Histograms...' : `1D Histograms - ${h1dTotalSize} monitoring elements`}</Accordion.Header>
               <Accordion.Body>
                 {
                   isH1DLoading
@@ -133,7 +133,7 @@ const Lumisection = () => {
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey='1'>
-              <Accordion.Header>{`2D Histograms - ${h2dTotalSize} monitoring elements`}</Accordion.Header>
+              <Accordion.Header>{isH2DLoading ? 'Loading 2D Histograms...' : `2D Histograms - ${h2dTotalSize} monitoring elements`}</Accordion.Header>
               <Accordion.Body>
                 {
                   isH2DLoading
