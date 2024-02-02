@@ -31,7 +31,7 @@ const Lumisection = () => {
       let page = 0
       while (nextPageExists) {
         page++
-        const { results, next } = await API.lumisection.getHist(dim, { page, run: runNumber, ls: lsNumber })
+        const { results, next } = await API.lumisection.listHistograms(dim, { page, run: runNumber, ls: lsNumber })
         results.forEach(e => allData.unshift(e))
         nextPageExists = !(next === null)
       }

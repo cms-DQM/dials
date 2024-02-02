@@ -19,14 +19,14 @@ const IngestionStatistics = () => {
 
   useEffect(() => {
     const handleCountTotals = () => {
-      API.fileIndex.get({}).then(response => setTotalFiles(response.count))
-      API.lumisection.get({}).then(response => setTOtalLumisection(response.count))
-      API.run.get({}).then(response => setTotalRuns(response.count))
+      API.fileIndex.list({}).then(response => setTotalFiles(response.count))
+      API.lumisection.list({}).then(response => setTOtalLumisection(response.count))
+      API.run.list({}).then(response => setTotalRuns(response.count))
     }
 
     const handleFilesPlot = async () => {
       const data = await Promise.all(API.fileIndex.statusList.map(async item => {
-        const data = await API.fileIndex.get({ status: item })
+        const data = await API.fileIndex.list({ status: item })
         return {
           status: item,
           count: data.count

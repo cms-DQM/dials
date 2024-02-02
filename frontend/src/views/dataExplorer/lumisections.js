@@ -98,7 +98,7 @@ const Lumisections = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.lumisection.get({ page, minLs, maxLs, minRun, maxRun })
+      API.lumisection.list({ page, minLs, maxLs, minRun, maxRun })
         .then(response => {
           setData(response.results)
           setTotalSize(response.count)

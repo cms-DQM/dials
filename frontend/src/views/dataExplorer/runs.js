@@ -61,7 +61,7 @@ const Runs = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.run.get({ page, minRun, maxRun })
+      API.run.list({ page, minRun, maxRun })
         .then(response => {
           setData(response.results)
           setTotalSize(response.count)

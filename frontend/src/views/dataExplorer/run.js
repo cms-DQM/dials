@@ -51,7 +51,7 @@ const Run = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.run.getLumis({ page, runNumber })
+      API.run.listLumisections({ page, runNumber })
         .then(response => {
           setData(response.results)
           setTotalSize(response.count)

@@ -73,7 +73,7 @@ const Histograms1D = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.lumisection.getHist(1, { page, minRun, maxRun, minLs, maxLs, titleContains, minEntries })
+      API.lumisection.listHistograms(1, { page, minRun, maxRun, minLs, maxLs, titleContains, minEntries })
         .then(response => {
           const results = response.results.map(item => {
             const data = [{ y: item.data, type: 'bar', marker: { color: '#0033A0' } }]

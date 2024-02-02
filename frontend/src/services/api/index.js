@@ -11,7 +11,7 @@ const FILE_INDEX_STATUSES = [
   'FAILED'
 ]
 
-const getFileIndex = async ({ page, era, minSize, pathContains, status }) => {
+const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
   const endpoint = `${API_URL}/file-index/`
   const response = await axios.get(endpoint, {
     params: {
@@ -28,7 +28,7 @@ const getFileIndex = async ({ page, era, minSize, pathContains, status }) => {
   return response.data
 }
 
-const getRun = async ({ page, maxRun, minRun }) => {
+const listRuns = async ({ page, maxRun, minRun }) => {
   const endpoint = `${API_URL}/run/`
   const response = await axios.get(endpoint, {
     params: {
@@ -43,7 +43,7 @@ const getRun = async ({ page, maxRun, minRun }) => {
   return response.data
 }
 
-const getRunLumisections = async ({ page, runNumber }) => {
+const listLumisectionsInRun = async ({ page, runNumber }) => {
   const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
   const response = await axios.get(endpoint, {
     params: {
@@ -56,7 +56,7 @@ const getRunLumisections = async ({ page, runNumber }) => {
   return response.data
 }
 
-const getLumisection = async ({ page, maxLs, minLs, maxRun, minRun }) => {
+const listLumisections = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
   const response = await axios.get(endpoint, {
     params: {
@@ -73,7 +73,7 @@ const getLumisection = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   return response.data
 }
 
-const getLumisectionHist = async (dim, { page, run, ls, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
+const listHistograms = async (dim, { page, run, ls, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/`
   const response = await axios.get(endpoint, {
     params: {
@@ -94,7 +94,7 @@ const getLumisectionHist = async (dim, { page, run, ls, maxLs, minLs, maxRun, mi
   return response.data
 }
 
-const getLumisectionHistSubsystemCount = async (dim) => {
+const getIngestedSubsystems = async (dim) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/count-by-subsystem/`
   const response = await axios.get(endpoint, {
     headers: {
@@ -104,7 +104,7 @@ const getLumisectionHistSubsystemCount = async (dim) => {
   return response.data
 }
 
-const getTrackedTasks = async ({ page }) => {
+const listTrackeTasks = async ({ page }) => {
   const endpoint = `${API_URL}/celery-tasks/`
   const response = await axios.get(endpoint, {
     params: {
@@ -117,7 +117,7 @@ const getTrackedTasks = async ({ page }) => {
   return response.data
 }
 
-const getEnqueuedTasks = async () => {
+const listEnqueuedTasks = async () => {
   const endpoint = `${API_URL}/celery-tasks/queued/`
   const response = await axios.get(endpoint, {
     headers: {
@@ -130,20 +130,20 @@ const getEnqueuedTasks = async () => {
 const API = {
   fileIndex: {
     statusList: FILE_INDEX_STATUSES,
-    get: getFileIndex
+    list: listFileIndex
   },
   lumisection: {
-    get: getLumisection,
-    getHist: getLumisectionHist,
-    getSubsystemCount: getLumisectionHistSubsystemCount
+    list: listLumisections,
+    listHistograms: listHistograms,
+    getSubsystemCount: getIngestedSubsystems
   },
   run: {
-    get: getRun,
-    getLumis: getRunLumisections
+    list: listRuns,
+    listLumisections: listLumisectionsInRun
   },
   jobQueue: {
-    tracked: getTrackedTasks,
-    enqueued: getEnqueuedTasks
+    tracked: listTrackeTasks,
+    enqueued: listEnqueuedTasks
   }
 }
 
