@@ -17,26 +17,26 @@ import {
 } from './machineLearning'
 
 const Views = {
-  home: {
-    index: Home
+  Home: {
+    Index: Home
   },
-  dataIngestion: {
-    index: DataIngestion
+  DataIngestion: {
+    Index: DataIngestion
   },
-  dataExplorer: {
-    fileIndex: FileIndex,
-    runs: Runs,
-    run: Run,
-    lumisections: Lumisections,
-    lumisection: Lumisection,
-    h1d: Histograms1D,
-    h2d: Histograms2D,
-    hist: Histogram
+  DataExplorer: {
+    FileIndex,
+    Runs,
+    Run,
+    Lumisections,
+    Lumisection,
+    Histograms1D,
+    Histograms2D,
+    Histogram
   },
-  machineLearning: {
-    createPipelines: CreatePipelines,
-    runPipelines: RunPipelines,
-    predict: ModelPredict
+  MachineLearning: {
+    CreatePipelines,
+    RunPipelines,
+    ModelPredict
   }
 }
 

@@ -10,28 +10,28 @@ const Root = () => {
     <>
       <Navbar />
       <Routes>
-        <Route path='/' element={<Views.home.index />} />
-        <Route path='/ingest' element={<Views.dataIngestion.index />} />
-        <Route path='/file-index' element={<Views.dataExplorer.fileIndex />} />
+        <Route path='/' element={<Views.Home.Index />} />
+        <Route path='/ingest' element={<Views.DataIngestion.Index />} />
+        <Route path='/file-index' element={<Views.DataExplorer.FileIndex />} />
         <Route path='/runs'>
-          <Route index element={<Views.dataExplorer.runs />}/>
-          <Route path=':runNumber' element={<Views.dataExplorer.run />}/>
+          <Route index element={<Views.DataExplorer.Runs />}/>
+          <Route path=':runNumber' element={<Views.DataExplorer.Run />}/>
         </Route>
         <Route path='/lumisections'>
-          <Route index element={<Views.dataExplorer.lumisections />}/>
-          <Route path=':id' element={<Views.dataExplorer.lumisection />}/>
+          <Route index element={<Views.DataExplorer.Lumisections />}/>
+          <Route path=':id' element={<Views.DataExplorer.Lumisection />}/>
         </Route>
         <Route path='/histograms-1d'>
-          <Route index element={<Views.dataExplorer.h1d />}/>
-          <Route path=':id' element={<Views.dataExplorer.hist dim={1} />}/>
+          <Route index element={<Views.DataExplorer.Histograms1D />}/>
+          <Route path=':id' element={<Views.DataExplorer.Histogram dim={1} />}/>
         </Route>
         <Route path='/histograms-2d'>
-          <Route index element={<Views.dataExplorer.h2d />}/>
-          <Route path=':id' element={<Views.dataExplorer.hist dim={2} />}/>
+          <Route index element={<Views.DataExplorer.Histograms2D />}/>
+          <Route path=':id' element={<Views.DataExplorer.Histogram dim={2} />}/>
         </Route>
-        <Route path='/create' element={<Views.machineLearning.createPipelines />} />
-        <Route path='/train' element={<Views.machineLearning.runPipelines />} />
-        <Route path='/predict' element={<Views.machineLearning.predict />} />
+        <Route path='/create' element={<Views.MachineLearning.CreatePipelines />} />
+        <Route path='/train' element={<Views.MachineLearning.RunPipelines />} />
+        <Route path='/predict' element={<Views.MachineLearning.Predict />} />
       </Routes>
       <ToastContainer
         position='bottom-right'
