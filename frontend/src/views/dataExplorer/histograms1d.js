@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
 import paginationFactory from 'react-bootstrap-table2-paginator'
+import { toast } from 'react-toastify'
 
 import Table from '../../components/table'
 import ResponsivePlot from '../../components/responsivePlot'
@@ -115,6 +116,7 @@ const Histograms1D = () => {
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLoading(false)

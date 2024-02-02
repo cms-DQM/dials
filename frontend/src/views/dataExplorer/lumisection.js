@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Accordion from 'react-bootstrap/Accordion'
 import Spinner from 'react-bootstrap/Spinner'
+import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import ResponsivePlot from '../../components/responsivePlot'
@@ -32,7 +33,8 @@ const Lumisection = () => {
           setLumiData(response)
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLumiLoading(false)
@@ -60,7 +62,7 @@ const Lumisection = () => {
           errorCount++
         }
       }
-      return { results: allData, count: allData.length, error: errorCount }
+      return { results: allData, count: allData.length, error: errorCount, totalPages: page }
     }
 
     const fetchH1D = () => {
@@ -69,9 +71,13 @@ const Lumisection = () => {
         .then(response => {
           setH1DData(response.results)
           setH1DTotalSize(response.count)
+          if (response.errorCount > 0) {
+            toast.error(`Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`)
+          }
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setH1DLoading(false)
@@ -84,9 +90,13 @@ const Lumisection = () => {
         .then(response => {
           setH2DData(response.results)
           setH2DTotalSize(response.count)
+          if (response.errorCount > 0) {
+            toast.error(`Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`)
+          }
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setH2DLoading(false)

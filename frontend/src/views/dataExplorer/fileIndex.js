@@ -11,6 +11,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 import Table from '../../components/table'
 import dateFormat from '../../utils/date'
 import API from '../../services/api'
+import { toast } from 'react-toastify'
 
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
@@ -58,6 +59,7 @@ const FileIndex = () => {
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLoading(false)

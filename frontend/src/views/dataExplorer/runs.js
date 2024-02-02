@@ -94,6 +94,7 @@ const Runs = () => {
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLoading(false)

@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import paginationFactory from 'react-bootstrap-table2-paginator'
+import { toast } from 'react-toastify'
 
 import Table from '../../components/table'
 import API from '../../services/api'
@@ -56,6 +57,7 @@ const Run = () => {
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLoading(false)
