@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { useParams, useLocation, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -13,31 +13,57 @@ import ResponsivePlot from '../../components/responsivePlot'
 import CMSOMSCard from '../../components/cmsOMSCard'
 
 const Lumisection = () => {
-  const { lsNumber } = useParams()
-  const location = useLocation()
-  const runNumber = new URLSearchParams(location.search).get('runNumber')
+  const { id } = useParams()
 
+  const [isLumiLoading, setLumiLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
+  const [lumiData, setLumiData] = useState({})
   const [h1dData, setH1DData] = useState([])
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
 
   useEffect(() => {
+    const fetchData = () => {
+      setLumiLoading(true)
+      API.lumisection.get({ id })
+        .then(response => {
+          setLumiData(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+        .finally(() => {
+          setLumiLoading(false)
+        })
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (isLumiLoading) return
+
     const genericFetchAllPages = async (dim) => {
       const allData = []
       let nextPageExists = true
       let page = 0
+      let errorCount = 0
       while (nextPageExists) {
         page++
-        const { results, next } = await API.lumisection.listHistograms(dim, { page, run: runNumber, ls: lsNumber })
-        results.forEach(e => allData.unshift(e))
-        nextPageExists = !(next === null)
+        try {
+          const { results, next } = await API.lumisection.listHistograms(dim, { page, run: lumiData.run, ls: lumiData.ls_number })
+          results.forEach(e => allData.unshift(e))
+          nextPageExists = !(next === null)
+        } catch (err) {
+          errorCount++
+        }
       }
-      return { results: allData, count: allData.length }
+      return { results: allData, count: allData.length, error: errorCount }
     }
-    const handleH1D = () => {
+
+    const fetchH1D = () => {
       setH1DLoading(true)
       genericFetchAllPages(1)
         .then(response => {
@@ -51,7 +77,8 @@ const Lumisection = () => {
           setH1DLoading(false)
         })
     }
-    const handleH2D = () => {
+
+    const fetchH2D = () => {
       setH2DLoading(true)
       genericFetchAllPages(2)
         .then(response => {
@@ -66,17 +93,27 @@ const Lumisection = () => {
         })
     }
 
-    handleH1D()
-    handleH2D()
-  }, [])
+    fetchH1D()
+    fetchH2D()
+  }, [isLumiLoading])
 
   return (
     <>
       <Row className='mt-5 mb-3 m-3'>
         <Breadcrumb>
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>All runs</Breadcrumb.Item>
-          <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/runs/${runNumber}` }}>{`Run ${runNumber}`}</Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+          {
+            isLumiLoading
+              ? (
+                <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+                )
+              : (
+                <>
+                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/runs/${lumiData.run}` }}>{`Run ${lumiData.run}`}</Breadcrumb.Item>
+                  <Breadcrumb.Item active>{`Lumisection ${lumiData.ls_number}`}</Breadcrumb.Item>
+                </>
+                )
+          }
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
@@ -189,7 +226,7 @@ const Lumisection = () => {
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={false} runNumber={runNumber}/>
+          <CMSOMSCard isLoading={false} runNumber={lumiData.run}/>
         </Col>
       </Row>
     </>

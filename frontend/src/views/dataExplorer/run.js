@@ -25,10 +25,7 @@ const Run = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = {
-          pathname: `/lumisections/${row.ls_number}`,
-          search: `?runNumber=${runNumber}`
-        }
+        const linkTo = `/lumisections/${row.id}`
         return (
           <Link to={linkTo}>{row.ls_number}</Link>
         )

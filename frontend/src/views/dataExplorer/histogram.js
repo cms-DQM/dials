@@ -119,7 +119,7 @@ const Histogram = (props) => {
               : (
                 <>
                   <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/runs/${data.run_number}` }}>{`Run ${data.run_number}`}</Breadcrumb.Item>
-                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: { pathname: `/lumisections/${data.ls_number}`, search: `?runNumber=${data.run_number}` } }}>{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
+                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/lumisections/${data.lumisection}` }}>{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
                   <Breadcrumb.Item active>{`H${dim}D #${data.id}`}</Breadcrumb.Item>
                 </>
                 )

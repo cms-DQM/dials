@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import paginationFactory from 'react-bootstrap-table2-paginator'
+import { toast } from 'react-toastify'
 
 import Table from '../../components/table'
 import API from '../../services/api'
@@ -46,10 +47,7 @@ const Lumisections = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = {
-          pathname: `/lumisections/${row.ls_number}`,
-          search: `?runNumber=${row.run}`
-        }
+        const linkTo = `/lumisections/${row.id}`
         return (
           <Link to={linkTo}>{row.ls_number}</Link>
         )
@@ -66,23 +64,32 @@ const Lumisections = () => {
     }
   }
 
-  const handleSearchClick = () => {
-    let doNavigation = true
+  const validateSearchForm = () => {
+    const isRunValid = isNumericNonZero(runNumber)
+    const isLsValid = isNumericNonZero(lsNumber)
+    setRunNumberIsInvalid(!isRunValid)
+    setLsNumberIsInvalid(!isLsValid)
+    return isRunValid && isLsValid
+  }
 
-    if (!isNumericNonZero(runNumber)) {
-      doNavigation = false
-      setRunNumberIsInvalid(true)
-    }
-    if (!isNumericNonZero(lsNumber)) {
-      doNavigation = false
-      setLsNumberIsInvalid(true)
-    }
-
-    if (!doNavigation) {
+  const handleSearch = () => {
+    const isFormValid = validateSearchForm()
+    if (!isFormValid) {
       return
     }
 
-    return navigate({ pathname: lsNumber, search: `?runNumber=${runNumber}` })
+    API.lumisection.list({ run: runNumber, ls: lsNumber })
+      .then(response => {
+        if (response.count === 0) {
+          toast.error('Lumisection not found!')
+        } else {
+          navigate(`/lumisections/${response.results[0].id}`)
+        }
+      })
+      .catch(error => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
   }
 
   useEffect(() => {
@@ -95,6 +102,7 @@ const Lumisections = () => {
         })
         .catch(error => {
           console.error(error)
+          toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
           setLoading(false)
@@ -196,7 +204,7 @@ const Lumisections = () => {
               <Button
                 variant='primary'
                 type='submit'
-                onClick={handleSearchClick}
+                onClick={handleSearch}
               >
                 Go
               </Button>

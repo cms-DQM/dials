@@ -19,7 +19,7 @@ const Root = () => {
         </Route>
         <Route path='/lumisections'>
           <Route index element={<Views.dataExplorer.lumisections />}/>
-          <Route path=':lsNumber' element={<Views.dataExplorer.lumisection />}/>
+          <Route path=':id' element={<Views.dataExplorer.lumisection />}/>
         </Route>
         <Route path='/histograms-1d'>
           <Route index element={<Views.dataExplorer.h1d />}/>

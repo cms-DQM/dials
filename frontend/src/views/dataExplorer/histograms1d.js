@@ -43,10 +43,7 @@ const Histograms1D = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = {
-          pathname: `/lumisections/${row.ls_number}`,
-          search: `?runNumber=${row.run_number}`
-        }
+        const linkTo = `/lumisections/${row.lumisection}`
         return (
           <Link to={linkTo}>{row.ls_number}</Link>
         )

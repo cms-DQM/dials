@@ -66,12 +66,23 @@ const listLumisectionsInRun = async ({ page, runNumber }) => {
   return response.data
 }
 
-const listLumisections = async ({ page, run, maxLs, minLs, maxRun, minRun }) => {
+const getLumisection = async ({ id }) => {
+  const endpoint = `${API_URL}/lumisection/${id}/`
+  const response = await axios.get(endpoint, {
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  return response.data
+}
+
+const listLumisections = async ({ page, run, ls, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
   const response = await axios.get(endpoint, {
     params: {
       page,
       run_number: toUndefined(run, ''),
+      ls_number: toUndefined(ls, ''),
       max_ls_number: toUndefined(maxLs, ''),
       max_run_number: toUndefined(maxRun, ''),
       min_ls_number: toUndefined(minLs, ''),
@@ -156,6 +167,7 @@ const API = {
     list: listFileIndex
   },
   lumisection: {
+    get: getLumisection,
     list: listLumisections,
     listHistograms,
     getSubsystemCount: getIngestedSubsystems,
