@@ -21,7 +21,7 @@ class LumisectionFilter(filters.FilterSet):
 
     class Meta:
         model = Lumisection
-        fields = ["run_number", "min_ls_number", "max_ls_number", "min_run_number", "max_run_number"]
+        fields = ["run_number", "ls_number", "min_ls_number", "max_ls_number", "min_run_number", "max_run_number"]
 
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
