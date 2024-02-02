@@ -42,7 +42,18 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
 
     class Meta:
         model = LumisectionHistogram1D
-        fields = ["run_number", "ls_number", "title_contains", "lumisection_id", "min_entries"]
+        fields = [
+            "run_number",
+            "ls_number",
+            "lumisection_id",
+            "title",
+            "min_run_number",
+            "max_run_number",
+            "min_ls_number",
+            "max_ls_number",
+            "title_contains",
+            "min_entries",
+        ]
 
 
 class LumisectionHistogram2DFilter(filters.FilterSet):
@@ -63,4 +74,15 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
 
     class Meta:
         model = LumisectionHistogram2D
-        fields = ["run_number", "ls_number", "title_contains", "lumisection_id", "min_entries"]
+        fields = [
+            "run_number",
+            "ls_number",
+            "lumisection_id",
+            "title",
+            "min_run_number",
+            "max_run_number",
+            "min_ls_number",
+            "max_ls_number",
+            "title_contains",
+            "min_entries",
+        ]
