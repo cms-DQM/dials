@@ -54,6 +54,7 @@ class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Gene
         for lumi in lumis:
             result.append(
                 {
+                    "id": lumi.id,
                     "ls_number": lumi.ls_number,
                     "hist1d_count": lumi.dqmio_etl_lumisectionhistogram1d_histograms.count(),
                     "hist2d_count": lumi.dqmio_etl_lumisectionhistogram2d_histograms.count(),

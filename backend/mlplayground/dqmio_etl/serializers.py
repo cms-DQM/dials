@@ -43,6 +43,7 @@ class LumisectionHistogramsSubsystemCountSerializer(serializers.Serializer):
 
 
 class RunLumisectionsSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     ls_number = serializers.IntegerField()
     hist1d_count = serializers.IntegerField()
     hist2d_count = serializers.IntegerField()
