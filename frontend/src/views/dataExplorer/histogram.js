@@ -97,7 +97,7 @@ const Histogram = (props) => {
         if (response.count === 0) {
           toast.error('Histogram not found!')
         } else {
-          return navigate(`/histograms-${dim}d/${id}`)
+          return navigate(`/histograms-${dim}d/${response.results[0].id}`)
         }
       })
       .catch(error => {
