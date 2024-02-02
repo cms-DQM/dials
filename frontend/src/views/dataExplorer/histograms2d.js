@@ -14,7 +14,6 @@ import ResponsivePlot from '../../components/responsivePlot'
 import API from '../../services/api'
 
 const Histograms2D = () => {
-  // Loading indicator and filter props
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [minRun, setMinRun] = useState()
@@ -23,12 +22,8 @@ const Histograms2D = () => {
   const [maxLs, setMaxLs] = useState()
   const [titleContains, setTitleContains] = useState()
   const [minEntries, setMinEntries] = useState(0)
-
-  // Actual data after fetching
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-
-  // Boolean to trigger useEffect
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [

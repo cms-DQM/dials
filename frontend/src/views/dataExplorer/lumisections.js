@@ -15,25 +15,18 @@ import { isNumericNonZero } from '../../utils/sanitizer'
 const Lumisections = () => {
   const navigate = useNavigate()
 
-  // Loading indicator and filter props
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [minLs, setMinLs] = useState()
   const [maxLs, setMaxLs] = useState()
   const [minRun, setMinRun] = useState()
   const [maxRun, setMaxRun] = useState()
-
-  // Search props
   const [runNumber, setRunNumber] = useState()
   const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
   const [lsNumberIsInvalid, setLsNumberIsInvalid] = useState()
   const [lsNumber, setLsNumber] = useState()
-
-  // Actual data after fetching
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-
-  // Boolean to trigger useEffect
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [

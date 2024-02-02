@@ -17,15 +17,13 @@ import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Histogram = (props) => {
   const navigate = useNavigate()
-
-  const { dim } = props
   const { id } = useParams()
+  const { dim } = props
+
   const [isLoading, setLoading] = useState(true)
   const [data, setData] = useState({})
   const [plotData, setPlotData] = useState([])
   const [plotLayout, setPlotLayout] = useState([])
-
-  // Search props
   const [runNumber, setRunNumber] = useState()
   const [lsNumber, setLsNumber] = useState()
   const [title, setTitle] = useState()

@@ -13,19 +13,14 @@ import dateFormat from '../../utils/date'
 import API from '../../services/api'
 
 const FileIndex = () => {
-  // Loading indicator and filter props
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [pathContains, setPathContains] = useState()
   const [dataEra, setDataEra] = useState()
   const [minSize, setMinSize] = useState(0)
   const [fileStatus, setFileStatus] = useState()
-
-  // Actual data after fetching
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-
-  // Boolean to trigger useEffect
   const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
