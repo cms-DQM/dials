@@ -111,15 +111,17 @@ const Lumisection = () => {
                                 <Col key={innerIndex} sm={4}>
                                   <Card>
                                     <div className='card-img-top'>
-                                      <ResponsivePlot
-                                        data={data}
-                                        layout={layout}
-                                        config={{ staticPlot: true }}
-                                        boxHeight={'200pt'}
-                                      />
+                                      <Link to={`/histograms-2d/${hist.id}`}>
+                                        <ResponsivePlot
+                                          data={data}
+                                          layout={layout}
+                                          config={{ staticPlot: true }}
+                                          boxHeight={'200pt'}
+                                        />
+                                      </Link>
                                     </div>
                                     <Card.Body>
-                                      <Card.Title>{hist.title}</Card.Title>
+                                      <Card.Title><Link to={`/histograms-1d/${hist.id}`}>{hist.title}</Link></Card.Title>
                                     </Card.Body>
                                   </Card>
                                 </Col>
@@ -161,15 +163,17 @@ const Lumisection = () => {
                                 <Col key={innerIndex} sm={4}>
                                   <Card>
                                     <div className='card-img-top'>
-                                      <ResponsivePlot
-                                        data={data}
-                                        layout={layout}
-                                        config={{ staticPlot: true }}
-                                        boxHeight={'200pt'}
-                                      />
+                                      <Link to={`/histograms-2d/${hist.id}`}>
+                                        <ResponsivePlot
+                                          data={data}
+                                          layout={layout}
+                                          config={{ staticPlot: true }}
+                                          boxHeight={'200pt'}
+                                        />
+                                      </Link>
                                     </div>
                                     <Card.Body>
-                                      <Card.Title>{hist.title}</Card.Title>
+                                      <Card.Title><Link to={`/histograms-2d/${hist.id}`}>{hist.title}</Link></Card.Title>
                                     </Card.Body>
                                   </Card>
                                 </Col>
@@ -185,7 +189,7 @@ const Lumisection = () => {
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard runNumber={runNumber}/>
+          <CMSOMSCard isLoading={false} runNumber={runNumber}/>
         </Col>
       </Row>
     </>

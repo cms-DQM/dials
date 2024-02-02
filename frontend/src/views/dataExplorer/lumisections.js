@@ -10,6 +10,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 
 import Table from '../../components/table'
 import API from '../../services/api'
+import { isNumericNonZero } from '../../utils/sanitizer'
 
 const Lumisections = () => {
   const navigate = useNavigate()
@@ -65,10 +66,6 @@ const Lumisections = () => {
   ]
   const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
   const remote = { pagination: true, filter: false, sort: false }
-
-  const isNumericNonZero = (num) => {
-    return !isNaN(num) && +num > 0
-  }
 
   const handleTableChange = (type, { page }) => {
     if (type === 'pagination') {

@@ -57,9 +57,29 @@ const Histograms2D = () => {
         )
       }
     },
-    { dataField: 'title', text: 'Title', type: 'string', headerStyle: { 'min-width': '300px', 'word-break': 'break-all' } },
+    {
+      dataField: 'title',
+      text: 'Title',
+      type: 'string',
+      headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
+      formatter: (cell, row) => {
+        const linkTo = `/histograms-2d/${row.id}`
+        return (
+          <Link to={linkTo}>{row.title}</Link>
+        )
+      }
+    },
     { dataField: 'entries', text: 'Entries', type: 'number' },
-    { dataField: 'plot', text: 'Plot' }
+    {
+      dataField: 'plot',
+      text: 'Plot',
+      formatter: (cell, row) => {
+        const linkTo = `/histograms-2d/${row.id}`
+        return (
+          <Link to={linkTo}>{cell}</Link>
+        )
+      }
+    }
   ]
   const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
   const remote = { pagination: true, filter: false, sort: false }

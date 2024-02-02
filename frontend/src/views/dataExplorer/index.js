@@ -5,6 +5,7 @@ import Lumisections from './lumisections'
 import Lumisection from './lumisection'
 import Histograms1D from './histograms1d'
 import Histograms2D from './histograms2d'
+import Histogram from './histogram'
 
 export {
   FileIndex,
@@ -13,5 +14,6 @@ export {
   Lumisections,
   Lumisection,
   Histograms1D,
-  Histograms2D
+  Histograms2D,
+  Histogram
 }

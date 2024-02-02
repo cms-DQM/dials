@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components'
 import Views from './views'
@@ -20,12 +21,21 @@ const Root = () => {
           <Route index element={<Views.dataExplorer.lumisections />}/>
           <Route path=':lsNumber' element={<Views.dataExplorer.lumisection />}/>
         </Route>
-        <Route path='/histograms-1d' element={<Views.dataExplorer.h1d />} />
-        <Route path='/histograms-2d' element={<Views.dataExplorer.h2d />} />
+        <Route path='/histograms-1d'>
+          <Route index element={<Views.dataExplorer.h1d />}/>
+          <Route path=':id' element={<Views.dataExplorer.hist dim={1} />}/>
+        </Route>
+        <Route path='/histograms-2d'>
+          <Route index element={<Views.dataExplorer.h2d />}/>
+          <Route path=':id' element={<Views.dataExplorer.hist dim={2} />}/>
+        </Route>
         <Route path='/create' element={<Views.machineLearning.createPipelines />} />
         <Route path='/train' element={<Views.machineLearning.runPipelines />} />
         <Route path='/predict' element={<Views.machineLearning.predict />} />
       </Routes>
+      <ToastContainer
+        position='bottom-right'
+      />
     </>
   )
 }

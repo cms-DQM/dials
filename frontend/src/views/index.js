@@ -7,7 +7,8 @@ import {
   Lumisections,
   Lumisection,
   Histograms1D,
-  Histograms2D
+  Histograms2D,
+  Histogram
 } from './dataExplorer'
 import {
   CreatePipelines,
@@ -29,7 +30,8 @@ const Views = {
     lumisections: Lumisections,
     lumisection: Lumisection,
     h1d: Histograms1D,
-    h2d: Histograms2D
+    h2d: Histograms2D,
+    hist: Histogram
   },
   machineLearning: {
     createPipelines: CreatePipelines,

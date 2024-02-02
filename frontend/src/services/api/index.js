@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import toUndefined from '../../utils/sanitizer'
+import { toUndefined } from '../../utils/sanitizer'
 import { API_URL } from '../../config/env'
 
 const FILE_INDEX_STATUSES = [
@@ -56,11 +56,12 @@ const listLumisectionsInRun = async ({ page, runNumber }) => {
   return response.data
 }
 
-const listLumisections = async ({ page, maxLs, minLs, maxRun, minRun }) => {
+const listLumisections = async ({ page, run, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
   const response = await axios.get(endpoint, {
     params: {
       page,
+      run_number: toUndefined(run, ''),
       max_ls_number: toUndefined(maxLs, ''),
       max_run_number: toUndefined(maxRun, ''),
       min_ls_number: toUndefined(minLs, ''),
@@ -73,13 +74,15 @@ const listLumisections = async ({ page, maxLs, minLs, maxRun, minRun }) => {
   return response.data
 }
 
-const listHistograms = async (dim, { page, run, ls, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
+const listHistograms = async (dim, { page, run, ls, lsId, title, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/`
   const response = await axios.get(endpoint, {
     params: {
       page,
       run_number: toUndefined(run, ''),
       ls_number: toUndefined(ls, ''),
+      lumisection_id: toUndefined(lsId, ''),
+      title: toUndefined(title, ''),
       max_ls_number: toUndefined(maxLs, ''),
       max_run_number: toUndefined(maxRun, ''),
       min_ls_number: toUndefined(minLs, ''),
@@ -87,6 +90,16 @@ const listHistograms = async (dim, { page, run, ls, maxLs, minLs, maxRun, minRun
       min_entries: toUndefined(minEntries, ''),
       title_contains: toUndefined(titleContains, '')
     },
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  return response.data
+}
+
+const getHistogram = async (dim, id) => {
+  const endpoint = `${API_URL}/lumisection-h${dim}d/${id}/`
+  const response = await axios.get(endpoint, {
     headers: {
       Accept: 'application/json'
     }
@@ -134,8 +147,9 @@ const API = {
   },
   lumisection: {
     list: listLumisections,
-    listHistograms: listHistograms,
-    getSubsystemCount: getIngestedSubsystems
+    listHistograms,
+    getSubsystemCount: getIngestedSubsystems,
+    getHistogram
   },
   run: {
     list: listRuns,
