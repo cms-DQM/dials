@@ -66,10 +66,33 @@ const Lumisections = () => {
   const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
   const remote = { pagination: true, filter: false, sort: false }
 
+  const isNumericNonZero = (num) => {
+    return !isNaN(num) && +num > 0
+  }
+
   const handleTableChange = (type, { page }) => {
     if (type === 'pagination') {
       setPage(page)
     }
+  }
+
+  const handleSearchClick = () => {
+    let doNavigation = true
+
+    if (!isNumericNonZero(runNumber)) {
+      doNavigation = false
+      setRunNumberIsInvalid(true)
+    }
+    if (!isNumericNonZero(lsNumber)) {
+      doNavigation = false
+      setLsNumberIsInvalid(true)
+    }
+
+    if (!doNavigation) {
+      return
+    }
+
+    return navigate({ pathname: lsNumber, search: `?runNumber=${runNumber}` })
   }
 
   useEffect(() => {
@@ -97,6 +120,28 @@ const Lumisections = () => {
           <Card>
             <Card.Header className='text-center' as='h4'>Filters</Card.Header>
             <Card.Body>
+            <Form.Group className='mb-3' controlId='formRunRange'>
+                <Form.Label>Run Range</Form.Label>
+                <Row>
+                  <Col xs={6}>
+                    <Form.Control
+                      type='number'
+                      value={minRun}
+                      placeholder='Min'
+                      onChange={e => setMinRun(e.target.value)}
+                    />
+                  </Col>
+                  <Col xs={6}>
+                    <Form.Control
+                      type='number'
+                      value={maxRun}
+                      placeholder='Max'
+                      onChange={e => setMaxRun(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </Form.Group>
+
               <Form.Group className='mb-3' controlId='formLsRange'>
                 <Form.Label>Lumisection Range</Form.Label>
                 <Row>
@@ -114,28 +159,6 @@ const Lumisections = () => {
                       value={maxLs}
                       placeholder='Max'
                       onChange={e => setMaxLs(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-
-              <Form.Group className='mb-3' controlId='formRunRange'>
-                <Form.Label>Run Range</Form.Label>
-                <Row>
-                  <Col xs={6}>
-                    <Form.Control
-                      type='number'
-                      value={minRun}
-                      placeholder='Min'
-                      onChange={e => setMinRun(e.target.value)}
-                    />
-                  </Col>
-                  <Col xs={6}>
-                    <Form.Control
-                      type='number'
-                      value={maxRun}
-                      placeholder='Max'
-                      onChange={e => setMaxRun(e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -183,27 +206,7 @@ const Lumisections = () => {
               <Button
                 variant='primary'
                 type='submit'
-                onClick={() => {
-                  const isNumericNonZero = (num) => {
-                    return !isNaN(num) && +num > 0
-                  }
-                  let doNavigation = true
-
-                  if (!isNumericNonZero(runNumber)) {
-                    doNavigation = false
-                    setRunNumberIsInvalid(true)
-                  }
-                  if (!isNumericNonZero(lsNumber)) {
-                    doNavigation = false
-                    setLsNumberIsInvalid(true)
-                  }
-
-                  if (!doNavigation) {
-                    return
-                  }
-
-                  return navigate({ pathname: lsNumber, search: `?runNumber=${runNumber}` })
-                }}
+                onClick={handleSearchClick}
               >
                 Go
               </Button>
