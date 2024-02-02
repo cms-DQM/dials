@@ -5,13 +5,13 @@ import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Image from 'react-bootstrap/Image'
 
-import logo from '../assets/img/logo.svg'
+import logo from '../assets/img/logo.png'
 
 const Navbar = () => {
   return (
     <BootstrapNavbar expand='lg' bg='dark' variant='dark' sticky='top'>
       <BootstrapNavbar.Brand as={NavLink} to='/'>
-        <Image src={logo} height='40vmin' className='d-inline-block align-top' alt='Home'/>
+        <Image src={logo} height='40vmin' className='d-inline-block align-top ms-2' alt='Home'/>
       </BootstrapNavbar.Brand>
       <BootstrapNavbar.Toggle aria-controls='basic-navbar-nav' />
       <BootstrapNavbar.Collapse id='basic-navbar-nav'>
