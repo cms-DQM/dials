@@ -7,9 +7,11 @@ import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import paginationFactory from 'react-bootstrap-table2-paginator'
+import { toast } from 'react-toastify'
 
 import Table from '../../components/table'
 import API from '../../services/api'
+import { isNumericNonZero } from '../../utils/sanitizer'
 
 const Runs = () => {
   const navigate = useNavigate()
@@ -19,6 +21,7 @@ const Runs = () => {
   const [minRun, setMinRun] = useState()
   const [maxRun, setMaxRun] = useState()
   const [runNumber, setRunNumber] = useState()
+  const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
   const [filterSubmited, setFilterSubmited] = useState(false)
@@ -49,6 +52,36 @@ const Runs = () => {
     if (type === 'pagination') {
       setPage(page)
     }
+  }
+
+  const validateSearchForm = () => {
+    const isRunValid = isNumericNonZero(runNumber)
+    setRunNumberIsInvalid(!isRunValid)
+    return isRunValid
+  }
+
+  const handleSearch = () => {
+    const isFormValid = validateSearchForm()
+    if (!isFormValid) {
+      return
+    }
+
+    API.run.get({ run: runNumber })
+      .then(response => {
+        return navigate(runNumber)
+      })
+      .catch(error => {
+        if (error.response.status === 404) {
+          toast.error('Run not found!')
+        } else {
+          toast.error('Failure to communicate with the API!')
+        }
+      })
+  }
+
+  const handleFilter = () => {
+    setPage(1)
+    setFilterSubmited(!filterSubmited)
   }
 
   useEffect(() => {
@@ -101,10 +134,7 @@ const Runs = () => {
               <Button
                 variant='primary'
                 type='submit'
-                onClick={() => {
-                  setPage(1)
-                  setFilterSubmited(!filterSubmited)
-                }}
+                onClick={handleFilter}
               >
                 Submit
               </Button>
@@ -121,13 +151,15 @@ const Runs = () => {
                   type='number'
                   value={runNumber}
                   onChange={e => setRunNumber(e.target.value)}
+                  isInvalid={runNumberIsInvalid}
                 />
+                <Form.Control.Feedback type='invalid'>Run number cannot be empty</Form.Control.Feedback>
               </Form.Group>
 
               <Button
                 variant='primary'
                 type='submit'
-                onClick={() => navigate(runNumber?.toString())}
+                onClick={handleSearch}
               >
                 Go
               </Button>

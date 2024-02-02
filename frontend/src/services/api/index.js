@@ -28,6 +28,16 @@ const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
   return response.data
 }
 
+const getRun = async ({ run }) => {
+  const endpoint = `${API_URL}/run/${run}/`
+  const response = await axios.get(endpoint, {
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  return response.data
+}
+
 const listRuns = async ({ page, maxRun, minRun }) => {
   const endpoint = `${API_URL}/run/`
   const response = await axios.get(endpoint, {
@@ -152,6 +162,7 @@ const API = {
     getHistogram
   },
   run: {
+    get: getRun,
     list: listRuns,
     listLumisections: listLumisectionsInRun
   },
