@@ -33,7 +33,7 @@ class LumisectionHistogram2DSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class LumisectionHistogramsIngetionInputSerializer(serializers.Serializer):
+class LumisectionHistogramsIngestionInputSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
 

@@ -15,7 +15,7 @@ from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D,
 from .serializers import (
     LumisectionHistogram1DSerializer,
     LumisectionHistogram2DSerializer,
-    LumisectionHistogramsIngetionInputSerializer,
+    LumisectionHistogramsIngestionInputSerializer,
     LumisectionHistogramsSubsystemCountSerializer,
     LumisectionSerializer,
     RunLumisectionsSerializer,
@@ -76,7 +76,7 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     filterset_class = LumisectionFilter
 
     @extend_schema(
-        request=LumisectionHistogramsIngetionInputSerializer,
+        request=LumisectionHistogramsIngestionInputSerializer,
         responses={200: TaskResponseSerializer},
     )
     @action(
