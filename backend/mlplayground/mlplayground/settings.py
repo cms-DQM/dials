@@ -31,17 +31,17 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = bool(int(os.getenv("DJANGO_DEBUG", 0)))  # 0 is False
 
 # A list of strings representing the host/domain names that this Django site can serve
-ALLOWED_HOSTS = [os.getenv("DJANGO_ALLOWED_HOSTS")]
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 # A list of trusted origins for unsafe requests (e.g. POST).
-CSRF_TRUSTED_ORIGINS = [os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS")]
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(" ")
 
 # Cors
 CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [os.getenv("DJANGO_CORS_ALLOWED_ORIGINS")]
+CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(" ")
 
 # Application definition
 INSTALLED_APPS = [
