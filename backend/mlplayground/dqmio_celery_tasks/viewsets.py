@@ -1,5 +1,6 @@
 import logging
 
+from custom_auth.keycloak import KeycloakAuthentication
 from django_celery_results.models import TaskResult
 from drf_spectacular.utils import extend_schema
 from mlplayground import celery_app
@@ -21,6 +22,7 @@ class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     queryset = TaskResult.objects.all().order_by("-date_done")
     serializer_class = CeleryTasksSerializer
     lookup_field = "task_id"
+    authentication_classes = [KeycloakAuthentication]
 
     @extend_schema(
         request=None,

@@ -1,3 +1,4 @@
+from custom_auth.routers import router as custom_auth_router
 from django.urls import include, path
 from dqmio_celery_tasks.routers import router as dqmio_celery_tasks_router
 from dqmio_etl.routers import router as dqmio_etl_router
@@ -9,6 +10,7 @@ router = routers.DefaultRouter()
 router.registry.extend(dqmio_file_indexer_router.registry)
 router.registry.extend(dqmio_etl_router.registry)
 router.registry.extend(dqmio_celery_tasks_router.registry)
+router.registry.extend(custom_auth_router.registry)
 
 urlpatterns = [
     path(r"api/v1/", include(router.urls), name="api-v1"),

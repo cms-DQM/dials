@@ -1,5 +1,6 @@
 import logging
 
+from custom_auth.keycloak import KeycloakAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
 from drf_spectacular.utils import extend_schema
@@ -20,6 +21,7 @@ class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
     serializer_class = FileIndexSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = FileIndexFilter
+    authentication_classes = [KeycloakAuthentication]
 
     @extend_schema(request=None, responses={200: TaskResponseSerializer})
     @action(
