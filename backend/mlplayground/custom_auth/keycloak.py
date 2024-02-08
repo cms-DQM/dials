@@ -49,9 +49,19 @@ class KeycloakAuthentication(BaseAuthentication):
 
             api_tokens_subs = [f"service-account-{cid}" for cid in settings.KEYCLOAK_API_CLIENTS.values()]
             if claims["sub"] in api_tokens_subs:
-                user_info = {"name": claims["sub"], "reason": "api access token"}
+                user_info = {"name": claims["sub"], "auth_flow": "api access token", "claims": "claims"}
             else:
-                user_info = kc.user_info(token)
+                # Every time you call user_info you hit the auth-server userinfo endpoint
+                #
+                # Since this custom authentication class runs the `authenticate` method
+                # every time the api receives a request in the protected route when dealing with multiple users
+                # we are basically doing a ddos in the auth-server
+                #
+                # Since right now we are not using any user_info in the backend (probably never will)
+                # i'm going to stub the user_info using decoded token claims
+
+                # user_info = kc.user_info(token)
+                user_info = {"name": claims["sub"], "auth_flow": "confidential access token", "claims": claims}
         except Exception:
             raise AuthenticationFailed()
 
