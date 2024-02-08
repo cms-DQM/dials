@@ -153,20 +153,6 @@ const IngestionStatistics = () => {
       </Row >
 
       <Row className='mb-3'>
-        <Col>
-          <Card className='text-center'>
-            <Card.Header>Indexed files by status</Card.Header>
-            <Card.Body>
-              <ResponsivePlot
-                data={dataFilesPlot}
-                config={{ staticPlot: true }}
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row className='mb-3'>
         <Col sm={6}>
           <Card className='text-center'>
             <Card.Header>1D Histograms by subsystem</Card.Header>
@@ -192,6 +178,20 @@ const IngestionStatistics = () => {
           </Card>
         </Col>
       </Row >
+
+      <Row className='mb-3'>
+        <Col>
+          <Card className='text-center'>
+            <Card.Header>Indexed files by status</Card.Header>
+            <Card.Body>
+              <ResponsivePlot
+                data={dataFilesPlot}
+                config={{ staticPlot: true }}
+              />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
     </>
   )
 }
