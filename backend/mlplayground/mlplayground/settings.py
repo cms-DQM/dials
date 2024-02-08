@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Discover which environment the server is running
-ENV = os.getenv("ENV")
+ENV = os.getenv("DJANGO_ENV")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,32 +28,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", False)
+DEBUG = bool(int(os.getenv("DJANGO_DEBUG", 0)))  # 0 is False
 
 # A list of strings representing the host/domain names that this Django site can serve
-ALLOWED_HOSTS = []
-if ENV == "development":
-    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
-else:
-    ALLOWED_HOSTS.append(os.getenv("DJANGO_ALLOWED_HOSTS"))
+ALLOWED_HOSTS = [os.getenv("DJANGO_ALLOWED_HOSTS")]
 
 # A list of trusted origins for unsafe requests (e.g. POST).
-CSRF_TRUSTED_ORIGINS = []
-if ENV == "development":
-    CSRF_TRUSTED_ORIGINS.append(os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost:3000"))
-else:
-    CSRF_TRUSTED_ORIGINS.append(os.getenv("CSRF_TRUSTED_ORIGINS"))
+CSRF_TRUSTED_ORIGINS = [os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS")]
 
 # Cors
 CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = []
-if ENV == "development":
-    CORS_ALLOWED_ORIGINS.append(os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000"))
-else:
-    CORS_ALLOWED_ORIGINS.append(os.getenv("CORS_ALLOWED_ORIGINS"))
+CORS_ALLOWED_ORIGINS = [os.getenv("DJANGO_CORS_ALLOWED_ORIGINS")]
 
 # Application definition
 INSTALLED_APPS = [
@@ -188,7 +176,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery configuration options
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_BROKER_URL = os.getenv("DJANGO_CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
@@ -200,12 +188,12 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
-DIR_PATH_DQMIO_STORAGE = os.getenv("DIR_PATH_DQMIO_STORAGE")
+DIR_PATH_DQMIO_STORAGE = os.getenv("DJANGO_DQMIO_STORAGE")
 
 # Keycloak OIDC config
-KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
-KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-KEYCLOAK_CONFIDENTIAL_CLIENT_ID = os.getenv("KEYCLOAK_CONFIDENTIAL_CLIENT_ID")
-KEYCLOAK_CONFIDENTIAL_SECRET_KEY = os.getenv("KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
-KEYCLOAK_PUBLIC_CLIENT_ID = os.getenv("KEYCLOAK_PUBLIC_CLIENT_ID")
-KEYCLOAK_API_CLIENTS = json.loads(os.getenv("KEYCLOAK_API_CLIENTS", "{}"))
+KEYCLOAK_SERVER_URL = os.getenv("DJANGO_KEYCLOAK_SERVER_URL")
+KEYCLOAK_REALM = os.getenv("DJANGO_KEYCLOAK_REALM")
+KEYCLOAK_CONFIDENTIAL_CLIENT_ID = os.getenv("DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID")
+KEYCLOAK_CONFIDENTIAL_SECRET_KEY = os.getenv("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
+KEYCLOAK_PUBLIC_CLIENT_ID = os.getenv("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
+KEYCLOAK_API_CLIENTS = json.loads(os.getenv("DJANGO_KEYCLOAK_API_CLIENTS", "{}"))
