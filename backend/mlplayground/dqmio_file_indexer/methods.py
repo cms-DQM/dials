@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+import ROOT
 from django.conf import settings
 from django.utils import timezone
 
@@ -61,8 +62,13 @@ class RawDataIndexer:
     @staticmethod
     def __index_file_in_database(file):
         lstat = file.lstat()
+        fpath = str(file)
+        with ROOT.TFile(fpath) as root_file:
+            file_uuid = root_file.GetUUID().AsString()
+
         file_index, created = FileIndex.objects.get_or_create(
-            file_path=str(file),
+            file_uuid=file_uuid,
+            file_path=fpath,
             data_era=RawDataIndexer.__infer_data_era(file.name),
             st_size=lstat.st_size,
             st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone()),

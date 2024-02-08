@@ -29,6 +29,7 @@ class FileIndex(models.Model):
     VALID_FILE_EXTS = [".root"]
     is_cleaned = False
 
+    file_uuid = models.CharField(help_text="ROOT TFile UUID", max_length=36)
     file_path = models.CharField(help_text="Path where the file is stored", max_length=255)
     data_era = models.CharField(
         default="Unknown",
@@ -83,7 +84,6 @@ class FileIndex(models.Model):
             try:
                 self.full_clean()
             except ValidationError as err:
-                print(err)
                 raise err
 
         super().save(*args, **kwargs)
@@ -101,4 +101,4 @@ class FileIndex(models.Model):
         self.save()
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["file_path"], name="unique_file_path")]
+        constraints = [models.UniqueConstraint(fields=["file_uuid"], name="unique_file_uuid")]
