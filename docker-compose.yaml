@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - 8000:8000/
+    volumes:
+      - ./backend/:/api
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c "poetry run poe start-dev"
+    network_mode: "host"
+
+  web:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/:/web/
+    command: bash -c "yarn run start"
+    network_mode: "host"
