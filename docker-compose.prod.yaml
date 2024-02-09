@@ -72,7 +72,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
     # ports: # Not needed when network mode is set to host
-    #   - 8080:80
+    #   - 8081:8081
     depends_on:
       - django_rest_api_prod
     network_mode: "host"
