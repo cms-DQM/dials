@@ -16,9 +16,9 @@
 version: '3'
 
 services:
-  django_rest_api:
-    container_name: django_rest_api
-    image: local/django_rest_api
+  django_rest_api_dev:
+    container_name: django_rest_api_dev
+    image: local/django_rest_api_dev
     build:
       context: ./backend
       args:
@@ -32,40 +32,40 @@ services:
     command: bash -c 'cd mlplayground && python3 manage.py runserver 0.0.0.0:8000'
     network_mode: "host"
 
-  django_celery_worker1:
-    container_name: django_celery_worker1
-    image: local/django_rest_api
+  django_celery_worker1_dev:
+    container_name: django_celery_worker1_dev
+    image: local/django_rest_api_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
     entrypoint: ''
     depends_on:
-      - django_rest_api
+      - django_rest_api_dev
     network_mode: "host"
 
-  django_celery_worker2:
-    container_name: django_celery_worker2
-    image: local/django_rest_api
+  django_celery_worker2_dev:
+    container_name: django_celery_worker2_dev
+    image: local/django_rest_api_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
     entrypoint: ''
     depends_on:
-      - django_rest_api
+      - django_rest_api_dev
     network_mode: "host"
 
-  django_celery_beat:
-    container_name: django_celery_beat
-    image: local/django_rest_api
+  django_celery_beat_dev:
+    container_name: django_celery_beat_dev
+    image: local/django_rest_api_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd mlplayground && celery -A mlplayground beat -l INFO'
     entrypoint: ''
     depends_on:
-      - django_rest_api
+      - django_rest_api_dev
     network_mode: "host"
 
   frontend_dev:
@@ -82,5 +82,5 @@ services:
       - ./frontend/:/home/app/web
     command: bash -c "yarn run start"
     depends_on:
-      - django_rest_api
+      - django_rest_api_dev
     network_mode: "host"
