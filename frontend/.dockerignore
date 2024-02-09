@@ -7,4 +7,3 @@ npm-debug.log
 .env
 .aws
 **/build/
-.env*
