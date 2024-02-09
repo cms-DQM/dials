@@ -9,6 +9,7 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
 
 ## Planning
 
+* Check how to rollout new image to current app deployment on Openshift
 * Create documentation (with tutorials for new developers)
     * Backend design
     * Job queues
@@ -21,12 +22,16 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
     * How to contribute (with examples/tutorials)
 * R&D: Use HTCondor for nanoDQMIO file processing (discuss if it is worth it)
 * R&D: Data Lakehouse for easy and fast access to data without risk of database and rest-api throttle when CMS Physicists want to develop/test a model (using SWAN + Spark)
-* R&D: Model registry
+* R&D: Model registry (model binary + pre-processor script)
 * R&D: Continuous inference
 
 
 ## TODO Tracker
 
-* Fix frontend eslint warnings
+* (Backend) Create viewset for BadFileIndex model
+* (Frontend) Add card with bad files count
+* (Frontend) Add bad files count bar to `Indexed file by status` bar plot
+* (Frontend) Add filter in `Indexed files` tab to look for bad files (different api request)
+* (Frontend) Fix eslint warnings
 * Openshift deployment with cli + scripts
 * Staging deployment
