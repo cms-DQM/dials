@@ -6,11 +6,21 @@ from django.db import models
 
 
 class FileIndexResponseBase:
-    def __init__(self, storage: str, total: int, added: int, ingested_ids: List[int]):
+    def __init__(
+        self,
+        storage: str,
+        total: int,
+        added_good: int,
+        added_bad: int,
+        good_ingested_ids: List[int],
+        bad_ingested_ids: List[int],
+    ):
         self.storage = storage
         self.total = total
-        self.added = added
-        self.ingested_ids = ingested_ids
+        self.added_good = added_good
+        self.added_bad = added_bad
+        self.good_ingested_ids = good_ingested_ids
+        self.bad_ingested_ids = bad_ingested_ids
 
 
 class FileIndexStatus:
@@ -102,3 +112,28 @@ class FileIndex(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["file_uuid"], name="unique_file_uuid")]
+
+
+class BadFileIndex(models.Model):
+    file_path = models.CharField(help_text="Path where the file is stored", max_length=255)
+    data_era = models.CharField(
+        default="Unknown",
+        null=False,
+        max_length=7,
+        help_text="The era that the data refers to (e.g. 2018A)",
+    )
+    st_size = models.FloatField(default=0, help_text="The data file's size in bytes")
+    st_ctime = models.DateTimeField(help_text="Time of files's last status change in filesystem")
+    st_itime = models.DateTimeField(auto_now_add=True, help_text="Time when file was indexed in database")
+    err = models.CharField(max_length=255, help_text="Error message")
+
+    def __str__(self):
+        size_in_mb = self.st_size / 1024**2
+        file_name = Path(self.file_path).name
+        return f"BAD {file_name} ({size_in_mb:.2f} MB)"
+
+    # TODO
+    # Instead of putting an UniqueConstraint in file_path (if path changes, new files will be added)
+    # check if it is possible to put the constraint in the file_name without creating a new field
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["file_path"], name="unique_bad_file_path")]

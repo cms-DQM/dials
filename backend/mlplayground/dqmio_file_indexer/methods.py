@@ -7,7 +7,7 @@ import ROOT
 from django.conf import settings
 from django.utils import timezone
 
-from .models import FileIndex, FileIndexResponseBase
+from .models import BadFileIndex, FileIndex, FileIndexResponseBase
 
 logger = logging.getLogger(__name__)
 
@@ -63,24 +63,40 @@ class RawDataIndexer:
     def __index_file_in_database(file):
         lstat = file.lstat()
         fpath = str(file)
-        with ROOT.TFile(fpath) as root_file:
-            file_uuid = root_file.GetUUID().AsString()
+
+        try:
+            with ROOT.TFile(fpath) as root_file:
+                file_uuid = root_file.GetUUID().AsString()
+            file_is_bad = False
+        except Exception as err:
+            file_is_bad = True
+            err_type = type(err).__name__
+            parsed_err_text = str(err).replace(fpath, "<<fpath>>")
+            err_msg = f"{err_type}: {parsed_err_text}"
+
+        data_era = RawDataIndexer.__infer_data_era(file.name)
+        st_ctime = datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone())
+
+        if file_is_bad:
+            bad_file_index, created = BadFileIndex.objects.get_or_create(
+                file_path=fpath, data_era=data_era, st_size=lstat.st_size, st_ctime=st_ctime, err=err_msg
+            )
+            return ("BAD", bad_file_index.id, created)
 
         file_index, created = FileIndex.objects.get_or_create(
             file_uuid=file_uuid,
             file_path=fpath,
-            data_era=RawDataIndexer.__infer_data_era(file.name),
+            data_era=data_era,
             st_size=lstat.st_size,
-            st_ctime=datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone()),
+            st_ctime=st_ctime,
         )
 
-        # Do not return anything, next function will check if returned value is None
         if created is False:
             logger.debug(f"File {file} already exists in the database!")
-            return
+        else:
+            logger.debug(f"Indexed new file in DB: {file}")
 
-        logger.debug(f"Indexed new file in DB: {file}")
-        return file_index.id
+        return ("GOOD", file_index.id, created)
 
     @staticmethod
     def __search_dqmio_files(storage_dir):
@@ -88,11 +104,16 @@ class RawDataIndexer:
         files = [file for file in path.rglob("*") if file.suffix in FileIndex.VALID_FILE_EXTS and file.is_file()]
         total_files = len(files)
         files = [RawDataIndexer.__index_file_in_database(file) for file in files]
-        indexed_files_id = [file_id for file_id in files if file_id is not None]
+        good_indexed_files_id = [
+            file_id for file_status, file_id, created in files if created and file_status == "GOOD"
+        ]
+        bad_indexed_files_id = [file_id for file_status, file_id, created in files if created and file_status == "BAD"]
         return {
             "total_files": total_files,
-            "total_added_files": len(indexed_files_id),
-            "indexed_files_id": indexed_files_id,
+            "total_added_good_files": len(good_indexed_files_id),
+            "total_added_bad_files": len(bad_indexed_files_id),
+            "good_indexed_files_id": good_indexed_files_id,
+            "bad_indexed_files_id": bad_indexed_files_id,
         }
 
     def start(self):
@@ -104,8 +125,10 @@ class RawDataIndexer:
                 FileIndexResponseBase(
                     storage=dir,
                     total=dir_result["total_files"],
-                    added=dir_result["total_added_files"],
-                    ingested_ids=dir_result["indexed_files_id"],
+                    added_good=dir_result["total_added_good_files"],
+                    added_bad=dir_result["total_added_bad_files"],
+                    good_ingested_ids=dir_result["good_indexed_files_id"],
+                    bad_ingested_ids=dir_result["bad_indexed_files_id"],
                 )
             )
         return stats

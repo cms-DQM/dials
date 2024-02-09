@@ -16,12 +16,12 @@ def index_raw_data():
 @celery_app.task(queue="dqmio_file_indexer_queue", ignore_result=True)
 def handle_multi_ingestion(indexer_results):
     for dir_result in indexer_results:
-        total_added = dir_result["added"]
-        ingested_ids = dir_result["ingested_ids"]
-        if total_added == 0:
+        total_added_good = dir_result["added_good"]
+        good_ingested_ids = dir_result["good_ingested_ids"]
+        if total_added_good == 0:
             continue
 
-        for ingested_id in ingested_ids:
+        for ingested_id in good_ingested_ids:
             file_index = FileIndex.objects.get(id=ingested_id)
             file_index.update_status(FileIndexStatus.PENDING)
             del file_index
