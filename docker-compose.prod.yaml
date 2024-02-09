@@ -1,0 +1,78 @@
+# Notes
+#
+# 1. This docker-compose is used to simulate production environment,
+#    it is just a simulation because in reality the application will be deploy in Kubernetes (under the hood at least)
+#    But at leasts the containers and commands used here mimicks what should be configured in cloud-native env
+#
+# 2. This file assumes that PostgreSQL and Redis are running as standalone docker containers
+#    as describe in backend's README, so we need to set network_mode to "host"
+#    in any application that need to communicate with those containers.
+#    Optionally you can modified it yourself an run PostgresSQL and Redis from it and remove the network_mode
+#    but make sure to expose all the necessary ports and check the links between containers
+#
+# 3. This file also assumes that nanoDQMIO files are stored under the path "/mnt/nanodqmio" in the host
+#    you can modify this location as you wish, remember to also modify the path in .env
+#    if the application is also going to look for the files anywhere else
+
+version: '3'
+
+services:
+  django_rest_api_prod:
+    container_name: django_rest_api_prod
+    image: local/django_rest_api_prod
+    build: ./backend
+    # ports: # Not needed when network mode is set to host
+    #   - 8000:8000
+    volumes:
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c 'cd mlplayground && python3 -m gunicorn mlplayground.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000'
+    network_mode: "host"
+    env_file: ./backend/.env.prod
+
+  django_celery_worker1_prod:
+    container_name: django_celery_worker1_prod
+    image: local/django_rest_api_prod
+    volumes:
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api_prod
+    network_mode: "host"
+    env_file: ./backend/.env.prod
+
+  django_celery_worker2_prod:
+    container_name: django_celery_worker2_prod
+    image: local/django_rest_api_prod
+    volumes:
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api_prod
+    network_mode: "host"
+    env_file: ./backend/.env.prod
+
+  django_celery_beat_prod:
+    container_name: django_celery_beat_prod
+    image: local/django_rest_api_prod
+    volumes:
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c 'cd mlplayground && celery -A mlplayground beat -l INFO'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api_prod
+    network_mode: "host"
+    env_file: ./backend/.env.prod
+
+  frontend_prod:
+    container_name: frontend_prod
+    image: frontend_prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    # ports: # Not needed when network mode is set to host
+    #   - 8080:80
+    depends_on:
+      - django_rest_api_prod
+    network_mode: "host"
