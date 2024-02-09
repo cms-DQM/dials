@@ -1,45 +1,71 @@
 version: '3'
 
 services:
-  api:
-    build: ./backend
+  django_rest_api:
+    container_name: django_rest_api
+    image: local/django_rest_api
+    build:
+      context: ./backend
+      args:
+        - UID
+        - GID
     ports:
-      - 8000:8000/
+      - 8000:8000
     volumes:
-      - ./backend/:/api
+      - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c "cd mlplayground && poetry run python manage.py runserver 0.0.0.0:8000"
+    command: bash -c 'cd mlplayground && python3 manage.py runserver 0.0.0.0:8000'
     network_mode: "host"
 
-  api_worker1:
-    build: ./backend
+  django_celery_worker1:
+    container_name: django_celery_worker1
+    image: local/django_rest_api
     volumes:
-      - ./backend/:/api
+      - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c "cd mlplayground && poetry run celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue"
+    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api
     network_mode: "host"
 
-  api_worker2:
-    build: ./backend
+  django_celery_worker2:
+    container_name: django_celery_worker2
+    image: local/django_rest_api
     volumes:
-      - ./backend/:/api
+      - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c "cd mlplayground && poetry run celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue"
+    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api
     network_mode: "host"
 
-  api_beat_schedule:
-    build: ./backend
+  django_celery_beat:
+    container_name: django_celery_beat
+    image: local/django_rest_api
     volumes:
-      - ./backend/:/api
+      - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c "cd mlplayground && poetry run celery -A mlplayground beat -l INFO"
+    command: bash -c 'cd mlplayground && celery -A mlplayground beat -l INFO'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api
     network_mode: "host"
 
-  web:
-    build: ./frontend
+  react_frontend:
+    container_name: react_frontend
+    image: react_frontend
+    build:
+      context: ./frontend
+      args:
+        - UID
+        - GID
     ports:
       - 3000:3000
     volumes:
-      - ./frontend/:/web/
+      - ./frontend/:/home/app/web
     command: bash -c "yarn run start"
+    depends_on:
+      - django_rest_api
     network_mode: "host"
