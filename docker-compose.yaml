@@ -8,7 +8,31 @@ services:
     volumes:
       - ./backend/:/api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c "poetry run poe start-dev"
+    command: bash -c "cd mlplayground && poetry run python manage.py runserver 0.0.0.0:8000"
+    network_mode: "host"
+
+  api_worker1:
+    build: ./backend
+    volumes:
+      - ./backend/:/api
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c "cd mlplayground && poetry run celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue"
+    network_mode: "host"
+
+  api_worker2:
+    build: ./backend
+    volumes:
+      - ./backend/:/api
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c "cd mlplayground && poetry run celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue"
+    network_mode: "host"
+
+  api_beat_schedule:
+    build: ./backend
+    volumes:
+      - ./backend/:/api
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c "cd mlplayground && poetry run celery -A mlplayground beat -l INFO"
     network_mode: "host"
 
   web:
