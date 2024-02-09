@@ -9,8 +9,7 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
 
 ## TODO Tracker
 
-* Renew public user token when it expires in frontend and trigger confidential user token exchange for renewed public token
-* Add backend and frontend dockerfile, docker-compose and deploy script
+* Production deploy on CERN's OpenShift
 * Create documentation
 * Create tutorials
 * R&D: Use HTCondor for nanoDQMIO file processing
