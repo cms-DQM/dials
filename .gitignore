@@ -324,5 +324,6 @@ yarn-error.log*
 ### Environment files ###
 .env
 .env-*
+!.env-cmdrc
 .env_*
 .env.*
