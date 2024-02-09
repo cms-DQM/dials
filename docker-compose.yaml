@@ -1,3 +1,18 @@
+# Notes
+#
+# 1. This docker-compose is not production-ready, you should use it only for development puporses
+#    if do not want to run the entire stack natively
+#
+# 2. This file assumes that PostgreSQL and Redis are running as standalone docker containers
+#    as describe in backend's README, so we need to set network_mode to "host"
+#    in any application that need to communicate with those containers.
+#    Optionally you can modified it yourself an run PostgresSQL and Redis from it and remove the network_mode
+#    but make sure to expose all the necessary ports and check the links between containers
+#
+# 3. This file also assumes that nanoDQMIO files are stored under the path "/mnt/nanodqmio" in the host
+#    you can modify this location as you wish, remember to also modify the path in .env
+#    if the application is also going to look for the files anywhere else
+
 version: '3'
 
 services:
@@ -9,8 +24,8 @@ services:
       args:
         - UID
         - GID
-    ports:
-      - 8000:8000
+    # ports: # Not needed when network mode is set to host
+    #   - 8000:8000
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
@@ -53,16 +68,16 @@ services:
       - django_rest_api
     network_mode: "host"
 
-  react_frontend:
-    container_name: react_frontend
-    image: react_frontend
+  frontend_dev:
+    container_name: frontend_dev
+    image: frontend_dev
     build:
       context: ./frontend
       args:
         - UID
         - GID
-    ports:
-      - 3000:3000
+    # ports: # Not needed when network mode is set to host
+    #   - 3000:3000
     volumes:
       - ./frontend/:/home/app/web
     command: bash -c "yarn run start"
