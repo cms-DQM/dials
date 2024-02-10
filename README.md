@@ -28,6 +28,7 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
 
 ## TODO Tracker
 
+* (Frontend) Add copyright notice on the home page at the footer
 * (Backend) Create viewset for BadFileIndex model
 * (Frontend) Add card with bad files count
 * (Frontend) Add bad files count bar to `Indexed file by status` bar plot
