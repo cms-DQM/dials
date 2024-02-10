@@ -9,7 +9,6 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
 
 ## Planning
 
-* Check how to rollout new image to current app deployment on Openshift
 * Create documentation (with tutorials for new developers)
     * Backend design
     * Job queues
@@ -28,6 +27,7 @@ The goal of this project is to index, prepare, display and monitor nanoDQMIO dat
 
 ## TODO Tracker
 
+* (Backend) Add logic to remove file from BadFileIndex table when it is fixed/removed from filesystem
 * (Frontend) Add copyright notice on the home page at the footer
 * (Backend) Create viewset for BadFileIndex model
 * (Frontend) Add card with bad files count
