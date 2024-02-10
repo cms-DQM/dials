@@ -1,15 +1,29 @@
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from jose import jwt
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from utils.cern_keycloak import Keycloak
 
-kc = Keycloak(
-    server_url=settings.KEYCLOAK_SERVER_URL,
-    client_id=settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID,
-    client_secret_key=settings.KEYCLOAK_CONFIDENTIAL_SECRET_KEY,
-    realm_name=settings.KEYCLOAK_REALM,
-)
+kc = {
+    settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID: Keycloak(
+        server_url=settings.KEYCLOAK_SERVER_URL,
+        client_id=settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID,
+        client_secret_key=settings.KEYCLOAK_CONFIDENTIAL_SECRET_KEY,
+        realm_name=settings.KEYCLOAK_REALM,
+    ),
+    **{
+        client_id: Keycloak(
+            server_url=settings.KEYCLOAK_SERVER_URL,
+            client_id=client_id,
+            client_secret_key=client_secret_key,
+            realm_name=settings.KEYCLOAK_REALM,
+        )
+        for client_secret_key, client_id in settings.KEYCLOAK_API_CLIENTS.items()
+    },
+}
+api_clients = list(settings.KEYCLOAK_API_CLIENTS.values())
+valid_clients = [settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID, settings.KEYCLOAK_PUBLIC_CLIENT_ID, *api_clients]
 
 
 class KeycloakUser(AnonymousUser):
@@ -35,11 +49,12 @@ class KeycloakAuthentication(BaseAuthentication):
         token = self.__get_token(request)
 
         try:
-            kc.validate_audience(token)
-            kc.validate_authorized_party(
-                token, [settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID, settings.KEYCLOAK_PUBLIC_CLIENT_ID]
-            )
-            claims = kc.decode_token(token)
+            claims = jwt.get_unverified_claims(token)
+            aud = claims["aud"]
+            _kc = kc[aud]
+            _kc.validate_audience(token, client_id_list=valid_clients)
+            _kc.validate_authorized_party(token, client_id_list=valid_clients)
+            claims = _kc.decode_token(token)
 
             # Api access token fails to retrieve user_info (since the token is not linked to a real user)
             # Since this authorization class checks for:
@@ -47,7 +62,7 @@ class KeycloakAuthentication(BaseAuthentication):
             # 2. api access token
             # We can't always retrieve the user_info (only when dealing with user tokens)
 
-            api_tokens_subs = [f"service-account-{cid}" for cid in settings.KEYCLOAK_API_CLIENTS.values()]
+            api_tokens_subs = [f"service-account-{cid}" for cid in api_clients]
             if claims["sub"] in api_tokens_subs:
                 user_info = {"name": claims["sub"], "auth_flow": "api access token", "claims": "claims"}
             else:

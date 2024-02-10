@@ -36,7 +36,7 @@ class KeycloakExchangeViewSet(ViewSet):
             return HttpResponseBadRequest("Attribute 'subject_token' not found in request body.")
 
         try:
-            kc.validate_audience(subject_token)
+            kc.validate_audience(subject_token, client_id_list=[settings.KEYCLOAK_PUBLIC_CLIENT_ID])
         except InvalidToken:
             return HttpResponseBadRequest("Invalid token, audience mismatch.")
 

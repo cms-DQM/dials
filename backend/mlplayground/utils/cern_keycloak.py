@@ -26,13 +26,17 @@ class Keycloak:
     def __build_public_key(self):
         return "-----BEGIN PUBLIC KEY-----\n" + self._kc.public_key() + "\n-----END PUBLIC KEY-----"
 
-    def validate_audience(self, token):
-        claims = jwt.get_unverified_claims(token)
-        if claims.get("aud") != self.client_id:
+    @staticmethod
+    def unverified_claims(token):
+        return jwt.get_unverified_claims(token)
+
+    def validate_audience(self, token, client_id_list):
+        claims = self.unverified_claims(token)
+        if claims.get("aud") not in client_id_list:
             raise InvalidToken
 
     def validate_authorized_party(self, token, client_id_list):
-        claims = jwt.get_unverified_claims(token)
+        claims = self.unverified_claims(token)
         if claims.get("azp") not in client_id_list:
             raise InvalidToken
 
