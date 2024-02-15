@@ -16,25 +16,10 @@ class TaskResponseBase:
         self.ready = ready
 
 
-class InspectResponseBase:
-    def __init__(self, id, name, queue, worker):
-        self.id = id
-        self.name = name
-        self.queue = queue
-        self.worker = worker
-
-
 class TaskResponseSerializer(serializers.Serializer):
     id = serializers.CharField()
     state = serializers.CharField()
     ready = serializers.BooleanField()
-
-
-class InspectResponseSerializer(serializers.Serializer):
-    id = serializers.CharField()
-    name = serializers.CharField()
-    queue = serializers.CharField()
-    worker = serializers.CharField()
 
 
 class CeleryTasksSerializer(serializers.ModelSerializer):
@@ -42,7 +27,7 @@ class CeleryTasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskResult
-        fields = ("task_id", "status", "date_created", "date_done", "elapsed_time")
+        fields = ("task_id", "status", "task_name", "worker", "date_created", "date_done", "elapsed_time")
         lookup_field = "task_id"
 
     @extend_schema_field(serializers.IntegerField)
