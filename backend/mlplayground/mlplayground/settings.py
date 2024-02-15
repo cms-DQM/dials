@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -182,7 +183,10 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_RESULT_EXTENDED = True
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_BEAT_SCHEDULE = {
-    "Index new files and schedule ingestions": {"task": "dqmio_file_indexer.tasks.handle_periodic", "schedule": 600}
+    "Index new files and schedule ingestions": {
+        "task": "dqmio_file_indexer.tasks.handle_periodic",
+        "schedule": crontab(minute=0),
+    }
 }
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
