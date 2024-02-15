@@ -56,7 +56,7 @@ const IngestionTasks = () => {
           <Card.Header>Latest tasks in queues</Card.Header>
           <Card.Body>
             <Table
-              keyField='id'
+              keyField='task_id'
               isLoading={isLoadingLatestTasks}
               data={latestTasks}
               columns={latestTasksColumns}
