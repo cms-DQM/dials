@@ -181,10 +181,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_BEAT_SCHEDULE = {
-    "Index new files and schedule ingestions": {
-        "task": "dqmio_file_indexer.tasks.chain_index_and_ingestion",
-        "schedule": 600,
-    }
+    "Index new files and schedule ingestions": {"task": "dqmio_file_indexer.tasks.handle_periodic", "schedule": 600}
 }
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
