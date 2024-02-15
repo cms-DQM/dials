@@ -1,6 +1,8 @@
 from celery import states
-from celery.signals import before_task_publish, worker_ready
+from celery.signals import before_task_publish, task_prerun, worker_ready
+from django.utils import timezone
 from django_celery_results.backends.database import DatabaseBackend
+from django_celery_results.models import TaskResult
 from mlplayground import celery_app
 from utils.redis_lock import clear_locks
 
@@ -37,7 +39,22 @@ def create_task_result_on_publish(sender=None, headers=None, **kwargs):
     )
 
 
-# Release all locks
+@task_prerun.connect
+def update_date_created_prerun(task_id, task, *args, **kwargs):
+    """
+    This is a workaround to change date_created field in TaskResult
+    when task is about to start, so `date_created` always means `date_started`
+    """
+    if task.request.ignore_result:
+        return
+    task_result = TaskResult.objects.get(task_id=task_id)
+    task_result.date_created = timezone.now()
+    task_result.save()
+
+
 @worker_ready.connect
 def unlock_all(**kwargs):
+    """
+    When application starts clear possible deadlocks in broker
+    """
     clear_locks()
