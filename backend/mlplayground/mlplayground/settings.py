@@ -179,6 +179,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_BROKER_URL = os.getenv("DJANGO_CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "django-db"
+CELERY_RESULT_EXTENDED = True
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_BEAT_SCHEDULE = {
     "Index new files and schedule ingestions": {"task": "dqmio_file_indexer.tasks.handle_periodic", "schedule": 600}
