@@ -3,14 +3,12 @@ import logging
 from custom_auth.keycloak import KeycloakAuthentication
 from django_celery_results.models import TaskResult
 from django_filters.rest_framework import DjangoFilterBackend
-from mlplayground import celery_app
 from rest_framework import mixins, viewsets
 
 from .filters import CeleryTasksFilters
 from .serializers import CeleryTasksSerializer
 
 logger = logging.getLogger(__name__)
-inspect = celery_app.control.inspect()
 
 
 class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
