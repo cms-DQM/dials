@@ -22,6 +22,9 @@ class Run(models.Model):
     class Meta:
         ordering = ["run_number"]
         constraints = [models.UniqueConstraint(fields=["run_number"], name="unique run number")]
+        indexes = [
+            models.Index(fields=["run_number"]),
+        ]
 
 
 class Lumisection(models.Model):
@@ -36,6 +39,10 @@ class Lumisection(models.Model):
     class Meta:
         ordering = ["run__run_number", "ls_number"]
         constraints = [models.UniqueConstraint(fields=["run", "ls_number"], name="unique run/ls combination")]
+        indexes = [
+            models.Index(fields=["run"]),
+            models.Index(fields=["ls_number"]),
+        ]
 
 
 class HistogramBase(models.Model):
@@ -98,6 +105,11 @@ class LumisectionHistogram1D(LumisectionHistogramBase):
                 name="unique run / ls / 1d histogram combination",
             )
         ]
+        indexes = [
+            models.Index(fields=["lumisection"]),
+            models.Index(fields=["title"]),
+            models.Index(fields=["entries"]),
+        ]
 
 
 class LumisectionHistogram2D(LumisectionHistogramBase):
@@ -123,4 +135,9 @@ class LumisectionHistogram2D(LumisectionHistogramBase):
                 fields=["lumisection", "title"],
                 name="unique run / ls / 2d histogram combination",
             )
+        ]
+        indexes = [
+            models.Index(fields=["lumisection"]),
+            models.Index(fields=["title"]),
+            models.Index(fields=["entries"]),
         ]

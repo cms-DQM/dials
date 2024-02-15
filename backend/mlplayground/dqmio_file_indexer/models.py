@@ -112,6 +112,12 @@ class FileIndex(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["file_uuid"], name="unique_file_uuid")]
+        indexes = [
+            models.Index(fields=["file_path"]),
+            models.Index(fields=["data_era"]),
+            models.Index(fields=["st_size"]),
+            models.Index(fields=["status"]),
+        ]
 
 
 class BadFileIndex(models.Model):
