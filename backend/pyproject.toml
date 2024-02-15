@@ -24,6 +24,7 @@ gunicorn = "^21.2.0"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 poethepoet = "^0.24.4"
+flower = "^2.0.1"
 
 [tool.poe.tasks]
 start-dev = "./scripts/start-dev.sh"
