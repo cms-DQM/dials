@@ -139,19 +139,20 @@ const getIngestedSubsystems = async (dim) => {
   return response.data
 }
 
-const listTrackeTasks = async ({ page }) => {
+const listTasks = async ({ page, status, taskName, worker, minDateCreated, maxDateCreated, minDateDone, maxDateDone }) => {
   const endpoint = `${API_URL}/celery-tasks/`
   const response = await axiosApiInstance.get(endpoint, {
     params: {
-      page
+      page,
+      status: toUndefined(status, ''),
+      task_name: toUndefined(taskName, ''),
+      worker: toUndefined(worker, ''),
+      min_date_created: toUndefined(minDateCreated, ''),
+      max_date_created: toUndefined(maxDateCreated, ''),
+      min_date_done: toUndefined(minDateDone, ''),
+      max_date_done: toUndefined(maxDateDone, '')
     }
   })
-  return response.data
-}
-
-const listEnqueuedTasks = async () => {
-  const endpoint = `${API_URL}/celery-tasks/queued/`
-  const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
@@ -176,8 +177,7 @@ const API = {
     listLumisections: listLumisectionsInRun
   },
   jobQueue: {
-    tracked: listTrackeTasks,
-    enqueued: listEnqueuedTasks
+    list: listTasks
   }
 }
 
