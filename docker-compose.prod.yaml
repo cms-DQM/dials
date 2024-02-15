@@ -53,6 +53,19 @@ services:
     network_mode: "host"
     env_file: ./backend/.env.prod
 
+  django_celery_worker3_prod:
+    container_name: django_celery_worker3_prod
+    image: local/django_rest_api_dev
+    volumes:
+      - ./backend/:/home/app/rest_api
+      - /mnt/nanodqmio:/mnt/nanodqmio
+    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -n worker3 -Q celery_periodic'
+    entrypoint: ''
+    depends_on:
+      - django_rest_api_prod
+    network_mode: "host"
+    env_file: ./backend/.env.prod
+
   django_celery_beat_prod:
     container_name: django_celery_beat_prod
     image: local/django_rest_api_prod
