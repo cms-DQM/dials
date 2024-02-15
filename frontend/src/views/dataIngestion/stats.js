@@ -18,6 +18,10 @@ const IngestionStatistics = () => {
   const [layoutH1DPlot, setLayoutH1DPlot] = useState({})
   const [layoutH2DPlot, setLayoutH2DPlot] = useState({})
 
+  const [isLoadingFiles, setIsLoadingFiles] = useState(true)
+  const [isLoadingH1D, setIsLoadingH1D] = useState(true)
+  const [isLoadingH2D, setIsLoadingH2D] = useState(true)
+
   useEffect(() => {
     const fetchTotalIndexedFiles = () => {
       API.fileIndex.list({})
@@ -53,6 +57,7 @@ const IngestionStatistics = () => {
     }
 
     const fatchStatusData = async () => {
+      setIsLoadingFiles(true)
       try {
         const data = await Promise.all(API.fileIndex.statusList.map(async item => {
           const data = await API.fileIndex.list({ status: item })
@@ -69,6 +74,7 @@ const IngestionStatistics = () => {
             text: data.map(item => item.count)
           }
         ])
+        setIsLoadingFiles(false)
       } catch (err) {
         console.error(err)
         toast.error('Failure to communicate with the API!')
@@ -76,6 +82,7 @@ const IngestionStatistics = () => {
     }
 
     const fetchH1DCount = () => {
+      setIsLoadingH1D(true)
       API.lumisection.getSubsystemCount(1)
         .then(data => {
           setDataH1DPlot([
@@ -91,6 +98,7 @@ const IngestionStatistics = () => {
               text: `Total: ${data.map(item => item.count).reduce((partialSum, a) => partialSum + a, 0)}`
             }
           })
+          setIsLoadingH1D(false)
         })
         .catch(err => {
           console.error(err)
@@ -99,6 +107,7 @@ const IngestionStatistics = () => {
     }
 
     const fetchH2DCount = () => {
+      setIsLoadingH2D(true)
       API.lumisection.getSubsystemCount(2)
         .then(data => {
           setDataH2DPlot([
@@ -114,6 +123,7 @@ const IngestionStatistics = () => {
               text: `Total: ${data.map(item => item.count).reduce((partialSum, a) => partialSum + a, 0)}`
             }
           })
+          setIsLoadingH2D(false)
         })
         .catch(err => {
           console.error(err)
@@ -161,6 +171,7 @@ const IngestionStatistics = () => {
                 data={dataH1DPlot}
                 layout={layoutH1DPlot}
                 config={{ staticPlot: true }}
+                isLoading={isLoadingH1D}
               />
             </Card.Body>
           </Card>
@@ -173,6 +184,7 @@ const IngestionStatistics = () => {
                 data={dataH2DPlot}
                 layout={layoutH2DPlot}
                 config={{ staticPlot: true }}
+                isLoading={isLoadingH2D}
               />
             </Card.Body>
           </Card>
@@ -187,6 +199,7 @@ const IngestionStatistics = () => {
               <ResponsivePlot
                 data={dataFilesPlot}
                 config={{ staticPlot: true }}
+                isLoading={isLoadingFiles}
               />
             </Card.Body>
           </Card>
