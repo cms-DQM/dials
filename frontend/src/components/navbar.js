@@ -46,11 +46,6 @@ const Navbar = () => {
                     <NavDropdown.Item as={NavLink} to='/runs'>Runs</NavDropdown.Item>
                     <NavDropdown.Item as={NavLink} to='/lumisections'>Lumisections</NavDropdown.Item>
                   </NavDropdown>
-                  <NavDropdown title='Machine Learning'>
-                    <NavDropdown.Item as={NavLink} to='/create'>Create</NavDropdown.Item>
-                    <NavDropdown.Item as={NavLink} to='/train'>Train</NavDropdown.Item>
-                    <NavDropdown.Item as={NavLink} to='/predict'>Predict</NavDropdown.Item>
-                  </NavDropdown>
                 </Nav>
                 <Nav>
                   <Nav.Link className='me-3'>Signed in as: {auth.user.profile.sub}</Nav.Link>

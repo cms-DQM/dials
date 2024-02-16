@@ -10,11 +10,6 @@ import {
   Histograms2D,
   Histogram
 } from './dataExplorer'
-import {
-  CreatePipelines,
-  RunPipelines,
-  ModelPredict
-} from './machineLearning'
 
 const Views = {
   Home: {
@@ -32,11 +27,6 @@ const Views = {
     Histograms1D,
     Histograms2D,
     Histogram
-  },
-  MachineLearning: {
-    CreatePipelines,
-    RunPipelines,
-    ModelPredict
   }
 }
 

@@ -75,9 +75,6 @@ const Root = () => {
                   <Route index element={<PrivateRoute component={Views.DataExplorer.Histograms2D} />} />
                   <Route path=':id' element={<PrivateRoute component={Views.DataExplorer.Histogram} dim={2} />} />
                 </Route>
-                <Route path='/create' element={<PrivateRoute component={Views.MachineLearning.CreatePipelines} />} />
-                <Route path='/train' element={<PrivateRoute component={Views.MachineLearning.RunPipelines} />} />
-                <Route path='/predict' element={<PrivateRoute component={Views.MachineLearning.ModelPredict} />} />
               </Routes>
               <ToastContainer
                 position='bottom-right'
