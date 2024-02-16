@@ -21,7 +21,7 @@ const IngestionTasks = () => {
     { dataField: 'status', text: 'Status', type: 'string' },
     { dataField: 'task_name', text: 'Task name', type: 'string' },
     { dataField: 'worker', text: 'Task worker', type: 'string' },
-    { dataField: 'date_created', text: 'Date started', type: 'string' },
+    { dataField: 'date_created', text: 'Date created', type: 'string' },
     { dataField: 'date_done', text: 'Date done', type: 'string' },
     { dataField: 'elapsed_time', text: 'Elapsed time', type: 'number' }
   ]
