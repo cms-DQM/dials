@@ -327,3 +327,6 @@ yarn-error.log*
 !.env-cmdrc
 .env_*
 .env.*
+
+### Custom ###
+*.benchmark-dat
