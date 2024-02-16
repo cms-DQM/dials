@@ -7,7 +7,7 @@ class CeleryTasksFilters(filters.FilterSet):
     max_date_created = filters.NumberFilter(label="Maximum date created", field_name="date_created", lookup_expr="lte")
     min_date_done = filters.NumberFilter(label="Minimum date done", field_name="date_done", lookup_expr="gte")
     max_date_done = filters.NumberFilter(label="Maximum date done", field_name="date_done", lookup_expr="lte")
-    status = filters.ChoiceFilter(
+    status = filters.MultipleChoiceFilter(
         label="File contents ingestion status",
         field_name="status",
         lookup_expr="exact",
