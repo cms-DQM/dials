@@ -45,7 +45,7 @@ const Runs = () => {
     { dataField: 'oms_initial_lumi', text: 'OMS Initial Lumi', type: 'string' },
     { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' }
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {

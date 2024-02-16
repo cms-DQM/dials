@@ -74,7 +74,7 @@ const Histograms1D = () => {
       }
     }
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {

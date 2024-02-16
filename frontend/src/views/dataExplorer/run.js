@@ -38,7 +38,7 @@ const Run = () => {
     { dataField: 'oms_zerobias_rate', text: 'OMS ZeroBias Rate', type: 'number' }
   ]
 
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {

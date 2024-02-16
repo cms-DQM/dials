@@ -25,7 +25,7 @@ const IngestionTasks = () => {
     { dataField: 'date_done', text: 'Date done', type: 'string' },
     { dataField: 'elapsed_time', text: 'Elapsed time', type: 'number' }
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {

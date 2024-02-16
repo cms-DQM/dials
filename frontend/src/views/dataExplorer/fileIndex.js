@@ -32,7 +32,7 @@ const FileIndex = () => {
     { dataField: 'st_itime', text: 'Indexed at', type: 'string' },
     { dataField: 'status', text: 'Status', type: 'string' }
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true })
+  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
