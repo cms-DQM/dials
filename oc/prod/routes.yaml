@@ -1,0 +1,76 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: dqmdc-ml4ad-backend
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-api
+    app.kubernetes.io/component: backend-api
+    app.kubernetes.io/instance: backend-api
+    app.kubernetes.io/name: backend-api
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime-version: latest
+  annotations:
+    external-dns.alpha.kubernetes.io/target: paas-apps-shard-1.cern.ch
+    haproxy.router.openshift.io/ip_whitelist: ''
+    haproxy.router.openshift.io/timeout: 180s
+spec:
+  host: dqmdc-ml4ad-api.web.cern.ch
+  to:
+    kind: Service
+    name: backend-api
+    weight: 100
+  port:
+    targetPort: 8000-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: dqmdc-ml4ad-api.web.cern.ch
+      routerName: apps-shard-1
+      conditions:
+        - type: Admitted
+          status: 'True'
+      wildcardPolicy: None
+      routerCanonicalHostname: router-apps-shard-1.paas-apps-shard-1.cern.ch
+
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: dqmdc-ml4ad-frontend
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/instance: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime-version: latest
+  annotations:
+    external-dns.alpha.kubernetes.io/target: paas-apps-shard-1.cern.ch
+    haproxy.router.openshift.io/ip_whitelist: ''
+    haproxy.router.openshift.io/timeout: 180s
+spec:
+  host: dqmdc-ml4ad.web.cern.ch
+  to:
+    kind: Service
+    name: frontend
+    weight: 100
+  port:
+    targetPort: 8081-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: dqmdc-ml4ad.web.cern.ch
+      routerName: apps-shard-1
+      conditions:
+        - type: Admitted
+          status: 'True'
+      wildcardPolicy: None
+      routerCanonicalHostname: router-apps-shard-1.paas-apps-shard-1.cern.ch
