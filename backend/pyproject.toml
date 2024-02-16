@@ -28,6 +28,8 @@ flower = "^2.0.1"
 
 [tool.poe.tasks]
 start-dev = "./scripts/start-dev.sh"
+migrate = "./scripts/migrate.sh"
+reset-local-redis = "./scripts/reset-local-redis.sh"
 
 [build-system]
 requires = ["poetry-core"]
