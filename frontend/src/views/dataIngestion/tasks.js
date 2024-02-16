@@ -37,7 +37,7 @@ const IngestionTasks = () => {
   useEffect(() => {
     const fetchData = () => {
       setIsLoading(true)
-      API.jobQueue.list({ page })
+      API.jobQueue.list({ page, status: ['STARTED'] })
         .then(response => {
           const result = response.results.map(item => {
             return {

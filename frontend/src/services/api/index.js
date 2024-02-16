@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { toUndefined } from '../../utils/sanitizer'
+import { toUndefined, sanitizedURLSearchParams } from '../../utils/sanitizer'
 import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
 import { API_URL } from '../../config/env'
 
@@ -141,17 +141,18 @@ const getIngestedSubsystems = async (dim) => {
 
 const listTasks = async ({ page, status, taskName, worker, minDateCreated, maxDateCreated, minDateDone, maxDateDone }) => {
   const endpoint = `${API_URL}/celery-tasks/`
+  const params = sanitizedURLSearchParams({
+    page,
+    status,
+    task_name: taskName,
+    worker,
+    min_date_created: minDateCreated,
+    max_date_created: maxDateCreated,
+    min_date_done: minDateDone,
+    max_date_done: maxDateDone
+  }, { repeatMode: true })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page,
-      status: toUndefined(status, ''),
-      task_name: toUndefined(taskName, ''),
-      worker: toUndefined(worker, ''),
-      min_date_created: toUndefined(minDateCreated, ''),
-      max_date_created: toUndefined(maxDateCreated, ''),
-      min_date_done: toUndefined(minDateDone, ''),
-      max_date_done: toUndefined(maxDateDone, '')
-    }
+    params
   })
   return response.data
 }
