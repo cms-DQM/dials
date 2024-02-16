@@ -45,14 +45,15 @@ const exchangeToken = async ({ subjectToken }) => {
 
 const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
   const endpoint = `${API_URL}/file-index/`
+  const params = sanitizedURLSearchParams({
+    page,
+    era,
+    status,
+    min_size: !isNaN(minSize) ? parseInt(minSize) * (1024 ** 2) : undefined, // Transforming from MB (user input) to B
+    path_contains: pathContains
+  }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page,
-      era: toUndefined(era, ''),
-      status: toUndefined(status, ''),
-      min_size: !isNaN(minSize) ? parseInt(minSize) * (1024 ** 2) : undefined, // Transforming from MB (user input) to B
-      path_contains: toUndefined(pathContains, '')
-    }
+    params: params
   })
   return response.data
 }
@@ -65,22 +66,22 @@ const getRun = async ({ run }) => {
 
 const listRuns = async ({ page, maxRun, minRun }) => {
   const endpoint = `${API_URL}/run/`
+  const params = sanitizedURLSearchParams({
+    page,
+    max_run_number: maxRun,
+    min_run_number: minRun
+  }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page,
-      max_run_number: toUndefined(maxRun, ''),
-      min_run_number: toUndefined(minRun, '')
-    }
+    params: params
   })
   return response.data
 }
 
 const listLumisectionsInRun = async ({ page, runNumber }) => {
   const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
+  const params = sanitizedURLSearchParams({ page }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page
-    }
+    params: params
   })
   return response.data
 }
@@ -93,36 +94,38 @@ const getLumisection = async ({ id }) => {
 
 const listLumisections = async ({ page, run, ls, maxLs, minLs, maxRun, minRun }) => {
   const endpoint = `${API_URL}/lumisection/`
+  const params = sanitizedURLSearchParams({
+    page,
+    run_number: run,
+    ls_number: ls,
+    max_ls_number: maxLs,
+    max_run_number: maxRun,
+    min_ls_number: minLs,
+    min_run_number: minRun
+  }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page,
-      run_number: toUndefined(run, ''),
-      ls_number: toUndefined(ls, ''),
-      max_ls_number: toUndefined(maxLs, ''),
-      max_run_number: toUndefined(maxRun, ''),
-      min_ls_number: toUndefined(minLs, ''),
-      min_run_number: toUndefined(minRun, '')
-    }
+    params: params
   })
   return response.data
 }
 
 const listHistograms = async (dim, { page, run, ls, lsId, title, maxLs, minLs, maxRun, minRun, minEntries, titleContains }) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/`
+  const params = sanitizedURLSearchParams({
+    page,
+    run_number: run,
+    ls_number: ls,
+    lumisection_id: lsId,
+    title,
+    max_ls_number: maxLs,
+    max_run_number: maxRun,
+    min_ls_number: minLs,
+    min_run_number: minRun,
+    min_entries: minEntries,
+    title_contains: titleContains
+  }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: {
-      page,
-      run_number: toUndefined(run, ''),
-      ls_number: toUndefined(ls, ''),
-      lumisection_id: toUndefined(lsId, ''),
-      title: toUndefined(title, ''),
-      max_ls_number: toUndefined(maxLs, ''),
-      max_run_number: toUndefined(maxRun, ''),
-      min_ls_number: toUndefined(minLs, ''),
-      min_run_number: toUndefined(minRun, ''),
-      min_entries: toUndefined(minEntries, ''),
-      title_contains: toUndefined(titleContains, '')
-    }
+    params: params
   })
   return response.data
 }
