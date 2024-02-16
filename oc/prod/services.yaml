@@ -1,0 +1,46 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: backend-api
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-api
+    app.kubernetes.io/component: backend-api
+    app.kubernetes.io/instance: backend-api
+    app.kubernetes.io/name: backend-api
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: 8000-tcp
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: backend-api
+    deployment: backend-api
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/instance: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: 8081-tcp
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: frontend
+    deployment: frontend
