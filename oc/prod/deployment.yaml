@@ -1,0 +1,782 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-api
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-api
+    app.kubernetes.io/component: backend-api
+    app.kubernetes.io/instance: backend-api
+    app.kubernetes.io/name: backend-api
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: django
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+        deployment: backend-api
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-api
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              cd mlplayground && python3 -m gunicorn
+              mlplayground.asgi:application -k uvicorn.workers.UvicornWorker -b
+              0.0.0.0:8000
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: dqmdc-ml4ad-api.web.cern.ch dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-worker-1
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-worker-1
+    app.kubernetes.io/component: backend-worker-1
+    app.kubernetes.io/instance: backend-worker-1
+    app.kubernetes.io/name: backend-worker-1
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-worker-1
+  template:
+    metadata:
+      labels:
+        app: backend-worker-1
+        deployment: backend-worker-1
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-worker-1
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n
+              worker1 -Q dqmio_file_indexer_queue
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: dqmdc-ml4ad-api.web.cern.ch dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-worker-2
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-worker-2
+    app.kubernetes.io/component: backend-worker-2
+    app.kubernetes.io/instance: backend-worker-2
+    app.kubernetes.io/name: backend-worker-2
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-worker-2
+  template:
+    metadata:
+      labels:
+        app: backend-worker-2
+        deployment: backend-worker-2
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-worker-2
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n
+              worker2 -Q dqmio_etl_queue
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: dqmdc-ml4ad-api.web.cern.ch dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-worker-3
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-worker-3
+    app.kubernetes.io/component: backend-worker-3
+    app.kubernetes.io/instance: backend-worker-3
+    app.kubernetes.io/name: backend-worker-3
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-worker-3
+  template:
+    metadata:
+      labels:
+        app: backend-worker-3
+        deployment: backend-worker-3
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-worker-3
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              cd mlplayground && celery -A mlplayground worker -l INFO -c 4 -n
+              worker3 -Q celery_periodic
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: dqmdc-ml4ad-api.web.cern.ch dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-beat
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: backend-beat
+    app.kubernetes.io/component: backend-beat
+    app.kubernetes.io/instance: backend-beat
+    app.kubernetes.io/name: backend-beat
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-beat
+  template:
+    metadata:
+      labels:
+        app: backend-beat
+        deployment: backend-beat
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-beat
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              cd mlplayground && celery -A mlplayground beat -l INFO -s
+              /tmp/celerybeat-schedule
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: dqmdc-ml4ad-api.web.cern.ch dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://dqmdc-ml4ad-api.web.cern.ch
+                https://dqmdc-ml4ad.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: ml4ad-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend
+  namespace: dqmdc-ml4ad-prod
+  labels:
+    app: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/instance: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: ml4ad
+    app.openshift.io/runtime: nginx
+    app.openshift.io/runtime-namespace: dqmdc-ml4ad-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        deployment: frontend
+    spec:
+      containers:
+        - name: frontend
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          imagePullPolicy: Always
+          image: image-registry.openshift-image-registry.svc:5000/dqmdc-ml4ad-prod/frontend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
