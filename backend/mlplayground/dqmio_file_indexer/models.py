@@ -1,26 +1,7 @@
 from pathlib import Path
-from typing import List
 
 from django.core.exceptions import ValidationError
 from django.db import models
-
-
-class FileIndexResponseBase:
-    def __init__(
-        self,
-        storage: str,
-        total: int,
-        added_good: int,
-        added_bad: int,
-        good_ingested_ids: List[int],
-        bad_ingested_ids: List[int],
-    ):
-        self.storage = storage
-        self.total = total
-        self.added_good = added_good
-        self.added_bad = added_bad
-        self.good_ingested_ids = good_ingested_ids
-        self.bad_ingested_ids = bad_ingested_ids
 
 
 class FileIndexStatus:

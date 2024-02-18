@@ -6,14 +6,18 @@ from pathlib import Path
 import ROOT
 from django.conf import settings
 from django.utils import timezone
+from dqmio_etl.tasks import ingest_function
 
-from .models import BadFileIndex, FileIndex, FileIndexResponseBase
+from .models import BadFileIndex, FileIndex, FileIndexStatus
 
 logger = logging.getLogger(__name__)
 
 
 class RawDataIndexer:
     STORAGE_DIRS = settings.DIR_PATH_DQMIO_STORAGE.split(":")
+
+    def __init__(self):
+        self.indexed = None
 
     @staticmethod
     def __infer_era_from_string(era_string):
@@ -122,13 +126,32 @@ class RawDataIndexer:
             logger.debug(f"Getting recursive file list for path '{dir}'")
             dir_result = RawDataIndexer.__search_dqmio_files(dir)
             stats.append(
-                FileIndexResponseBase(
-                    storage=dir,
-                    total=dir_result["total_files"],
-                    added_good=dir_result["total_added_good_files"],
-                    added_bad=dir_result["total_added_bad_files"],
-                    good_ingested_ids=dir_result["good_indexed_files_id"],
-                    bad_ingested_ids=dir_result["bad_indexed_files_id"],
-                )
+                {
+                    "storage": dir,
+                    "total": dir_result["total_files"],
+                    "added_good": dir_result["total_added_good_files"],
+                    "added_bad": dir_result["total_added_bad_files"],
+                    "good_ingested_ids": dir_result["good_indexed_files_id"],
+                    "bad_ingested_ids": dir_result["bad_indexed_files_id"],
+                }
             )
-        return stats
+        self.indexed = stats
+
+    def schedule_ingestion(self):
+        response = {"n_scanned": 0, "n_indexed_good": 0, "n_indexed_bad": 0, "n_scheduled": 0}
+        for dir_result in self.indexed:
+            total_added_good = dir_result["added_good"]
+            good_ingested_ids = dir_result["good_ingested_ids"]
+            response["n_scanned"] += dir_result["total"]
+            response["n_indexed_good"] += dir_result["added_good"]
+            response["n_indexed_bad"] += dir_result["added_bad"]
+            if total_added_good == 0:
+                continue
+
+            for ingested_id in good_ingested_ids:
+                file_index = FileIndex.objects.get(id=ingested_id)
+                file_index.update_status(FileIndexStatus.PENDING)
+                del file_index
+                ingest_function.delay(ingested_id)
+                response["n_scheduled"] += 1
+        return response
