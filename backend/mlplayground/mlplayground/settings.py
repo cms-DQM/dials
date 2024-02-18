@@ -188,6 +188,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0),
     }
 }
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 60 * 60 * 24 * 2}  # seconds
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
 DIR_PATH_DQMIO_STORAGE = os.getenv("DJANGO_DQMIO_STORAGE")
