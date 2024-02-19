@@ -44,7 +44,7 @@ const FileIndex = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.fileIndex.list({ page, era: dataEra, minSize, pathContains, status: fileStatus })
+      API.fileIndex.list({ page, era: dataEra, minSize: minSize > 0 ? minSize : undefined, pathContains, status: fileStatus })
         .then(response => {
           const results = response.results.map(item => {
             return {

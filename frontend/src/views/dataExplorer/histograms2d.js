@@ -86,7 +86,7 @@ const Histograms2D = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.lumisection.listHistograms(2, { page, minRun, maxRun, minLs, maxLs, titleContains, minEntries })
+      API.lumisection.listHistograms(2, { page, minRun, maxRun, minLs, maxLs, titleContains, minEntries: minEntries > 0 ? minEntries : undefined })
         .then(response => {
           const results = response.results.map(item => {
             const data = [{ z: item.data, type: 'heatmap', colorscale: 'Viridis' }]
