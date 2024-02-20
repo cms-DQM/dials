@@ -53,7 +53,7 @@ const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
     path_contains: pathContains
   }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: params
+    params
   })
   return response.data
 }
@@ -72,7 +72,7 @@ const listRuns = async ({ page, maxRun, minRun }) => {
     min_run_number: minRun
   }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: params
+    params
   })
   return response.data
 }
@@ -81,7 +81,7 @@ const listLumisectionsInRun = async ({ page, runNumber }) => {
   const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
   const params = sanitizedURLSearchParams({ page }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: params
+    params
   })
   return response.data
 }
@@ -104,7 +104,7 @@ const listLumisections = async ({ page, run, ls, maxLs, minLs, maxRun, minRun })
     min_run_number: minRun
   }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: params
+    params
   })
   return response.data
 }
@@ -125,7 +125,7 @@ const listHistograms = async (dim, { page, run, ls, lsId, title, maxLs, minLs, m
     title_contains: titleContains
   }, { repeatMode: false })
   const response = await axiosApiInstance.get(endpoint, {
-    params: params
+    params
   })
   return response.data
 }
