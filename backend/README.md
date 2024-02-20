@@ -13,3 +13,10 @@ The backend can be divided in the following components:
 The data pipeline is depicted in the following image:
 
 ![alt text](/docs/img/backend_data_pipeline.png)
+
+
+## Useful sources
+
+* [Integrating Keycloak with Django](https://blog.stackademic.com/integrating-keycloak-with-django-7ae39abe3a0b) (Specifically PART 2)
+* [Hot to run periodic tasks in Djando using Celery](https://episyche.com/blog/how-to-run-periodic-tasks-in-django-using-celery)
+* [Celery lock question at stackoverflow](https://stackoverflow.com/questions/32321143/allow-a-task-execution-if-its-not-already-scheduled-using-celery)

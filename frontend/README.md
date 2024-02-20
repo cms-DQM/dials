@@ -35,3 +35,11 @@ Check for lint errors in the code base.
 * `yarn run lint:fix`
 
 Try to fix any style related lint errors.
+
+## Useful sources
+
+* [A Complete Guide to useEffect](https://overreacted.io/a-complete-guide-to-useeffect/#dont-lie-to-react-about-dependencies)
+* [How to fetch data with React Hooks](https://www.robinwieruch.de/react-hooks-fetch-data/)
+* [React Router 6: Nested Routes](https://www.robinwieruch.de/react-router-nested-routes/)
+* [Discussion of 🔐 Private Route in React Router v6](https://dev.to/iamandrewluca/private-route-in-react-router-v6-lg5/comments)
+* [authts/react-oidc-context](https://github.com/authts/react-oidc-context/tree/main)
