@@ -4,16 +4,19 @@ Welcome fellow contributors! We're thrilled that you want to join our open-sourc
 
 ## Setting up Your Environment
 
-First, ensure you have the necessary dependencies installed, as described in our `README`. Once you've configured your development environment successfully, create a fork of the original repo on GitHub to avoid modifying the main branch directly.
+First, ensure you have the necessary dependencies installed, as described in [`LOCAL DEVELOPMENT`](/docs/LOCAL_DEVELOPMENT.md). Once you've configured your development environment successfully, create a fork of the original repo on GitHub to avoid modifying the main branch directly.
 
-## Developing Features and Fixes
+## Git workflow
 
-When starting new features or bug fixes, create an isolated branch for your work using the following format:
+This project tries to always follow the Git flow branching model that you can read in more details [here](https://nvie.com/posts/a-successful-git-branching-model/). In general this methodology is based on three kind of branches: main (in the past also referred as master), develop and supporting branches (feature, hotfix, release).
 
-```bash
-git checkout -b feature/<brief_description>  # For adding a new feature
-git checkout -b fix/<bug_number>-<brief_summary>  # For fixing an existing bug
-```
+* `main`: contain production-ready code that can be released.
+* `develop`: contain pre-production code with newly developed features that are in the process of being tested.
+* `feature`: contain feature-specific code, must always start from `develop` and be merged back to it.
+* `hotfix`: quickly address necessary changes in `main` branch, should always start from `main` anb be merge back into both the `main` and `develop`.
+* `release`: used to prepare new production releases.
+
+## Committing
 
 Always ensure you write descriptive commit messages adhering to the [Conventional Commits](https://www.conventionalcommits.org/) standard:
 

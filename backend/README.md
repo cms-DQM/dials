@@ -2,16 +2,28 @@
 
 ## Components
 
-* DQMIO File Indexer (DFI)
-* DQMIO ETL (DETL)
+The backend can be divided in the following components:
 
-### DFI
+* DQMIO File Indexer (raw data indexing)
+* DQMIO ETL (raw data ingestion)
+* DQMIO Celery Tasks (interface to spec job queue and signals configuration)
+* Custom Auth (authentication handling)
 
-Component responsible for keeping track of data (DQMIO rootfiles) stored in EOS using a database table. It should store files metadata (run number, primary dataset, ...), filepath in EOS filesystem, processing status and some statistics. We must provide automatic updates to our knowledge base and offer a button to let a user trigger the indexer on-demand. In or to snure that no duplicated threads exists each processing will happen one at a time using a job queue.
+### Custom Auth
 
-### DETL
+Component responsible for handling authentication within rest api using two different viewsets: `KeycloakApiTokenViewSet` and `KeycloakExchangeViewSet`. Note: we are using solely the CERN SSO authentication (that is **super** similar no Keycloak underneath).
 
-Component responsible for executing our ETL (Extract-Transform-Load) pipeline based on files not yet processed stored by DFI. Given the fact that DQMIO files vary in size, it is not possible to forecast how much computer resources would be enough for processing multiple files at the sime time, then the processing will happen one at a time using a job queue.
+### DQMIO Celery Tasks
+
+Component responsible for
+
+### DQMIO ETL
+
+Component responsible for executing our ETL (Extract-Transform-Load) pipeline for each indexed file. The pipeline will import all Runs, Lumisections and Histograms to our database.
+
+### DQMIO File Indexer
+
+Component responsible for keeping track of raw data (DQMIO rootfiles) stored in EOS using a database table. It should store good files and bad files metadata (Rootfile's fUUID, file era, number of entries, ...), filepath in EOS filesystem and processing status.
 
 ## Local development
 
