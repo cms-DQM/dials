@@ -6,11 +6,9 @@
     "build:prod": "env-cmd -e prod react-scripts build",
     "build:staging": "env-cmd -e staging react-scripts build",
     "check-unused-deps": "depcheck --oneline",
-    "eject": "react-scripts eject",
     "lint": "eslint \"*.+(json|js|ts|tsx|jsx)\" \"+(src|public)/**/*.+(json|ts|tsx|js|jsx)\" --no-error-on-unmatched-pattern",
     "lint:fix": "eslint \"*.+(json|js|ts|tsx|jsx)\" \"+(src|public)/**/*.+(ts|tsx|js|jsx)\" --fix --no-error-on-unmatched-pattern && prettier --write --no-error-on-unmatched-pattern \"*.+(md)\" \"+(src|public)/**/*.+(md)\"",
-    "start": "env-cmd -e dev react-scripts start",
-    "test": "react-scripts test"
+    "start": "env-cmd -e dev react-scripts start"
   },
   "browserslist": {
     "production": [
