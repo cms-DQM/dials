@@ -20,4 +20,4 @@
 * Add filter in `Indexed files` tab to look for bad files (note that is a different api request)
 * Create card with min, max and avg job queues processing time
 * Fix eslint warnings
-* Fix wrapped plotly components overflowing in 
+* Fix wrapped plotly components overflowing out of table
