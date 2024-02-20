@@ -10,6 +10,7 @@ import API from '../../services/api'
 
 const IngestionStatistics = () => {
   const [totalFiles, setTotalFiles] = useState(0)
+  const [totalBadFiles, setTotalBadFiles] = useState(0)
   const [totalRuns, setTotalRuns] = useState(0)
   const [totalLumisections, setTotalLumisection] = useState(0)
   const [dataFilesPlot, setDataFilesPlot] = useState([])
@@ -27,6 +28,17 @@ const IngestionStatistics = () => {
       API.fileIndex.list({})
         .then(response => {
           setTotalFiles(response.count)
+        })
+        .catch(err => {
+          console.error(err)
+          toast.error('Failure to communicate with the API!')
+        })
+    }
+
+    const fetchTotalBadIndexedFiles = () => {
+      API.badFileIndex.list({})
+        .then(response => {
+          setTotalBadFiles(response.count)
         })
         .catch(err => {
           console.error(err)
@@ -132,6 +144,7 @@ const IngestionStatistics = () => {
     }
 
     fetchTotalIndexedFiles()
+    fetchTotalBadIndexedFiles()
     fetchTotalIngestedRuns()
     fetchTotalIngestedLumis()
     fatchStatusData()
@@ -142,19 +155,25 @@ const IngestionStatistics = () => {
   return (
     <>
       <Row className='mt-5 mb-3'>
-        <Col sm={4}>
+        <Col sm={3}>
           <Card className='text-center'>
-            <Card.Header>Files</Card.Header>
+            <Card.Header>Good Files</Card.Header>
             <Card.Body><h1>{totalFiles}</h1></Card.Body>
           </Card>
         </Col>
-        <Col sm={4}>
+        <Col sm={3}>
+          <Card className='text-center'>
+            <Card.Header>Bad Files</Card.Header>
+            <Card.Body><h1>{totalBadFiles}</h1></Card.Body>
+          </Card>
+        </Col>
+        <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Runs</Card.Header>
             <Card.Body><h1>{totalRuns}</h1></Card.Body>
           </Card>
         </Col>
-        <Col sm={4}>
+        <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Lumisections</Card.Header>
             <Card.Body><h1>{totalLumisections}</h1></Card.Body>
