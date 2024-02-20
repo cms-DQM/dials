@@ -8,7 +8,7 @@ The backend can be divided in the following components:
 
 * `DQMIO Celery Tasks`: Component responsible for visualizing job queues state, configuring celery signal and generating serializers for api methods that schedule tasks instead returning the actual data.
 
-* `Custom Auth`: Component responsible for handling authentication within rest api using two different viewsets: `KeycloakApiTokenViewSet` and `KeycloakExchangeViewSet`. Note: we are using solely the CERN SSO authentication (that is **super** similar no Keycloak underneath).
+* `Custom Auth`: Component responsible for handling authentication within rest api using two different authentication classes (`KeycloakAuthentication`, `KeycloakApiTokenAuthentication`) and exposes two viewsets (`KeycloakApiTokenViewSet`, `KeycloakExchangeViewSet`) for api token issue and token exchange. Note: we are using solely the CERN SSO authentication (that is **super** similar no Keycloak underneath).
 
 The data pipeline is depicted in the following image:
 
