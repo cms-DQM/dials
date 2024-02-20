@@ -2,6 +2,12 @@
 
 Documentation, tips and tricks to develop MLPlayground locally.
 
+## Setup environment
+
+The backend uses `Python` `^3.10.13`, the third-party dependencies are managed by [`poetry`](https://python-poetry.org/) `^1.7.1` and has a hard dependency on `ROOT` `^6.30/02`. After having all these dependencies you can navigate to [`backend`](/backend/) directory and run `poetry install --no-root` to install all the backend dependencies specified in `pyproject.toml`. Then you should configure `pre-commit` by running `poetry run pre-commit install`, this will ensure code standardization.
+
+The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can navigate to [`frontend`](/frontend/) directory and run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint:fix`.
+
 ## Accessing DQMIO MLPlayground data from EOS
 
 The following commands will mount the specific DQMIO production data from EOS in read-only mode in your home folder (if you don't like the location you can change it):
