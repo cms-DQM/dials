@@ -8,9 +8,9 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .filters import FileIndexFilter
-from .models import FileIndex
-from .serializers import FileIndexSerializer
+from .filters import BadFileIndexFilter, FileIndexFilter
+from .models import BadFileIndex, FileIndex
+from .serializers import BadFileIndexSerializer, FileIndexSerializer
 from .tasks import index_files_and_schedule_hists
 
 logger = logging.getLogger(__name__)
@@ -38,3 +38,11 @@ class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
         task = TaskResponseBase(id=task.id, state=task.state, ready=task.ready())
         task = TaskResponseSerializer(task)
         return Response(task.data)
+
+
+class BadFileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = BadFileIndex.objects.all().order_by("st_itime")
+    serializer_class = BadFileIndexSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BadFileIndexFilter
+    authentication_classes = [KeycloakAuthentication]
