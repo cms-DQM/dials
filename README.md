@@ -14,8 +14,8 @@ This project is a full-stack application written in Python (^3.10) and JavaScrip
 
 # Documentation
 
-* [Backend](/docs/BACKEND.md)
-* [Frontend ](/docs/FRONTEND.md)
+* [Backend](/backend/README.md)
+* [Frontend ](/frontend/README.md)
 * [Authentication](/docs/AUTHENTICATION.md)
 * [Deployment](/docs/DEPLOYMENT.md)
 
