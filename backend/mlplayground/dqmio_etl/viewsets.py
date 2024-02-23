@@ -1,6 +1,6 @@
 import logging
 
-from custom_auth.keycloak import KeycloakAuthentication
+from utils.rest_framework_cern_sso.authentication import CERNKeycloakConfidentialAuthentication, CERNKeycloakClientSecretAuthentication
 from django.db.models import Count, F, TextField, Value
 from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
@@ -37,7 +37,7 @@ class RunViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Gene
     serializer_class = RunSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RunFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 
     @extend_schema(
         responses={200: RunLumisectionsSerializer(many=True)},
@@ -76,7 +76,7 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     serializer_class = LumisectionSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 
     @extend_schema(
         request=LumisectionHistogramsIngestionInputSerializer,
@@ -115,7 +115,7 @@ class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelM
     serializer_class = LumisectionHistogram1DSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram1DFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 
     @extend_schema(responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)})
     @action(
@@ -147,7 +147,7 @@ class LumisectionHistogram2DViewSet(mixins.RetrieveModelMixin, mixins.ListModelM
     serializer_class = LumisectionHistogram2DSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LumisectionHistogram2DFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 
     @extend_schema(responses={200: LumisectionHistogramsSubsystemCountSerializer(many=True)})
     @action(

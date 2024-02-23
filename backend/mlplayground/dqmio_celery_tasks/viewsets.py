@@ -1,6 +1,6 @@
 import logging
 
-from custom_auth.keycloak import KeycloakAuthentication
+from utils.rest_framework_cern_sso.authentication import CERNKeycloakConfidentialAuthentication, CERNKeycloakClientSecretAuthentication
 from django_celery_results.models import TaskResult
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -21,4 +21,4 @@ class CeleryTasksViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
     filter_backends = [DjangoFilterBackend]
     filterset_class = CeleryTasksFilters
     lookup_field = "task_id"
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]

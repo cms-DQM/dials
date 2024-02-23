@@ -1,6 +1,6 @@
 import logging
 
-from custom_auth.keycloak import KeycloakAuthentication
+from utils.rest_framework_cern_sso.authentication import CERNKeycloakConfidentialAuthentication, CERNKeycloakClientSecretAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from dqmio_celery_tasks.serializers import TaskResponseBase, TaskResponseSerializer
 from drf_spectacular.utils import extend_schema
@@ -21,7 +21,7 @@ class FileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
     serializer_class = FileIndexSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = FileIndexFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 
     @extend_schema(
         request=None,
@@ -45,4 +45,4 @@ class BadFileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, view
     serializer_class = BadFileIndexSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = BadFileIndexFilter
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
