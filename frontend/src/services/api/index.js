@@ -29,7 +29,7 @@ axiosApiInstance.interceptors.request.use(
 
 const exchangeToken = async ({ subjectToken }) => {
   const oidc = getPublicToken()
-  const endpoint = `${API_URL}/exchange-token/`
+  const endpoint = `${API_URL}/auth/exchange-token/`
   const response = await axios.post(endpoint, {
     subject_token: subjectToken
   },
