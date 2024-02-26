@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "dqmio_file_indexer.apps.DqmioDataIndexerConfig",
     "dqmio_etl.apps.DqmioEtlConfig",
     "dqmio_celery_tasks.apps.DqmioCeleryTasksConfig",
-    "custom_auth.apps.CustomAuthConfig",
+    "cern_auth.apps.CERNAuthConfig"
 ]
 
 # Django Rest Framework (DRF) configuration
@@ -72,7 +72,14 @@ REST_FRAMEWORK = {
 }
 
 # DRF-Spectacular configuration
-SPECTACULAR_SETTINGS = {"PREPROCESSING_HOOKS": ["mlplayground.spectacular.preprocessing_filter_spec"]}
+SPECTACULAR_SETTINGS = {
+    "PREPROCESSING_HOOKS": ["mlplayground.spectacular.preprocessing_filter_spec"],
+    "AUTHENTICATION_WHITELIST": [
+        "utils.rest_framework_cern_sso.authentication.CERNKeycloakClientSecretAuthentication",
+        "utils.rest_framework_cern_sso.authentication.CERNKeycloakPublicAuthentication",
+        "utils.rest_framework_cern_sso.authentication.CERNKeycloakConfidentialAuthentication",
+    ]
+}
 
 # A list of middleware (framework of hooks into Django’s request/response processing) to use
 MIDDLEWARE = [
