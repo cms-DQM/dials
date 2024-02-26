@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "newmlplayground"
+name = "dials"
 version = "0.1.0"
 description = ""
 authors = ["Gabriel Moreira <gabrielmscampos@gmail.com>"]

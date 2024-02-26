@@ -25,7 +25,7 @@ services:
     #   - 8000:8000
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c 'cd mlplayground && python3 -m gunicorn mlplayground.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000'
+    command: bash -c 'cd dials && python3 -m gunicorn dials.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000'
     network_mode: "host"
     env_file: ./backend/.env.prod
 
@@ -34,7 +34,7 @@ services:
     image: local/django_rest_api_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
+    command: bash -c 'cd dials && celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
     entrypoint: ''
     depends_on:
       - django_rest_api_prod
@@ -46,7 +46,7 @@ services:
     image: local/django_rest_api_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
+    command: bash -c 'cd dials && celery -A dials worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
     entrypoint: ''
     depends_on:
       - django_rest_api_prod
@@ -59,7 +59,7 @@ services:
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c 'cd mlplayground && celery -A mlplayground worker -l INFO -n worker3 -Q celery_periodic'
+    command: bash -c 'cd dials && celery -A dials worker -l INFO -n worker3 -Q celery_periodic'
     entrypoint: ''
     depends_on:
       - django_rest_api_prod
@@ -71,7 +71,7 @@ services:
     image: local/django_rest_api_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
-    command: bash -c 'cd mlplayground && celery -A mlplayground beat -l INFO'
+    command: bash -c 'cd dials && celery -A dials beat -l INFO'
     entrypoint: ''
     depends_on:
       - django_rest_api_prod

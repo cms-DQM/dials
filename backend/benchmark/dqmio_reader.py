@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, "../")
 
-from mlplayground.dqmio_etl.reader import DQMIOReader
+from dials.dqmio_etl.reader import DQMIOReader
 from tqdm import tqdm
 
 

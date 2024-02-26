@@ -1,6 +1,5 @@
 import logging
 
-from utils.rest_framework_cern_sso.authentication import CERNKeycloakConfidentialAuthentication, CERNKeycloakClientSecretAuthentication
 from django.db.models import Count, F, TextField, Value
 from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
@@ -10,6 +9,10 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakClientSecretAuthentication,
+    CERNKeycloakConfidentialAuthentication,
+)
 
 from .filters import LumisectionFilter, LumisectionHistogram1DFilter, LumisectionHistogram2DFilter, RunFilter
 from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run

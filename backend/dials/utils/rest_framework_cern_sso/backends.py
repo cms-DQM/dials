@@ -25,10 +25,7 @@ class CERNKeycloakOIDC:
         return self._kc.token(username, password, totp=totp)
 
     def issue_device_token(self, device_code: str) -> dict:
-        return self._kc.token(
-            grant_type="urn:ietf:params:oauth:grant-type:device_code",
-            device_code=device_code
-        )
+        return self._kc.token(grant_type="urn:ietf:params:oauth:grant-type:device_code", device_code=device_code)
 
     def issue_api_token(self) -> dict:
         response = requests.post(

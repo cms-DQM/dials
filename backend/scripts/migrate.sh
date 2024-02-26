@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd mlplayground
+cd dials
 
 poetry run python manage.py migrate

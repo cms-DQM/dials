@@ -1,16 +1,16 @@
 from typing import Optional, Tuple
 
 from django.conf import settings
-from rest_framework.request import Request
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.request import Request
 
 from .backends import CERNKeycloakOIDC
+from .exceptions import AuthenticationFailed
 from .token import CERNKeycloakToken
 from .user import CERNKeycloakUser
-from .exceptions import AuthenticationFailed
 
 try:
-    from .schemes import *  # noqa: F401
+    from .schemes import *  # noqa: F401,F403
 except ImportError:
     pass
 
@@ -43,7 +43,8 @@ class CERNKeycloakClientSecretAuthentication(BaseAuthentication):
     Custom authentication class based on CERN's Keycloak Api Access.
 
     This authentication flow is solely for authenticating using other confidential clients secret key.
-    Those clients must have configured the option "My application will need to get tokens using its own client ID and secret".
+    Those clients must have configured the option
+    "My application will need to get tokens using its own client ID and secret".
 
     What is the use case?
         * Automated scripts that needs non-interactively authentication
@@ -57,6 +58,7 @@ class CERNKeycloakClientSecretAuthentication(BaseAuthentication):
         this creating one client per user but that would generate a tons of clients
         and you would also need to clean old clients when users leave cern and loose access to the application.
     """
+
     HEADER_KEY = "X-CLIENT-SECRET"
 
     def authenticate(self, request: Request) -> Optional[Tuple[CERNKeycloakUser, CERNKeycloakToken]]:
@@ -69,10 +71,7 @@ class CERNKeycloakClientSecretAuthentication(BaseAuthentication):
             return None
 
         if secret_key not in api_clients_kc:
-            raise AuthenticationFailed(
-                "App secret is not authorized."
-                "app_secret_not_authorized"
-            )
+            raise AuthenticationFailed("App secret is not authorized." "app_secret_not_authorized")
 
         kc: CERNKeycloakOIDC = api_clients_kc[secret_key]
         issued_token = kc.issue_api_token()
@@ -108,6 +107,7 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
     if someone uses a script for the general token endpoint
     and interactively sign-on via the totp (password) flow or device flow
     """
+
     HEADER_KEY = "Authorization"
 
     def authenticate(self, request: Request) -> Optional[Tuple[CERNKeycloakUser, CERNKeycloakToken]]:
@@ -135,18 +135,12 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
         try:
             bearer = headers[self.HEADER_KEY]
         except KeyError:
-            raise AuthenticationFailed(
-                "Authorization header not found.",
-                "authorization_not_found"
-            )
+            raise AuthenticationFailed("Authorization header not found.", "authorization_not_found")
 
         try:
             return bearer.split("Bearer ")[-1]
         except AttributeError:
-            raise AuthenticationFailed(
-                "Malformed access token.",
-                "bad_access_token"
-            )
+            raise AuthenticationFailed("Malformed access token.", "bad_access_token")
 
 
 class CERNKeycloakPublicAuthentication(CERNKeycloakBearerAuthentication):

@@ -29,6 +29,7 @@ class CERNKeycloakPublicAuthenticationScheme(OpenApiAuthenticationExtension):
             "description": "CERN's Keycloak public client authentication",
         }
 
+
 class CERNKeycloakConfidentialAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "utils.rest_framework_cern_sso.authentication.CERNKeycloakConfidentialAuthentication"
     name = "Confidential JWT Token"

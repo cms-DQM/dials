@@ -1,6 +1,6 @@
 # Local development
 
-Documentation, tips and tricks to develop MLPlayground locally.
+Documentation, tips and tricks to develop DIALS locally.
 
 ## Setup environment
 
@@ -8,13 +8,13 @@ The backend uses `Python` `^3.10.13`, the third-party dependencies are managed b
 
 The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can navigate to [`frontend`](/frontend/) directory and run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint:fix`.
 
-## Accessing DQMIO MLPlayground data from EOS
+## Accessing DQMIO data from EOS
 
 The following commands will mount the specific DQMIO production data from EOS in read-only mode in your home folder (if you don't like the location you can change it):
 
 ```bash
-mkdir -p $HOME/data_mlplayground_dqmio
-sshfs -o default_permissions,ro $USER@lxplus.cern.ch:/eos/project/m/mlplayground/public/DQMIO $HOME/data_mlplayground_dqmio
+mkdir -p $HOME/DQMIO
+sshfs -o default_permissions,ro $USER@lxplus.cern.ch:/eos/project/m/dials/public/DQMIO $HOME/DQMIO
 ```
 
 You can try running the application to ingest data from the production source, but given EOS limitations and network limitation it is much simpler to copy some files (20 is enough) to a local directory and use that as the data source for the local application.
@@ -22,7 +22,7 @@ You can try running the application to ingest data from the production source, b
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount $HOME/data_mlplayground_dqmio
+umount $HOME/DQMIO
 ```
 
 ## Running PostgresSQL
@@ -57,9 +57,9 @@ docker run -d \
 Job queues need workers for collecting tasks from the queue, executing then and later acknowledge the task. Since we are running three queues, the following commands will spawn workers for then, given their specification.
 
 ```bash
-celery -A mlplayground worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue
-celery -A mlplayground worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue
-celery -A mlplayground worker -l INFO -c 4 -n worker3 -Q celery_periodic
+celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue
+celery -A dials worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue
+celery -A dials worker -l INFO -c 4 -n worker3 -Q celery_periodic
 ```
 
 ## Running Celery Beat
@@ -67,7 +67,7 @@ celery -A mlplayground worker -l INFO -c 4 -n worker3 -Q celery_periodic
 Some tasks must be periodic, that is, execute in a specific time continuously. In a common UNIX like environment you would normally use CRON, here since we are already using Celery for managing our job queues it is much easier (and flexible) to use celery's beat scheduler.
 
 ```bash
-celery -A mlplayground beat -l INFO
+celery -A dials beat -l INFO
 ```
 
 ## Running django
@@ -82,7 +82,7 @@ python manage.py runserver 0.0.0.0:8000
 
 From within [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-dev` to start the entire backend stack in one command.
 
-Note: If running the commands separated you should execute then inside the [`backend/mlplayground`](/backend/mlplayground/) directory.
+Note: If running the commands separated you should execute then inside the [`backend/dials`](/backend/dials/) directory.
 
 ## Starting the frontend natively
 

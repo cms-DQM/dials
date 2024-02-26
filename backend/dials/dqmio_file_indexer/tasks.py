@@ -1,5 +1,6 @@
-from mlplayground import celery_app
 from utils.redis_lock import run_if_not_locked, with_lock
+
+from dials import celery_app
 
 from .methods import RawDataIndexer
 

@@ -1,6 +1,6 @@
 # Deployment
 
-ML4AD service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deploy in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [backend](gabrielmscampos/dqmdc-ml4ad-backend-base) and [frontend](gabrielmscampos/dqmdc-ml4ad-frontend) are currently hosted in Docker Hub and are imported to Openshift via an `ImageStream`.
+DIALS service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deploy in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [backend](gabrielmscampos/dials-backend-base) and [frontend](gabrielmscampos/dials-frontend) are currently hosted in Docker Hub and are imported to Openshift via an `ImageStream`.
 
 ## Redis
 
@@ -30,7 +30,7 @@ Since a CERN Service Account is already created for this project and the resourc
 
 ## Secrets
 
-Under `Secrets` in `Developer` view of PaaS create a `key/value secret` with the name `ml4ad-secrets` and add all necessary secrets there filling `Key` as the environment variable name and the `Value` on the text box:
+Under `Secrets` in `Developer` view of PaaS create a `key/value secret` with the name `dials-secrets` and add all necessary secrets there filling `Key` as the environment variable name and the `Value` on the text box:
 
 
 ![alt text](/docs/img/paas_secrets.png)
@@ -58,15 +58,15 @@ Note that the token expire, so every once in a while you need to request a new t
 After logging in always check that you are in the correct project namespace:
 
 ```bash
-oc project dqmdc-ml4ad-prod
+oc project dials-prod
 ```
 
 Then for a new deployment follow the order:
 
 ```bash
 oc apply -f ./oc/prod/image_stream.yaml
-oc import-image backend --from=gabrielmscampos/dqmdc-ml4ad-backend-base --confirm
-oc import-image frontend --from=gabrielmscampos/dqmdc-ml4ad-frontend --confirm
+oc import-image backend --from=gabrielmscampos/dials-backend-base --confirm
+oc import-image frontend --from=gabrielmscampos/dials-frontend --confirm
 oc apply -f ./oc/prod/deployment.yaml
 oc apply -f ./oc/prod/services.yaml
 oc apply -f ./oc/prod/routes.yaml
@@ -80,8 +80,8 @@ Suppose you have done a new release and you have updated the `backend` and `fron
 
 ```bash
 ./scripts/push_container.sh
-oc import-image backend --from=gabrielmscampos/dqmdc-ml4ad-backend-base --confirm
-oc import-image frontend --from=gabrielmscampos/dqmdc-ml4ad-frontend --confirm
+oc import-image backend --from=gabrielmscampos/dials-backend-base --confirm
+oc import-image frontend --from=gabrielmscampos/dials-frontend --confirm
 ```
 
 Now if you look the Image Stream history in Openshift (in `Administrator` view > `Builds` > `ImageStreams` > `some-image-stream` > `History`) you will see that the image was already imported, but that doesn't mean that the pods were updated. In order to update a pod you need to do a rollout, from the GUI in `Developer` > `Topology` select a resource, click in `Action` and then `Restart rollout`:

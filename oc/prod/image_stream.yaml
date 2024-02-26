@@ -2,17 +2,17 @@ apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   name: backend
-  namespace: dqmdc-ml4ad-prod
+  namespace: dials-prod
 spec:
   lookupPolicy:
     local: false
   tags:
     - name: latest
       annotations:
-        openshift.io/imported-from: gabrielmscampos/dqmdc-ml4ad-backend-base
+        openshift.io/imported-from: gabrielmscampos/dials-backend-base
       from:
         kind: DockerImage
-        name: gabrielmscampos/dqmdc-ml4ad-backend-base
+        name: gabrielmscampos/dials-backend-base
       referencePolicy:
         type: Local
 
@@ -21,16 +21,16 @@ apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   name: frontend
-  namespace: dqmdc-ml4ad-prod
+  namespace: dials-prod
 spec:
   lookupPolicy:
     local: false
   tags:
     - name: latest
       annotations:
-        openshift.io/imported-from: gabrielmscampos/dqmdc-ml4ad-frontend
+        openshift.io/imported-from: gabrielmscampos/dials-frontend
       from:
         kind: DockerImage
-        name: gabrielmscampos/dqmdc-ml4ad-frontend
+        name: gabrielmscampos/dials-frontend
       referencePolicy:
         type: Local

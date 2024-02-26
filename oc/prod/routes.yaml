@@ -1,21 +1,21 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: dqmdc-ml4ad-backend
-  namespace: dqmdc-ml4ad-prod
+  name: dials-backend
+  namespace: dials-prod
   labels:
     app: backend-api
     app.kubernetes.io/component: backend-api
     app.kubernetes.io/instance: backend-api
     app.kubernetes.io/name: backend-api
-    app.kubernetes.io/part-of: ml4ad
+    app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
   annotations:
     external-dns.alpha.kubernetes.io/target: paas-apps-shard-1.cern.ch
     haproxy.router.openshift.io/ip_whitelist: ''
     haproxy.router.openshift.io/timeout: 180s
 spec:
-  host: dqmdc-ml4ad-api.web.cern.ch
+  host: dials-api.web.cern.ch
   to:
     kind: Service
     name: backend-api
@@ -28,7 +28,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: dqmdc-ml4ad-api.web.cern.ch
+    - host: dials-api.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted
@@ -40,21 +40,21 @@ status:
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: dqmdc-ml4ad-frontend
-  namespace: dqmdc-ml4ad-prod
+  name: dials-frontend
+  namespace: dials-prod
   labels:
     app: frontend
     app.kubernetes.io/component: frontend
     app.kubernetes.io/instance: frontend
     app.kubernetes.io/name: frontend
-    app.kubernetes.io/part-of: ml4ad
+    app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
   annotations:
     external-dns.alpha.kubernetes.io/target: paas-apps-shard-1.cern.ch
     haproxy.router.openshift.io/ip_whitelist: ''
     haproxy.router.openshift.io/timeout: 180s
 spec:
-  host: dqmdc-ml4ad.web.cern.ch
+  host: dials.web.cern.ch
   to:
     kind: Service
     name: frontend
@@ -67,7 +67,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: dqmdc-ml4ad.web.cern.ch
+    - host: dials.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted

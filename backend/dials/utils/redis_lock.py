@@ -1,4 +1,4 @@
-from mlplayground import celery_app
+from dials import celery_app
 
 
 def run_if_not_locked(lock_name):

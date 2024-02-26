@@ -1,9 +1,12 @@
 import logging
 
-from utils.rest_framework_cern_sso.authentication import CERNKeycloakConfidentialAuthentication, CERNKeycloakClientSecretAuthentication
 from django_celery_results.models import TaskResult
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
+from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakClientSecretAuthentication,
+    CERNKeycloakConfidentialAuthentication,
+)
 
 from .filters import CeleryTasksFilters
 from .serializers import CeleryTasksSerializer

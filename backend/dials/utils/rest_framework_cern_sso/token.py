@@ -26,8 +26,7 @@ class CERNKeycloakToken:
         if self.client is None:
             raise ValueError("Unconfigured keycloak client.")
         self.claims = self.client.decode_token(
-            self.access_token,
-            {"verify_signature": True, "verify_aud": True, "verify_exp": True}
+            self.access_token, {"verify_signature": True, "verify_aud": True, "verify_exp": True}
         )
 
     def validate(self, valid_aud: list, valid_azp: list) -> None:

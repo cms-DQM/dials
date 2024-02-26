@@ -5,8 +5,9 @@ from celery.signals import before_task_publish, task_prerun, worker_ready
 from django.utils import timezone
 from django_celery_results.backends.database import DatabaseBackend
 from django_celery_results.models import TaskResult
-from mlplayground import celery_app
 from utils.redis_lock import clear_locks
+
+from dials import celery_app
 
 logger = logging.getLogger(__name__)
 

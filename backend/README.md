@@ -1,4 +1,4 @@
-# MLPlayground
+# DIALS
 
 The backend can be divided in the following components:
 

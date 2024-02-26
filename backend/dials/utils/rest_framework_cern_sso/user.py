@@ -10,6 +10,7 @@ class CERNKeycloakUser(AnonymousUser):
     Used in conjunction with the `KeycloakAuthentication` backend to
     implement single sign-on functionality.
     """
+
     is_active = True
 
     def __init__(self, token: CERNKeycloakToken) -> None:
