@@ -47,12 +47,12 @@ class BadFileIndexFilter(filters.FilterSet):
 
 ## Protecting our ViewSet with CERN SSO
 
-In any viewset is possible to specify an `authentication_classes` attribute that lists which authentication methods any built-in method of the viewset will have. In our case we want to integrate with the CERN SSO, that is easy since a custom authentication class is defined in [`custom_auth.keycloak`](/backend/mlplayground/custom_auth/keycloak.py) (don't get confused, CERN SSO uses Keycloak underneath!). Than we just need tho append the following line in our ViewSet:
+In any viewset is possible to specify an `authentication_classes` attribute that lists which authentication methods any built-in method of the viewset will have. In our case we want to integrate with the CERN SSO, that is easy since custom authentication classes are defined in [`rest_framework_cern_sso`](backend/mlplayground/utils/rest_framework_cern_sso/authentication.py) (don't get confused, CERN SSO uses Keycloak underneath!). Than we just need tho append the following line in our ViewSet:
 
 ```python
 class BadFileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     ...
-    authentication_classes = [KeycloakAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
 ```
 
 ## Exposing our ViewSet as an REST Api method
