@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, "../")
 
-from mlplayground.dqmio_etl.reader import DQMIOReader
+from dials.dqmio_etl.reader import DQMIOReader
 from tqdm import tqdm
 
 
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     import psutil
 
     def target():
-        path = "/mnt/nanodqmio/"
+        path = "/mnt/dqmio/"
         fpath = f"{path}store_data_Run2022F_ZeroBias_DQMIO_19Jan2023-v2_40000_3A710748-F854-4983-9206-708BAD02F71B.root"
         ing = HistIngestion(fpath)
         ing.run()

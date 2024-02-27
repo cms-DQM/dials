@@ -1,6 +1,6 @@
 # Authentication
 
-ML4AD services has implemented two authentication flows:
+DIALS services has implemented two authentication flows:
 
 1. User (Interactively)
 2. Machine (Non-interactively)
@@ -31,4 +31,4 @@ Comparing this non-interactive flow with the interactive authentication flow, th
 
 Authentication flow #2 is a workaround (gambiarra, kludge, τσαπατσουλιά /tsapatsoulia/) as the auth server necessitates associating an API key with each user, instead of associating multiple users with an application through e-groups. In other words, for achieving fine-grained API access roles, rather than assigning a role to each user, the approach involves creating an application for each user. However, this method is inefficient as it results in the generation of multiple applications. Alternatively, grouping multiple users within a single application is insecure, as it leads to the sharing of the same client secret key among multiple users.
 
-Roles can be configured by creating named roles in [Applications Portal](https://application-portal.web.cern.ch) and linking each role to an e-group, the [`PrivateRoute`](/frontend/src/components/auth.js) can be configured to block access based on the registered roles in the public application `dqmdc-ml4ad-public-app`. The application still don't support role based-access solely on the backend (we should implement a custom Permission class for it).
+Roles can be configured by creating named roles in [Applications Portal](https://application-portal.web.cern.ch) and linking each role to an e-group, the [`PrivateRoute`](/frontend/src/components/auth.js) can be configured to block access based on the registered roles in the public application `dials-public-app`. The application still don't support role based-access solely on the backend (we should implement a custom Permission class for it).

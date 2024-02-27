@@ -37,7 +37,7 @@ fi
 # Migrate if development
 if [ "$DJANGO_ENV" = "development" ];
 then
-  python3 mlplayground/manage.py migrate
+  python3 dials/manage.py migrate
 fi
 
 exec "$@"

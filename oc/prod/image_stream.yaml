@@ -2,35 +2,37 @@ apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   name: backend
-  namespace: dqmdc-ml4ad-prod
+  namespace: cms-dials-prod
 spec:
   lookupPolicy:
     local: false
   tags:
     - name: latest
       annotations:
-        openshift.io/imported-from: gabrielmscampos/dqmdc-ml4ad-backend-base
+        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/dials-backend-base
       from:
         kind: DockerImage
-        name: gabrielmscampos/dqmdc-ml4ad-backend-base
+        name: registry.cern.ch/cms-dqmdc/dials-backend-base
       referencePolicy:
         type: Local
+      pullSecret: cern-registry-credentials
 
 ---
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   name: frontend
-  namespace: dqmdc-ml4ad-prod
+  namespace: cms-dials-prod
 spec:
   lookupPolicy:
     local: false
   tags:
     - name: latest
       annotations:
-        openshift.io/imported-from: gabrielmscampos/dqmdc-ml4ad-frontend
+        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/dials-frontend
       from:
         kind: DockerImage
-        name: gabrielmscampos/dqmdc-ml4ad-frontend
+        name: registry.cern.ch/cms-dqmdc/dials-frontend
       referencePolicy:
         type: Local
+      pullSecret: cern-registry-credentials

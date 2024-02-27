@@ -2,13 +2,13 @@ kind: Service
 apiVersion: v1
 metadata:
   name: backend-api
-  namespace: dqmdc-ml4ad-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-api
     app.kubernetes.io/component: backend-api
     app.kubernetes.io/instance: backend-api
     app.kubernetes.io/name: backend-api
-    app.kubernetes.io/part-of: ml4ad
+    app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
 spec:
   type: ClusterIP
@@ -26,13 +26,13 @@ kind: Service
 apiVersion: v1
 metadata:
   name: frontend
-  namespace: dqmdc-ml4ad-prod
+  namespace: cms-dials-prod
   labels:
     app: frontend
     app.kubernetes.io/component: frontend
     app.kubernetes.io/instance: frontend
     app.kubernetes.io/name: frontend
-    app.kubernetes.io/part-of: ml4ad
+    app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
 spec:
   type: ClusterIP

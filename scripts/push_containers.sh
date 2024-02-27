@@ -1,9 +1,14 @@
-# https://github.com/gabrielmscampos/dqm-ml4ad
+#!/bin/bash
 
-docker login
+# Build locally
+docker build -f ./backend/Dockerfile -t dials-backend-base ./backend
+docker build -f ./frontend/Dockerfile.prod -t dials-frontend ./frontend
 
-docker build -f ./backend/Dockerfile -t gabrielmscampos/dqmdc-ml4ad-backend-base ./backend
-docker build -f ./frontend/Dockerfile.prod -t gabrielmscampos/dqmdc-ml4ad-frontend ./frontend
+# Tag containers according to remote registry
+docker tag dials-backend-base registry.cern.ch/cms-dqmdc/dials-backend-base
+docker tag dials-frontend registry.cern.ch/cms-dqmdc/dials-frontend
 
-docker push gabrielmscampos/dqmdc-ml4ad-backend-base
-docker push gabrielmscampos/dqmdc-ml4ad-frontend
+# Login to registry and push containers
+docker login https://registry.cern.ch
+docker push registry.cern.ch/cms-dqmdc/dials-backend-base
+docker push registry.cern.ch/cms-dqmdc/dials-frontend

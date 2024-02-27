@@ -27,7 +27,9 @@ const Navbar = () => {
   return (
     <BootstrapNavbar expand='lg' bg='dark' variant='dark' sticky='top'>
       <BootstrapNavbar.Brand as={NavLink} to='/'>
-        <Image src={logo} height='40vmin' className='d-inline-block align-top ms-3' alt='Home' />
+        <Image src={logo} height='30vmin' className='d-inline-block align-top ms-3' alt='Home' />
+        {' '}
+        <BootstrapNavbar.Text>DIALS</BootstrapNavbar.Text>
       </BootstrapNavbar.Brand>
       <BootstrapNavbar.Toggle aria-controls='basic-navbar-nav' />
       <BootstrapNavbar.Collapse id='basic-navbar-nav' className='justify-content-end me-3'>
