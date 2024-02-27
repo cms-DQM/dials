@@ -19,7 +19,7 @@ version: '3'
 services:
   django_rest_api_prod:
     container_name: django_rest_api_prod
-    image: local/django_rest_api_prod
+    image: backend_prod
     build: ./backend
     # ports: # Not needed when network mode is set to host
     #   - 8000:8000
@@ -31,7 +31,7 @@ services:
 
   django_celery_worker1_prod:
     container_name: django_celery_worker1_prod
-    image: local/django_rest_api_prod
+    image: backend_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd dials && celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
@@ -43,7 +43,7 @@ services:
 
   django_celery_worker2_prod:
     container_name: django_celery_worker2_prod
-    image: local/django_rest_api_prod
+    image: backend_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd dials && celery -A dials worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
@@ -55,7 +55,7 @@ services:
 
   django_celery_worker3_prod:
     container_name: django_celery_worker3_prod
-    image: local/django_rest_api_dev
+    image: backend_prod
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
@@ -68,7 +68,7 @@ services:
 
   django_celery_beat_prod:
     container_name: django_celery_beat_prod
-    image: local/django_rest_api_prod
+    image: backend_prod
     volumes:
       - /mnt/nanodqmio:/mnt/nanodqmio
     command: bash -c 'cd dials && celery -A dials beat -l INFO'

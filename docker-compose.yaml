@@ -18,7 +18,7 @@ version: '3'
 services:
   django_rest_api_dev:
     container_name: django_rest_api_dev
-    image: local/django_rest_api_dev
+    image: backend_dev
     build:
       context: ./backend
       args:
@@ -34,7 +34,7 @@ services:
 
   django_celery_worker1_dev:
     container_name: django_celery_worker1_dev
-    image: local/django_rest_api_dev
+    image: backend_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
@@ -46,7 +46,7 @@ services:
 
   django_celery_worker2_dev:
     container_name: django_celery_worker2_dev
-    image: local/django_rest_api_dev
+    image: backend_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
@@ -58,7 +58,7 @@ services:
 
   django_celery_worker3_dev:
     container_name: django_celery_worker3_dev
-    image: local/django_rest_api_dev
+    image: backend_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
@@ -70,7 +70,7 @@ services:
 
   django_celery_beat_dev:
     container_name: django_celery_beat_dev
-    image: local/django_rest_api_dev
+    image: backend_dev
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/nanodqmio:/mnt/nanodqmio
