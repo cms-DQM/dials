@@ -2,7 +2,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: dials-backend
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-api
     app.kubernetes.io/component: backend-api
@@ -15,7 +15,7 @@ metadata:
     haproxy.router.openshift.io/ip_whitelist: ''
     haproxy.router.openshift.io/timeout: 180s
 spec:
-  host: dials-api.web.cern.ch
+  host: cmsdials-api.web.cern.ch
   to:
     kind: Service
     name: backend-api
@@ -28,7 +28,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: dials-api.web.cern.ch
+    - host: cmsdials-api.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted
@@ -41,7 +41,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: dials-frontend
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: frontend
     app.kubernetes.io/component: frontend
@@ -54,7 +54,7 @@ metadata:
     haproxy.router.openshift.io/ip_whitelist: ''
     haproxy.router.openshift.io/timeout: 180s
 spec:
-  host: dials.web.cern.ch
+  host: cmsdials.web.cern.ch
   to:
     kind: Service
     name: frontend
@@ -67,7 +67,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: dials.web.cern.ch
+    - host: cmsdials.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted

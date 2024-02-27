@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: backend-api
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-api
     app.kubernetes.io/component: backend-api
@@ -26,7 +26,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: frontend
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: frontend
     app.kubernetes.io/component: frontend

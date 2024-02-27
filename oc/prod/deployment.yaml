@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: backend-api
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-api
     app.kubernetes.io/component: backend-api
@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/name: backend-api
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: django
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -53,15 +53,15 @@ spec:
                   name: dials-secrets
                   key: DJANGO_SECRET_KEY
             - name: DJANGO_ALLOWED_HOSTS
-              value: dials-api.web.cern.ch dials.web.cern.ch
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -131,7 +131,7 @@ spec:
             - name: eos-storage
               readOnly: true
               mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/backend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -149,7 +149,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: backend-worker-1
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-worker-1
     app.kubernetes.io/component: backend-worker-1
@@ -157,7 +157,7 @@ metadata:
     app.kubernetes.io/name: backend-worker-1
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -200,15 +200,15 @@ spec:
                   name: dials-secrets
                   key: DJANGO_SECRET_KEY
             - name: DJANGO_ALLOWED_HOSTS
-              value: dials-api.web.cern.ch dials.web.cern.ch
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -278,7 +278,7 @@ spec:
             - name: eos-storage
               readOnly: true
               mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/backend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -296,7 +296,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: backend-worker-2
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-worker-2
     app.kubernetes.io/component: backend-worker-2
@@ -304,7 +304,7 @@ metadata:
     app.kubernetes.io/name: backend-worker-2
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -347,15 +347,15 @@ spec:
                   name: dials-secrets
                   key: DJANGO_SECRET_KEY
             - name: DJANGO_ALLOWED_HOSTS
-              value: dials-api.web.cern.ch dials.web.cern.ch
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -425,7 +425,7 @@ spec:
             - name: eos-storage
               readOnly: true
               mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/backend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -443,7 +443,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: backend-worker-3
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-worker-3
     app.kubernetes.io/component: backend-worker-3
@@ -451,7 +451,7 @@ metadata:
     app.kubernetes.io/name: backend-worker-3
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -494,15 +494,15 @@ spec:
                   name: dials-secrets
                   key: DJANGO_SECRET_KEY
             - name: DJANGO_ALLOWED_HOSTS
-              value: dials-api.web.cern.ch dials.web.cern.ch
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -572,7 +572,7 @@ spec:
             - name: eos-storage
               readOnly: true
               mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/backend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -590,7 +590,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: backend-beat
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: backend-beat
     app.kubernetes.io/component: backend-beat
@@ -598,7 +598,7 @@ metadata:
     app.kubernetes.io/name: backend-beat
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -641,15 +641,15 @@ spec:
                   name: dials-secrets
                   key: DJANGO_SECRET_KEY
             - name: DJANGO_ALLOWED_HOSTS
-              value: dials-api.web.cern.ch dials.web.cern.ch
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: >-
-                https://dials-api.web.cern.ch
-                https://dials.web.cern.ch
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
             - name: DJANGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -719,7 +719,7 @@ spec:
             - name: eos-storage
               readOnly: true
               mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/backend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -737,7 +737,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: frontend
-  namespace: dials-prod
+  namespace: cms-dials-prod
   labels:
     app: frontend
     app.kubernetes.io/component: frontend
@@ -745,7 +745,7 @@ metadata:
     app.kubernetes.io/name: frontend
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime: nginx
-    app.openshift.io/runtime-namespace: dials-prod
+    app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
@@ -768,7 +768,7 @@ spec:
             - containerPort: 8081
               protocol: TCP
           imagePullPolicy: Always
-          image: image-registry.openshift-image-registry.svc:5000/dials-prod/frontend:latest
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/frontend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
