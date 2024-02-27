@@ -143,4 +143,24 @@ Now if you look the Image Stream history in Openshift (in `Administrator` view >
 
 ![alt text](/docs/img/paas_rollout.png)
 
-Note that when you rollout Kubernetes will replace the current pod with a new one, if any job is running in the job queue it might me lost!
+You can also rollout from `oc` cli, for that you need to get the deployment name:
+
+```bash
+oc get deployments
+
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+backend-api        1/1     1            1           7h32m
+backend-beat       0/0     0            0           7h32m
+backend-worker-1   0/0     0            0           7h32m
+backend-worker-2   0/0     0            0           7h32m
+backend-worker-3   0/0     0            0           7h32m
+frontend           1/1     1            1           7h32m
+```
+
+Then you rollout a specific deployment:
+
+```bash
+oc rollout restart deployment/frontend
+```
+
+Note that when you rollout Kubernetes will replace the current pod with a new one, if any job is running in the job queue it might get lost!
