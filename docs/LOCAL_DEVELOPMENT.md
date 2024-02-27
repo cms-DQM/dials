@@ -52,6 +52,39 @@ docker run -d \
     redis
 ```
 
+# Environment variables
+
+Create a `.env` file inside [`backend`](/backend/) with the following variables:
+
+```bash
+DJANGO_ENV=development
+DJANGO_DEBUG=0
+DJANGO_SECRET_KEY=dont-tell-anyone-its-a-secret
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
+DJANGO_CORS_ALLOWED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
+DJANGO_DATABASE_ENGINE=django.db.backends.postgresql
+DJANGO_DATABASE_NAME=dials-dev
+DJANGO_DATABASE_USER=postgres
+DJANGO_DATABASE_PASSWORD=postgres
+DJANGO_DATABASE_PORT=5432
+DJANGO_DATABASE_HOST=localhost
+DJANGO_CELERY_BROKER_URL=redis://localhost:6379
+DJANGO_DQMIO_STORAGE=/mnt/dqmio
+DJANGO_KEYCLOAK_SERVER_URL=https://keycloak-qa.cern.ch/auth/
+DJANGO_KEYCLOAK_REALM=cern
+DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID=cms-dials-confidential-app
+DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY=SECRET_HERE
+DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-public-app
+DJANGO_KEYCLOAK_API_CLIENTS={"SECRET_HERE": "cms-dials-api-client-1"}
+```
+
+Login to [QA Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
+
+The `DJANGO_DQMIO_STORAGE` variable could be set to the directory where DQMIO data is mounted but that means you are going to ingest all DQMIO data locally (+700 GB), you can pick just a fill files and save locally in the directory `/mnt/dqmio`.
+
+Note: Do not forget to create a database named `dials-dev` in your local postgresql instance.
+
 ## Running Celery Workers
 
 Job queues need workers for collecting tasks from the queue, executing then and later acknowledge the task. Since we are running three queues, the following commands will spawn workers for then, given their specification.
