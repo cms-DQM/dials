@@ -2,6 +2,59 @@
 
 DIALS service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deploy in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [backend](registry.cern.ch/cms-dqmdc/dials-backend-base) and [frontend](registry.cern.ch/cms-dqmdc/dials-frontend) are currently hosted in Docker Hub and are imported to Openshift via an `ImageStream`.
 
+## Application Portal
+
+This guide will show how to create new applications that suit the DIALS deployment, note that you don't need to re-create then on every deployment. We need to create at least the public, confidential and api client applications. If api clients need fine-grained access based on the roles linked to e-groups later you can create more api clients and update the `DJANGO_KEYCLOAK_API_CLIENTS` secret. Login to the [application portal](https://application-portal.web.cern.ch/) an create a new application:
+
+![alt text](/docs/img/app_my_applications.png)
+
+Fill the following form according to:
+
+* Public application
+    - Application Identifier: cms-dials-public-app
+    - Name: cms-dials-public-app
+    - Category: Official
+    - Administrator Group: cms-dqm-coreteam
+* Confidential application
+    - Application Identifier: cms-dials-confidential-app
+    - Name: cms-dials-confidential-app
+    - Category: Official
+    - Administrator Group: cms-dqm-coreteam
+* Api client 1 application
+    - Application Identifier: cms-dials-public-app
+    - Name: cms-dials-api-client-1
+    - Category: Official
+    - Administrator Group: cms-dqm-coreteam
+
+![alt text](/docs/img/app_add_application.png)
+
+Fill the next step form according to:
+
+* Public application
+    - Security protocol: OpenID Connect (OIDC)
+    - Redirect URI(s): https://cmsdials.web.cern.ch/
+    - Base URL: https://cmsdials.web.cern.ch/
+    - Client Secret Configuration: My application cannot store a client safely
+* Confidential application
+    - Security protocol: OpenID Connect (OIDC)
+    - Redirect URI(s): https://cmsdials-api.web.cern.ch/api/v1/swagger
+    - Base URL: https://cmsdials-api.web.cern.ch/api/v1/swagger
+* Api client 1 application
+    - Security protocol: OpenID Connect (OIDC)
+    - Redirect URI(s): https://cmsdials-api.web.cern.ch/api/v1/swagger
+    - Base URL: https://cmsdials-api.web.cern.ch/api/v1/swagger
+    - Client Secret Configuration: My application will need to get tokens using its own client ID and secret
+
+![alt text](/docs/img/app_sso_registration.png)
+
+After creating the public and confidential application go to the `confidential` application and edit the token exchange permissions:
+
+![alt text](/docs/img/app_conf_token_exch.png)
+
+Make sure to grant the permission to the public application to exchange token with the confidential application:
+
+![alt text](/docs/img/app_conf_grant_perm.png)
+
 ## Redis
 
 On a new project, click with the right button on black space and select `From Catalog`:
@@ -28,13 +81,15 @@ Since raw DQMIO data is stored in EOS, our containers need access to EOS and the
 
 Since a CERN Service Account is already created for this project and the resources deployment is made by a kubernetes yaml file (more on that later) you must follow only these topics in the above documentation: `Create the eos-credentials secret` and `Create and Mount an EOS Persistent Volume Claim`.
 
+Note: You can also deploy the secrets using the [template secrets file](/oc/prod/template-secrets.yaml), for that you need to fill all the values encoded as base64 according to the production environment variables and apply the configuration `oc apply -f ./os/prod/filled-secrets.yaml`. If you deploy like that you will only need to follow the topic `Create and Mount an EOS Persistent Volume Claim`.
+
 ## Secrets
 
 Under `Secrets` in `Developer` view of PaaS create a `key/value secret` with the name `dials-secrets` and add all necessary secrets there filling `Key` as the environment variable name and the `Value` on the text box:
 
-
 ![alt text](/docs/img/paas_secrets.png)
 
+Note: You can also deploy the secrets using the [template secrets file](/oc/prod/template-secrets.yaml), for that you need to fill all the values encoded as base64 according to production environment variables and apply the configuration `oc apply -f ./os/prod/filled-secrets.yaml`.
 
 ## OC Cli
 
