@@ -23,7 +23,7 @@ will generate the following response,
   "results": [
     {
       "id": 1,
-      "file_path": "/mnt/nanodqmio/store_data_Run2022E_ZeroBias_DQMIO_19Jan2023-v2_2550000_2AA7A92C-151F-4340-9546-E877B6F9895D.root",
+      "file_path": "/mnt/dqmio/store_data_Run2022E_ZeroBias_DQMIO_19Jan2023-v2_2550000_2AA7A92C-151F-4340-9546-E877B6F9895D.root",
       "data_era": "2022E",
       "st_size": 33554431,
       "st_ctime": "2024-02-09T21:19:59.954917Z",

@@ -1,5 +1,5 @@
 """
-**Class for reading (nano)DQMIO files and extracting histograms**
+**Class for reading DQMIO files and extracting histograms**
 
 Originally copied from here: https://github.com/cms-DQM/ML4DQM-DC_SharedTools/blob/master/dqmio/moredqmiodata.ipynb
 
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class DQMIOReader:
     """
-    Class for reading (nano)DQMIO input files and extracting histograms
+    Class for reading DQMIO input files and extracting histograms
 
     Attributes:
         - rootfiles: a list of root files (DQMIO format), opened in read mode
