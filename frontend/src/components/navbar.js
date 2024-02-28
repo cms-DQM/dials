@@ -55,7 +55,7 @@ const AppNavbar = () => {
                     <Modal.Header>
                       <Modal.Title>Logout</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>You are sure that you want to logout?</Modal.Body>
+                    <Modal.Body>Are you sure that you want to logout?</Modal.Body>
                     <Modal.Footer>
                       <Button variant='secondary' onClick={() => setShowLogoutModal(false)}>No</Button>
                       <Button variant='primary' onClick={handleLogout}>Yes</Button>
