@@ -1,29 +1,16 @@
 import React, { useState, useEffect } from 'react'
-
-import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { useAuth } from 'react-oidc-context'
 
-import { OIDC_CONFIDENTIAL_TOKEN_NS } from './config/env'
-import { Navbar, PrivateRoute } from './components'
-import Views from './views'
-import API from './services/api'
-
-// Note on `PrivateRoute`
-//
-// From the component src code you can see that you can
-// restrict user access based on applications-portal roles
-// just add the parameter "roles={['role-name']}" to a private route
-// and users without that role will see a permission denied modal and be redirected to home
-//
-// Example (based on applications-portal-qa), only users in viz-role will load that component:
-// <PrivateRoute roles={['viz-role']} component={Views.DataExplorer.Histograms2D} />
+import { OIDC_CONFIDENTIAL_TOKEN_NS, EXCHANGED_TOKEN_EVT } from './config/env'
+import { AppNavbar, AppRoutes } from './components'
+import onSigninComplete from './utils/auth'
 
 const Root = () => {
   const auth = useAuth()
   const [tokenExchanged, setTokenExchanged] = useState(false)
 
-  window.addEventListener('confidential-token-stored', () => {
+  window.addEventListener(EXCHANGED_TOKEN_EVT, () => {
     setTokenExchanged(true)
   })
 
@@ -31,8 +18,7 @@ const Root = () => {
     return auth.events.addAccessTokenExpiring(() => {
       auth.signinSilent()
         .then(async (_user) => {
-          const apiToken = await API.auth.exchange({ subjectToken: _user.access_token })
-          localStorage.setItem(OIDC_CONFIDENTIAL_TOKEN_NS, JSON.stringify(apiToken))
+          await onSigninComplete({ subjectToken: _user.access_token, dispatchEvent: false })
         })
         .catch(err => {
           console.error(err)
@@ -48,43 +34,22 @@ const Root = () => {
     })
   }, [auth.events, auth.signinSilent])
 
+  // Will render authenticating div if auth provider is still loading
+  // or user is authenticated (auth not loading anymore) but
+  // token hasn't been exchanged yet
+  if (auth.isLoading || (auth.isAuthenticated && !tokenExchanged)) {
+    return <div>Authenticating...</div>
+  }
+
+  if (auth.error) {
+    return <div>Oops... {auth.error.message}</div>
+  }
+
   return (
     <>
-      {
-        !auth.isLoading || tokenExchanged
-          ? (
-            <>
-              <Navbar />
-              <Routes>
-                <Route path='/' element={<Views.Home.Index />} />
-                <Route path='/ingest' element={<PrivateRoute component={Views.DataIngestion.Index} />} />
-                <Route path='/file-index' element={<PrivateRoute component={Views.DataExplorer.FileIndex} />} />
-                <Route path='/runs'>
-                  <Route index element={<PrivateRoute component={Views.DataExplorer.Runs} />} />
-                  <Route path=':runNumber' element={<PrivateRoute component={Views.DataExplorer.Run} />} />
-                </Route>
-                <Route path='/lumisections'>
-                  <Route index element={<PrivateRoute component={Views.DataExplorer.Lumisections} />} />
-                  <Route path=':id' element={<PrivateRoute component={Views.DataExplorer.Lumisection} />} />
-                </Route>
-                <Route path='/histograms-1d'>
-                  <Route index element={<PrivateRoute component={Views.DataExplorer.Histograms1D} />} />
-                  <Route path=':id' element={<PrivateRoute component={Views.DataExplorer.Histogram} dim={1} />} />
-                </Route>
-                <Route path='/histograms-2d'>
-                  <Route index element={<PrivateRoute component={Views.DataExplorer.Histograms2D} />} />
-                  <Route path=':id' element={<PrivateRoute component={Views.DataExplorer.Histogram} dim={2} />} />
-                </Route>
-              </Routes>
-              <ToastContainer
-                position='bottom-right'
-              />
-            </>
-            )
-          : (
-            <div>Authenticating...</div>
-            )
-      }
+      <AppNavbar />
+      <AppRoutes/>
+      <ToastContainer position='bottom-right'/>
     </>
   )
 }

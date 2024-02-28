@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-
 import { useAuth } from 'react-oidc-context'
 import { NavLink } from 'react-router-dom'
-import BootstrapNavbar from 'react-bootstrap/Navbar'
+import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Image from 'react-bootstrap/Image'
@@ -12,7 +11,7 @@ import Modal from 'react-bootstrap/Modal'
 import logo from '../assets/img/logo.png'
 import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../config/env'
 
-const Navbar = () => {
+const AppNavbar = () => {
   const auth = useAuth()
 
   const [showLogoutModal, setShowLogoutModal] = useState(false)
@@ -25,14 +24,14 @@ const Navbar = () => {
   }
 
   return (
-    <BootstrapNavbar expand='lg' bg='dark' variant='dark' sticky='top'>
-      <BootstrapNavbar.Brand as={NavLink} to='/'>
+    <Navbar expand='lg' bg='dark' variant='dark' sticky='top'>
+      <Navbar.Brand as={NavLink} to='/'>
         <Image src={logo} height='30vmin' className='d-inline-block align-top ms-3' alt='Home' />
         {' '}
-        <BootstrapNavbar.Text>DIALS</BootstrapNavbar.Text>
-      </BootstrapNavbar.Brand>
-      <BootstrapNavbar.Toggle aria-controls='basic-navbar-nav' />
-      <BootstrapNavbar.Collapse id='basic-navbar-nav' className='justify-content-end me-3'>
+        <Navbar.Text>DIALS</Navbar.Text>
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls='basic-navbar-nav' />
+      <Navbar.Collapse id='basic-navbar-nav' className='justify-content-end me-3'>
         {
           auth.isAuthenticated
             ? (
@@ -71,9 +70,9 @@ const Navbar = () => {
               </Nav>
               )
         }
-      </BootstrapNavbar.Collapse>
-    </BootstrapNavbar>
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 
-export default Navbar
+export default AppNavbar

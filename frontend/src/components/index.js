@@ -1,7 +1,7 @@
-import Navbar from './navbar'
-import PrivateRoute from './auth'
+import AppNavbar from './navbar'
+import AppRoutes from './routes'
 
 export {
-  Navbar,
-  PrivateRoute
+  AppNavbar,
+  AppRoutes
 }
