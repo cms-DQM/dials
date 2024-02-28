@@ -10,8 +10,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import ResponsivePlot from '../../components/responsivePlot'
-import CMSOMSCard from '../../components/cmsOMSCard'
+import { CMSOMSCard, ResponsivePlot } from '../../components'
 
 const Lumisection = () => {
   const { id } = useParams()

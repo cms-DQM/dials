@@ -9,7 +9,7 @@ import Card from 'react-bootstrap/Card'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
-import Table from '../../components/table'
+import { Table } from '../../components'
 import API from '../../services/api'
 import { isNumericNonZero } from '../../utils/sanitizer'
 

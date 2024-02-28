@@ -10,8 +10,7 @@ import RangeSlider from 'react-bootstrap-range-slider'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
-import Table from '../../components/table'
-import ResponsivePlot from '../../components/responsivePlot'
+import { ResponsivePlot, Table } from '../../components'
 import API from '../../services/api'
 
 const Histograms1D = () => {

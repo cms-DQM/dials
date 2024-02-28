@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
-import Table from '../../components/table'
+import { Table } from '../../components'
 import API from '../../services/api'
 import dateFormat from '../../utils/date'
 
