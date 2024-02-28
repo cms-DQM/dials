@@ -8,9 +8,8 @@ import Card from 'react-bootstrap/Card'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
-import Table from '../../components/table'
 import API from '../../services/api'
-import CMSOMSCard from '../../components/cmsOMSCard'
+import { CMSOMSCard, Table } from '../../components'
 
 const Run = () => {
   const { runNumber } = useParams()

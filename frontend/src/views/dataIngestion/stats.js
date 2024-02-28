@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col'
 import { toast } from 'react-toastify'
 
 import Card from 'react-bootstrap/Card'
-import ResponsivePlot from '../../components/responsivePlot'
+import { ResponsivePlot } from '../../components'
 import API from '../../services/api'
 
 const IngestionStatistics = () => {

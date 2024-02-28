@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 
-import Table from '../../components/table'
+import { Table } from '../../components'
 import dateFormat from '../../utils/date'
 import API from '../../services/api'
 import { toast } from 'react-toastify'
