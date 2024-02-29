@@ -108,6 +108,7 @@ class AuthViewSet(ViewSet):
             err_msg = json.loads(err.error_message.decode("utf-8"))
             if err_msg.get("error") != "authorization_pending":
                 raise err
+            err_msg = {"details": err_msg.get("error_description"), "code": err_msg.get("error")}
             payload = PendingAuthorizationErrorSerializer(err_msg).data
             response = Response(payload, status=err.response_code)
         else:
