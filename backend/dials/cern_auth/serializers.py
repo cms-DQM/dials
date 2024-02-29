@@ -38,3 +38,8 @@ class DeviceTokenSerializer(serializers.Serializer):
     token_type = serializers.CharField()
     session_state = serializers.CharField()
     scope = serializers.CharField()
+
+
+class PendingAuthorizationErrorSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+    code = serializers.CharField()
