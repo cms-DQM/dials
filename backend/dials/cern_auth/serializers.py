@@ -5,6 +5,10 @@ class SubjectTokenSerializer(serializers.Serializer):
     subject_token = serializers.CharField()
 
 
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
+
+
 class ExchangedTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
     expires_in = serializers.IntegerField()

@@ -52,5 +52,8 @@ class CERNKeycloakOIDC:
     def exchange_token(self, subject_token: str, target_aud: str) -> dict:
         return self._kc.exchange_token(subject_token, target_aud)
 
+    def refresh_token(self, refresh_token: str) -> dict:
+        return self._kc.refresh_token(refresh_token)
+
     def get_user_info(self, token: str) -> dict:
         return self._kc.userinfo(token)
