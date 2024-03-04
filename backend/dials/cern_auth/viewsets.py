@@ -9,11 +9,8 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from utils.rest_framework_cern_sso.authentication import (
-    CERNKeycloakConfidentialAuthentication,
-    CERNKeycloakPublicAuthentication,
-    confidential_kc,
-)
+from utils.rest_framework_cern_sso.authentication import CERNKeycloakPublicAuthentication, confidential_kc
+from utils.rest_framework_cern_sso.user import CERNKeycloakUser
 
 from .serializers import (
     DeviceCodeSerializer,
@@ -46,7 +43,7 @@ class AuthViewSet(ViewSet):
         if not subject_token:
             return HttpResponseBadRequest("Attribute 'subject_token' not found in request body.")
 
-        user = request.user
+        user: CERNKeycloakUser = request.user
         confidential_token = user.token.client.exchange_token(subject_token, settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID)
         payload = ExchangedTokenSerializer(confidential_token).data
         return Response(payload)
@@ -55,20 +52,13 @@ class AuthViewSet(ViewSet):
         request=RefreshTokenSerializer,
         responses={200: DeviceTokenSerializer},
     )
-    @action(
-        detail=False,
-        methods=["post"],
-        name="Refresh confidential token",
-        url_path=r"refresh-token",
-        authentication_classes=[CERNKeycloakConfidentialAuthentication],
-    )
+    @action(detail=False, methods=["post"], name="Refresh confidential token", url_path=r"refresh-token")
     def refresh_token(self, request: Request):
         ref_token = request.data.get("refresh_token")
         if not ref_token:
             return HttpResponseBadRequest("Attribute 'refresh_token' not found in request body.")
 
-        user = request.user
-        confidential_token = user.token.client.refresh_token(ref_token)
+        confidential_token = confidential_kc.refresh_token(ref_token)
         payload = DeviceTokenSerializer(confidential_token).data
         return Response(payload)
 
