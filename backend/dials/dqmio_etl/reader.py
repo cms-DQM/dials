@@ -12,6 +12,7 @@ import logging
 from collections import defaultdict, namedtuple
 from fnmatch import fnmatch
 from multiprocessing.pool import ThreadPool
+from typing import List, Optional
 
 import ROOT
 
@@ -222,7 +223,7 @@ class DQMIOReader:
 
         return result
 
-    def count_mes(self, me_selection=(3, 4, 5, 6, 7, 8)):
+    def count_mes(self, whitelist_mes: Optional[List] = None, me_selection=(3, 4, 5, 6, 7, 8)):
         """
         Count how many monitoring elements exists given ME selection
         """
@@ -230,6 +231,8 @@ class DQMIOReader:
         for run, lumi in self.list_lumis():
             melist = self.get_mes_for_lumi(run, lumi, "*")
             for me in melist:
+                if whitelist_mes and me.name not in whitelist_mes:
+                    continue
                 if me.type in me_selection:
                     num_total_entries += 1
         return num_total_entries

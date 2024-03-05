@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from dqmio_file_indexer.models import FileIndex, FileIndexStatus
 
 from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run
@@ -16,7 +17,9 @@ class HistIngestion:
         self.file_index = FileIndex.objects.get(id=file_index_id)
         self.reader = DQMIOReader(self.file_index.file_path)
         if self.file_index.n_entries == 0:
-            self.file_index.update_entries("n_entries", self.reader.count_mes())
+            self.file_index.update_entries(
+                "n_entries", self.reader.count_mes(whitelist_mes=settings.DQMIO_MES_TO_INGEST)
+            )
 
     def __h1d(self) -> int:
         entries_ingested = 0
@@ -27,6 +30,8 @@ class HistIngestion:
 
             for me in me_list:
                 if me.type not in self.H1D_VALID_MES:
+                    continue
+                if me.name not in settings.DQMIO_MES_TO_INGEST:
                     continue
 
                 entries = me.data.GetEntries()
@@ -75,6 +80,8 @@ class HistIngestion:
             me_list = self.reader.get_mes_for_lumi(run, lumi, "*")
             for me in me_list:
                 if me.type not in self.H2D_VALID_MES:
+                    continue
+                if me.name not in settings.DQMIO_MES_TO_INGEST:
                     continue
 
                 entries = me.data.GetEntries()
