@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.db.models import Count, F, TextField, Value
 from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,6 +23,7 @@ from .serializers import (
     LumisectionHistogramsIngestionInputSerializer,
     LumisectionHistogramsSubsystemCountSerializer,
     LumisectionSerializer,
+    MEsSerializer,
     RunLumisectionsSerializer,
     RunSerializer,
 )
@@ -107,6 +109,20 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
         task = TaskResponseBase(id=task.id, state=task.state, ready=task.ready())
         task = TaskResponseSerializer(task)
         return Response(task.data)
+
+    @extend_schema(
+        request=None,
+        responses={200: MEsSerializer},
+    )
+    @action(
+        detail=False,
+        methods=["get"],
+        name="List filtered MEs during ETL",
+        url_path=r"configured-mes",
+    )
+    def configured_mes(self, request):
+        payload = MEsSerializer({"mes": settings.DQMIO_MES_TO_INGEST})
+        return Response(payload.data)
 
 
 class LumisectionHistogram1DViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
