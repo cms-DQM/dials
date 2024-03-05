@@ -17,6 +17,8 @@ from pathlib import Path
 from celery.schedules import crontab
 from dotenv import load_dotenv
 
+from .dqmio_perls_mes import get_monitoring_elements_names
+
 load_dotenv()
 
 # Discover which environment the server is running
@@ -199,6 +201,9 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 60 * 60 * 24 * 2}  # se
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
 DIR_PATH_DQMIO_STORAGE = os.getenv("DJANGO_DQMIO_STORAGE")
+
+# List of MEs to ingest
+DQMIO_MES_TO_INGEST = get_monitoring_elements_names()
 
 # Keycloak OIDC config
 KEYCLOAK_SERVER_URL = os.getenv("DJANGO_KEYCLOAK_SERVER_URL")

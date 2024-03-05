@@ -1,6 +1,7 @@
 from typing import Optional, Tuple
 
 from django.conf import settings
+from jose.exceptions import ExpiredSignatureError
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
 
@@ -114,7 +115,12 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
         access_token = self.get_access_token(request.headers)
         kc, valid_aud, valid_azp = self.get_kc_by_expected_token()
         token = CERNKeycloakToken(access_token, kc)
-        token.validate(valid_aud, valid_azp)
+
+        try:
+            token.validate(valid_aud, valid_azp)
+        except ExpiredSignatureError:
+            raise AuthenticationFailed("Access token has expired.", "access_token_expired")
+
         return CERNKeycloakUser(token), token
 
     def get_kc_by_expected_token(self):

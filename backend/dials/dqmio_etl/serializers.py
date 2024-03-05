@@ -49,3 +49,7 @@ class RunLumisectionsSerializer(serializers.Serializer):
     hist2d_count = serializers.IntegerField()
     int_lumi = serializers.IntegerField()
     oms_zerobias_rate = serializers.IntegerField()
+
+
+class MEsSerializer(serializers.Serializer):
+    mes = serializers.ListSerializer(child=serializers.CharField())
