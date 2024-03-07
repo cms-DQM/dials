@@ -165,6 +165,8 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
         if title_used and title_contains_used:
             raise ParseError("title and title contains cannot be used together.")
 
+        return queryset
+
     class Meta:
         model = LumisectionHistogram2D
         fields = [
