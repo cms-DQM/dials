@@ -22,7 +22,12 @@ class LumisectionFilter(filters.FilterSet):
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
-        cleaned_data = {key: value for key, value in self.form.cleaned_data.items() if value is not None}
+
+        # It seems CharField values comes as empty string from django filters form
+        # In order to compare simultaneously excluding filters we need to also remove empty string values
+        cleaned_data = {
+            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
+        }
 
         run_number_used = "run_number" in cleaned_data
         min_run_number_used = "min_run_number" in cleaned_data
@@ -56,7 +61,12 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
-        cleaned_data = {key: value for key, value in self.form.cleaned_data.items() if value is not None}
+
+        # It seems CharField values comes as empty string from django filters form
+        # In order to compare simultaneously excluding filters we need to also remove empty string values
+        cleaned_data = {
+            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
+        }
 
         run_number_used = "run_number" in cleaned_data
         min_run_number_used = "min_run_number" in cleaned_data
@@ -121,7 +131,12 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
-        cleaned_data = {key: value for key, value in self.form.cleaned_data.items() if value is not None}
+
+        # It seems CharField values comes as empty string from django filters form
+        # In order to compare simultaneously excluding filters we need to also remove empty string values
+        cleaned_data = {
+            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
+        }
 
         run_number_used = "run_number" in cleaned_data
         min_run_number_used = "min_run_number" in cleaned_data
