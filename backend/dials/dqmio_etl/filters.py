@@ -58,6 +58,10 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
     )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
+    era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
+    dqmio_filepath_contains = filters.CharFilter(
+        label="DQMIO file path contains", field_name="source_data_file__file_path", lookup_expr="contains"
+    )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
@@ -110,6 +114,8 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
             "max_ls_number",
             "title_contains",
             "min_entries",
+            "era",
+            "dqmio_filepath_contains",
         ]
 
 
@@ -128,6 +134,10 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
     )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
+    era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
+    dqmio_filepath_contains = filters.CharFilter(
+        label="DQMIO file path contains", field_name="source_data_file__file_path", lookup_expr="contains"
+    )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
@@ -180,4 +190,6 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
             "max_ls_number",
             "title_contains",
             "min_entries",
+            "era",
+            "dqmio_filepath_contains",
         ]
