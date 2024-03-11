@@ -1,43 +1,46 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-    - id: trailing-whitespace
-      files: ^backend
-    - id: end-of-file-fixer
-      files: ^backend
-    - id: check-yaml
-      files: ^backend
-    - id: check-added-large-files
-      files: ^backend
-  - repo: https://github.com/psf/black
-    rev: 24.1.1
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+        exclude: >
+            (?x)^(
+                package-lock\.json
+                poetry\.lock
+            )$
+      - id: fix-byte-order-marker
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: debug-statements
+      - id: detect-private-key
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.2
     hooks:
-    - id: black
-      files: ^backend
-      args: [
-        --line-length=120
-      ]
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
     hooks:
-    - id: flake8
-      files: ^backend
-      additional_dependencies: [flake8-bugbear]
-      args: [
-        --max-line-length=120,
-        --max-complexity=10
-      ]
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.13.2
-    hooks:
-    - id: isort
-      files: ^backend
-      args: [
-        --atomic,
-        --profile=black,
-        --line-length=120,
-        --skip-gitignore
-      ]
+      - id: eslint
+        name: eslint-local
+        entry: yarn run lint
+        language: system
+        types: [javascript]
+        exclude: >
+            (?x)^(
+              .+\.config\.js|
+              .+\.setup\.js|
+              \.eslintrc\.js
+            )$
+        pass_filenames: true
+      - id: missing-migrations
+        name: missing-migrations-local
+        entry: poetry run python backend/manage.py makemigrations --check
+        language: system
+        # Only run missing migration check if migration-generating files have changed:
+        files: (.*/?(settings|migrations|models)/.+|.+models\.py|.+constants\.py|.+choices\.py|.+pyproject\.toml)
+        pass_filenames: false
