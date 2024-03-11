@@ -11,41 +11,38 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import json
-import os
 from pathlib import Path
 
 from celery.schedules import crontab
-from dotenv import load_dotenv
+from decouple import config
 
 from .dqmio_perls_mes import get_monitoring_elements_names
 
 
-load_dotenv()
-
 # Discover which environment the server is running
-ENV = os.getenv("DJANGO_ENV")
+ENV = config("DJANGO_ENV")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.getenv("DJANGO_DEBUG", 0)))  # 0 is False
+DEBUG = bool(config("DJANGO_DEBUG", cast=int, default=0))  # 0 is False
 
 # A list of strings representing the host/domain names that this Django site can serve
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(" ")
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="").split(" ")
 
 # A list of trusted origins for unsafe requests (e.g. POST).
-CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(" ")
+CSRF_TRUSTED_ORIGINS = config("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(" ")
 
 # Cors
 CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").split(" ")
+CORS_ALLOWED_ORIGINS = config("DJANGO_CORS_ALLOWED_ORIGINS", default="").split(" ")
 
 # Application definition
 INSTALLED_APPS = [
@@ -123,12 +120,12 @@ ASGI_APPLICATION = "dials.asgi.application"
 # Database configuration
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DJANGO_DATABASE_ENGINE"),
-        "NAME": os.getenv("DJANGO_DATABASE_NAME"),
-        "USER": os.getenv("DJANGO_DATABASE_USER"),
-        "PASSWORD": os.getenv("DJANGO_DATABASE_PASSWORD"),
-        "HOST": os.getenv("DJANGO_DATABASE_HOST"),
-        "PORT": os.getenv("DJANGO_DATABASE_PORT"),
+        "ENGINE": config("DJANGO_DATABASE_ENGINE"),
+        "NAME": config("DJANGO_DATABASE_NAME"),
+        "USER": config("DJANGO_DATABASE_USER"),
+        "PASSWORD": config("DJANGO_DATABASE_PASSWORD"),
+        "HOST": config("DJANGO_DATABASE_HOST"),
+        "PORT": config("DJANGO_DATABASE_PORT"),
     },
 }
 
@@ -187,7 +184,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery configuration options
-CELERY_BROKER_URL = os.getenv("DJANGO_CELERY_BROKER_URL")
+CELERY_BROKER_URL = config("DJANGO_CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_RESULT_EXTENDED = True
@@ -201,15 +198,15 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 60 * 60 * 24 * 2}  # seconds
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
-DIR_PATH_DQMIO_STORAGE = os.getenv("DJANGO_DQMIO_STORAGE")
+DIR_PATH_DQMIO_STORAGE = config("DJANGO_DQMIO_STORAGE")
 
 # List of MEs to ingest
 DQMIO_MES_TO_INGEST = get_monitoring_elements_names()
 
 # Keycloak OIDC config
-KEYCLOAK_SERVER_URL = os.getenv("DJANGO_KEYCLOAK_SERVER_URL")
-KEYCLOAK_REALM = os.getenv("DJANGO_KEYCLOAK_REALM")
-KEYCLOAK_CONFIDENTIAL_CLIENT_ID = os.getenv("DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID")
-KEYCLOAK_CONFIDENTIAL_SECRET_KEY = os.getenv("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
-KEYCLOAK_PUBLIC_CLIENT_ID = os.getenv("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
-KEYCLOAK_API_CLIENTS = json.loads(os.getenv("DJANGO_KEYCLOAK_API_CLIENTS", "{}"))
+KEYCLOAK_SERVER_URL = config("DJANGO_KEYCLOAK_SERVER_URL")
+KEYCLOAK_REALM = config("DJANGO_KEYCLOAK_REALM")
+KEYCLOAK_CONFIDENTIAL_CLIENT_ID = config("DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID")
+KEYCLOAK_CONFIDENTIAL_SECRET_KEY = config("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
+KEYCLOAK_PUBLIC_CLIENT_ID = config("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
+KEYCLOAK_API_CLIENTS = json.loads(config("DJANGO_KEYCLOAK_API_CLIENTS", default="{}"))
