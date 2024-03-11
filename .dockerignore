@@ -1,3 +1,4 @@
+# Python
 __pycache__
 *.pyc
 *.pyo
@@ -19,3 +20,14 @@ coverage.xml
 .pytest_cache
 .hypothesis
 .env*
+
+# Javascript
+**/node_modules/
+**/dist
+.git
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws
+**/build/
