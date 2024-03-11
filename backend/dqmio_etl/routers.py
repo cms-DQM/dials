@@ -1,6 +1,12 @@
 from rest_framework import routers
 
-from .viewsets import LumisectionHistogram1DViewSet, LumisectionHistogram2DViewSet, LumisectionViewSet, RunViewSet
+from .viewsets import (
+    LumisectionHistogram1DViewSet,
+    LumisectionHistogram2DViewSet,
+    LumisectionViewSet,
+    RunViewSet,
+)
+
 
 router = routers.SimpleRouter()
 router.register(r"run", RunViewSet, basename="run")

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("dqmio_etl", "0002_delete_runhistogram"),
         ("dqmio_file_indexer", "0003_fileindex_dqmio_file__file_pa_7ac107_idx_and_more"),

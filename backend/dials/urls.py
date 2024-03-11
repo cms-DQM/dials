@@ -6,6 +6,7 @@ from dqmio_file_indexer.routers import router as dqmio_file_indexer_router
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
 
+
 router = routers.DefaultRouter()
 router.registry.extend(dqmio_file_indexer_router.registry)
 router.registry.extend(dqmio_etl_router.registry)

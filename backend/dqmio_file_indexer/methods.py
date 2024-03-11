@@ -10,6 +10,7 @@ from dqmio_etl.tasks import ingest_function
 
 from .models import BadFileIndex, FileIndex, FileIndexStatus
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +47,7 @@ class RawDataIndexer:
     def __search_era_with_regex(filename):
         try:
             era_string = re.search(r"Run(\d+[A-Z])", filename).groups()[0]
-        except Exception:
+        except AttributeError:
             return None
         else:
             return RawDataIndexer.__infer_era_from_string(era_string)
@@ -77,13 +78,18 @@ class RawDataIndexer:
             err_type = type(err).__name__
             parsed_err_text = str(err).replace(fpath, "<<fpath>>")
             err_msg = f"{err_type}: {parsed_err_text}"
+            logger.exception(err_msg)
 
         data_era = RawDataIndexer.__infer_data_era(file.name)
         st_ctime = datetime.fromtimestamp(lstat.st_ctime, tz=timezone.get_current_timezone())
 
         if file_is_bad:
             bad_file_index, created = BadFileIndex.objects.get_or_create(
-                file_path=fpath, data_era=data_era, st_size=lstat.st_size, st_ctime=st_ctime, err=err_msg
+                file_path=fpath,
+                data_era=data_era,
+                st_size=lstat.st_size,
+                st_ctime=st_ctime,
+                err=err_msg,
             )
             return ("BAD", bad_file_index.id, created)
 
@@ -96,9 +102,11 @@ class RawDataIndexer:
         )
 
         if created is False:
-            logger.debug(f"File {file} already exists in the database!")
+            logger_msg = f"File {file} already exists in the database!"
+            logger.debug(logger_msg)
         else:
-            logger.debug(f"Indexed new file in DB: {file}")
+            logger_msg = f"Indexed new file in DB: {file}"
+            logger.debug(logger_msg)
 
         return ("GOOD", file_index.id, created)
 
@@ -122,12 +130,13 @@ class RawDataIndexer:
 
     def start(self):
         stats = []
-        for dir in self.STORAGE_DIRS:
-            logger.debug(f"Getting recursive file list for path '{dir}'")
-            dir_result = RawDataIndexer.__search_dqmio_files(dir)
+        for _dir in self.STORAGE_DIRS:
+            logger_msg = f"Getting recursive file list for path '{_dir}'"
+            logger.debug(logger_msg)
+            dir_result = RawDataIndexer.__search_dqmio_files(_dir)
             stats.append(
                 {
-                    "storage": dir,
+                    "storage": _dir,
                     "total": dir_result["total_files"],
                     "added_good": dir_result["total_added_good_files"],
                     "added_bad": dir_result["total_added_bad_files"],

@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 
 from .dqmio_perls_mes import get_monitoring_elements_names
 
+
 load_dotenv()
 
 # Discover which environment the server is running
@@ -83,7 +84,7 @@ SPECTACULAR_SETTINGS = {
     ],
 }
 
-# A list of middleware (framework of hooks into Django’s request/response processing) to use
+# A list of middleware (framework of hooks into Django's request/response processing) to use
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

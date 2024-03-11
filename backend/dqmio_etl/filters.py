@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ParseError
 
@@ -10,7 +12,7 @@ class RunFilter(filters.FilterSet):
 
     class Meta:
         model = Run
-        fields = ["min_run_number", "max_run_number"]
+        fields: ClassVar[list[str]] = ["min_run_number", "max_run_number"]
 
 
 class LumisectionFilter(filters.FilterSet):
@@ -40,7 +42,14 @@ class LumisectionFilter(filters.FilterSet):
 
     class Meta:
         model = Lumisection
-        fields = ["run_number", "ls_number", "min_ls_number", "max_ls_number", "min_run_number", "max_run_number"]
+        fields: ClassVar[list[str]] = [
+            "run_number",
+            "ls_number",
+            "min_ls_number",
+            "max_ls_number",
+            "min_run_number",
+            "max_run_number",
+        ]
 
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
@@ -60,7 +69,9 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
     era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
     dqmio_filepath_contains = filters.CharFilter(
-        label="DQMIO file path contains", field_name="source_data_file__file_path", lookup_expr="contains"
+        label="DQMIO file path contains",
+        field_name="source_data_file__file_path",
+        lookup_expr="contains",
     )
 
     def filter_queryset(self, queryset, *args, **kwargs):
@@ -103,7 +114,7 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
 
     class Meta:
         model = LumisectionHistogram1D
-        fields = [
+        fields: ClassVar[list[str]] = [
             "run_number",
             "ls_number",
             "lumisection_id",
@@ -136,7 +147,9 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
     era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
     dqmio_filepath_contains = filters.CharFilter(
-        label="DQMIO file path contains", field_name="source_data_file__file_path", lookup_expr="contains"
+        label="DQMIO file path contains",
+        field_name="source_data_file__file_path",
+        lookup_expr="contains",
     )
 
     def filter_queryset(self, queryset, *args, **kwargs):
@@ -179,7 +192,7 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
 
     class Meta:
         model = LumisectionHistogram2D
-        fields = [
+        fields: ClassVar[list[str]] = [
             "run_number",
             "ls_number",
             "lumisection_id",

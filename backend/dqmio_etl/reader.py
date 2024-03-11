@@ -8,15 +8,12 @@ Notes:
 * fnmatch provides support for unix shell-style wildcards, which are not the same as regular expressions in python
 """
 
-import logging
 from collections import defaultdict, namedtuple
 from fnmatch import fnmatch
 from multiprocessing.pool import ThreadPool
-from typing import List, Optional
+from typing import ClassVar
 
 import ROOT
-
-logger = logging.getLogger(__name__)
 
 
 class DQMIOReader:
@@ -52,7 +49,7 @@ class DQMIOReader:
     # - the type (e.g. TH1F, TH2F, etc., see function __get_me_type below for all allowed types)
     # - the actual data
 
-    TREE_NAMES = {
+    TREE_NAMES: ClassVar[dict[int, str]] = {
         0: "Ints",
         1: "Floats",
         2: "Strings",
@@ -79,11 +76,8 @@ class DQMIOReader:
         """
         self.nthreads = int(kwargs.get("nthreads", 4))
 
-        logger.debug(f"DQMIOReader.__init__: opening {len(files)} files...")
         self.rootfiles = [ROOT.TFile.Open(fp) for fp in files]
-        logger.debug("DQMIOReader.__init__: All files opened, now making index...")
         self.__read_index_tables()
-        logger.debug("DQMIOReader.__init__: List of monitored elements made.")
 
     def __get_me_type(self, metype):
         """
@@ -134,7 +128,7 @@ class DQMIOReader:
         self.index = dict(self.index)
         self.index_keys = list(self.index.keys())
 
-    def __extract_data_from_ROOT(self, root_obj, hist2array=False):
+    def __extract_data_from_root(self, root_obj, hist2array=False):
         """
         Extract ROOT-type data into useful formats, depending on the data type
 
@@ -143,12 +137,12 @@ class DQMIOReader:
                       (default: keep as ROOT histogram objects)
                       note: option True is not yet supported (need to fix root_numpy import in SWAN)
         """
-        if isinstance(root_obj, (int, float)):
+        if isinstance(root_obj, int | float):
             return root_obj
 
         if hist2array:
             raise NotImplementedError(
-                "ERROR in DQMIOReader.__extract_data_from_ROOT: option hist2array is not yet supported"
+                "ERROR in DQMIOReader.__extract_data_from_root: option hist2array is not yet supported"
             )
 
         return root_obj.Clone()
@@ -217,13 +211,13 @@ class DQMIOReader:
 
                 me_tree.GetEntry(x, 1)
                 value = me_tree.Value
-                value = self.__extract_data_from_ROOT(value)
+                value = self.__extract_data_from_root(value)
                 me = self.MonitorElement(run, lumi, me_name, entry.type, value)
                 result.append(me)
 
         return result
 
-    def count_mes(self, whitelist_mes: Optional[List] = None, me_selection=(3, 4, 5, 6, 7, 8)):
+    def count_mes(self, whitelist_mes: list | None = None, me_selection=(3, 4, 5, 6, 7, 8)):
         """
         Count how many monitoring elements exists given ME selection
         """

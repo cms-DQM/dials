@@ -1,5 +1,3 @@
-from typing import Optional, Tuple
-
 from django.conf import settings
 from jose.exceptions import ExpiredSignatureError
 from rest_framework.authentication import BaseAuthentication
@@ -9,6 +7,7 @@ from .backends import CERNKeycloakOIDC
 from .exceptions import AuthenticationFailed
 from .token import CERNKeycloakToken
 from .user import CERNKeycloakUser
+
 
 try:
     from .schemes import *  # noqa: F401,F403
@@ -62,7 +61,7 @@ class CERNKeycloakClientSecretAuthentication(BaseAuthentication):
 
     HEADER_KEY = "X-CLIENT-SECRET"
 
-    def authenticate(self, request: Request) -> Optional[Tuple[CERNKeycloakUser, CERNKeycloakToken]]:
+    def authenticate(self, request: Request) -> tuple[CERNKeycloakUser, CERNKeycloakToken] | None:
         secret_key = self.get_secret_key(request.headers)
 
         # Returning None since Django's multi authentication logic
@@ -110,27 +109,32 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
     """
 
     HEADER_KEY = "Authorization"
+    PUBLIC_TOKEN_TYPE = "public"  # noqa: S105
+    CONFIDENTIAL_TOKEN_TYPE = "confidential"  # noqa: S105
 
-    def authenticate(self, request: Request) -> Optional[Tuple[CERNKeycloakUser, CERNKeycloakToken]]:
+    def authenticate(self, request: Request) -> tuple[CERNKeycloakUser, CERNKeycloakToken] | None:
         access_token = self.get_access_token(request.headers)
         kc, valid_aud, valid_azp = self.get_kc_by_expected_token()
         token = CERNKeycloakToken(access_token, kc)
 
         try:
             token.validate(valid_aud, valid_azp)
-        except ExpiredSignatureError:
-            raise AuthenticationFailed("Access token has expired.", "access_token_expired")
+        except ExpiredSignatureError as err:
+            raise AuthenticationFailed("Access token has expired.", "access_token_expired") from err
 
         return CERNKeycloakUser(token), token
 
     def get_kc_by_expected_token(self):
-        if self.expected_bearer_token_type == "public":
+        if self.expected_bearer_token_type == self.PUBLIC_TOKEN_TYPE:
             valid_aud = [settings.KEYCLOAK_PUBLIC_CLIENT_ID]
             valid_azp = [settings.KEYCLOAK_PUBLIC_CLIENT_ID]
             kc = public_kc
-        elif self.expected_bearer_token_type == "confidential":
+        elif self.expected_bearer_token_type == self.CONFIDENTIAL_TOKEN_TYPE:
             valid_aud = [settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID]
-            valid_azp = [settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID, settings.KEYCLOAK_PUBLIC_CLIENT_ID]
+            valid_azp = [
+                settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID,
+                settings.KEYCLOAK_PUBLIC_CLIENT_ID,
+            ]
             kc = confidential_kc
         else:
             raise ValueError("expected_bearer_token_type should only be public or confidential.")
@@ -140,13 +144,13 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
     def get_access_token(self, headers: dict) -> str:
         try:
             bearer = headers[self.HEADER_KEY]
-        except KeyError:
-            raise AuthenticationFailed("Authorization header not found.", "authorization_not_found")
+        except KeyError as err:
+            raise AuthenticationFailed("Authorization header not found.", "authorization_not_found") from err
 
         try:
             return bearer.split("Bearer ")[-1]
-        except AttributeError:
-            raise AuthenticationFailed("Malformed access token.", "bad_access_token")
+        except AttributeError as err:
+            raise AuthenticationFailed("Malformed access token.", "bad_access_token") from err
 
 
 class CERNKeycloakPublicAuthentication(CERNKeycloakBearerAuthentication):
@@ -157,7 +161,7 @@ class CERNKeycloakPublicAuthentication(CERNKeycloakBearerAuthentication):
 
     def __init__(self):
         super().__init__()
-        self.expected_bearer_token_type = "public"
+        self.expected_bearer_token_type = self.PUBLIC_TOKEN_TYPE
 
 
 class CERNKeycloakConfidentialAuthentication(CERNKeycloakBearerAuthentication):
@@ -169,4 +173,4 @@ class CERNKeycloakConfidentialAuthentication(CERNKeycloakBearerAuthentication):
 
     def __init__(self):
         super().__init__()
-        self.expected_bearer_token_type = "confidential"
+        self.expected_bearer_token_type = self.CONFIDENTIAL_TOKEN_TYPE

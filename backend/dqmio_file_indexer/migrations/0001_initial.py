@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []
@@ -13,29 +12,45 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="FileIndex",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
+                ),
                 ("file_uuid", models.CharField(help_text="ROOT TFile UUID", max_length=36)),
-                ("file_path", models.CharField(help_text="Path where the file is stored", max_length=255)),
+                (
+                    "file_path",
+                    models.CharField(help_text="Path where the file is stored", max_length=255),
+                ),
                 (
                     "data_era",
                     models.CharField(
-                        default="Unknown", help_text="The era that the data refers to (e.g. 2018A)", max_length=7
+                        default="Unknown",
+                        help_text="The era that the data refers to (e.g. 2018A)",
+                        max_length=7,
                     ),
                 ),
                 (
                     "n_entries",
                     models.PositiveIntegerField(
-                        default=0, help_text="Total number of entries contained in this histogram file"
+                        default=0,
+                        help_text="Total number of entries contained in this histogram file",
                     ),
                 ),
                 (
                     "n_entries_ingested",
                     models.PositiveIntegerField(
-                        default=0, help_text="Number of histogram entries that have been extracted from the file"
+                        default=0,
+                        help_text="Number of histogram entries that have been extracted from the file",
                     ),
                 ),
-                ("st_size", models.FloatField(default=0, help_text="The data file's size in bytes")),
-                ("st_ctime", models.DateTimeField(help_text="Time of files's last status change in filesystem")),
+                (
+                    "st_size",
+                    models.FloatField(default=0, help_text="The data file's size in bytes"),
+                ),
+                (
+                    "st_ctime",
+                    models.DateTimeField(help_text="Time of files's last status change in filesystem"),
+                ),
                 (
                     "st_itime",
                     models.DateTimeField(auto_now_add=True, help_text="Time when file was indexed in database"),

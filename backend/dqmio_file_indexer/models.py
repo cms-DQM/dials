@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import ClassVar
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -17,7 +18,7 @@ class FileIndexStatus:
 
 
 class FileIndex(models.Model):
-    VALID_FILE_EXTS = [".root"]
+    VALID_FILE_EXTS: ClassVar[list[str]] = [".root"]
     is_cleaned = False
 
     file_uuid = models.CharField(help_text="ROOT TFile UUID", max_length=36)
@@ -45,10 +46,33 @@ class FileIndex(models.Model):
         help_text="Indicate the processing status of run-histogram within the file",
     )
 
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["file_uuid"], name="unique_file_uuid")
+        ]
+        indexes: ClassVar[list[models.Index]] = [
+            models.Index(fields=["file_path"]),
+            models.Index(fields=["data_era"]),
+            models.Index(fields=["st_size"]),
+            models.Index(fields=["status"]),
+        ]
+
     def __str__(self):
         size_in_mb = self.st_size / 1024**2
         file_name = Path(self.file_path).name
         return f"{file_name} ({size_in_mb:.2f} MB)"
+
+    def save(self, *args, **kwargs):
+        """
+        Override save method to get file attributes on save
+        """
+        if not self.is_cleaned:
+            try:
+                self.full_clean()
+            except ValidationError as err:
+                raise err
+
+        super().save(*args, **kwargs)
 
     def handle_filesize(self):
         if self.st_size <= 0:
@@ -67,18 +91,6 @@ class FileIndex(models.Model):
         self.handle_status()
         self.handle_file_ext()
 
-    def save(self, *args, **kwargs):
-        """
-        Override save method to get file attributes on save
-        """
-        if not self.is_cleaned:
-            try:
-                self.full_clean()
-            except ValidationError as err:
-                raise err
-
-        super().save(*args, **kwargs)
-
     def update_status(self, value):
         if value not in FileIndexStatus.all():
             raise ValidationError("Invalid status entry")
@@ -90,15 +102,6 @@ class FileIndex(models.Model):
             raise ValueError("This function only update fields with 'entries' in their name")
         setattr(self, field, value)
         self.save()
-
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=["file_uuid"], name="unique_file_uuid")]
-        indexes = [
-            models.Index(fields=["file_path"]),
-            models.Index(fields=["data_era"]),
-            models.Index(fields=["st_size"]),
-            models.Index(fields=["status"]),
-        ]
 
 
 class BadFileIndex(models.Model):
@@ -114,13 +117,15 @@ class BadFileIndex(models.Model):
     st_itime = models.DateTimeField(auto_now_add=True, help_text="Time when file was indexed in database")
     err = models.CharField(max_length=255, help_text="Error message")
 
-    def __str__(self):
-        size_in_mb = self.st_size / 1024**2
-        file_name = Path(self.file_path).name
-        return f"BAD {file_name} ({size_in_mb:.2f} MB)"
-
     # TODO
     # Instead of putting an UniqueConstraint in file_path (if path changes, new files will be added)
     # check if it is possible to put the constraint in the file_name without creating a new field
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["file_path"], name="unique_bad_file_path")]
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["file_path"], name="unique_bad_file_path")
+        ]
+
+    def __str__(self):
+        size_in_mb = self.st_size / 1024**2
+        file_name = Path(self.file_path).name
+        return f"BAD {file_name} ({size_in_mb:.2f} MB)"

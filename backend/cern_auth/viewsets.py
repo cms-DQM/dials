@@ -9,7 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from utils.rest_framework_cern_sso.authentication import CERNKeycloakPublicAuthentication, confidential_kc
+from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakPublicAuthentication,
+    confidential_kc,
+)
 from utils.rest_framework_cern_sso.user import CERNKeycloakUser
 
 from .serializers import (
@@ -22,11 +25,11 @@ from .serializers import (
     SubjectTokenSerializer,
 )
 
+
 logger = logging.getLogger(__name__)
 
 
 class AuthViewSet(ViewSet):
-
     @extend_schema(
         request=SubjectTokenSerializer,
         responses={200: ExchangedTokenSerializer},

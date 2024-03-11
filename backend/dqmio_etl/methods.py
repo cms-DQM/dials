@@ -6,6 +6,7 @@ from dqmio_file_indexer.models import FileIndex, FileIndexStatus
 from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run
 from .reader import DQMIOReader
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,9 +63,10 @@ class HistIngestion:
 
             n_ingested = len(LumisectionHistogram1D.objects.bulk_create(h1d_list, ignore_conflicts=True))
             entries_ingested += n_ingested
-            logger.debug(
+            logger_msg = (
                 f"{n_ingested} x 1D lumisection histos successfully added from file {self.file_index.file_path}."
             )
+            logger.debug(logger_msg)
 
             self.file_index.n_entries_ingested += n_ingested
             self.file_index.save()
@@ -123,16 +125,18 @@ class HistIngestion:
 
             n_ingested = len(LumisectionHistogram2D.objects.bulk_create(h2d_list, ignore_conflicts=True))
             entries_ingested += n_ingested
-            logger.debug(
+            logger_msg = (
                 f"{n_ingested} x 2D lumisection histos successfully added from file {self.file_index.file_path}."
             )
+            logger.debug(logger_msg)
 
             self.file_index.n_entries_ingested += n_ingested
             self.file_index.save()
 
             current_lumi += 1
             if read_chunk_lumi >= current_lumi:
-                logger.debug(f"Read until requested lumi {read_chunk_lumi}, stopping")
+                logger_msg = f"Read until requested lumi {read_chunk_lumi}, stopping"
+                logger.debug(logger_msg)
                 break
 
         return entries_ingested

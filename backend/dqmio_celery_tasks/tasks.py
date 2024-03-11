@@ -2,12 +2,12 @@ import logging
 
 from celery import states
 from celery.signals import before_task_publish, task_prerun, worker_ready
+from dials import celery_app
 from django.utils import timezone
 from django_celery_results.backends.database import DatabaseBackend
 from django_celery_results.models import TaskResult
 from utils.redis_lock import clear_locks
 
-from dials import celery_app
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,8 @@ def update_date_created_prerun(task_id, task, *args, **kwargs):
     try:
         task_result = TaskResult.objects.get(task_id=task_id)
     except TaskResult.DoesNotExist as err:
-        logger.warn(f"Task result {task_id} not found. Err: {str(err)}")
+        msg = f"Task result {task_id} not found. Err: {err!s}"
+        logger.warning(msg)
     else:
         task_result.date_created = timezone.now()
         task_result.save()

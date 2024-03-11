@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django_filters import rest_framework as filters
 
 from .models import BadFileIndex, FileIndex, FileIndexStatus
@@ -16,7 +18,7 @@ class FileIndexFilter(filters.FilterSet):
 
     class Meta:
         model = FileIndex
-        fields = ["path_contains", "era", "min_size", "status"]
+        fields: ClassVar[list[str]] = ["path_contains", "era", "min_size", "status"]
 
 
 class BadFileIndexFilter(filters.FilterSet):
@@ -26,4 +28,4 @@ class BadFileIndexFilter(filters.FilterSet):
 
     class Meta:
         model = BadFileIndex
-        fields = ["path_contains", "era", "min_size"]
+        fields: ClassVar[list[str]] = ["path_contains", "era", "min_size"]

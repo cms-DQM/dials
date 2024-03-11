@@ -6,12 +6,13 @@ from django_celery_results.models import TaskResult
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+
 APP_TZ = timezone.get_default_timezone()
 
 
 class TaskResponseBase:
-    def __init__(self, id, state, ready):
-        self.id = id
+    def __init__(self, task_id, state, ready):
+        self.id = task_id
         self.state = state
         self.ready = ready
 
@@ -29,7 +30,15 @@ class CeleryTasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskResult
-        fields = ("task_id", "status", "task_name", "worker", "date_created", "date_done", "elapsed_time")
+        fields = (
+            "task_id",
+            "status",
+            "task_name",
+            "worker",
+            "date_created",
+            "date_done",
+            "elapsed_time",
+        )
         lookup_field = "task_id"
 
     @extend_schema_field(serializers.IntegerField)

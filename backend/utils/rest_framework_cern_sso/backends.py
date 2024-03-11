@@ -1,5 +1,3 @@
-from typing import Optional
-
 import requests
 from keycloak import KeycloakOpenID
 
@@ -11,7 +9,7 @@ class CERNKeycloakOIDC:
         self.server_url: str = kwargs["server_url"]
         self.realm_name: str = kwargs["realm_name"]
         self.client_id: str = kwargs["client_id"]
-        self.client_secret_key: Optional[str] = kwargs.get("client_secret_key")
+        self.client_secret_key: str | None = kwargs.get("client_secret_key")
         self._kc = KeycloakOpenID(**kwargs)
         self.skip_pk = skip_pk
 
@@ -21,7 +19,7 @@ class CERNKeycloakOIDC:
     def __build_public_key(self) -> str:
         return "-----BEGIN PUBLIC KEY-----\n" + self._kc.public_key() + "\n-----END PUBLIC KEY-----"
 
-    def issue_user_token(self, username: str, password: str, totp: Optional[str] = None) -> dict:
+    def issue_user_token(self, username: str, password: str, totp: str | None = None) -> dict:
         return self._kc.token(username, password, totp=totp)
 
     def issue_device_token(self, device_code: str) -> dict:
@@ -36,6 +34,7 @@ class CERNKeycloakOIDC:
                 "client_secret": self.client_secret_key,
                 "audience": self.client_id,
             },
+            timeout=30,
         )
         response.raise_for_status()
         return response.json()

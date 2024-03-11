@@ -1,5 +1,3 @@
-from typing import Optional
-
 from jose.jwt import get_unverified_claims
 
 from .backends import CERNKeycloakOIDC
@@ -7,7 +5,7 @@ from .exceptions import InvalidClient
 
 
 class CERNKeycloakToken:
-    def __init__(self, access_token: str, client: Optional[CERNKeycloakOIDC]) -> None:
+    def __init__(self, access_token: str, client: CERNKeycloakOIDC | None) -> None:
         self.access_token = access_token
         self.client = client
         self.unv_claims = get_unverified_claims(access_token)

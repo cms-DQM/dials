@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django_celery_results.models import TASK_STATE_CHOICES, TaskResult
 from django_filters import rest_framework as filters
 
@@ -16,7 +18,7 @@ class CeleryTasksFilters(filters.FilterSet):
 
     class Meta:
         model = TaskResult
-        fields = [
+        fields: ClassVar[list[str]] = [
             "status",
             "task_name",
             "worker",

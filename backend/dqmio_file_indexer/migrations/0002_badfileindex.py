@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("dqmio_file_indexer", "0001_initial"),
     ]
@@ -13,16 +12,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="BadFileIndex",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("file_path", models.CharField(help_text="Path where the file is stored", max_length=255)),
+                (
+                    "id",
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
+                ),
+                (
+                    "file_path",
+                    models.CharField(help_text="Path where the file is stored", max_length=255),
+                ),
                 (
                     "data_era",
                     models.CharField(
-                        default="Unknown", help_text="The era that the data refers to (e.g. 2018A)", max_length=7
+                        default="Unknown",
+                        help_text="The era that the data refers to (e.g. 2018A)",
+                        max_length=7,
                     ),
                 ),
-                ("st_size", models.FloatField(default=0, help_text="The data file's size in bytes")),
-                ("st_ctime", models.DateTimeField(help_text="Time of files's last status change in filesystem")),
+                (
+                    "st_size",
+                    models.FloatField(default=0, help_text="The data file's size in bytes"),
+                ),
+                (
+                    "st_ctime",
+                    models.DateTimeField(help_text="Time of files's last status change in filesystem"),
+                ),
                 (
                     "st_itime",
                     models.DateTimeField(auto_now_add=True, help_text="Time when file was indexed in database"),
