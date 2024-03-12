@@ -31,6 +31,7 @@ ARG GID=1000
 ENV USERNAME=app
 ENV HOME=/home/$USERNAME
 ENV APP_HOME=$HOME/web
+ENV DOCKERIZED=true
 
 RUN mkdir -p $HOME
 RUN mkdir $APP_HOME
@@ -44,7 +45,7 @@ COPY package.json $APP_HOME
 COPY yarn.lock $APP_HOME
 COPY .eslintignore $APP_HOME
 COPY .eslintrc.js $APP_HOME
-COPY config-overrides.js $APP_HOME
+COPY vite.config.js $APP_HOME
 COPY frontend $APP_HOME/frontend
 
 RUN chown -R $USERNAME:$USERNAME $HOME

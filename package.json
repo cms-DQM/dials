@@ -2,17 +2,15 @@
   "name": "dials-frontend",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=20.11.0, <21.0.0"
-  },
-  "browserslist": "> 0.25%, not dead",
   "main": "frontend/src/index.js",
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "REACT_APP_ENV=production react-app-rewired build",
-    "lint": "eslint frontend --fix"
+    "build": "VITE_APP_ENV=production vite build",
+    "lint": "eslint \"*.+(json|js|ts|tsx|jsx)\" \"+(frontend)/**/*.+(ts|tsx|js|jsx)\" --fix --no-error-on-unmatched-pattern && prettier --write --no-error-on-unmatched-pattern \"*.+(md)\" \"+(frontend)/**/*.+(md)\"",
+    "start": "vite"
   },
+  "browserslist": "> 0.25%, not dead",
   "dependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
     "axios": "^1.6.5",
     "bootstrap": "^5.3.2",
     "date-fns": "^3.3.1",
@@ -28,8 +26,9 @@
     "react-plotly.js": "^2.6.0",
     "react-resize-detector": "^10.0.1",
     "react-router-dom": "^6.21.3",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^10.0.4"
+    "react-toastify": "^10.0.4",
+    "vite": "^5.1.6",
+    "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -43,6 +42,9 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.4",
-    "react-app-rewired": "^2.2.1"
+    "vite-plugin-eslint": "^1.8.1"
+  },
+  "engines": {
+    "node": ">=20.11.0, <21.0.0"
   }
 }
