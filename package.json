@@ -5,7 +5,7 @@
   "main": "frontend/src/index.js",
   "scripts": {
     "build": "VITE_APP_ENV=production vite build",
-    "lint": "eslint \"*.+(json|js|ts|tsx|jsx)\" \"+(frontend)/**/*.+(ts|tsx|js|jsx)\" --fix --no-error-on-unmatched-pattern && prettier --write --no-error-on-unmatched-pattern \"*.+(md)\" \"+(frontend)/**/*.+(md)\"",
+    "lint": "eslint \"+(frontend)/**/*.+(js|jsx)\" --fix",
     "start": "vite"
   },
   "browserslist": "> 0.25%, not dead",
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
