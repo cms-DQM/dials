@@ -5,7 +5,7 @@
   "main": "frontend/src/index.js",
   "scripts": {
     "build": "VITE_APP_ENV=production vite build",
-    "lint": "eslint \"+(frontend)/**/*.+(js|jsx)\" --fix",
+    "lint": "prettier --write \"+(frontend)/**/*.+(js|jsx)\" && eslint \"+(frontend)/**/*.+(js|jsx)\" --fix",
     "start": "vite"
   },
   "browserslist": "> 0.25%, not dead",
