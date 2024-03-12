@@ -4,9 +4,9 @@ Documentation, tips and tricks to develop DIALS locally.
 
 ## Setup environment
 
-The backend uses `Python` `^3.10.13`, the third-party dependencies are managed by [`poetry`](https://python-poetry.org/) `^1.7.1` and has a hard dependency on `ROOT` `^6.30/02`. After having all these dependencies you can navigate to [`backend`](/backend/) directory and run `poetry install --no-root` to install all the backend dependencies specified in `pyproject.toml`. Then you should configure `pre-commit` by running `poetry run pre-commit install`, this will ensure code standardization.
+The backend uses `Python` `^3.10.13`, the third-party dependencies are managed by [`poetry`](https://python-poetry.org/) `^1.7.1` and has a hard dependency on `ROOT` `^6.30/02`. After having all these dependencies you can run `poetry install --no-root` to install all the backend dependencies specified in `pyproject.toml`. Then you should configure `pre-commit` by running `poetry run pre-commit install`, this will ensure code standardization.
 
-The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can navigate to [`frontend`](/frontend/) directory and run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint:fix`.
+The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint`.
 
 ## Accessing DQMIO data from EOS
 
@@ -17,7 +17,7 @@ mkdir -p $HOME/DQMIO
 sshfs -o default_permissions,ro $USER@lxplus.cern.ch:/eos/project/m/dials/public/DQMIO $HOME/DQMIO
 ```
 
-You can try running the application to ingest data from the production source, but given EOS limitations and network limitation it is much simpler to copy some files (20 is enough) to a local directory and use that as the data source for the local application.
+You can try running the application to ingest data from the production source, but given EOS limitations and network bandwidth limitation it is much simpler to copy some files (20 is enough) to a local directory and use that as the data source for the local application.
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
@@ -81,7 +81,7 @@ DJANGO_KEYCLOAK_API_CLIENTS={"SECRET_HERE": "cms-dials-api-client-1"}
 
 Login to [QA Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
 
-The `DJANGO_DQMIO_STORAGE` variable could be set to the directory where DQMIO data is mounted but that means you are going to ingest all DQMIO data locally (+700 GB), you can pick just a fill files and save locally in the directory `/mnt/dqmio`.
+The `DJANGO_DQMIO_STORAGE` variable could be set to the directory where DQMIO data is mounted but that means you are going to ingest all DQMIO data locally (+700 GB), on the other hand you can pick just a fill files and save locally in the directory `/mnt/dqmio`.
 
 Note: Do not forget to create a database named `dials-dev` in your local postgresql instance.
 
@@ -107,15 +107,15 @@ celery -A dials beat -l INFO
 
 Just using the simplest runserver you can start de development django server:
 
-```bash
+```bashb
 python manage.py runserver 0.0.0.0:8000
 ```
 
 ## Starting the backend natively
 
-From within [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-dev` to start the entire backend stack in one command.
+From within [`repository root's directory`](/) or [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-dev` to start the entire backend stack in one command.
 
-Note: If running the commands separated you should execute then inside the [`backend/dials`](/backend/dials/) directory.
+Note: If running the commands separated you should execute then inside the [`backend`](/backend/) directory.
 
 ## Starting the frontend natively
 
@@ -123,7 +123,7 @@ Inside the [`frontend`](/frontend/) directory you can using the script `yarn run
 
 ## Starting backend and frontend using Docker
 
-Both the [`backend`](/backend/) and [`frontend`](/frontend/) ships a `Dockerfile` that can be used for local development. Using the [`docker-compose.yaml`](/docker-compose.yaml) (be sure to read the notes at file's beginning) you can start both services by first building and then starting from the [repository root's directory](/):
+Both the [`backend`](/backend/) and [`frontend`](/frontend/) ships a `Dockerfile` that can be used for local development. Using the [`docker-compose.yaml`](/docker-compose.yaml) (be sure to read the notes at file's header) you can start both services by first building and then starting from the [repository root's directory](/):
 
 ```bash
 docker compose build
