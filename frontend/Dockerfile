@@ -6,7 +6,9 @@ FROM node:20.11-bookworm as builder
 
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app/
+COPY package.json /usr/src/app/
+COPY yarn.lock /usr/src/app/
+COPY ./frontend /usr/src/app/
 
 RUN yarn install
 
@@ -38,10 +40,18 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/app/node_modules $APP_HOME/node_modules
 
-COPY . $APP_HOME
+COPY package.json $APP_HOME
+COPY yarn.lock $APP_HOME
+COPY .eslintignore $APP_HOME
+COPY .eslintrc.js $APP_HOME
+COPY config-overrides.js $APP_HOME
+COPY frontend $APP_HOME/frontend
+
 RUN chown -R $USERNAME:$USERNAME $HOME
 RUN chown -R $USERNAME:$USERNAME /opt/yarn-*
 
 USER $USERNAME
 
 EXPOSE 3000
+
+CMD ["yarn", "run", "start"]

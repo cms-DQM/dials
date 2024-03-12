@@ -27,8 +27,13 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
 
 # PYTHONDONTWRITEBYTECODE: Prevents Python from writing pyc files to disc
 # PYTHONUNBUFFERED: Prevents Python from buffering stdout and stderr
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  PYTHONHASHSEED=random \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  POETRY_VERSION=1.7.1
 
 ###############################
 # BUILDER IMAGE
@@ -39,9 +44,10 @@ FROM base as builder
 WORKDIR /usr/src/app
 
 RUN pip3 install --upgrade pip
-RUN pip3 install poetry==1.7.1
+RUN pip3 install "poetry==$POETRY_VERSION"
 
-COPY . /usr/src/app/
+COPY pyproject.toml /usr/src/app/
+COPY *poetry.lock /usr/src/app/
 
 RUN poetry export --format=requirements.txt > requirements.txt
 RUN pip3 wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
@@ -71,15 +77,10 @@ COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache /wheels/*
 
-COPY . $APP_HOME
-
-RUN sed -i 's/\r$//g' $APP_HOME/scripts/entrypoint.sh
-RUN chmod +x $APP_HOME/scripts/entrypoint.sh
+COPY backend $APP_HOME
 
 RUN chown -R $USERNAME:$USERNAME $APP_HOME
 
 USER $USERNAME
 
 EXPOSE 8000
-
-ENTRYPOINT ["./scripts/entrypoint.sh"]

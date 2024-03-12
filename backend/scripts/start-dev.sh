@@ -1,6 +1,10 @@
 #!/bin/bash
 
-cd dials
+CURR_PATH=$(pwd)
+
+if [ "$(basename $CURR_PATH)" != "backend" ]; then
+    cd "backend" || exit 1
+fi
 
 poetry run celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue &
 P1=$!

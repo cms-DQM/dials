@@ -1,0 +1,46 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+        exclude: >
+            (?x)^(
+                package-lock\.json
+                poetry\.lock
+            )$
+      - id: fix-byte-order-marker
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: debug-statements
+      - id: detect-private-key
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.2
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint-local
+        entry: yarn run lint
+        language: system
+        types: [javascript]
+        exclude: >
+            (?x)^(
+              .+\.config\.js|
+              .+\.setup\.js|
+              \.eslintrc\.js
+            )$
+        pass_filenames: true
+      - id: missing-migrations
+        name: missing-migrations-local
+        entry: poetry run python backend/manage.py makemigrations --check
+        language: system
+        # Only run missing migration check if migration-generating files have changed:
+        files: (.*/?(settings|migrations|models)/.+|.+models\.py|.+constants\.py|.+choices\.py|.+pyproject\.toml)
+        pass_filenames: false

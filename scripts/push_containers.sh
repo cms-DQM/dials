@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Build locally
-docker build -f ./backend/Dockerfile -t dials-backend-base ./backend
-docker build -f ./frontend/Dockerfile.prod -t dials-frontend ./frontend
+docker build -f ./backend/Dockerfile -t dials-backend-base .
+docker build -f ./frontend/Dockerfile.prod -t dials-frontend .
 
 # Tag containers according to remote registry
 docker tag dials-backend-base registry.cern.ch/cms-dqmdc/dials-backend-base
