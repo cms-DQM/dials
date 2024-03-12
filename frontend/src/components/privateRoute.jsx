@@ -26,7 +26,7 @@ const PrivateRoute = ({ roles, component: Component, ...props }) => {
   }
 
   const validateRoles = (roles) => {
-    return roles.some(r => {
+    return roles.some((r) => {
       const realm = hasRealmRole(r)
       const resource = hasResourceRole(r)
       return realm || resource
@@ -37,22 +37,29 @@ const PrivateRoute = ({ roles, component: Component, ...props }) => {
     return auth.isAuthenticated && (roles === undefined || validateRoles(roles))
   }
 
-  return (
-    isAuthorized(roles)
-      ? (
-      <Component {...props} />
-        )
-      : (
-      <Modal show={true}>
-        <Modal.Header>
-          <Modal.Title>Permission denied</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{auth.isAuthenticated ? 'It seems you don\'t have the required role to access this resource, please ask your administrator.' : 'You are not authenticated.'}</Modal.Body>
-        <Modal.Footer>
-          <Button type='submit' onClick={() => { window.location.href = '/' } }>Go back to Home</Button>
-        </Modal.Footer>
-      </Modal>
-        )
+  return isAuthorized(roles) ? (
+    <Component {...props} />
+  ) : (
+    <Modal show={true}>
+      <Modal.Header>
+        <Modal.Title>Permission denied</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {auth.isAuthenticated
+          ? 'It seems you don\'t have the required role to access this resource, please ask your administrator.'
+          : 'You are not authenticated.'}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          type='submit'
+          onClick={() => {
+            window.location.href = '/'
+          }}
+        >
+          Go back to Home
+        </Button>
+      </Modal.Footer>
+    </Modal>
   )
 }
 

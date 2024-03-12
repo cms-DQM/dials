@@ -15,5 +15,5 @@ export {
   Lumisection,
   Histograms1D,
   Histograms2D,
-  Histogram
+  Histogram,
 }

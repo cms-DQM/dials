@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 import { ToastContainer } from 'react-toastify'
 import { useAuth } from 'react-oidc-context'
 
@@ -16,11 +17,15 @@ const Root = () => {
 
   useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
-      auth.signinSilent()
+      auth
+        .signinSilent()
         .then(async (_user) => {
-          await onSigninComplete({ subjectToken: _user.access_token, dispatchEvent: false })
+          await onSigninComplete({
+            subjectToken: _user.access_token,
+            dispatchEvent: false,
+          })
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
         })
     })
@@ -48,8 +53,8 @@ const Root = () => {
   return (
     <>
       <AppNavbar />
-      <AppRoutes/>
-      <ToastContainer position='bottom-right'/>
+      <AppRoutes />
+      <ToastContainer position='bottom-right' />
     </>
   )
 }

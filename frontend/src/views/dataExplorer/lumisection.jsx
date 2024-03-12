@@ -27,11 +27,12 @@ const Lumisection = () => {
   useEffect(() => {
     const fetchData = () => {
       setLumiLoading(true)
-      API.lumisection.get({ id })
-        .then(response => {
+      API.lumisection
+        .get({ id })
+        .then((response) => {
           setLumiData(response)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -54,27 +55,38 @@ const Lumisection = () => {
       while (nextPageExists) {
         page++
         try {
-          const { results, next } = await API.lumisection.listHistograms(dim, { page, run: lumiData.run, ls: lumiData.ls_number })
-          results.forEach(e => allData.unshift(e))
+          const { results, next } = await API.lumisection.listHistograms(dim, {
+            page,
+            run: lumiData.run,
+            ls: lumiData.ls_number,
+          })
+          results.forEach((e) => allData.unshift(e))
           nextPageExists = !(next === null)
         } catch (err) {
           errorCount++
         }
       }
-      return { results: allData, count: allData.length, error: errorCount, totalPages: page }
+      return {
+        results: allData,
+        count: allData.length,
+        error: errorCount,
+        totalPages: page,
+      }
     }
 
     const fetchH1D = () => {
       setH1DLoading(true)
       genericFetchAllPages(1)
-        .then(response => {
+        .then((response) => {
           setH1DData(response.results)
           setH1DTotalSize(response.count)
           if (response.errorCount > 0) {
-            toast.error(`Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`)
+            toast.error(
+              `Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`
+            )
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -86,14 +98,16 @@ const Lumisection = () => {
     const fetchH2D = () => {
       setH2DLoading(true)
       genericFetchAllPages(2)
-        .then(response => {
+        .then((response) => {
           setH2DData(response.results)
           setH2DTotalSize(response.count)
           if (response.errorCount > 0) {
-            toast.error(`Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`)
+            toast.error(
+              `Failure to retrieve ${response.errorCount} out of ${response.totalPages} pages from API!`
+            )
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -110,48 +124,58 @@ const Lumisection = () => {
     <>
       <Row className='mt-5 mb-3 m-3'>
         <Breadcrumb>
-          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>All runs</Breadcrumb.Item>
-          {
-            isLumiLoading
-              ? (
-                <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
-                )
-              : (
-                <>
-                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/runs/${lumiData.run}` }}>{`Run ${lumiData.run}`}</Breadcrumb.Item>
-                  <Breadcrumb.Item active>{`Lumisection ${lumiData.ls_number}`}</Breadcrumb.Item>
-                </>
-                )
-          }
+          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
+            All runs
+          </Breadcrumb.Item>
+          {isLumiLoading ? (
+            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+          ) : (
+            <>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: `/runs/${lumiData.run}` }}
+              >{`Run ${lumiData.run}`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`Lumisection ${lumiData.ls_number}`}</Breadcrumb.Item>
+            </>
+          )}
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
         <Col sm={9}>
           <Accordion>
             <Accordion.Item eventKey='0'>
-              <Accordion.Header>{isH1DLoading ? 'Loading 1D Histograms...' : `1D Histograms - ${h1dTotalSize} monitoring elements`}</Accordion.Header>
+              <Accordion.Header>
+                {isH1DLoading
+                  ? 'Loading 1D Histograms...'
+                  : `1D Histograms - ${h1dTotalSize} monitoring elements`}
+              </Accordion.Header>
               <Accordion.Body>
-                {
-                  isH1DLoading
-                    ? (
-                      <Spinner
-                        animation='border'
-                        role='status'
-                      />
-                      )
-                    : (
-                        h1dData.map((obj, index) => (
-                          index % 3 === 0 && (
-                          <Row key={index} className='mb-3'>
-                            {h1dData.slice(index, index + 3).map((hist, innerIndex) => {
-                              const data = [{ y: hist.data, type: 'bar', marker: { color: '#0033A0' } }]
+                {isH1DLoading ? (
+                  <Spinner animation='border' role='status' />
+                ) : (
+                  h1dData.map(
+                    (obj, index) =>
+                      index % 3 === 0 && (
+                        <Row key={index} className='mb-3'>
+                          {h1dData
+                            .slice(index, index + 3)
+                            .map((hist, innerIndex) => {
+                              const data = [
+                                {
+                                  y: hist.data,
+                                  type: 'bar',
+                                  marker: { color: '#0033A0' },
+                                },
+                              ]
                               const layout = {
                                 margin: { t: 10, b: 10, l: 10, r: 10 },
                                 yaxis: { visible: false },
                                 xaxis: { visible: false },
                                 bargap: 0,
                                 paper_bgcolor: 'rgba(0,0,0,0)',
-                                plot_bgcolor: 'rgba(0,0,0,0)'
+                                plot_bgcolor: 'rgba(0,0,0,0)',
                               }
                               return (
                                 <Col key={innerIndex} sm={4}>
@@ -167,43 +191,53 @@ const Lumisection = () => {
                                       </Link>
                                     </div>
                                     <Card.Body>
-                                      <Card.Title><Link to={`/histograms-1d/${hist.id}`}>{hist.title}</Link></Card.Title>
+                                      <Card.Title>
+                                        <Link to={`/histograms-1d/${hist.id}`}>
+                                          {hist.title}
+                                        </Link>
+                                      </Card.Title>
                                     </Card.Body>
                                   </Card>
                                 </Col>
                               )
                             })}
-                          </Row>
-                          )
-                        ))
+                        </Row>
                       )
-                }
+                  )
+                )}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey='1'>
-              <Accordion.Header>{isH2DLoading ? 'Loading 2D Histograms...' : `2D Histograms - ${h2dTotalSize} monitoring elements`}</Accordion.Header>
+              <Accordion.Header>
+                {isH2DLoading
+                  ? 'Loading 2D Histograms...'
+                  : `2D Histograms - ${h2dTotalSize} monitoring elements`}
+              </Accordion.Header>
               <Accordion.Body>
-                {
-                  isH2DLoading
-                    ? (
-                      <Spinner
-                        animation='border'
-                        role='status'
-                      />
-                      )
-                    : (
-                        h2dData.map((obj, index) => (
-                          index % 3 === 0 && (
-                          <Row key={index} className='mb-3'>
-                            {h2dData.slice(index, index + 3).map((hist, innerIndex) => {
-                              const data = [{ z: hist.data, type: 'heatmap', colorscale: 'Viridis' }]
+                {isH2DLoading ? (
+                  <Spinner animation='border' role='status' />
+                ) : (
+                  h2dData.map(
+                    (obj, index) =>
+                      index % 3 === 0 && (
+                        <Row key={index} className='mb-3'>
+                          {h2dData
+                            .slice(index, index + 3)
+                            .map((hist, innerIndex) => {
+                              const data = [
+                                {
+                                  z: hist.data,
+                                  type: 'heatmap',
+                                  colorscale: 'Viridis',
+                                },
+                              ]
                               const layout = {
                                 margin: { t: 10, b: 10, l: 10, r: 10 },
                                 yaxis: { visible: false },
                                 xaxis: { visible: false },
                                 bargap: 0,
                                 paper_bgcolor: 'rgba(0,0,0,0)',
-                                plot_bgcolor: 'rgba(0,0,0,0)'
+                                plot_bgcolor: 'rgba(0,0,0,0)',
                               }
                               return (
                                 <Col key={innerIndex} sm={4}>
@@ -219,23 +253,26 @@ const Lumisection = () => {
                                       </Link>
                                     </div>
                                     <Card.Body>
-                                      <Card.Title><Link to={`/histograms-2d/${hist.id}`}>{hist.title}</Link></Card.Title>
+                                      <Card.Title>
+                                        <Link to={`/histograms-2d/${hist.id}`}>
+                                          {hist.title}
+                                        </Link>
+                                      </Card.Title>
                                     </Card.Body>
                                   </Card>
                                 </Col>
                               )
                             })}
-                          </Row>
-                          )
-                        ))
+                        </Row>
                       )
-                }
+                  )
+                )}
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={false} runNumber={lumiData.run}/>
+          <CMSOMSCard isLoading={false} runNumber={lumiData.run} />
         </Col>
       </Row>
     </>

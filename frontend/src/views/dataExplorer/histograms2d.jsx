@@ -33,10 +33,8 @@ const Histograms2D = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = `/runs/${row.run_number}`
-        return (
-          <Link to={linkTo}>{row.run_number}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.run_number}</Link>
+      },
     },
     {
       dataField: 'ls_number',
@@ -44,10 +42,8 @@ const Histograms2D = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = `/lumisections/${row.lumisection}`
-        return (
-          <Link to={linkTo}>{row.ls_number}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.ls_number}</Link>
+      },
     },
     {
       dataField: 'title',
@@ -56,10 +52,8 @@ const Histograms2D = () => {
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
         const linkTo = `/histograms-2d/${row.id}`
-        return (
-          <Link to={linkTo}>{row.title}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.title}</Link>
+      },
     },
     { dataField: 'entries', text: 'Entries', type: 'number' },
     {
@@ -67,13 +61,16 @@ const Histograms2D = () => {
       text: 'Plot',
       formatter: (cell, row) => {
         const linkTo = `/histograms-2d/${row.id}`
-        return (
-          <Link to={linkTo}>{cell}</Link>
-        )
-      }
-    }
+        return <Link to={linkTo}>{cell}</Link>
+      },
+    },
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -85,17 +82,28 @@ const Histograms2D = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.lumisection.listHistograms(2, { page, minRun, maxRun, minLs, maxLs, titleContains, minEntries: minEntries > 0 ? minEntries : undefined })
-        .then(response => {
-          const results = response.results.map(item => {
-            const data = [{ z: item.data, type: 'heatmap', colorscale: 'Viridis' }]
+      API.lumisection
+        .listHistograms(2, {
+          page,
+          minRun,
+          maxRun,
+          minLs,
+          maxLs,
+          titleContains,
+          minEntries: minEntries > 0 ? minEntries : undefined,
+        })
+        .then((response) => {
+          const results = response.results.map((item) => {
+            const data = [
+              { z: item.data, type: 'heatmap', colorscale: 'Viridis' },
+            ]
             const layout = {
               margin: { t: 10, b: 10, l: 10, r: 10 },
               yaxis: { visible: false },
               xaxis: { visible: false },
               bargap: 0,
               paper_bgcolor: 'rgba(0,0,0,0)',
-              plot_bgcolor: 'rgba(0,0,0,0)'
+              plot_bgcolor: 'rgba(0,0,0,0)',
             }
             return {
               ...item,
@@ -107,13 +115,13 @@ const Histograms2D = () => {
                   boxWidth={'200pt'}
                   boxHeight={'100pt'}
                 />
-              )
+              ),
             }
           })
           setData(results)
           setTotalSize(response.count)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -128,7 +136,9 @@ const Histograms2D = () => {
     <Row className='mt-5 mb-3 m-3'>
       <Col sm={3}>
         <Card>
-          <Card.Header className='text-center' as='h4'>Filters</Card.Header>
+          <Card.Header className='text-center' as='h4'>
+            Filters
+          </Card.Header>
           <Card.Body>
             <Form.Group className='mb-3' controlId='formRunRange'>
               <Form.Label>Run Range</Form.Label>
@@ -138,7 +148,7 @@ const Histograms2D = () => {
                     type='number'
                     value={minRun}
                     placeholder='Min'
-                    onChange={e => setMinRun(e.target.value)}
+                    onChange={(e) => setMinRun(e.target.value)}
                   />
                 </Col>
                 <Col xs={6}>
@@ -146,7 +156,7 @@ const Histograms2D = () => {
                     type='number'
                     value={maxRun}
                     placeholder='Max'
-                    onChange={e => setMaxRun(e.target.value)}
+                    onChange={(e) => setMaxRun(e.target.value)}
                   />
                 </Col>
               </Row>
@@ -160,7 +170,7 @@ const Histograms2D = () => {
                     type='number'
                     value={minLs}
                     placeholder='Min'
-                    onChange={e => setMinLs(e.target.value)}
+                    onChange={(e) => setMinLs(e.target.value)}
                   />
                 </Col>
                 <Col xs={6}>
@@ -168,7 +178,7 @@ const Histograms2D = () => {
                     type='number'
                     value={maxLs}
                     placeholder='Max'
-                    onChange={e => setMaxLs(e.target.value)}
+                    onChange={(e) => setMaxLs(e.target.value)}
                   />
                 </Col>
               </Row>
@@ -180,7 +190,7 @@ const Histograms2D = () => {
                 type='string'
                 placeholder='Enter title substring'
                 value={titleContains}
-                onChange={e => setTitleContains(e.target.value)}
+                onChange={(e) => setTitleContains(e.target.value)}
               />
             </Form.Group>
 
@@ -190,7 +200,7 @@ const Histograms2D = () => {
                 <Form.Control
                   type='number'
                   value={minEntries}
-                  onChange={e => setMinEntries(e.target.value)}
+                  onChange={(e) => setMinEntries(e.target.value)}
                 />
               </Col>
               <Col xs={9}>
@@ -198,7 +208,7 @@ const Histograms2D = () => {
                   min={0}
                   max={100000}
                   value={minEntries}
-                  onChange={e => setMinEntries(e.target.value)}
+                  onChange={(e) => setMinEntries(e.target.value)}
                 />
               </Col>
             </Form.Group>
@@ -218,7 +228,9 @@ const Histograms2D = () => {
       </Col>
       <Col sm={9}>
         <Card className='text-center'>
-          <Card.Header as='h4'>Luminosity-granularity 2D histograms</Card.Header>
+          <Card.Header as='h4'>
+            Luminosity-granularity 2D histograms
+          </Card.Header>
           <Card.Body>
             <Table
               keyField='id'

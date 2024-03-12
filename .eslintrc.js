@@ -9,7 +9,8 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'standard',
     'react-app',
-    'react-app/jest'
+    'react-app/jest',
+    'prettier'
   ],
   parserOptions: {
     ecmaVersion: 'latest',

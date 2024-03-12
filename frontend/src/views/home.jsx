@@ -1,4 +1,5 @@
 import React from 'react'
+
 import Image from 'react-bootstrap/Image'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -12,16 +13,13 @@ const Home = () => {
     <Container>
       <Row className='mt-5 mb-3 align-items-center'>
         <Col md={4} className='text-center'>
-          <Image
-            src={logo}
-            alt=''
-          />
+          <Image src={logo} alt='' />
         </Col>
         <Col md={8}>
           <Card>
             <Card.Body>
               <h3>DIALS: Data Inspector for Anomalous Lumi-Sections</h3>
-              <br/>
+              <br />
               {`
               During a Run, the CMS Experiment collects particle collision data in Lumisection time-frame and the experiment
               subsystem health is monitored by shifters using DQMGUI. Multiple shifters for many subsystems monitor the most
@@ -30,15 +28,15 @@ const Home = () => {
               On the other hand, using certified data it is possible to extract knowledge from old runs (at lumisection-level) to
               help shifters get a glimpse of detector\'s health on past runs.
               `}
-              <br/>
-              <br/>
+              <br />
+              <br />
               {`
               DIALS is an application designed to be an access point to DQMIO per-LS monitoring elements.
               It is responsible for indexing, storing pre-processed DQMIO data and serving via a WEB UI and
               REST Api, so that it could be used by any CMS sub-group for exploratory analysis, statistical learning and machine learning.
               `}
-              <br/>
-              <br/>
+              <br />
+              <br />
               {`
               This application was born in CMS Tracker ML as a prototype under the name "MLPlayground" and
               was centralized in CMS DQM-DC to be a common access point for every system.
@@ -46,7 +44,7 @@ const Home = () => {
             </Card.Body>
           </Card>
         </Col>
-      </Row >
+      </Row>
     </Container>
   )
 }

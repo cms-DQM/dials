@@ -33,29 +33,31 @@ const Histogram = (props) => {
   useEffect(() => {
     const fetchData = () => {
       setLoading(true)
-      API.lumisection.getHistogram(dim, id)
-        .then(response => {
-          const data = dim === 1
-            ? [
-                {
-                  y: response.data,
-                  x: response.xbins,
-                  type: 'bar',
-                  marker: { color: '#0033A0' }
-                }
-              ]
-            : [
-                {
-                  z: response.data,
-                  x: response.xbins,
-                  y: response.ybins,
-                  type: 'heatmap',
-                  colorscale: 'Viridis'
-                }
-              ]
+      API.lumisection
+        .getHistogram(dim, id)
+        .then((response) => {
+          const data =
+            dim === 1
+              ? [
+                  {
+                    y: response.data,
+                    x: response.xbins,
+                    type: 'bar',
+                    marker: { color: '#0033A0' },
+                  },
+                ]
+              : [
+                  {
+                    z: response.data,
+                    x: response.xbins,
+                    y: response.ybins,
+                    type: 'heatmap',
+                    colorscale: 'Viridis',
+                  },
+                ]
           const layout = {
             bargap: 0,
-            margin: { t: 20, b: 20, l: 20, r: 20 }
+            margin: { t: 20, b: 20, l: 20, r: 20 },
           }
           setData(response)
           setPlotData(data)
@@ -64,7 +66,7 @@ const Histogram = (props) => {
           setLsNumber(response.ls_number)
           setTitle(response.title)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -92,15 +94,16 @@ const Histogram = (props) => {
       return
     }
 
-    API.lumisection.listHistograms(dim, { run: runNumber, ls: lsNumber, title })
-      .then(response => {
+    API.lumisection
+      .listHistograms(dim, { run: runNumber, ls: lsNumber, title })
+      .then((response) => {
         if (response.count === 0) {
           toast.error('Histogram not found!')
         } else {
           return navigate(`/histograms-${dim}d/${response.results[0].id}`)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error)
         toast.error('Failure to communicate with the API!')
       })
@@ -110,57 +113,47 @@ const Histogram = (props) => {
     <>
       <Row className='mt-5 mb-3 m-3'>
         <Breadcrumb>
-          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>All runs</Breadcrumb.Item>
-          {
-            isLoading
-              ? (
-                <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
-                )
-              : (
-                <>
-                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/runs/${data.run_number}` }}>{`Run ${data.run_number}`}</Breadcrumb.Item>
-                  <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/lumisections/${data.lumisection}` }}>{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
-                  <Breadcrumb.Item active>{`H${dim}D #${data.id}`}</Breadcrumb.Item>
-                </>
-                )
-          }
+          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
+            All runs
+          </Breadcrumb.Item>
+          {isLoading ? (
+            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+          ) : (
+            <>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: `/runs/${data.run_number}` }}
+              >{`Run ${data.run_number}`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: `/lumisections/${data.lumisection}` }}
+              >{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
+              <Breadcrumb.Item active>{`H${dim}D #${data.id}`}</Breadcrumb.Item>
+            </>
+          )}
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
         <Col sm={9}>
           <Card>
-            {
-              isLoading
-                ? (
-                  <Spinner
-                    animation='border'
-                    role='status'
-                  />
-                  )
-                : (
-                  <Card.Header>{`${data.title} - ${data.entries} entries`}</Card.Header>
-                  )
-            }
+            {isLoading ? (
+              <Spinner animation='border' role='status' />
+            ) : (
+              <Card.Header>{`${data.title} - ${data.entries} entries`}</Card.Header>
+            )}
             <Card.Body>
-              {
-                isLoading
-                  ? (
-                    <Spinner
-                      animation='border'
-                      role='status'
-                    />
-                    )
-                  : (
-                    <>
-                      <ResponsivePlot
-                        data={plotData}
-                        layout={plotLayout}
-                        boxWidth='100%'
-                        boxHeight='70vh'
-                      />
-                    </>
-                    )
-              }
+              {isLoading ? (
+                <Spinner animation='border' role='status' />
+              ) : (
+                <>
+                  <ResponsivePlot
+                    data={plotData}
+                    layout={plotLayout}
+                    boxWidth='100%'
+                    boxHeight='70vh'
+                  />
+                </>
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -174,10 +167,12 @@ const Histogram = (props) => {
                 <Form.Control
                   type='number'
                   value={runNumber}
-                  onChange={e => setRunNumber(e.target.value)}
+                  onChange={(e) => setRunNumber(e.target.value)}
                   isInvalid={runNumberIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Run number cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Run number cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='formLsNumber'>
@@ -185,10 +180,12 @@ const Histogram = (props) => {
                 <Form.Control
                   type='number'
                   value={lsNumber}
-                  onChange={e => setLsNumber(e.target.value)}
+                  onChange={(e) => setLsNumber(e.target.value)}
                   isInvalid={lsNumberIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Lumisection number cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Lumisection number cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='formTitle'>
@@ -196,17 +193,15 @@ const Histogram = (props) => {
                 <Form.Control
                   type='string'
                   value={title}
-                  onChange={e => setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                   isInvalid={titleIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Title cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Title cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={handleSearch}
-              >
+              <Button variant='primary' type='submit' onClick={handleSearch}>
                 Go
               </Button>
             </Card.Body>

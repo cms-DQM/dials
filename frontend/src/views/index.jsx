@@ -8,15 +8,15 @@ import {
   Lumisection,
   Histograms1D,
   Histograms2D,
-  Histogram
+  Histogram,
 } from './dataExplorer'
 
 const Views = {
   Home: {
-    Index: Home
+    Index: Home,
   },
   DataIngestion: {
-    Index: DataIngestion
+    Index: DataIngestion,
   },
   DataExplorer: {
     FileIndex,
@@ -26,8 +26,8 @@ const Views = {
     Lumisection,
     Histograms1D,
     Histograms2D,
-    Histogram
-  }
+    Histogram,
+  },
 }
 
 export default Views
