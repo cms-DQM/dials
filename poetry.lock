@@ -476,6 +476,35 @@ asgiref = ">=3.6"
 Django = ">=3.2"
 
 [[package]]
+name = "django-csp"
+version = "3.8"
+description = "Django Content Security Policy support."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django_csp-3.8-py3-none-any.whl", hash = "sha256:19b2978b03fcd73517d7d67acbc04fbbcaec0facc3e83baa502965892d1e0719"},
+    {file = "django_csp-3.8.tar.gz", hash = "sha256:ef0f1a9f7d8da68ae6e169c02e9ac661c0ecf04db70e0d1d85640512a68471c0"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[package.extras]
+jinja2 = ["jinja2 (>=2.9.6)"]
+tests = ["jinja2 (>=2.9.6)", "pytest", "pytest-cov", "pytest-django", "pytest-ruff"]
+
+[[package]]
+name = "django-debreach"
+version = "2.1.0"
+description = "Adds middleware to give some added protection against the BREACH attack in Django."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-debreach-2.1.0.tar.gz", hash = "sha256:aeac9f43e0ea97830bed69cb309ad5746b5ed2b9dce733ac4c136c8e16a7d6e5"},
+    {file = "django_debreach-2.1.0-py3-none-any.whl", hash = "sha256:03988a228a387ec4a2d332698ad610913d32dbcad672cf5a78842639bfeece6b"},
+]
+
+[[package]]
 name = "django-filter"
 version = "23.5"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
@@ -487,6 +516,21 @@ files = [
 ]
 
 [package.dependencies]
+Django = ">=3.2"
+
+[[package]]
+name = "django-permissions-policy"
+version = "4.19.0"
+description = "Set the draft security HTTP header Permissions-Policy (previously Feature-Policy) on your Django app."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-permissions-policy-4.19.0.tar.gz", hash = "sha256:eb3b1d7fae46d0ce26ae2fa3b1b9865f4120e3bfbae9fda838fed53cf150e591"},
+    {file = "django_permissions_policy-4.19.0-py3-none-any.whl", hash = "sha256:0286d925c4ea2de2ddbd34852b8eea562bfb7f2d3fc6492ffc0290de3c90bddc"},
+]
+
+[package.dependencies]
+asgiref = ">=3.6"
 Django = ">=3.2"
 
 [[package]]
@@ -1892,4 +1936,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "23d7495eae52e1f7c500fb55d5e97bc365c7a0d0b40c739329d3685ec9a9055f"
+content-hash = "c2e45ae60c49aac3dd499dad4a343f3b0b4ae95f41a3d20c958fe10c1b6172a4"

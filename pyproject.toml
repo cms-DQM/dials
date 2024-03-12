@@ -21,6 +21,9 @@ uvicorn = "^0.27.0.post1"
 gunicorn = "^21.2.0"
 requests = "^2.31.0"
 python-decouple = "^3.8"
+django-debreach = "^2.1.0"
+django-csp = "^3.8"
+django-permissions-policy = "^4.19.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"

@@ -83,7 +83,9 @@ SPECTACULAR_SETTINGS = {
 
 # A list of middleware (framework of hooks into Django's request/response processing) to use
 MIDDLEWARE = [
+    "debreach.middleware.RandomCommentMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "django_permissions_policy.PermissionsPolicyMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -91,6 +93,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 # A string representing the full Python import path to your root URLconf
@@ -210,3 +213,47 @@ KEYCLOAK_CONFIDENTIAL_CLIENT_ID = config("DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
 KEYCLOAK_CONFIDENTIAL_SECRET_KEY = config("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
 KEYCLOAK_PUBLIC_CLIENT_ID = config("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
 KEYCLOAK_API_CLIENTS = json.loads(config("DJANGO_KEYCLOAK_API_CLIENTS", default="{}"))
+
+# All available policies are listed at:
+# https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md
+# Empty list means the policy is disabled
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "camera": [],
+    "display-capture": [],
+    "encrypted-media": [],
+    "geolocation": [],
+    "gyroscope": [],
+    "magnetometer": [],
+    "microphone": [],
+    "midi": [],
+    "payment": [],
+    "usb": [],
+    "xr-spatial-tracking": [],
+}
+
+# Django-CSP
+CSP_INCLUDE_NONCE_IN = ["script-src", "style-src", "font-src"]
+CSP_SCRIPT_SRC = [
+    "'self'",
+    "'unsafe-inline'",
+    "'unsafe-eval'",
+    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-bundle.js",
+    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js",
+] + [f"*{host}" if host.startswith(".") else host for host in ALLOWED_HOSTS]
+CSP_CONNECT_SRC = [
+    "'self'",
+] + [f"*{host}" if host.startswith(".") else host for host in ALLOWED_HOSTS]
+CSP_STYLE_SRC = [
+    "'self'",
+    "'unsafe-inline'",
+    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css",
+]
+CSP_FONT_SRC = [
+    "'self'",
+    "'unsafe-inline'",
+] + [f"*{host}" if host.startswith(".") else host for host in ALLOWED_HOSTS]
+CSP_IMG_SRC = [
+    "'self'",
+    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png",
+]
