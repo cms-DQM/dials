@@ -4,47 +4,47 @@ module.exports = {
     es2021: true
   },
   extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "standard",
-    "react-app",
-    "react-app/jest"
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'standard',
+    'react-app',
+    'react-app/jest'
   ],
   parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
+    ecmaVersion: 'latest',
+    sourceType: 'module',
     ecmaFeatures: {
       jsx: true
     }
   },
   plugins: [
-    "react",
-    "react-hooks",
-    "json-format"
+    'react',
+    'react-hooks',
+    'json-format'
   ],
   rules: {
     quotes: [
-      "error",
-      "single"
+      'error',
+      'single'
     ],
     'jsx-quotes': [
-      "error",
-      "prefer-single"
+      'error',
+      'prefer-single'
     ],
     'space-before-function-paren': [
-      "warn",
-      "always"
+      'warn',
+      'always'
     ],
-    'react/prop-types': "off"
+    'react/prop-types': 'off'
   },
   settings: {
-    'json/sort-package-json': "standard",
+    'json/sort-package-json': 'standard',
     'son/ignore-files': [
-      "**/package-lock.json"
+      '**/package-lock.json'
     ],
     'json/json-with-comments-files': [
-      ".vscode/**"
+      '.vscode/**'
     ]
   }
 }
