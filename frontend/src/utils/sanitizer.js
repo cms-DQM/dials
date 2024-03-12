@@ -1,4 +1,4 @@
-const toUndefined = (value, pattern) => value === pattern ? undefined : value
+const toUndefined = (value, pattern) => (value === pattern ? undefined : value)
 
 const isNumericNonZero = (num) => {
   return !isNaN(num) && +num > 0
@@ -12,7 +12,7 @@ const sanitizedURLSearchParams = (values, { repeatMode }) => {
   const params = new URLSearchParams()
   Object.entries(values).forEach(([key, value]) => {
     if (repeatMode && Array.isArray(value)) {
-      value.forEach(elem => params.append(key, elem))
+      value.forEach((elem) => params.append(key, elem))
     } else {
       params.append(key, value)
     }
@@ -20,11 +20,17 @@ const sanitizedURLSearchParams = (values, { repeatMode }) => {
 
   const keysForDel = []
   params.forEach((value, key) => {
-    if (value === '' || value === 'undefined' || value === 'null' || value === undefined || values === null) {
+    if (
+      value === '' ||
+      value === 'undefined' ||
+      value === 'null' ||
+      value === undefined ||
+      values === null
+    ) {
       keysForDel.push(key)
     }
   })
-  keysForDel.forEach(key => {
+  keysForDel.forEach((key) => {
     params.delete(key)
   })
   return params
@@ -34,5 +40,5 @@ export {
   toUndefined,
   isNumericNonZero,
   isStringNonEmpty,
-  sanitizedURLSearchParams
+  sanitizedURLSearchParams,
 }

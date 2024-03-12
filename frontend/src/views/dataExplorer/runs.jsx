@@ -33,19 +33,22 @@ const Runs = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = row.run_number.toString()
-        return (
-          <Link to={linkTo}>{row.run_number}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.run_number}</Link>
+      },
     },
     { dataField: 'year', text: 'Year', type: 'string' },
     { dataField: 'period', text: 'Period', type: 'string' },
     { dataField: 'oms_fill', text: 'OMS Fill', type: 'string' },
     { dataField: 'oms_lumisections', text: 'OMS Lumisections', type: 'string' },
     { dataField: 'oms_initial_lumi', text: 'OMS Initial Lumi', type: 'string' },
-    { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' }
+    { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' },
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -66,11 +69,12 @@ const Runs = () => {
       return
     }
 
-    API.run.get({ run: runNumber })
-      .then(response => {
+    API.run
+      .get({ run: runNumber })
+      .then((response) => {
         return navigate(runNumber)
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response.status === 404) {
           toast.error('Run not found!')
         } else {
@@ -87,12 +91,13 @@ const Runs = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.run.list({ page, minRun, maxRun })
-        .then(response => {
+      API.run
+        .list({ page, minRun, maxRun })
+        .then((response) => {
           setData(response.results)
           setTotalSize(response.count)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -108,7 +113,9 @@ const Runs = () => {
       <Col sm={3}>
         <div className='mb-4'>
           <Card>
-            <Card.Header className='text-center' as='h4'>Filters</Card.Header>
+            <Card.Header className='text-center' as='h4'>
+              Filters
+            </Card.Header>
             <Card.Body>
               <Form.Group className='mb-3' controlId='formRunRange'>
                 <Form.Label>Run Range</Form.Label>
@@ -118,7 +125,7 @@ const Runs = () => {
                       type='number'
                       value={minRun}
                       placeholder='Min'
-                      onChange={e => setMinRun(e.target.value)}
+                      onChange={(e) => setMinRun(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
@@ -126,17 +133,13 @@ const Runs = () => {
                       type='number'
                       value={maxRun}
                       placeholder='Max'
-                      onChange={e => setMaxRun(e.target.value)}
+                      onChange={(e) => setMaxRun(e.target.value)}
                     />
                   </Col>
                 </Row>
               </Form.Group>
 
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={handleFilter}
-              >
+              <Button variant='primary' type='submit' onClick={handleFilter}>
                 Submit
               </Button>
             </Card.Body>
@@ -144,24 +147,24 @@ const Runs = () => {
         </div>
         <div>
           <Card>
-            <Card.Header className='text-center' as='h4'>Search</Card.Header>
+            <Card.Header className='text-center' as='h4'>
+              Search
+            </Card.Header>
             <Card.Body>
               <Form.Group className='mb-3' controlId='formRunNumber'>
                 <Form.Label>Run Number</Form.Label>
                 <Form.Control
                   type='number'
                   value={runNumber}
-                  onChange={e => setRunNumber(e.target.value)}
+                  onChange={(e) => setRunNumber(e.target.value)}
                   isInvalid={runNumberIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Run number cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Run number cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={handleSearch}
-              >
+              <Button variant='primary' type='submit' onClick={handleSearch}>
                 Go
               </Button>
             </Card.Body>

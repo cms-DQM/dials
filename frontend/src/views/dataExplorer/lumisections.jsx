@@ -37,10 +37,8 @@ const Lumisections = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = `/runs/${row.run}`
-        return (
-          <Link to={linkTo}>{row.run}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.run}</Link>
+      },
     },
     {
       dataField: 'ls_number',
@@ -48,14 +46,21 @@ const Lumisections = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = `/lumisections/${row.id}`
-        return (
-          <Link to={linkTo}>{row.ls_number}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.ls_number}</Link>
+      },
     },
-    { dataField: 'oms_zerobias_rate', text: 'OMS ZeroBias Rate', type: 'string' }
+    {
+      dataField: 'oms_zerobias_rate',
+      text: 'OMS ZeroBias Rate',
+      type: 'string',
+    },
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -78,15 +83,16 @@ const Lumisections = () => {
       return
     }
 
-    API.lumisection.list({ run: runNumber, ls: lsNumber })
-      .then(response => {
+    API.lumisection
+      .list({ run: runNumber, ls: lsNumber })
+      .then((response) => {
         if (response.count === 0) {
           toast.error('Lumisection not found!')
         } else {
           navigate(`/lumisections/${response.results[0].id}`)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error)
         toast.error('Failure to communicate with the API!')
       })
@@ -95,12 +101,13 @@ const Lumisections = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.lumisection.list({ page, minLs, maxLs, minRun, maxRun })
-        .then(response => {
+      API.lumisection
+        .list({ page, minLs, maxLs, minRun, maxRun })
+        .then((response) => {
           setData(response.results)
           setTotalSize(response.count)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -116,9 +123,11 @@ const Lumisections = () => {
       <Col sm={3}>
         <div className='mb-4'>
           <Card>
-            <Card.Header className='text-center' as='h4'>Filters</Card.Header>
+            <Card.Header className='text-center' as='h4'>
+              Filters
+            </Card.Header>
             <Card.Body>
-            <Form.Group className='mb-3' controlId='formRunRange'>
+              <Form.Group className='mb-3' controlId='formRunRange'>
                 <Form.Label>Run Range</Form.Label>
                 <Row>
                   <Col xs={6}>
@@ -126,7 +135,7 @@ const Lumisections = () => {
                       type='number'
                       value={minRun}
                       placeholder='Min'
-                      onChange={e => setMinRun(e.target.value)}
+                      onChange={(e) => setMinRun(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
@@ -134,7 +143,7 @@ const Lumisections = () => {
                       type='number'
                       value={maxRun}
                       placeholder='Max'
-                      onChange={e => setMaxRun(e.target.value)}
+                      onChange={(e) => setMaxRun(e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -148,7 +157,7 @@ const Lumisections = () => {
                       type='number'
                       value={minLs}
                       placeholder='Min'
-                      onChange={e => setMinLs(e.target.value)}
+                      onChange={(e) => setMinLs(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
@@ -156,7 +165,7 @@ const Lumisections = () => {
                       type='number'
                       value={maxLs}
                       placeholder='Max'
-                      onChange={e => setMaxLs(e.target.value)}
+                      onChange={(e) => setMaxLs(e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -177,17 +186,21 @@ const Lumisections = () => {
         </div>
         <div>
           <Card>
-            <Card.Header className='text-center' as='h4'>Search</Card.Header>
+            <Card.Header className='text-center' as='h4'>
+              Search
+            </Card.Header>
             <Card.Body>
               <Form.Group className='mb-3' controlId='formRunNumber'>
                 <Form.Label>Run Number</Form.Label>
                 <Form.Control
                   type='number'
                   value={runNumber}
-                  onChange={e => setRunNumber(e.target.value)}
+                  onChange={(e) => setRunNumber(e.target.value)}
                   isInvalid={runNumberIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Run number cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Run number cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='formRunNumber'>
@@ -195,17 +208,15 @@ const Lumisections = () => {
                 <Form.Control
                   type='number'
                   value={lsNumber}
-                  onChange={e => setLsNumber(e.target.value)}
+                  onChange={(e) => setLsNumber(e.target.value)}
                   isInvalid={lsNumberIsInvalid}
                 />
-                <Form.Control.Feedback type='invalid'>Lumisection number cannot be empty</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>
+                  Lumisection number cannot be empty
+                </Form.Control.Feedback>
               </Form.Group>
 
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={handleSearch}
-              >
+              <Button variant='primary' type='submit' onClick={handleSearch}>
                 Go
               </Button>
             </Card.Body>

@@ -10,16 +10,10 @@ const CMSOMSCard = (props) => {
     <Card>
       <Card.Header>More from OMS</Card.Header>
       <Card.Body>
-      {
-        isLoading
-          ? (
-            <Spinner
-            animation='border'
-            role='status'
-          />
-            )
-          : (
-            <>
+        {isLoading ? (
+          <Spinner animation='border' role='status' />
+        ) : (
+          <>
             <Card.Text>
               <a
                 href={`https://cmsoms.cern.ch/cms/runs/report?cms_run=${runNumber}`}
@@ -47,9 +41,8 @@ const CMSOMSCard = (props) => {
                 {`HLT rates from run ${runNumber}`}
               </a>
             </Card.Text>
-            </>
-            )
-      }
+          </>
+        )}
       </Card.Body>
     </Card>
   )

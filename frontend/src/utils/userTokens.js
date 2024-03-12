@@ -10,7 +10,7 @@ export const getPublicToken = () => {
   const user = User.fromStorageString(oidcStorage)
   return {
     tokenType: user.token_type,
-    accessToken: user.access_token
+    accessToken: user.access_token,
   }
 }
 
@@ -23,6 +23,6 @@ export const getConfidentialToken = () => {
   return {
     tokenType: user.token_type,
     accessToken: user.access_token,
-    expiresIn: user.expires_in
+    expiresIn: user.expires_in,
   }
 }

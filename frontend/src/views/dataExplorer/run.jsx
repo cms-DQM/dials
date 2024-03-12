@@ -26,18 +26,25 @@ const Run = () => {
       type: 'number',
       formatter: (cell, row) => {
         const linkTo = `/lumisections/${row.id}`
-        return (
-          <Link to={linkTo}>{row.ls_number}</Link>
-        )
-      }
+        return <Link to={linkTo}>{row.ls_number}</Link>
+      },
     },
     { dataField: 'hist1d_count', text: '1D Histograms', type: 'number' },
     { dataField: 'hist2d_count', text: '2D Histograms', type: 'number' },
     { dataField: 'int_lumi', text: 'Initial Luminosity', type: 'number' },
-    { dataField: 'oms_zerobias_rate', text: 'OMS ZeroBias Rate', type: 'number' }
+    {
+      dataField: 'oms_zerobias_rate',
+      text: 'OMS ZeroBias Rate',
+      type: 'number',
+    },
   ]
 
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -49,12 +56,13 @@ const Run = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.run.listLumisections({ page, runNumber })
-        .then(response => {
+      API.run
+        .listLumisections({ page, runNumber })
+        .then((response) => {
           setData(response.results)
           setTotalSize(response.count)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -69,14 +77,20 @@ const Run = () => {
     <>
       <Row className='mt-5 mb-3 m-3'>
         <Breadcrumb>
-          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>All runs</Breadcrumb.Item>
+          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
+            All runs
+          </Breadcrumb.Item>
           <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
         <Col sm={9}>
           <Card className='text-center'>
-            <Card.Header as='h4'>{isLoading ? 'Loading run...' : `This run has ${totalSize} lumisections`}</Card.Header>
+            <Card.Header as='h4'>
+              {isLoading
+                ? 'Loading run...'
+                : `This run has ${totalSize} lumisections`}
+            </Card.Header>
             <Card.Body>
               <Table
                 keyField='id'
@@ -93,7 +107,7 @@ const Run = () => {
           </Card>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={isLoading} runNumber={runNumber}/>
+          <CMSOMSCard isLoading={isLoading} runNumber={runNumber} />
         </Col>
       </Row>
     </>

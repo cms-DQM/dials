@@ -30,9 +30,14 @@ const FileIndex = () => {
     { dataField: 'st_size', text: 'Size (MB)', type: 'number' },
     { dataField: 'st_ctime', text: 'Created at', type: 'string' },
     { dataField: 'st_itime', text: 'Indexed at', type: 'string' },
-    { dataField: 'status', text: 'Status', type: 'string' }
+    { dataField: 'status', text: 'Status', type: 'string' },
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -44,20 +49,27 @@ const FileIndex = () => {
   useEffect(() => {
     const handleData = () => {
       setLoading(true)
-      API.fileIndex.list({ page, era: dataEra, minSize: minSize > 0 ? minSize : undefined, pathContains, status: fileStatus })
-        .then(response => {
-          const results = response.results.map(item => {
+      API.fileIndex
+        .list({
+          page,
+          era: dataEra,
+          minSize: minSize > 0 ? minSize : undefined,
+          pathContains,
+          status: fileStatus,
+        })
+        .then((response) => {
+          const results = response.results.map((item) => {
             return {
               ...item,
               st_ctime: dateFormat(item.st_ctime, 'dd.MM.yyyy HH:mm:ss'),
               st_itime: dateFormat(item.st_itime, 'dd.MM.yyyy HH:mm:ss'),
-              st_size: (item.st_size / 1024 ** 2).toFixed(1)
+              st_size: (item.st_size / 1024 ** 2).toFixed(1),
             }
           })
           setData(results)
           setTotalSize(response.count)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
@@ -72,7 +84,9 @@ const FileIndex = () => {
     <Row className='mt-5 mb-3 m-3'>
       <Col sm={3}>
         <Card>
-          <Card.Header className='text-center' as='h4'>Filters</Card.Header>
+          <Card.Header className='text-center' as='h4'>
+            Filters
+          </Card.Header>
           <Card.Body>
             <Form.Group className='mb-3' controlId='formPathContains'>
               <Form.Label>Path contains</Form.Label>
@@ -80,7 +94,7 @@ const FileIndex = () => {
                 type='string'
                 placeholder='Enter path substring'
                 value={pathContains}
-                onChange={e => setPathContains(e.target.value)}
+                onChange={(e) => setPathContains(e.target.value)}
               />
             </Form.Group>
 
@@ -90,7 +104,7 @@ const FileIndex = () => {
                 type='string'
                 placeholder='Enter data era'
                 value={dataEra}
-                onChange={e => setDataEra(e.target.value)}
+                onChange={(e) => setDataEra(e.target.value)}
               />
             </Form.Group>
 
@@ -100,7 +114,7 @@ const FileIndex = () => {
                 <Form.Control
                   type='number'
                   value={minSize}
-                  onChange={e => setMinSize(e.target.value)}
+                  onChange={(e) => setMinSize(e.target.value)}
                 />
               </Col>
               <Col xs={9}>
@@ -108,7 +122,7 @@ const FileIndex = () => {
                   min={0}
                   max={1000}
                   value={minSize}
-                  onChange={e => setMinSize(e.target.value)}
+                  onChange={(e) => setMinSize(e.target.value)}
                 />
               </Col>
             </Form.Group>
@@ -118,14 +132,22 @@ const FileIndex = () => {
               <Form.Select
                 default='ANY'
                 value={fileStatus}
-                onChange={e => setFileStatus(e.target.value === 'ANY' ? undefined : e.target.value)}
-              >
-                <option key='ANY' value='ANY'>ANY</option>
-                {
-                  API.fileIndex.statusList.map(item => {
-                    return (<option key={item} value={item}>{item}</option>)
-                  })
+                onChange={(e) =>
+                  setFileStatus(
+                    e.target.value === 'ANY' ? undefined : e.target.value
+                  )
                 }
+              >
+                <option key='ANY' value='ANY'>
+                  ANY
+                </option>
+                {API.fileIndex.statusList.map((item) => {
+                  return (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  )
+                })}
               </Form.Select>
             </Form.Group>
 

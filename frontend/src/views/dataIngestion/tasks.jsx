@@ -23,9 +23,14 @@ const IngestionTasks = () => {
     { dataField: 'worker', text: 'Task worker', type: 'string' },
     { dataField: 'date_created', text: 'Date created', type: 'string' },
     { dataField: 'date_done', text: 'Date done', type: 'string' },
-    { dataField: 'elapsed_time', text: 'Elapsed time', type: 'number' }
+    { dataField: 'elapsed_time', text: 'Elapsed time', type: 'number' },
   ]
-  const pagination = paginationFactory({ page, totalSize, hideSizePerPage: true, showTotal: true })
+  const pagination = paginationFactory({
+    page,
+    totalSize,
+    hideSizePerPage: true,
+    showTotal: true,
+  })
   const remote = { pagination: true, filter: false, sort: false }
 
   const handleTableChange = (type, { page }) => {
@@ -37,20 +42,24 @@ const IngestionTasks = () => {
   useEffect(() => {
     const fetchData = () => {
       setIsLoading(true)
-      API.jobQueue.list({ page, status: ['STARTED'] })
-        .then(response => {
-          const result = response.results.map(item => {
+      API.jobQueue
+        .list({ page, status: ['STARTED'] })
+        .then((response) => {
+          const result = response.results.map((item) => {
             return {
               ...item,
-              date_created: dateFormat(item.date_created, 'dd.MM.yyyy HH:mm:ss'),
-              date_done: dateFormat(item.date_done, 'dd.MM.yyyy HH:mm:ss')
+              date_created: dateFormat(
+                item.date_created,
+                'dd.MM.yyyy HH:mm:ss'
+              ),
+              date_done: dateFormat(item.date_done, 'dd.MM.yyyy HH:mm:ss'),
             }
           })
           setTasks(result)
           setTotalSize(response.count)
           setIsLoading(false)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })

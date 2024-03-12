@@ -25,44 +25,48 @@ const IngestionStatistics = () => {
 
   useEffect(() => {
     const fetchTotalIndexedFiles = () => {
-      API.fileIndex.list({})
-        .then(response => {
+      API.fileIndex
+        .list({})
+        .then((response) => {
           setTotalFiles(response.count)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
     }
 
     const fetchTotalBadIndexedFiles = () => {
-      API.badFileIndex.list({})
-        .then(response => {
+      API.badFileIndex
+        .list({})
+        .then((response) => {
           setTotalBadFiles(response.count)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
     }
 
     const fetchTotalIngestedRuns = () => {
-      API.run.list({})
-        .then(response => {
+      API.run
+        .list({})
+        .then((response) => {
           setTotalRuns(response.count)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
     }
 
     const fetchTotalIngestedLumis = () => {
-      API.lumisection.list({})
-        .then(response => {
+      API.lumisection
+        .list({})
+        .then((response) => {
           setTotalLumisection(response.count)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
@@ -71,20 +75,22 @@ const IngestionStatistics = () => {
     const fatchStatusData = async () => {
       setIsLoadingFiles(true)
       try {
-        const data = await Promise.all(API.fileIndex.statusList.map(async item => {
-          const data = await API.fileIndex.list({ status: item })
-          return {
-            status: item,
-            count: data.count
-          }
-        }))
+        const data = await Promise.all(
+          API.fileIndex.statusList.map(async (item) => {
+            const data = await API.fileIndex.list({ status: item })
+            return {
+              status: item,
+              count: data.count,
+            }
+          })
+        )
         setDataFilesPlot([
           {
-            y: data.map(item => item.count),
-            x: data.map(item => item.status),
+            y: data.map((item) => item.count),
+            x: data.map((item) => item.status),
             type: 'bar',
-            text: data.map(item => item.count)
-          }
+            text: data.map((item) => item.count),
+          },
         ])
         setIsLoadingFiles(false)
       } catch (err) {
@@ -95,24 +101,25 @@ const IngestionStatistics = () => {
 
     const fetchH1DCount = () => {
       setIsLoadingH1D(true)
-      API.lumisection.getSubsystemCount(1)
-        .then(data => {
+      API.lumisection
+        .getSubsystemCount(1)
+        .then((data) => {
           setDataH1DPlot([
             {
-              values: data.map(item => item.count),
-              labels: data.map(item => item.subsystem),
+              values: data.map((item) => item.count),
+              labels: data.map((item) => item.subsystem),
               type: 'pie',
-              textinfo: 'value+percent'
-            }
+              textinfo: 'value+percent',
+            },
           ])
           setLayoutH1DPlot({
             title: {
-              text: `Total: ${data.map(item => item.count).reduce((partialSum, a) => partialSum + a, 0)}`
-            }
+              text: `Total: ${data.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
+            },
           })
           setIsLoadingH1D(false)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
@@ -120,24 +127,25 @@ const IngestionStatistics = () => {
 
     const fetchH2DCount = () => {
       setIsLoadingH2D(true)
-      API.lumisection.getSubsystemCount(2)
-        .then(data => {
+      API.lumisection
+        .getSubsystemCount(2)
+        .then((data) => {
           setDataH2DPlot([
             {
-              values: data.map(item => item.count),
-              labels: data.map(item => item.subsystem),
+              values: data.map((item) => item.count),
+              labels: data.map((item) => item.subsystem),
               type: 'pie',
-              textinfo: 'value+percent'
-            }
+              textinfo: 'value+percent',
+            },
           ])
           setLayoutH2DPlot({
             title: {
-              text: `Total: ${data.map(item => item.count).reduce((partialSum, a) => partialSum + a, 0)}`
-            }
+              text: `Total: ${data.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
+            },
           })
           setIsLoadingH2D(false)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           toast.error('Failure to communicate with the API!')
         })
@@ -158,28 +166,36 @@ const IngestionStatistics = () => {
         <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Good Files</Card.Header>
-            <Card.Body><h1>{totalFiles}</h1></Card.Body>
+            <Card.Body>
+              <h1>{totalFiles}</h1>
+            </Card.Body>
           </Card>
         </Col>
         <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Bad Files</Card.Header>
-            <Card.Body><h1>{totalBadFiles}</h1></Card.Body>
+            <Card.Body>
+              <h1>{totalBadFiles}</h1>
+            </Card.Body>
           </Card>
         </Col>
         <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Runs</Card.Header>
-            <Card.Body><h1>{totalRuns}</h1></Card.Body>
+            <Card.Body>
+              <h1>{totalRuns}</h1>
+            </Card.Body>
           </Card>
         </Col>
         <Col sm={3}>
           <Card className='text-center'>
             <Card.Header>Lumisections</Card.Header>
-            <Card.Body><h1>{totalLumisections}</h1></Card.Body>
+            <Card.Body>
+              <h1>{totalLumisections}</h1>
+            </Card.Body>
           </Card>
         </Col>
-      </Row >
+      </Row>
 
       <Row className='mb-3'>
         <Col sm={6}>
@@ -208,7 +224,7 @@ const IngestionStatistics = () => {
             </Card.Body>
           </Card>
         </Col>
-      </Row >
+      </Row>
 
       <Row className='mb-3'>
         <Col>
