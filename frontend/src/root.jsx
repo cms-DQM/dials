@@ -11,9 +11,20 @@ const Root = () => {
   const auth = useAuth()
   const [tokenExchanged, setTokenExchanged] = useState(false)
 
+  // When user is redirected from SSO login, we capture this event
+  // to finished authentication
   window.addEventListener(EXCHANGED_TOKEN_EVT, () => {
     setTokenExchanged(true)
   })
+
+  // When user load the page in another tab but it was already authenticated from another session
+  // `tokenExchanged` will not be set to true by the event, because the event ocurred in another window
+  // then we check if the confidential token is present in the localStorage to set the value to true
+  useEffect(() => {
+    if (localStorage.getItem(OIDC_CONFIDENTIAL_TOKEN_NS) !== null) {
+      setTokenExchanged(true)
+    }
+  }, [])
 
   useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
@@ -29,7 +40,7 @@ const Root = () => {
           console.error(err)
         })
     })
-  }, [auth.events, auth.signinSilent])
+  }, [auth, auth.events, auth.signinSilent])
 
   useEffect(() => {
     return auth.events.addAccessTokenExpired(() => {
@@ -37,7 +48,7 @@ const Root = () => {
       localStorage.removeItem(OIDC_CONFIDENTIAL_TOKEN_NS)
       window.location.href = '/'
     })
-  }, [auth.events, auth.signinSilent])
+  }, [auth, auth.events, auth.signinSilent])
 
   // Will render authenticating div if auth provider is still loading
   // or user is authenticated (auth not loading anymore) but

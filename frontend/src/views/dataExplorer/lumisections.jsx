@@ -17,7 +17,7 @@ const Lumisections = () => {
   const navigate = useNavigate()
 
   const [isLoading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [minLs, setMinLs] = useState()
   const [maxLs, setMaxLs] = useState()
   const [minRun, setMinRun] = useState()
@@ -28,7 +28,6 @@ const Lumisections = () => {
   const [lsNumber, setLsNumber] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-  const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
     {
@@ -55,19 +54,6 @@ const Lumisections = () => {
       type: 'string',
     },
   ]
-  const pagination = paginationFactory({
-    page,
-    totalSize,
-    hideSizePerPage: true,
-    showTotal: true,
-  })
-  const remote = { pagination: true, filter: false, sort: false }
-
-  const handleTableChange = (type, { page }) => {
-    if (type === 'pagination') {
-      setPage(page)
-    }
-  }
 
   const validateSearchForm = () => {
     const isRunValid = isNumericNonZero(runNumber)
@@ -98,25 +84,27 @@ const Lumisections = () => {
       })
   }
 
+  const fetchData = ({ page, minLs, maxLs, minRun, maxRun }) => {
+    setLoading(true)
+    API.lumisection
+      .list({ page, minLs, maxLs, minRun, maxRun })
+      .then((response) => {
+        setData(response.results)
+        setTotalSize(response.count)
+        setCurrentPage(page)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
-    const handleData = () => {
-      setLoading(true)
-      API.lumisection
-        .list({ page, minLs, maxLs, minRun, maxRun })
-        .then((response) => {
-          setData(response.results)
-          setTotalSize(response.count)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    handleData()
-  }, [page, filterSubmited])
+    fetchData({ page: 1 })
+  }, [])
 
   return (
     <Row className='mt-5 mb-3 m-3'>
@@ -175,8 +163,7 @@ const Lumisections = () => {
                 variant='primary'
                 type='submit'
                 onClick={() => {
-                  setPage(1)
-                  setFilterSubmited(!filterSubmited)
+                  fetchData({ page: 1, minLs, maxLs, minRun, maxRun })
                 }}
               >
                 Submit
@@ -234,9 +221,18 @@ const Lumisections = () => {
               columns={columns}
               bordered={false}
               hover={true}
-              remote={remote}
-              pagination={pagination}
-              onTableChange={handleTableChange}
+              remote
+              onTableChange={(type, { page }) => {
+                if (type === 'pagination') {
+                  fetchData({ page, minLs, maxLs, minRun, maxRun })
+                }
+              }}
+              pagination={paginationFactory({
+                totalSize,
+                page: currentPage,
+                hideSizePerPage: true,
+                showTotal: true,
+              })}
             />
           </Card.Body>
         </Card>

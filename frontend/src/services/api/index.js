@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { toUndefined, sanitizedURLSearchParams } from '../../utils/sanitizer'
+import { sanitizedURLSearchParams } from '../../utils/sanitizer'
 import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
 import { API_URL } from '../../config/env'
 

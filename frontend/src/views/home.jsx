@@ -23,10 +23,10 @@ const Home = () => {
               {`
               During a Run, the CMS Experiment collects particle collision data in Lumisection time-frame and the experiment
               subsystem health is monitored by shifters using DQMGUI. Multiple shifters for many subsystems monitor the most
-              recent lumisection of the current run plots to check a subsystem\'s health, but given the number of plots and
+              recent lumisection of the current run plots to check a subsystem's health, but given the number of plots and
               the limited manpower it is not possible to closely pay attention to all plots during the lumisection time-frame.
               On the other hand, using certified data it is possible to extract knowledge from old runs (at lumisection-level) to
-              help shifters get a glimpse of detector\'s health on past runs.
+              help shifters get a glimpse of detector's health on past runs.
               `}
               <br />
               <br />

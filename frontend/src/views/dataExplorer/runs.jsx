@@ -17,14 +17,13 @@ const Runs = () => {
   const navigate = useNavigate()
 
   const [isLoading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [minRun, setMinRun] = useState()
   const [maxRun, setMaxRun] = useState()
   const [runNumber, setRunNumber] = useState()
   const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-  const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
     {
@@ -43,19 +42,6 @@ const Runs = () => {
     { dataField: 'oms_initial_lumi', text: 'OMS Initial Lumi', type: 'string' },
     { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' },
   ]
-  const pagination = paginationFactory({
-    page,
-    totalSize,
-    hideSizePerPage: true,
-    showTotal: true,
-  })
-  const remote = { pagination: true, filter: false, sort: false }
-
-  const handleTableChange = (type, { page }) => {
-    if (type === 'pagination') {
-      setPage(page)
-    }
-  }
 
   const validateSearchForm = () => {
     const isRunValid = isNumericNonZero(runNumber)
@@ -83,30 +69,27 @@ const Runs = () => {
       })
   }
 
-  const handleFilter = () => {
-    setPage(1)
-    setFilterSubmited(!filterSubmited)
+  const fetchData = ({ page, minRun, maxRun }) => {
+    setLoading(true)
+    API.run
+      .list({ page, minRun, maxRun })
+      .then((response) => {
+        setData(response.results)
+        setTotalSize(response.count)
+        setCurrentPage(page)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
-    const handleData = () => {
-      setLoading(true)
-      API.run
-        .list({ page, minRun, maxRun })
-        .then((response) => {
-          setData(response.results)
-          setTotalSize(response.count)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    handleData()
-  }, [page, filterSubmited])
+    fetchData({ page: 1 })
+  }, [])
 
   return (
     <Row className='mt-5 mb-3 m-3'>
@@ -139,7 +122,17 @@ const Runs = () => {
                 </Row>
               </Form.Group>
 
-              <Button variant='primary' type='submit' onClick={handleFilter}>
+              <Button
+                variant='primary'
+                type='submit'
+                onClick={() => {
+                  fetchData({
+                    page: 1,
+                    minRun,
+                    maxRun,
+                  })
+                }}
+              >
                 Submit
               </Button>
             </Card.Body>
@@ -182,9 +175,22 @@ const Runs = () => {
               columns={columns}
               bordered={false}
               hover={true}
-              remote={remote}
-              pagination={pagination}
-              onTableChange={handleTableChange}
+              remote
+              onTableChange={(type, { page }) => {
+                if (type === 'pagination') {
+                  fetchData({
+                    page,
+                    minRun,
+                    maxRun,
+                  })
+                }
+              }}
+              pagination={paginationFactory({
+                totalSize,
+                page: currentPage,
+                hideSizePerPage: true,
+                showTotal: true,
+              })}
             />
           </Card.Body>
         </Card>

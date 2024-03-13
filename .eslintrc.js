@@ -8,8 +8,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'standard',
-    'react-app',
-    'react-app/jest',
     'prettier'
   ],
   parserOptions: {
@@ -46,6 +44,9 @@ module.exports = {
     ],
     'json/json-with-comments-files': [
       '.vscode/**'
-    ]
+    ],
+    react: {
+      version: 'detect'
+    }
   }
 }

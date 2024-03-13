@@ -15,7 +15,7 @@ import API from '../../services/api'
 
 const Histograms1D = () => {
   const [isLoading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [minRun, setMinRun] = useState()
   const [maxRun, setMaxRun] = useState()
   const [minLs, setMinLs] = useState()
@@ -24,7 +24,6 @@ const Histograms1D = () => {
   const [minEntries, setMinEntries] = useState(0)
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-  const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
     {
@@ -65,72 +64,69 @@ const Histograms1D = () => {
       },
     },
   ]
-  const pagination = paginationFactory({
-    page,
-    totalSize,
-    hideSizePerPage: true,
-    showTotal: true,
-  })
-  const remote = { pagination: true, filter: false, sort: false }
 
-  const handleTableChange = (type, { page }) => {
-    if (type === 'pagination') {
-      setPage(page)
-    }
+  const fetchData = ({
+    page,
+    minRun,
+    maxRun,
+    minLs,
+    maxLs,
+    titleContains,
+    minEntries,
+  }) => {
+    setLoading(true)
+    API.lumisection
+      .listHistograms(1, {
+        page,
+        minRun,
+        maxRun,
+        minLs,
+        maxLs,
+        titleContains,
+        minEntries: minEntries > 0 ? minEntries : undefined,
+      })
+      .then((response) => {
+        const results = response.results.map((item) => {
+          const data = [
+            { y: item.data, type: 'bar', marker: { color: '#0033A0' } },
+          ]
+          const layout = {
+            margin: { t: 10, b: 10, l: 10, r: 10 },
+            yaxis: { visible: false },
+            xaxis: { visible: false },
+            bargap: 0,
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+          }
+          return {
+            ...item,
+            plot: (
+              <ResponsivePlot
+                data={data}
+                layout={layout}
+                config={{ staticPlot: true }}
+                boxWidth={'200pt'}
+                boxHeight={'100pt'}
+              />
+            ),
+          }
+        })
+        setData(results)
+        setTotalSize(response.count)
+        setCurrentPage(page)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
-    const handleData = () => {
-      setLoading(true)
-      API.lumisection
-        .listHistograms(1, {
-          page,
-          minRun,
-          maxRun,
-          minLs,
-          maxLs,
-          titleContains,
-          minEntries: minEntries > 0 ? minEntries : undefined,
-        })
-        .then((response) => {
-          const results = response.results.map((item) => {
-            const data = [
-              { y: item.data, type: 'bar', marker: { color: '#0033A0' } },
-            ]
-            const layout = {
-              margin: { t: 10, b: 10, l: 10, r: 10 },
-              yaxis: { visible: false },
-              xaxis: { visible: false },
-              bargap: 0,
-              paper_bgcolor: 'rgba(0,0,0,0)',
-              plot_bgcolor: 'rgba(0,0,0,0)',
-            }
-            return {
-              ...item,
-              plot: (
-                <ResponsivePlot
-                  data={data}
-                  layout={layout}
-                  config={{ staticPlot: true }}
-                  boxWidth={'200pt'}
-                  boxHeight={'100pt'}
-                />
-              ),
-            }
-          })
-          setData(results)
-          setTotalSize(response.count)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    handleData()
-  }, [page, filterSubmited])
+    fetchData({ page: 1 })
+  }, [])
 
   return (
     <Row className='mt-5 mb-3 m-3'>
@@ -217,8 +213,15 @@ const Histograms1D = () => {
               variant='primary'
               type='submit'
               onClick={() => {
-                setPage(1)
-                setFilterSubmited(!filterSubmited)
+                fetchData({
+                  page: 1,
+                  minRun,
+                  maxRun,
+                  minLs,
+                  maxLs,
+                  titleContains,
+                  minEntries,
+                })
               }}
             >
               Submit
@@ -239,9 +242,26 @@ const Histograms1D = () => {
               columns={columns}
               bordered={false}
               hover={true}
-              remote={remote}
-              pagination={pagination}
-              onTableChange={handleTableChange}
+              remote
+              onTableChange={(type, { page }) => {
+                if (type === 'pagination') {
+                  fetchData({
+                    page,
+                    minRun,
+                    maxRun,
+                    minLs,
+                    maxLs,
+                    titleContains,
+                    minEntries,
+                  })
+                }
+              }}
+              pagination={paginationFactory({
+                totalSize,
+                page: currentPage,
+                hideSizePerPage: true,
+                showTotal: true,
+              })}
             />
           </Card.Body>
         </Card>

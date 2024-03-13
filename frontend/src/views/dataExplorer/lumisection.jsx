@@ -18,11 +18,39 @@ const Lumisection = () => {
   const [isLumiLoading, setLumiLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
-  const [lumiData, setLumiData] = useState({})
+  const [run, setRun] = useState()
+  const [lsNumber, setLsNumber] = useState()
   const [h1dData, setH1DData] = useState([])
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
+
+  const genericFetchAllPages = async ({ dim, run, lsNumber }) => {
+    const allData = []
+    let nextPageExists = true
+    let page = 0
+    let errorCount = 0
+    while (nextPageExists) {
+      page++
+      try {
+        const { results, next } = await API.lumisection.listHistograms(dim, {
+          page,
+          run,
+          ls: lsNumber,
+        })
+        results.forEach((e) => allData.unshift(e))
+        nextPageExists = !(next === null)
+      } catch (err) {
+        errorCount++
+      }
+    }
+    return {
+      results: allData,
+      count: allData.length,
+      error: errorCount,
+      totalPages: page,
+    }
+  }
 
   useEffect(() => {
     const fetchData = () => {
@@ -30,7 +58,8 @@ const Lumisection = () => {
       API.lumisection
         .get({ id })
         .then((response) => {
-          setLumiData(response)
+          setRun(response.run)
+          setLsNumber(response.ls_number)
         })
         .catch((error) => {
           console.error(error)
@@ -42,41 +71,18 @@ const Lumisection = () => {
     }
 
     fetchData()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     if (isLumiLoading) return
 
-    const genericFetchAllPages = async (dim) => {
-      const allData = []
-      let nextPageExists = true
-      let page = 0
-      let errorCount = 0
-      while (nextPageExists) {
-        page++
-        try {
-          const { results, next } = await API.lumisection.listHistograms(dim, {
-            page,
-            run: lumiData.run,
-            ls: lumiData.ls_number,
-          })
-          results.forEach((e) => allData.unshift(e))
-          nextPageExists = !(next === null)
-        } catch (err) {
-          errorCount++
-        }
-      }
-      return {
-        results: allData,
-        count: allData.length,
-        error: errorCount,
-        totalPages: page,
-      }
-    }
-
     const fetchH1D = () => {
       setH1DLoading(true)
-      genericFetchAllPages(1)
+      genericFetchAllPages({
+        dim: 1,
+        run,
+        lsNumber,
+      })
         .then((response) => {
           setH1DData(response.results)
           setH1DTotalSize(response.count)
@@ -97,7 +103,11 @@ const Lumisection = () => {
 
     const fetchH2D = () => {
       setH2DLoading(true)
-      genericFetchAllPages(2)
+      genericFetchAllPages({
+        dim: 2,
+        run,
+        lsNumber,
+      })
         .then((response) => {
           setH2DData(response.results)
           setH2DTotalSize(response.count)
@@ -118,7 +128,7 @@ const Lumisection = () => {
 
     fetchH1D()
     fetchH2D()
-  }, [isLumiLoading])
+  }, [isLumiLoading, run, lsNumber])
 
   return (
     <>
@@ -133,11 +143,11 @@ const Lumisection = () => {
             <>
               <Breadcrumb.Item
                 linkAs={Link}
-                linkProps={{ to: `/runs/${lumiData.run}` }}
-              >{`Run ${lumiData.run}`}</Breadcrumb.Item>
+                linkProps={{ to: `/runs/${run}` }}
+              >{`Run ${run}`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 active
-              >{`Lumisection ${lumiData.ls_number}`}</Breadcrumb.Item>
+              >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>
@@ -272,7 +282,7 @@ const Lumisection = () => {
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={false} runNumber={lumiData.run} />
+          <CMSOMSCard isLoading={isLumiLoading} runNumber={run} />
         </Col>
       </Row>
     </>
