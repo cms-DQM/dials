@@ -76,7 +76,7 @@ const Histogram = (props) => {
     }
 
     fetchData()
-  }, [id])
+  }, [dim, id])
 
   const validateSearhForm = () => {
     const isRunValid = isNumericNonZero(runNumber)

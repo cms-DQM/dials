@@ -15,14 +15,13 @@ import { toast } from 'react-toastify'
 
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [pathContains, setPathContains] = useState()
   const [dataEra, setDataEra] = useState()
   const [minSize, setMinSize] = useState(0)
   const [fileStatus, setFileStatus] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
-  const [filterSubmited, setFilterSubmited] = useState(false)
 
   const columns = [
     { dataField: 'file_path', text: 'Path', type: 'string' },
@@ -32,53 +31,42 @@ const FileIndex = () => {
     { dataField: 'st_itime', text: 'Indexed at', type: 'string' },
     { dataField: 'status', text: 'Status', type: 'string' },
   ]
-  const pagination = paginationFactory({
-    page,
-    totalSize,
-    hideSizePerPage: true,
-    showTotal: true,
-  })
-  const remote = { pagination: true, filter: false, sort: false }
 
-  const handleTableChange = (type, { page }) => {
-    if (type === 'pagination') {
-      setPage(page)
-    }
+  const fetchData = ({ page, era, minSize, pathContains, status }) => {
+    setLoading(true)
+    API.fileIndex
+      .list({
+        page,
+        era,
+        minSize: minSize > 0 ? minSize : undefined,
+        pathContains,
+        status,
+      })
+      .then((response) => {
+        const results = response.results.map((item) => {
+          return {
+            ...item,
+            st_ctime: dateFormat(item.st_ctime, 'dd.MM.yyyy HH:mm:ss'),
+            st_itime: dateFormat(item.st_itime, 'dd.MM.yyyy HH:mm:ss'),
+            st_size: (item.st_size / 1024 ** 2).toFixed(1),
+          }
+        })
+        setData(results)
+        setTotalSize(response.count)
+        setCurrentPage(page)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
-    const handleData = () => {
-      setLoading(true)
-      API.fileIndex
-        .list({
-          page,
-          era: dataEra,
-          minSize: minSize > 0 ? minSize : undefined,
-          pathContains,
-          status: fileStatus,
-        })
-        .then((response) => {
-          const results = response.results.map((item) => {
-            return {
-              ...item,
-              st_ctime: dateFormat(item.st_ctime, 'dd.MM.yyyy HH:mm:ss'),
-              st_itime: dateFormat(item.st_itime, 'dd.MM.yyyy HH:mm:ss'),
-              st_size: (item.st_size / 1024 ** 2).toFixed(1),
-            }
-          })
-          setData(results)
-          setTotalSize(response.count)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    handleData()
-  }, [page, filterSubmited])
+    fetchData({ page: 1 })
+  }, [])
 
   return (
     <Row className='mt-5 mb-3 m-3'>
@@ -155,8 +143,13 @@ const FileIndex = () => {
               variant='primary'
               type='submit'
               onClick={() => {
-                setPage(1)
-                setFilterSubmited(!filterSubmited)
+                fetchData({
+                  page: 1,
+                  era: dataEra,
+                  minSize,
+                  pathContains,
+                  status: fileStatus,
+                })
               }}
             >
               Submit
@@ -175,9 +168,24 @@ const FileIndex = () => {
               columns={columns}
               bordered={false}
               hover={true}
-              remote={remote}
-              pagination={pagination}
-              onTableChange={handleTableChange}
+              remote
+              onTableChange={(type, { page }) => {
+                if (type === 'pagination') {
+                  fetchData({
+                    page,
+                    era: dataEra,
+                    minSize,
+                    pathContains,
+                    status: fileStatus,
+                  })
+                }
+              }}
+              pagination={paginationFactory({
+                totalSize,
+                page: currentPage,
+                hideSizePerPage: true,
+                showTotal: true,
+              })}
             />
           </Card.Body>
         </Card>

@@ -15,7 +15,7 @@ const Run = () => {
   const { runNumber } = useParams()
 
   const [isLoading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
@@ -39,39 +39,27 @@ const Run = () => {
     },
   ]
 
-  const pagination = paginationFactory({
-    page,
-    totalSize,
-    hideSizePerPage: true,
-    showTotal: true,
-  })
-  const remote = { pagination: true, filter: false, sort: false }
-
-  const handleTableChange = (type, { page }) => {
-    if (type === 'pagination') {
-      setPage(page)
-    }
+  const fetchData = ({ page, runNumber }) => {
+    setLoading(true)
+    API.run
+      .listLumisections({ page, runNumber })
+      .then((response) => {
+        setData(response.results)
+        setTotalSize(response.count)
+        setCurrentPage(page)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failure to communicate with the API!')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
-    const handleData = () => {
-      setLoading(true)
-      API.run
-        .listLumisections({ page, runNumber })
-        .then((response) => {
-          setData(response.results)
-          setTotalSize(response.count)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    handleData()
-  }, [page])
+    fetchData({ page: 1, runNumber })
+  }, [runNumber])
 
   return (
     <>
@@ -99,9 +87,18 @@ const Run = () => {
                 columns={columns}
                 bordered={false}
                 hover={true}
-                remote={remote}
-                pagination={pagination}
-                onTableChange={handleTableChange}
+                remote
+                onTableChange={(type, { page }) => {
+                  if (type === 'pagination') {
+                    fetchData({ page, runNumber })
+                  }
+                }}
+                pagination={paginationFactory({
+                  totalSize,
+                  page: currentPage,
+                  hideSizePerPage: true,
+                  showTotal: true,
+                })}
               />
             </Card.Body>
           </Card>

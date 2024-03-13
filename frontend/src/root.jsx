@@ -29,7 +29,7 @@ const Root = () => {
           console.error(err)
         })
     })
-  }, [auth.events, auth.signinSilent])
+  }, [auth, auth.events, auth.signinSilent])
 
   useEffect(() => {
     return auth.events.addAccessTokenExpired(() => {
@@ -37,7 +37,7 @@ const Root = () => {
       localStorage.removeItem(OIDC_CONFIDENTIAL_TOKEN_NS)
       window.location.href = '/'
     })
-  }, [auth.events, auth.signinSilent])
+  }, [auth, auth.events, auth.signinSilent])
 
   // Will render authenticating div if auth provider is still loading
   // or user is authenticated (auth not loading anymore) but
