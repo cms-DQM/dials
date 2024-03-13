@@ -27,11 +27,6 @@ const Root = () => {
   }, [])
 
   useEffect(() => {
-    console.log(auth.isLoading, auth.isAuthenticated, tokenExchanged)
-    console.log((auth.isLoading || (auth.isAuthenticated && !tokenExchanged)))
-  }, [auth.isLoading, auth.isAuthenticated, tokenExchanged])
-
-  useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
       auth
         .signinSilent()
