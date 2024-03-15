@@ -13,7 +13,7 @@ RUN yarn install
 
 COPY .eslintignore $APP_HOME
 COPY .eslintrc.js $APP_HOME
-COPY vite.config.js /usr/src/app/
+COPY vite.config.mjs /usr/src/app/
 COPY frontend /usr/src/app/frontend
 
 RUN yarn build
