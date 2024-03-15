@@ -201,7 +201,7 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 60 * 60 * 24 * 2}  # seconds
 
 # Path used in dqmio_file_indexer app to discover DQMIO files
-DIR_PATH_DQMIO_STORAGE = config("DJANGO_DQMIO_STORAGE")
+DIR_PATH_DQMIO_STORAGE = json.loads(config("DJANGO_DQMIO_STORAGE", default="[]"))
 
 # List of MEs to ingest
 DQMIO_MES_TO_INGEST = get_monitoring_elements_names()

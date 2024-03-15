@@ -1,26 +1,26 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: backend-api
+  name: best-scheduler
   namespace: cms-dials-prod
   labels:
-    app: backend-api
-    app.kubernetes.io/component: backend-api
-    app.kubernetes.io/instance: backend-api
-    app.kubernetes.io/name: backend-api
-    app.kubernetes.io/part-of: dials
-    app.openshift.io/runtime: django
+    app: best-scheduler
+    app.kubernetes.io/component: best-scheduler
+    app.kubernetes.io/instance: best-scheduler
+    app.kubernetes.io/name: best-scheduler
+    app.kubernetes.io/part-of: celery-beats
+    app.openshift.io/runtime: redis
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-api
+      app: best-scheduler
   template:
     metadata:
       labels:
-        app: backend-api
-        deployment: backend-api
+        app: best-scheduler
+        deployment: best-scheduler
       annotations:
         eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
     spec:
@@ -29,7 +29,737 @@ spec:
           persistentVolumeClaim:
             claimName: eos-storage
       containers:
-        - name: backend-api
+        - name: best-scheduler
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=dials beat --loglevel=INFO --schedule=/tmp/celerybeat-schedule
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: periodic-scheduler
+  namespace: cms-dials-prod
+  labels:
+    app: periodic-scheduler
+    app.kubernetes.io/component: periodic-scheduler
+    app.kubernetes.io/instance: periodic-scheduler
+    app.kubernetes.io/name: periodic-scheduler
+    app.kubernetes.io/part-of: celery-workers
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: periodic-scheduler
+  template:
+    metadata:
+      labels:
+        app: periodic-scheduler
+        deployment: periodic-scheduler
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: periodic-scheduler
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --hostname=periodic_worker --queues=periodic_scheduler
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: file-indexer
+  namespace: cms-dials-prod
+  labels:
+    app: file-indexer
+    app.kubernetes.io/component: file-indexer
+    app.kubernetes.io/instance: file-indexer
+    app.kubernetes.io/name: file-indexer
+    app.kubernetes.io/part-of: celery-workers
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-indexer
+  template:
+    metadata:
+      labels:
+        app: file-indexer
+        deployment: file-indexer
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: file-indexer
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --hostname=indexer_worker --queues=etl_file_indexer
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: bulk-ingestion
+  namespace: cms-dials-prod
+  labels:
+    app: bulk-ingestion
+    app.kubernetes.io/component: bulk-ingestion
+    app.kubernetes.io/instance: bulk-ingestion
+    app.kubernetes.io/name: bulk-ingestion
+    app.kubernetes.io/part-of: celery-workers
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bulk-ingestion
+  template:
+    metadata:
+      labels:
+        app: bulk-ingestion
+        deployment: bulk-ingestion
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: bulk-ingestion
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: priority-ingestion
+  namespace: cms-dials-prod
+  labels:
+    app: priority-ingestion
+    app.kubernetes.io/component: priority-ingestion
+    app.kubernetes.io/instance: priority-ingestion
+    app.kubernetes.io/name: priority-ingestion
+    app.kubernetes.io/part-of: celery-workers
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: priority-ingestion
+  template:
+    metadata:
+      labels:
+        app: priority-ingestion
+        deployment: priority-ingestion
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: priority-ingestion
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          entrypoint: ''
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_priority_ingestion
+          env:
+            - name: DJANGO_ENV
+              value: prod
+            - name: DJANGO_DEBUG
+              value: '0'
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_ALLOWED_HOSTS
+              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: >-
+                https://cmsdials-api.web.cern.ch
+                https://cmsdials.web.cern.ch
+            - name: DJANGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_NAME
+            - name: DJANGO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_USER
+            - name: DJANGO_DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DJANGO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PASSWORD
+            - name: DJANGO_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_PORT
+            - name: DJANGO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DATABASE_HOST
+            - name: DJANGO_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_CELERY_BROKER_URL
+            - name: DJANGO_DQMIO_STORAGE
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_DQMIO_STORAGE
+            - name: DJANGO_KEYCLOAK_SERVER_URL
+              value: 'https://auth.cern.ch/auth/'
+            - name: DJANGO_KEYCLOAK_REALM
+              value: cern
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
+            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
+            - name: DJANGO_KEYCLOAK_API_CLIENTS
+              valueFrom:
+                secretKeyRef:
+                  name: dials-secrets
+                  key: DJANGO_KEYCLOAK_API_CLIENTS
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-restapi
+  namespace: cms-dials-prod
+  labels:
+    app: backend-restapi
+    app.kubernetes.io/component: backend-restapi
+    app.kubernetes.io/instance: backend-restapi
+    app.kubernetes.io/name: backend-restapi
+    app.kubernetes.io/part-of: dials
+    app.openshift.io/runtime: django
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-restapi
+  template:
+    metadata:
+      labels:
+        app: backend-restapi
+        deployment: backend-restapi
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: backend-restapi
           resources:
             requests:
               memory: 256Mi
@@ -42,594 +772,6 @@ spec:
               python3 -m gunicorn
               dials.asgi:application -k uvicorn.workers.UvicornWorker -b
               0.0.0.0:8000
-          env:
-            - name: DJANGO_ENV
-              value: prod
-            - name: DJANGO_DEBUG
-              value: '0'
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_SECRET_KEY
-            - name: DJANGO_ALLOWED_HOSTS
-              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
-            - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_CORS_ALLOWED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_NAME
-            - name: DJANGO_DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_USER
-            - name: DJANGO_DATABASE_ENGINE
-              value: django.db.backends.postgresql
-            - name: DJANGO_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PASSWORD
-            - name: DJANGO_DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PORT
-            - name: DJANGO_DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_HOST
-            - name: DJANGO_CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_CELERY_BROKER_URL
-            - name: DJANGO_DQMIO_STORAGE
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DQMIO_STORAGE
-            - name: DJANGO_KEYCLOAK_SERVER_URL
-              value: 'https://auth.cern.ch/auth/'
-            - name: DJANGO_KEYCLOAK_REALM
-              value: cern
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_API_CLIENTS
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_API_CLIENTS
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: eos-storage
-              readOnly: true
-              mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-worker-1
-  namespace: cms-dials-prod
-  labels:
-    app: backend-worker-1
-    app.kubernetes.io/component: backend-worker-1
-    app.kubernetes.io/instance: backend-worker-1
-    app.kubernetes.io/name: backend-worker-1
-    app.kubernetes.io/part-of: dials
-    app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: cms-dials-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend-worker-1
-  template:
-    metadata:
-      labels:
-        app: backend-worker-1
-        deployment: backend-worker-1
-      annotations:
-        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
-    spec:
-      volumes:
-        - name: eos-storage
-          persistentVolumeClaim:
-            claimName: eos-storage
-      containers:
-        - name: backend-worker-1
-          resources:
-            requests:
-              memory: 256Mi
-            limits:
-              memory: 1024Mi
-          entrypoint: ''
-          command:
-            - bash
-            - '-c'
-            - >-
-              celery -A dials worker -l INFO -c 1 -n
-              worker1 -Q dqmio_file_indexer_queue
-          env:
-            - name: DJANGO_ENV
-              value: prod
-            - name: DJANGO_DEBUG
-              value: '0'
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_SECRET_KEY
-            - name: DJANGO_ALLOWED_HOSTS
-              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
-            - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_CORS_ALLOWED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_NAME
-            - name: DJANGO_DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_USER
-            - name: DJANGO_DATABASE_ENGINE
-              value: django.db.backends.postgresql
-            - name: DJANGO_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PASSWORD
-            - name: DJANGO_DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PORT
-            - name: DJANGO_DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_HOST
-            - name: DJANGO_CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_CELERY_BROKER_URL
-            - name: DJANGO_DQMIO_STORAGE
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DQMIO_STORAGE
-            - name: DJANGO_KEYCLOAK_SERVER_URL
-              value: 'https://auth.cern.ch/auth/'
-            - name: DJANGO_KEYCLOAK_REALM
-              value: cern
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_API_CLIENTS
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_API_CLIENTS
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: eos-storage
-              readOnly: true
-              mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-worker-2
-  namespace: cms-dials-prod
-  labels:
-    app: backend-worker-2
-    app.kubernetes.io/component: backend-worker-2
-    app.kubernetes.io/instance: backend-worker-2
-    app.kubernetes.io/name: backend-worker-2
-    app.kubernetes.io/part-of: dials
-    app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: cms-dials-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend-worker-2
-  template:
-    metadata:
-      labels:
-        app: backend-worker-2
-        deployment: backend-worker-2
-      annotations:
-        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
-    spec:
-      volumes:
-        - name: eos-storage
-          persistentVolumeClaim:
-            claimName: eos-storage
-      containers:
-        - name: backend-worker-2
-          resources:
-            requests:
-              memory: 1024Mi
-            limits:
-              memory: 4096Mi
-          entrypoint: ''
-          command:
-            - bash
-            - '-c'
-            - >-
-              celery -A dials worker -l INFO -c 1 -n
-              worker2 -Q dqmio_etl_queue
-          env:
-            - name: DJANGO_ENV
-              value: prod
-            - name: DJANGO_DEBUG
-              value: '0'
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_SECRET_KEY
-            - name: DJANGO_ALLOWED_HOSTS
-              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
-            - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_CORS_ALLOWED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_NAME
-            - name: DJANGO_DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_USER
-            - name: DJANGO_DATABASE_ENGINE
-              value: django.db.backends.postgresql
-            - name: DJANGO_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PASSWORD
-            - name: DJANGO_DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PORT
-            - name: DJANGO_DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_HOST
-            - name: DJANGO_CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_CELERY_BROKER_URL
-            - name: DJANGO_DQMIO_STORAGE
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DQMIO_STORAGE
-            - name: DJANGO_KEYCLOAK_SERVER_URL
-              value: 'https://auth.cern.ch/auth/'
-            - name: DJANGO_KEYCLOAK_REALM
-              value: cern
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_API_CLIENTS
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_API_CLIENTS
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: eos-storage
-              readOnly: true
-              mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-worker-3
-  namespace: cms-dials-prod
-  labels:
-    app: backend-worker-3
-    app.kubernetes.io/component: backend-worker-3
-    app.kubernetes.io/instance: backend-worker-3
-    app.kubernetes.io/name: backend-worker-3
-    app.kubernetes.io/part-of: dials
-    app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: cms-dials-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend-worker-3
-  template:
-    metadata:
-      labels:
-        app: backend-worker-3
-        deployment: backend-worker-3
-      annotations:
-        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
-    spec:
-      volumes:
-        - name: eos-storage
-          persistentVolumeClaim:
-            claimName: eos-storage
-      containers:
-        - name: backend-worker-3
-          resources:
-            requests:
-              memory: 256Mi
-            limits:
-              memory: 1024Mi
-          entrypoint: ''
-          command:
-            - bash
-            - '-c'
-            - >-
-              celery -A dials worker -l INFO -c 4 -n
-              worker3 -Q celery_periodic
-          env:
-            - name: DJANGO_ENV
-              value: prod
-            - name: DJANGO_DEBUG
-              value: '0'
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_SECRET_KEY
-            - name: DJANGO_ALLOWED_HOSTS
-              value: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
-            - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_CORS_ALLOWED_ORIGINS
-              value: >-
-                https://cmsdials-api.web.cern.ch
-                https://cmsdials.web.cern.ch
-            - name: DJANGO_DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_NAME
-            - name: DJANGO_DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_USER
-            - name: DJANGO_DATABASE_ENGINE
-              value: django.db.backends.postgresql
-            - name: DJANGO_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PASSWORD
-            - name: DJANGO_DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_PORT
-            - name: DJANGO_DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DATABASE_HOST
-            - name: DJANGO_CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_CELERY_BROKER_URL
-            - name: DJANGO_DQMIO_STORAGE
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_DQMIO_STORAGE
-            - name: DJANGO_KEYCLOAK_SERVER_URL
-              value: 'https://auth.cern.ch/auth/'
-            - name: DJANGO_KEYCLOAK_REALM
-              value: cern
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY
-            - name: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID
-            - name: DJANGO_KEYCLOAK_API_CLIENTS
-              valueFrom:
-                secretKeyRef:
-                  name: dials-secrets
-                  key: DJANGO_KEYCLOAK_API_CLIENTS
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: eos-storage
-              readOnly: true
-              mountPath: /eos
-          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-beat
-  namespace: cms-dials-prod
-  labels:
-    app: backend-beat
-    app.kubernetes.io/component: backend-beat
-    app.kubernetes.io/instance: backend-beat
-    app.kubernetes.io/name: backend-beat
-    app.kubernetes.io/part-of: dials
-    app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: cms-dials-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend-beat
-  template:
-    metadata:
-      labels:
-        app: backend-beat
-        deployment: backend-beat
-      annotations:
-        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
-    spec:
-      volumes:
-        - name: eos-storage
-          persistentVolumeClaim:
-            claimName: eos-storage
-      containers:
-        - name: backend-beat
-          resources:
-            requests:
-              memory: 256Mi
-            limits:
-              memory: 1024Mi
-          entrypoint: ''
-          command:
-            - bash
-            - '-c'
-            - >-
-              celery -A dials beat -l INFO -s
-              /tmp/celerybeat-schedule
           env:
             - name: DJANGO_ENV
               value: prod
