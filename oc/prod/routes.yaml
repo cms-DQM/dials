@@ -4,10 +4,10 @@ metadata:
   name: dials-backend
   namespace: cms-dials-prod
   labels:
-    app: backend-api
-    app.kubernetes.io/component: backend-api
-    app.kubernetes.io/instance: backend-api
-    app.kubernetes.io/name: backend-api
+    app: backend-restapi
+    app.kubernetes.io/component: backend-restapi
+    app.kubernetes.io/instance: backend-restapi
+    app.kubernetes.io/name: backend-restapi
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
   annotations:
@@ -18,7 +18,7 @@ spec:
   host: cmsdials-api.web.cern.ch
   to:
     kind: Service
-    name: backend-api
+    name: backend-restapi
     weight: 100
   port:
     targetPort: 8000-tcp

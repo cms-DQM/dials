@@ -1,13 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: backend-api
+  name: backend-restapi
   namespace: cms-dials-prod
   labels:
-    app: backend-api
-    app.kubernetes.io/component: backend-api
-    app.kubernetes.io/instance: backend-api
-    app.kubernetes.io/name: backend-api
+    app: backend-restapi
+    app.kubernetes.io/component: backend-restapi
+    app.kubernetes.io/instance: backend-restapi
+    app.kubernetes.io/name: backend-restapi
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
 spec:
@@ -18,8 +18,8 @@ spec:
       port: 8000
       targetPort: 8000
   selector:
-    app: backend-api
-    deployment: backend-api
+    app: backend-restapi
+    deployment: backend-restapi
 
 ---
 kind: Service
