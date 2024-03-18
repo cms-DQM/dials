@@ -35,6 +35,7 @@ class LumisectionHistogram2DSerializer(serializers.ModelSerializer):
 
 class LumisectionHistogramsIngestionInputSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    queue = serializers.CharField()
 
 
 class LumisectionHistogramsSubsystemCountSerializer(serializers.Serializer):

@@ -112,6 +112,10 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
         if not file_index_id:
             return HttpResponseBadRequest("Attribute 'id' not found in request body.")
 
+        queue = request.data.get("queue")
+        if not queue:
+            return HttpResponseBadRequest("Attribute 'queue' not found in request body.")
+
         file_index = FileIndex.objects.get(id=file_index_id)
         file_index.update_status(FileIndexStatus.PENDING)
         del file_index
@@ -119,7 +123,7 @@ class LumisectionViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, views
         # Here I'am passing the file_index_id instead of the FileIndex object
         # because functions arguments using celery queue must be JSON serializable
         # and the FileIndex object (django model) is not
-        task = ingest_function.delay(file_index_id)
+        task = ingest_function.apply_async(kwargs={"file_index_id": file_index_id}, queue=queue)
         task = TaskResponseBase(task_id=task.id, state=task.state, ready=task.ready())
         task = TaskResponseSerializer(task)
         return Response(task.data)

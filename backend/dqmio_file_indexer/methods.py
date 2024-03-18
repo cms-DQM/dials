@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class RawDataIndexer:
-    STORAGE_DIRS = settings.DIR_PATH_DQMIO_STORAGE.split(":")
+    STORAGE_DIRS = settings.DIR_PATH_DQMIO_STORAGE
 
     def __init__(self):
         self.indexed = None
@@ -130,13 +130,16 @@ class RawDataIndexer:
 
     def start(self):
         stats = []
-        for _dir in self.STORAGE_DIRS:
+        for storage in self.STORAGE_DIRS:
+            _dir = storage.get("path")
+            queue = storage.get("queue")
             logger_msg = f"Getting recursive file list for path '{_dir}'"
             logger.debug(logger_msg)
             dir_result = RawDataIndexer.__search_dqmio_files(_dir)
             stats.append(
                 {
                     "storage": _dir,
+                    "queue": queue,
                     "total": dir_result["total_files"],
                     "added_good": dir_result["total_added_good_files"],
                     "added_bad": dir_result["total_added_bad_files"],
@@ -149,6 +152,7 @@ class RawDataIndexer:
     def schedule_ingestion(self):
         response = {"n_scanned": 0, "n_indexed_good": 0, "n_indexed_bad": 0, "n_scheduled": 0}
         for dir_result in self.indexed:
+            queue_name = dir_result["queue"]
             total_added_good = dir_result["added_good"]
             good_ingested_ids = dir_result["good_ingested_ids"]
             response["n_scanned"] += dir_result["total"]
@@ -161,6 +165,6 @@ class RawDataIndexer:
                 file_index = FileIndex.objects.get(id=ingested_id)
                 file_index.update_status(FileIndexStatus.PENDING)
                 del file_index
-                ingest_function.delay(ingested_id)
+                ingest_function.apply_async(kwargs={"file_index_id": ingested_id}, queue=queue_name)
                 response["n_scheduled"] += 1
         return response

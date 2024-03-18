@@ -17,8 +17,53 @@
 version: '3'
 
 services:
-  django_rest_api_prod:
-    container_name: django_rest_api_prod
+  celery_beat_prod:
+    container_name: celery_beat_prod
+    image: backend_prod
+    volumes:
+      - /mnt/dqmio:/mnt/dqmio
+    command: bash -c 'celery --app=dials beat --loglevel=INFO --schedule=celerybeat-schedule'
+    network_mode: "host"
+    env_file: ./backend/.env.dev-prod
+
+  celery_worker_periodic_prod:
+    container_name: celery_worker_periodic_prod
+    image: backend_prod
+    volumes:
+      - /mnt/dqmio:/mnt/dqmio
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --hostname=periodic_worker --queues=periodic_scheduler'
+    network_mode: "host"
+    env_file: ./backend/.env.dev-prod
+
+  celery_worker_indexer_prod:
+    container_name: celery_worker_indexer_prod
+    image: backend_prod
+    volumes:
+      - /mnt/dqmio:/mnt/dqmio
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --hostname=indexer_worker --queues=etl_file_indexer'
+    network_mode: "host"
+    env_file: ./backend/.env.dev-prod
+
+  celery_worker_bulk_prod:
+    container_name: celery_worker_bulk_prod
+    image: backend_prod
+    volumes:
+      - /mnt/dqmio:/mnt/dqmio
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion'
+    network_mode: "host"
+    env_file: ./backend/.env.dev-prod
+
+  celery_worker_priority_prod:
+    container_name: celery_worker_priority_prod
+    image: backend_prod
+    volumes:
+      - /mnt/dqmio:/mnt/dqmio
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_priority_worker --queues=etl_priority_ingestion'
+    network_mode: "host"
+    env_file: ./backend/.env.dev-prod
+
+  django_restapi_prod:
+    container_name: django_restapi_prod
     image: backend_prod
     build:
       dockerfile: backend/Dockerfile
@@ -26,42 +71,6 @@ services:
     volumes:
       - /mnt/dqmio:/mnt/dqmio
     command: bash -c 'python3 -m gunicorn dials.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000'
-    network_mode: "host"
-    env_file: ./backend/.env.dev-prod
-
-  django_celery_worker1_prod:
-    container_name: django_celery_worker1_prod
-    image: backend_prod
-    volumes:
-      - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue'
-    network_mode: "host"
-    env_file: ./backend/.env.dev-prod
-
-  django_celery_worker2_prod:
-    container_name: django_celery_worker2_prod
-    image: backend_prod
-    volumes:
-      - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery -A dials worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue'
-    network_mode: "host"
-    env_file: ./backend/.env.dev-prod
-
-  django_celery_worker3_prod:
-    container_name: django_celery_worker3_prod
-    image: backend_prod
-    volumes:
-      - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery -A dials worker -l INFO -n worker3 -Q celery_periodic'
-    network_mode: "host"
-    env_file: ./backend/.env.dev-prod
-
-  django_celery_beat_prod:
-    container_name: django_celery_beat_prod
-    image: backend_prod
-    volumes:
-      - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery -A dials beat -l INFO'
     network_mode: "host"
     env_file: ./backend/.env.dev-prod
 

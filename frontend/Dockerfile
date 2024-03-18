@@ -45,7 +45,7 @@ COPY package.json $APP_HOME
 COPY yarn.lock $APP_HOME
 COPY .eslintignore $APP_HOME
 COPY .eslintrc.js $APP_HOME
-COPY vite.config.js $APP_HOME
+COPY vite.config.mjs $APP_HOME
 COPY frontend $APP_HOME/frontend
 
 RUN chown -R $USERNAME:$USERNAME $HOME
