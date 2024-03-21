@@ -31,7 +31,7 @@ services:
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --hostname=periodic_worker --queues=periodic_scheduler'
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --max-tasks-per-child=1 --hostname=periodic_worker --queues=periodic_scheduler'
     network_mode: "host"
 
   celery_worker_indexer_dev:
@@ -40,7 +40,7 @@ services:
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --hostname=indexer_worker --queues=etl_file_indexer'
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=indexer_worker --queues=etl_file_indexer'
     network_mode: "host"
 
   celery_worker_bulk_dev:
@@ -49,7 +49,7 @@ services:
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion'
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --max-tasks-per-child=1 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion'
     network_mode: "host"
 
   celery_worker_priority_dev:
@@ -58,7 +58,7 @@ services:
     volumes:
       - ./backend/:/home/app/rest_api
       - /mnt/dqmio:/mnt/dqmio
-    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_priority_worker --queues=etl_priority_ingestion'
+    command: bash -c 'celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --max-tasks-per-child=1 --hostname=etl_priority_worker --queues=etl_priority_ingestion'
     network_mode: "host"
 
   django_restapi_dev:

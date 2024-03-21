@@ -184,7 +184,7 @@ spec:
             - bash
             - '-c'
             - >-
-              celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --hostname=periodic_worker --queues=periodic_scheduler
+              celery --app=dials worker --loglevel=INFO --concurrency=2 --autoscale=4,2 --max-tasks-per-child=1 --hostname=periodic_worker --queues=periodic_scheduler
           env:
             - name: DJANGO_ENV
               value: prod
@@ -329,7 +329,7 @@ spec:
             - bash
             - '-c'
             - >-
-              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --hostname=indexer_worker --queues=etl_file_indexer
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=indexer_worker --queues=etl_file_indexer
           env:
             - name: DJANGO_ENV
               value: prod
@@ -474,7 +474,7 @@ spec:
             - bash
             - '-c'
             - >-
-              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --max-tasks-per-child=1 --hostname=etl_bulk_worker --queues=etl_bulk_ingestion
           env:
             - name: DJANGO_ENV
               value: prod
@@ -619,7 +619,7 @@ spec:
             - bash
             - '-c'
             - >-
-              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --hostname=etl_bulk_worker --queues=etl_priority_ingestion
+              celery --app=dials worker --loglevel=INFO --concurrency=1 --autoscale=2,0 --max-tasks-per-child=1 --hostname=etl_bulk_worker --queues=etl_priority_ingestion
           env:
             - name: DJANGO_ENV
               value: prod
