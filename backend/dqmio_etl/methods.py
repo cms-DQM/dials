@@ -1,4 +1,7 @@
 import logging
+import os
+import shutil
+import tempfile
 
 from django.conf import settings
 from dqmio_file_indexer.models import FileIndex, FileIndexStatus
@@ -16,130 +19,118 @@ class HistIngestion:
 
     def __init__(self, file_index_id: int) -> None:
         self.file_index = FileIndex.objects.get(id=file_index_id)
-        self.reader = DQMIOReader(self.file_index.file_path)
+        self.remote_fpath = self.file_index.file_path
+
+        # Copy remote file to tmp location
+        self._tmp_dir = tempfile.mkdtemp()
+        self._saved_umask = os.umask(0o077)
+        self._fname = "dqmio_ingestion_copy.root"
+        self.tmp_fpath = os.path.join(self._tmp_dir, self._fname)
+        shutil.copy(self.remote_fpath, self.tmp_fpath)
+
+        # Open reader using tmp location
+        self.reader = DQMIOReader(self.tmp_fpath)
+
+    def __ingest_runs_and_lumis(self):
+        track_created_runs = {}
+        index = []
+
+        for run, lumi in self.reader.list_lumis():
+            if run not in track_created_runs:
+                run_obj, _ = Run.objects.get_or_create(run_number=run)
+                track_created_runs[run] = run_obj
+
+            run_obj = track_created_runs[run]
+            lumi_obj, _ = Lumisection.objects.get_or_create(run=run_obj, ls_number=lumi)
+            index.append({"run_number": run, "lumi_number": lumi, "lumi_obj": lumi_obj})
+
+        return index
+
+    def __get_h1d_entries_from_root_me(self, me, lumi_obj):
+        me_name = me.name
+        entries = me.data.GetEntries()
+        hist_x_bins = me.data.GetNbinsX()
+        hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
+        hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins + 1)  # Takes low edge of overflow bin instead.
+        data = [me.data.GetBinContent(i) for i in range(1, hist_x_bins + 1)]
+        return LumisectionHistogram1D(
+            lumisection=lumi_obj,
+            title=me_name,
+            entries=entries,
+            data=data,
+            source_data_file=self.file_index,
+            x_min=hist_x_min,
+            x_max=hist_x_max,
+            x_bin=hist_x_bins,
+        )
+
+    def __get_h2d_entries_from_root_me(self, me, lumi_obj):
+        me_name = me.name
+        entries = me.data.GetEntries()
+        hist_x_bins = me.data.GetNbinsX()
+        hist_y_bins = me.data.GetNbinsY()
+        hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
+        hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins) + me.data.GetXaxis().GetBinWidth(hist_x_bins)
+        hist_y_min = me.data.GetYaxis().GetBinLowEdge(1)
+        hist_y_max = me.data.GetYaxis().GetBinLowEdge(hist_y_bins) + me.data.GetYaxis().GetBinWidth(hist_y_bins)
+
+        # data should be in the form of data[x][y]
+        data = [[me.data.GetBinContent(j, i) for j in range(1, hist_x_bins + 1)] for i in range(1, hist_y_bins + 1)]
+
+        return LumisectionHistogram2D(
+            lumisection=lumi_obj,
+            title=me_name,
+            entries=entries,
+            data=data,
+            source_data_file=self.file_index,
+            x_min=hist_x_min,
+            x_max=hist_x_max,
+            x_bin=hist_x_bins,
+            y_min=hist_y_min,
+            y_max=hist_y_max,
+            y_bin=hist_y_bins,
+        )
+
+    def etl(self, obj_index: dict) -> int:
         if self.file_index.n_entries == 0:
             self.file_index.update_entries(
                 "n_entries", self.reader.count_mes(whitelist_mes=settings.DQMIO_MES_TO_INGEST)
             )
 
-    def __h1d(self) -> int:
-        entries_ingested = 0
+        h1d_entries_ingested = 0
+        h2d_entries_ingested = 0
 
-        for run, lumi in self.reader.list_lumis():
+        for objs in obj_index:
+            run_number = objs["run_number"]
+            lumi_number = objs["lumi_number"]
+            lumi_obj = objs["lumi_obj"]
+            me_list = self.reader.get_mes_for_lumi(run_number, lumi_number, "*")
             h1d_list = []
-            me_list = self.reader.get_mes_for_lumi(run, lumi, "*")
-
-            for me in me_list:
-                if me.type not in self.H1D_VALID_MES:
-                    continue
-                if me.name not in settings.DQMIO_MES_TO_INGEST:
-                    continue
-
-                entries = me.data.GetEntries()
-                hist_x_bins = me.data.GetNbinsX()
-                hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
-                hist_x_max = me.data.GetXaxis().GetBinLowEdge(
-                    hist_x_bins + 1
-                )  # Takes low edge of overflow bin instead.
-                data = [me.data.GetBinContent(i) for i in range(1, hist_x_bins + 1)]
-
-                run_obj, _ = Run.objects.get_or_create(run_number=me.run)
-                lumi_obj, _ = Lumisection.objects.get_or_create(run=run_obj, ls_number=me.lumi)
-
-                count_lumih1d = LumisectionHistogram1D.objects.filter(lumisection=lumi_obj, title=me.name).count()
-                if count_lumih1d == 0:
-                    h1d_list.append(
-                        LumisectionHistogram1D(
-                            lumisection=lumi_obj,
-                            title=me.name,
-                            entries=entries,
-                            data=data,
-                            source_data_file=self.file_index,
-                            x_min=hist_x_min,
-                            x_max=hist_x_max,
-                            x_bin=hist_x_bins,
-                        )
-                    )
-
-            n_ingested = len(LumisectionHistogram1D.objects.bulk_create(h1d_list, ignore_conflicts=True))
-            entries_ingested += n_ingested
-            logger_msg = (
-                f"{n_ingested} x 1D lumisection histos successfully added from file {self.file_index.file_path}."
-            )
-            logger.debug(logger_msg)
-
-            self.file_index.n_entries_ingested += n_ingested
-            self.file_index.save()
-
-        return entries_ingested
-
-    def __h2d(self, read_chunk_lumi: int = -1) -> int:
-        entries_ingested = 0
-        current_lumi = 0
-
-        for run, lumi in self.reader.list_lumis():
             h2d_list = []
-            me_list = self.reader.get_mes_for_lumi(run, lumi, "*")
             for me in me_list:
-                if me.type not in self.H2D_VALID_MES:
-                    continue
                 if me.name not in settings.DQMIO_MES_TO_INGEST:
                     continue
+                if me.type in self.H1D_VALID_MES:
+                    h1d_list.append(self.__get_h1d_entries_from_root_me(me, lumi_obj))
+                elif me.type in self.H2D_VALID_MES:
+                    h2d_list.append(self.__get_h2d_entries_from_root_me(me, lumi_obj))
 
-                entries = me.data.GetEntries()
-                hist_x_bins = me.data.GetNbinsX()
-                hist_y_bins = me.data.GetNbinsY()
-                hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
-                hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins) + me.data.GetXaxis().GetBinWidth(hist_x_bins)
-                hist_y_min = me.data.GetYaxis().GetBinLowEdge(1)
-                hist_y_max = me.data.GetYaxis().GetBinLowEdge(hist_y_bins) + me.data.GetYaxis().GetBinWidth(hist_y_bins)
+            n_ingested_h1d = len(LumisectionHistogram1D.objects.bulk_create(h1d_list, ignore_conflicts=True))
+            n_ingested_h2d = len(LumisectionHistogram2D.objects.bulk_create(h2d_list, ignore_conflicts=True))
+            h1d_entries_ingested += n_ingested_h1d
+            h2d_entries_ingested += n_ingested_h2d
 
-                # data should be in the form of data[x][y]
-                data = []
-                for i in range(1, hist_y_bins + 1):
-                    datarow = []
-                    for j in range(1, hist_x_bins + 1):
-                        datarow.append(me.data.GetBinContent(j, i))
-                    data.append(datarow)
-
-                run_obj, _ = Run.objects.get_or_create(run_number=me.run)
-                lumi_obj, _ = Lumisection.objects.get_or_create(run=run_obj, ls_number=me.lumi)
-
-                count_lumih2d = LumisectionHistogram2D.objects.filter(lumisection=lumi_obj, title=me.name).count()
-                if count_lumih2d == 0:
-                    h2d_list.append(
-                        LumisectionHistogram2D(
-                            lumisection=lumi_obj,
-                            title=me.name,
-                            entries=entries,
-                            data=data,
-                            source_data_file=self.file_index,
-                            x_min=hist_x_min,
-                            x_max=hist_x_max,
-                            x_bin=hist_x_bins,
-                            y_min=hist_y_min,
-                            y_max=hist_y_max,
-                            y_bin=hist_y_bins,
-                        )
-                    )
-
-            n_ingested = len(LumisectionHistogram2D.objects.bulk_create(h2d_list, ignore_conflicts=True))
-            entries_ingested += n_ingested
-            logger_msg = (
-                f"{n_ingested} x 2D lumisection histos successfully added from file {self.file_index.file_path}."
-            )
-            logger.debug(logger_msg)
-
-            self.file_index.n_entries_ingested += n_ingested
+            # Update n_entries_ingested in FileIndex each run/lumi to keep track of progress
+            self.file_index.n_entries_ingested += n_ingested_h1d + n_ingested_h2d
             self.file_index.save()
 
-            current_lumi += 1
-            if read_chunk_lumi >= current_lumi:
-                logger_msg = f"Read until requested lumi {read_chunk_lumi}, stopping"
-                logger.debug(logger_msg)
-                break
+        # Close files after ingesting and delete tmp file
+        self.reader.close()
+        os.remove(self.tmp_fpath)
+        os.umask(self._saved_umask)
+        os.rmdir(self._tmp_dir)
 
-        return entries_ingested
+        return h1d_entries_ingested, h2d_entries_ingested
 
     def run(self):
         """
@@ -147,14 +138,17 @@ class HistIngestion:
         """
         try:
             self.file_index.update_status(FileIndexStatus.RUNNING)
-            ingested_h1d_entries = self.__h1d()
-            ingested_h2d_entries = self.__h2d()
+            obj_index = self.__ingest_runs_and_lumis()
+            h1d_entries_ingested, h2d_entries_ingested = self.etl(obj_index)
             self.file_index.update_status(FileIndexStatus.PROCESSED)
         except Exception as err:
+            os.remove(self.tmp_fpath)
+            os.umask(self._saved_umask)
+            os.rmdir(self._tmp_dir)
             self.file_index.update_status(FileIndexStatus.FAILED)
             raise err
 
         return {
-            "h1d_entries": ingested_h1d_entries,
-            "h2d_entries": ingested_h2d_entries,
+            "h1d_entries": h1d_entries_ingested,
+            "h2d_entries": h2d_entries_ingested,
         }

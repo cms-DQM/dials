@@ -230,3 +230,7 @@ class DQMIOReader:
                 if me.type in me_selection:
                     num_total_entries += 1
         return num_total_entries
+
+    def close(self):
+        for f in self.rootfiles:
+            f.Close()
