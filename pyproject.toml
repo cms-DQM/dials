@@ -37,6 +37,7 @@ ruff = "^0.3.2"
 [tool.poe.tasks]
 start-dev = "./backend/scripts/start-dev.sh"
 start-flower = "./backend/scripts/start-flower.sh"
+start-monitor = "./scripts/monitor-pid.py"
 
 [tool.ruff]
 exclude = [
