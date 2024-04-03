@@ -24,7 +24,7 @@ def extract(workspace: dict) -> list:
     files = []
     for pd_name in workspace["primary_datasets"]:
         dt_pattern = f"/{pd_name}/{era_cmp_pattern}/DQMIO"
-        pd_files = dbs.get("files", {"dataset": dt_pattern, "detail": 1})
+        pd_files = dbs.get(endpoint="files", params={"dataset": dt_pattern, "detail": 1})
         files.extend(pd_files)
     return files
 
