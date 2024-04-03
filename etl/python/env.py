@@ -18,5 +18,6 @@ lxplus_pwd = config("LXPLUS_PWD")
 sa_globus_path = config("SA_GLOBUS_PATH")
 
 celery_broker_url = config("CELERY_BROKER_URL")
+celery_result_backend = config("CELERY_RESULT_BACKEND")
 
 mocked_dbs_fpath = config("MOCKED_DBS_FPATH", default="")
