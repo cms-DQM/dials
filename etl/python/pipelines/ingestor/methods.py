@@ -1,7 +1,7 @@
 import os
 import os.path
 import traceback
-from functools import reduce
+from functools import partial, reduce
 
 import pandas as pd
 from sqlalchemy import create_engine
@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from ...common.dqmio_reader import DQMIOReader
 from ...common.lxplus_client import MinimalLXPlusClient
-from ...common.pgsql import copy_expert, copy_expert_onconflict_skip
+from ...common.pgsql import copy_expert, copy_expert_onconflict_update
 from ...config import th1_types, th2_types
 from ...env import conn_str, files_landing_dir
 from ...models import TH1, TH2, DQMIOIndex, Lumisection, Run
@@ -46,13 +46,12 @@ def extract(logical_file_name: str) -> str:
         return local_fpath
 
 
-# TODO: Instead of ignoring on conflict
-# we should update the ls_count field for the run if it already exists
-# since a run can be divided in many files, but the lumisections are unique across then
 def transform_load_run(engine: Engine, reader: DQMIOReader) -> None:
     run_lumi = reader.index_keys
     runs = reduce(lambda acc, cur: {cur[0]: acc.get(cur[0], 0) + 1}, run_lumi, {})
     runs = [{"run_number": run, "ls_count": ls_count} for run, ls_count in runs.items()]
+    expr = f"ls_count = {Run.__tablename__}.ls_count + EXCLUDED.ls_count"
+    method = partial(copy_expert_onconflict_update, conflict_key="run_number", expr=expr)
 
     runs = pd.DataFrame(runs)
     runs.to_sql(
@@ -61,7 +60,7 @@ def transform_load_run(engine: Engine, reader: DQMIOReader) -> None:
         if_exists="append",
         index=False,
         chunksize=CHUNK_SIZE,
-        method=copy_expert_onconflict_skip,
+        method=method,
     )
 
 
