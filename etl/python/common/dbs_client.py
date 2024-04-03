@@ -14,7 +14,7 @@ class MinimalDBSClient:
     KEY = os.path.join(sa_globus_path, "userkey.pem")  # This key should be open
 
     def get(self, **kwargs) -> list:
-        if app_env == "test":
+        if app_env == "dev":
             return self.__get_mocked(**kwargs)
         else:
             return self.__get_dbs(**kwargs)
