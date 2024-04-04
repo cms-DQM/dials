@@ -50,7 +50,7 @@ def table_dqmio_index() -> list:
         sa.Index("idx_campaign", "campaign"),
         sa.Index("idx_dataset", "dataset"),
         sa.Index("idx_logical_file_name", "logical_file_name"),
-        sa.Index("status", "status"),
+        sa.Index("idx_status", "status"),
     ]
 
 
