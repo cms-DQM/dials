@@ -3,7 +3,9 @@ from decouple import config
 
 app_env = config("ENV")
 
-files_landing_dir = config("FILES_LANDING_DIR")
+eos_landing_zone = config("EOS_LANDING_ZONE")
+
+mounted_eos_path = config("MOUNTED_EOS_PATH", default=None)
 
 db_engine = config("DATABASE_ENGINE")
 db_user = config("DATABASE_USER")

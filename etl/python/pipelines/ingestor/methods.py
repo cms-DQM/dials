@@ -1,9 +1,12 @@
 import os
 import os.path
+import shutil
+import tempfile
 import traceback
 from functools import partial, reduce
 
 import pandas as pd
+import ROOT
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import sessionmaker
@@ -12,12 +15,18 @@ from ...common.dqmio_reader import DQMIOReader
 from ...common.lxplus_client import MinimalLXPlusClient
 from ...common.pgsql import copy_expert, copy_expert_onconflict_update
 from ...config import th1_types, th2_types
-from ...env import conn_str, files_landing_dir
+from ...env import conn_str, eos_landing_zone, lxplus_pwd, lxplus_user, mounted_eos_path
 from ...models import TH1, TH2, DQMIOIndex, Lumisection, Run
 from ...models.dqmio_index import StatusCollection
 
 
 CHUNK_SIZE = 10000
+
+
+def clean_file(fpath: str) -> None:
+    if os.path.isfile(fpath):
+        os.unlink(fpath)
+        os.rmdir(os.path.dirname(fpath))
 
 
 def pre_extract(engine: Engine, file_id: int) -> str:
@@ -29,21 +38,87 @@ def pre_extract(engine: Engine, file_id: int) -> str:
         return row.logical_file_name
 
 
-# TODO: Instead of ssh-ing directly we can check if the file exists if EOS is mounted locally
-# TODO: Instead of listing the directory, we can check if the file exists
-# TODO: We should also check if the file is not corrupted
-def extract(logical_file_name: str) -> str:
-    with MinimalLXPlusClient() as client:
-        downloaded_files = client.ls(files_landing_dir)
-        fname = logical_file_name.replace("/", "_")[1:]
+def extract(workspace_name: str, logical_file_name: str) -> str:
+    """
+    Extracts a DQMIO file from EOS and returns the local path to the extracted file.
+    If the file is corrupted (i.e. we cannot open it with ROOT), delete the file and raise the error.
 
-        if fname not in downloaded_files:
-            client.init_proxy()
-            client.xrdcp(logical_file_name, files_landing_dir)
+    Logic:
+    - If EOS is mounted locally we check if the file exists
+        - If the file exists we copy it locally
+        - Else we download it using xrdcp trough ssh and then copy it locally
+    - Else we check if the file exists via ssh
+        - If the file exists we copy it using scp
+        - Else we download it using xrdcp and then copy it using scp
 
-        remote_fpath = os.path.join(files_landing_dir, fname)
-        local_fpath = client.scp_to_tmp(remote_fpath)
-        return local_fpath
+    TODO: The current solution download a file N times if it is used by multiple workspaces
+          this was the fastest solution to implement to avoid the race condition
+
+    - Solution 1:
+    ------------------------------------------------------------------------------------------
+    This is tricky to implement because we can't have indexer workers for each workspace
+    since after the global indexer schedule the download job we need to know how many
+    ingestor jobs the download job will schedule.
+    ------------------------------------------------------------------------------------------
+    Not download the same file to the same location simultaneously, i.e.
+    we should add a new pipeline to out ETL workflow: Indexer -> Downloader -> Ingestor
+    That is, after indexing each file we schedule download jobs and after finishing the download
+    we schedule ingestion jobs for each workspace that would use that file (we should use one queue for each primary dataset).
+
+    - Solution 2:
+    ------------------------------------------------------------------------------------------
+    This one was tested and it is not reliable multiple processes hanged
+    during xrdcp execution and created the lock file simultaneously
+    ------------------------------------------------------------------------------------------
+    Another solution (this is faster) is to use a lock to make sure only one process can download
+    the same file on the same location at the same time. That is, the process that won the race
+    will generate a lock file to inform the other process that the file is being downloaded,
+    and the processes that lost the race can ignore the xrdcp error and continuously check if the lock file exists.
+
+    """
+    fname = logical_file_name.replace("/", "_")[1:]
+    tmp_dir = tempfile.mkdtemp()
+    tmp_fpath = os.path.join(tmp_dir, fname)
+    landing_path = os.path.join(eos_landing_zone, workspace_name)
+
+    if mounted_eos_path:
+        mounted_path = os.path.join(mounted_eos_path, workspace_name)
+        does_dir_exists = os.path.isdir(mounted_path)
+        if does_dir_exists is False:
+            os.makedirs(mounted_path, exist_ok=True)
+
+        mounted_fpath = os.path.join(mounted_path, fname)
+        if not os.path.isfile(mounted_fpath):
+            with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
+                does_dir_exists = client.is_dir(landing_path)
+                if does_dir_exists is False:
+                    client.mkdir(landing_path)
+
+                client.init_proxy()
+                client.xrdcp(landing_path, logical_file_name)
+        shutil.copy(mounted_fpath, tmp_fpath)
+    else:
+        landing_fpath = os.path.join(landing_path, fname)
+        with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
+            does_dir_exists = client.is_dir(landing_path)
+            if does_dir_exists is False:
+                client.mkdir(landing_path)
+
+            is_file_available = client.is_file(landing_fpath)
+            if is_file_available is False:
+                client.init_proxy()
+                client.xrdcp(landing_path, logical_file_name)
+            client.scp(landing_fpath, tmp_fpath)
+
+    # Checking if the file is corrupted
+    try:
+        with ROOT.TFile(tmp_fpath) as root_file:
+            root_file.GetUUID().AsString()
+    except Exception as err:
+        clean_file(tmp_fpath)
+        raise err  # Re-raise to the caller, we just captured to delete the leftover file
+
+    return tmp_fpath
 
 
 def transform_load_run(engine: Engine, reader: DQMIOReader) -> None:
@@ -138,7 +213,7 @@ def post_load(engine: Engine, file_id: int) -> None:
         sess.commit()
 
 
-def error_handler(engine: Engine, file_id: int, err_trace: str) -> None:
+def error_handler(engine: Engine, file_id: int, err_trace: str, status: str) -> None:
     session = sessionmaker(bind=engine)
     with session() as sess:
         sess.query(DQMIOIndex).filter_by(file_id=file_id).update(
@@ -147,25 +222,29 @@ def error_handler(engine: Engine, file_id: int, err_trace: str) -> None:
         sess.commit()
 
 
-def clean_file(fpath: str) -> None:
-    if os.path.isfile(fpath):
-        os.unlink(fpath)
-        os.rmdir(os.path.dirname(fpath))
-
-
 def pipeline(workspace_name: str, workspace_mes: str, file_id: int):
     me_pattern = f"({'|'.join(workspace_mes)}).*"
     engine = create_engine(f"{conn_str}/{workspace_name}")
     logical_file_name = pre_extract(engine, file_id)
 
+    # If this fails, the function already cleans the leftover file
+    # So we don't need to do it here (without knowing the generated tmp fpath)
     try:
-        fpath = extract(logical_file_name)
+        fpath = extract(workspace_name, logical_file_name)
+    except Exception as e:
+        err_trace = traceback.format_exc()
+        error_handler(engine, file_id, err_trace, StatusCollection.DOWNLOAD_ERROR)
+        raise e  # We are raising to mark the task as failed in celery broker
+
+    # Since we know the fpath at this stage, we need to clean the file if it fails
+    try:
         transform_load(engine, me_pattern, file_id, fpath)
     except Exception as e:
         clean_file(fpath)
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace)
+        error_handler(engine, file_id, err_trace, StatusCollection.PARSING_ERROR)
         raise e  # We are raising to mark the task as failed in celery broker
-    else:
-        clean_file(fpath)
-        post_load(engine, file_id)
+
+    # If everything goes well, we can clean the file
+    clean_file(fpath)
+    post_load(engine, file_id)
