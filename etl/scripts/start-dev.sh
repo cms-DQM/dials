@@ -1,3 +1,11 @@
+#!/bin/bash
+
+CURR_PATH=$(pwd)
+
+if [ "$(basename $CURR_PATH)" != "etl" ]; then
+    cd "etl" || exit 1
+fi
+
 celery --app=python beat --loglevel=INFO --schedule=celerybeat-schedule &
 PID_1=$!
 
