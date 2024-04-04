@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 
 from ...common.dbs_client import MinimalDBSClient
 from ...common.pgsql import copy_expert_onconflict_skip
-from ...config import era_cmp_pattern, priority_era
-from ...env import conn_str
+from ...config import dev_env_label, era_cmp_pattern, priority_era
+from ...env import app_env, cert_fpath, conn_str, key_fpath, mocked_dbs_fpath
 from ...models import DQMIOIndex
 from ...models.dqmio_index import StatusCollection
 from ..ingestor.tasks import ingestor_pipeline_task
@@ -20,7 +20,11 @@ CHUNK_SIZE = 10000
 
 
 def extract(workspace: dict) -> list:
-    dbs = MinimalDBSClient()
+    dbs = (
+        MinimalDBSClient(cert_fpath, key_fpath)
+        if app_env != dev_env_label
+        else MinimalDBSClient(None, None, True, mocked_dbs_fpath)
+    )
     files = []
     for pd_name in workspace["primary_datasets"]:
         dt_pattern = f"/{pd_name}/{era_cmp_pattern}/DQMIO"

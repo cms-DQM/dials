@@ -15,7 +15,8 @@ conn_str = f"{db_engine}://{db_user}:{db_pwd}@{db_host}:{db_port}"
 lxplus_user = config("LXPLUS_USER")
 lxplus_pwd = config("LXPLUS_PWD")
 
-sa_globus_path = config("SA_GLOBUS_PATH")
+cert_fpath = config("CERT_FPATH")
+key_fpath = config("KEY_FPATH")
 
 celery_broker_url = config("CELERY_BROKER_URL")
 celery_result_backend = config("CELERY_RESULT_BACKEND")

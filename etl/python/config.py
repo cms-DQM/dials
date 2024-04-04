@@ -56,3 +56,5 @@ th2_types = (
     7,
     8,
 )
+
+dev_env_label = "dev"

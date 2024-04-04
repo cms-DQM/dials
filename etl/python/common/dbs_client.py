@@ -5,34 +5,53 @@ import re
 import requests
 from requests.exceptions import SSLError
 
-from ..env import app_env, mocked_dbs_fpath, sa_globus_path
+
+TIMEOUT = 30
 
 
 class MinimalDBSClient:
     API_URL = "https://cmsweb-prod.cern.ch:8443/dbs/prod/global/DBSReader"
-    CERT = os.path.join(sa_globus_path, "usercert.pem")
-    KEY = os.path.join(sa_globus_path, "userkey.pem")  # This key should be open
+
+    def __init__(
+        self,
+        cert_fpath: str | None = None,
+        key_fpath: str | None = None,
+        use_mock: bool = False,
+        mock_fpath: str | None = None,
+    ) -> None:
+        self.cert_fpath = cert_fpath
+        self.key_fpath = key_fpath  # This key should be open
+        self.use_mock = use_mock
+        self.mock_fpath = mock_fpath
 
     def get(self, **kwargs) -> list:
-        if app_env == "dev":
+        if self.use_mock:
             return self.__get_mocked(**kwargs)
         else:
             return self.__get_dbs(**kwargs)
 
     def __get_dbs(self, endpoint: str, params: dict) -> list:
-        url = os.path.join(self.API_URL, endpoint)
+        if self.cert_fpath is None or self.key_fpath is None:
+            raise ValueError("Cert or key file path not set")
 
-        # Running this curl request from LXPlus works without -k flag
+        url = os.path.join(self.API_URL, endpoint)
+        cert = (self.cert_fpath, self.key_fpath)
         try:
-            response = requests.get(url, params=params, cert=(self.CERT, self.KEY), timeout=30)
+            response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT)
         except SSLError:
-            response = requests.get(url, params=params, cert=(self.CERT, self.KEY), verify=False, timeout=30)  # noqa: S501
+            # Running this curl request from LXPlus works without -k flag
+            # This is here for local testing
+            response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT, verify=False)  # noqa: S501
 
         response.raise_for_status()
         return response.json()
 
     def __get_mocked(self, endpoint: str, params: dict) -> list:
-        with open(mocked_dbs_fpath) as fd:
-            data = json.load(fd)
-        response = [elem for elem in data if re.search(params.get("dataset").replace("*", ".*"), elem.get("dataset"))]
+        if self.mock_fpath is None:
+            raise ValueError("Mock file path not set")
+        with open(self.mock_fpath) as fd:
+            response = json.load(fd)
+        if params.get("dataset"):
+            filter_ptrn = params.get("dataset").replace("*", ".*")
+            response = [elem for elem in response if re.search(filter_ptrn, elem.get("dataset"))]
         return response
