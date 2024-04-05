@@ -164,12 +164,20 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
     reader_func = reader.th1_from_cppyy if th_table == "th1" else reader.th2_from_cppyy
     run_lumi = reader.index_keys
 
+    th_mes = {}
     th_list = []
     chunk_count = 0
     for run, lumi, ls_id in run_lumi:
         me_list = reader.get_mes_for_lumi(run, lumi, types=types, re_pattern=me_pattern)
         for me in me_list:
-            th_list.append({"file_id": file_id, "run_number": run, "ls_id": ls_id, **reader_func(me)})
+            th_entry = {"file_id": file_id, "run_number": run, "ls_id": ls_id, **reader_func(me)}
+            th_list.append(th_entry)
+
+            if th_entry.get("title") not in th_mes:
+                th_mes[th_entry.get("title")] = 1
+            else:
+                th_mes[th_entry.get("title")] += 1
+
             chunk_count += 1
             if chunk_count == CHUNK_SIZE:
                 th_list = pd.DataFrame(th_list)
@@ -196,6 +204,18 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
             index=False,
             method=copy_expert,
         )
+
+    expr = f"count = {th_table}_mes.count + EXCLUDED.count"
+    method = partial(copy_expert_onconflict_update, conflict_key="title", expr=expr)
+    th_mes = [{"title": title, "count": count} for title, count in th_mes.items()]
+    th_mes = pd.DataFrame(th_mes)
+    th_mes.to_sql(
+        name=th_table + "_mes",
+        con=engine,
+        if_exists="append",
+        index=False,
+        method=method,
+    )
 
 
 def transform_load(engine: Engine, me_pattern: str, file_id: int, fpath: str) -> pd.DataFrame:

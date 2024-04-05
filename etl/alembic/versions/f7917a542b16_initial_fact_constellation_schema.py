@@ -73,6 +73,14 @@ def table_lumisection() -> list:
     ]
 
 
+def table_th1_mes() -> list:
+    return [
+        sa.Column("title", sa.String(length=255)),
+        sa.Column("count", sa.BigInteger),
+        sa.PrimaryKeyConstraint("title"),
+    ]
+
+
 def table_th1() -> list:
     return [
         sa.Column("hist_id", sa.BigInteger, autoincrement=True),
@@ -94,6 +102,14 @@ def table_th1() -> list:
         sa.Index("idx_th1_ls_id", "ls_id"),
         sa.Index("idx_th1_title", "title"),
         sa.Index("idx_th1_entries", "entries"),
+    ]
+
+
+def table_th2_mes() -> list:
+    return [
+        sa.Column("title", sa.String(length=255)),
+        sa.Column("count", sa.BigInteger),
+        sa.PrimaryKeyConstraint("title"),
     ]
 
 
@@ -137,13 +153,17 @@ def create_tables() -> None:
     op.create_table("dqmio_index", *table_dqmio_index())
     op.create_table("run", *table_run())
     op.create_table("lumisection", *table_lumisection())
+    op.create_table("th1_mes", *table_th1_mes())
     op.create_table("th1", *table_th1())
+    op.create_table("th2_mes", *table_th2_mes())
     op.create_table("th2", *table_th2())
 
 
 def delete_tables() -> None:
     op.drop_table("th2")
+    op.drop_table("th2_mes")
     op.drop_table("th1")
+    op.drop_table("th1_mes")
     op.drop_table("lumisection")
     op.drop_table("run")
     op.drop_table("dqmio_index")
