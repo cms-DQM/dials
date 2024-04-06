@@ -8,9 +8,28 @@ import Card from 'react-bootstrap/Card'
 import { ResponsivePlot } from '../../components'
 import API from '../../services/api'
 
+const gruopBySplitTitle = (data) => {
+  const groupedData = data.reduce((acc, item) => {
+    const [firstPart, secondPart] = item.title.split('/')
+    const key = `${firstPart}/${secondPart.split('/')[0]}`
+
+    if (!acc[key]) {
+      acc[key] = {
+        title: key,
+        count: item.count,
+      }
+    } else {
+      acc[key].count += item.count
+    }
+
+    return acc
+  }, {})
+
+  return Object.values(groupedData)
+}
+
 const IngestionStatistics = () => {
   const [totalFiles, setTotalFiles] = useState(0)
-  const [totalBadFiles, setTotalBadFiles] = useState(0)
   const [totalRuns, setTotalRuns] = useState(0)
   const [totalLumisections, setTotalLumisection] = useState(0)
   const [dataFilesPlot, setDataFilesPlot] = useState([])
@@ -29,18 +48,6 @@ const IngestionStatistics = () => {
         .list({})
         .then((response) => {
           setTotalFiles(response.count)
-        })
-        .catch((err) => {
-          console.error(err)
-          toast.error('Failure to communicate with the API!')
-        })
-    }
-
-    const fetchTotalBadIndexedFiles = () => {
-      API.badFileIndex
-        .list({})
-        .then((response) => {
-          setTotalBadFiles(response.count)
         })
         .catch((err) => {
           console.error(err)
@@ -102,19 +109,20 @@ const IngestionStatistics = () => {
     const fetchH1DCount = () => {
       setIsLoadingH1D(true)
       API.lumisection
-        .getSubsystemCount(1)
+        .getIngestedMEs(1)
         .then((data) => {
+          const groupedData = gruopBySplitTitle(data)
           setDataH1DPlot([
             {
-              values: data.map((item) => item.count),
-              labels: data.map((item) => item.subsystem),
+              values: groupedData.map((item) => item.count),
+              labels: groupedData.map((item) => item.title),
               type: 'pie',
               textinfo: 'value+percent',
             },
           ])
           setLayoutH1DPlot({
             title: {
-              text: `Total: ${data.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
+              text: `Total: ${groupedData.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
             },
           })
           setIsLoadingH1D(false)
@@ -128,19 +136,20 @@ const IngestionStatistics = () => {
     const fetchH2DCount = () => {
       setIsLoadingH2D(true)
       API.lumisection
-        .getSubsystemCount(2)
+        .getIngestedMEs(2)
         .then((data) => {
+          const groupedData = gruopBySplitTitle(data)
           setDataH2DPlot([
             {
-              values: data.map((item) => item.count),
-              labels: data.map((item) => item.subsystem),
+              values: groupedData.map((item) => item.count),
+              labels: groupedData.map((item) => item.title),
               type: 'pie',
               textinfo: 'value+percent',
             },
           ])
           setLayoutH2DPlot({
             title: {
-              text: `Total: ${data.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
+              text: `Total: ${groupedData.map((item) => item.count).reduce((partialSum, a) => partialSum + a, 0)}`,
             },
           })
           setIsLoadingH2D(false)
@@ -152,7 +161,6 @@ const IngestionStatistics = () => {
     }
 
     fetchTotalIndexedFiles()
-    fetchTotalBadIndexedFiles()
     fetchTotalIngestedRuns()
     fetchTotalIngestedLumis()
     fatchStatusData()
@@ -163,7 +171,7 @@ const IngestionStatistics = () => {
   return (
     <>
       <Row className='mt-5 mb-3'>
-        <Col sm={3}>
+        <Col sm={4}>
           <Card className='text-center'>
             <Card.Header>Good Files</Card.Header>
             <Card.Body>
@@ -171,15 +179,7 @@ const IngestionStatistics = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={3}>
-          <Card className='text-center'>
-            <Card.Header>Bad Files</Card.Header>
-            <Card.Body>
-              <h1>{totalBadFiles}</h1>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col sm={3}>
+        <Col sm={4}>
           <Card className='text-center'>
             <Card.Header>Runs</Card.Header>
             <Card.Body>
@@ -187,7 +187,7 @@ const IngestionStatistics = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={3}>
+        <Col sm={4}>
           <Card className='text-center'>
             <Card.Header>Lumisections</Card.Header>
             <Card.Body>
@@ -200,7 +200,7 @@ const IngestionStatistics = () => {
       <Row className='mb-3'>
         <Col sm={6}>
           <Card className='text-center'>
-            <Card.Header>1D Histograms by subsystem</Card.Header>
+            <Card.Header>Ingested 1D MEs</Card.Header>
             <Card.Body>
               <ResponsivePlot
                 data={dataH1DPlot}
@@ -213,7 +213,7 @@ const IngestionStatistics = () => {
         </Col>
         <Col sm={6}>
           <Card className='text-center'>
-            <Card.Header>2D Histograms by subsystem</Card.Header>
+            <Card.Header>Ingested 2D MEs</Card.Header>
             <Card.Body>
               <ResponsivePlot
                 data={dataH2DPlot}

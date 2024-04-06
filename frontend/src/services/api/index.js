@@ -7,9 +7,10 @@ import { API_URL } from '../../config/env'
 const FILE_INDEX_STATUSES = [
   'INDEXED',
   'PENDING',
-  'RUNNING',
-  'PROCESSED',
-  'FAILED',
+  'STARTED',
+  'DOWNLOAD_ERROR',
+  'PARSING_ERROR',
+  'FINISHED',
 ]
 
 const axiosApiInstance = axios.create()
@@ -191,8 +192,8 @@ const getHistogram = async (dim, id) => {
   return response.data
 }
 
-const getIngestedSubsystems = async (dim) => {
-  const endpoint = `${API_URL}/lumisection-h${dim}d/count-by-subsystem/`
+const getIngestedMonitoringElements = async (dim) => {
+  const endpoint = `${API_URL}/lumisection-h${dim}d-mes/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
@@ -242,7 +243,7 @@ const API = {
     get: getLumisection,
     list: listLumisections,
     listHistograms,
-    getSubsystemCount: getIngestedSubsystems,
+    getIngestedMEs: getIngestedMonitoringElements,
     getHistogram,
   },
   run: {
