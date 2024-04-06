@@ -10,19 +10,23 @@ The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are mana
 
 ## Accessing DQMIO data from EOS
 
-The following commands will mount the specific DQMIO production data from EOS in read-only mode in your home folder (if you don't like the location you can change it):
+The following commands will mount the specific DQMIO production data from EOS in read-only mode mimicking lxplus/openshift eos mounting structure:
 
 ```bash
-mkdir -p $HOME/DQMIO
-sshfs -o default_permissions,ro $USER@lxplus.cern.ch:/eos/project/m/dials/public/DQMIO $HOME/DQMIO
+sudo mkdir -p /eos/project-m/mlplayground/public/DQMIO_workspaces
+sudo mkdir -p /eos/home-m/mlplayground/DQMIO_workspaces
+sudo chown -R $USER:$USER /eos
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /eos/project-m/mlplayground/public/DQMIO_workspaces
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/home-m/mlplayground/DQMIO_workspaces /eos/home-m/mlplayground/DQMIO_workspaces
 ```
 
-You can try running the application to ingest data from the production source, but given EOS limitations and network bandwidth limitation it is much simpler to copy some files (20 is enough) to a local directory and use that as the data source for the local application.
+You can try running the ETL workflow ingesting all available data, but for testing purposes you can just use a mocked DBS response with just 30 files per workspace.
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount $HOME/DQMIO
+umount /eos/project-m/mlplayground/public/DQMIO_workspaces
+umount /eos/home-m/mlplayground/DQMIO_workspaces
 ```
 
 ## Running PostgresSQL
