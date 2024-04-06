@@ -11,12 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import json
+import os.path
 from pathlib import Path
 
-from celery.schedules import crontab
+import dj_database_url
 from decouple import config
-
-from .dqmio_perls_mes import get_monitoring_elements_names
 
 
 # Discover which environment the server is running
@@ -46,21 +45,11 @@ CORS_ALLOWED_ORIGINS = config("DJANGO_CORS_ALLOWED_ORIGINS", default="").split("
 
 # Application definition
 INSTALLED_APPS = [
-    # Django built-in apps
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party apps
     "rest_framework",
-    "drf_spectacular",
-    "django_celery_results",
     "corsheaders",
-    # Project apps
     "dqmio_file_indexer.apps.DqmioDataIndexerConfig",
     "dqmio_etl.apps.DqmioEtlConfig",
-    "dqmio_celery_tasks.apps.DqmioCeleryTasksConfig",
     "cern_auth.apps.CERNAuthConfig",
 ]
 
@@ -68,17 +57,6 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
-
-# DRF-Spectacular configuration
-SPECTACULAR_SETTINGS = {
-    "PREPROCESSING_HOOKS": ["dials.spectacular.preprocessing_filter_spec"],
-    "AUTHENTICATION_WHITELIST": [
-        "utils.rest_framework_cern_sso.authentication.CERNKeycloakClientSecretAuthentication",
-        "utils.rest_framework_cern_sso.authentication.CERNKeycloakPublicAuthentication",
-        "utils.rest_framework_cern_sso.authentication.CERNKeycloakConfidentialAuthentication",
-    ],
 }
 
 # A list of middleware (framework of hooks into Django's request/response processing) to use
@@ -86,12 +64,9 @@ MIDDLEWARE = [
     "debreach.middleware.RandomCommentMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django_permissions_policy.PermissionsPolicyMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "csp.middleware.CSPMiddleware",
 ]
@@ -109,8 +84,6 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -119,36 +92,19 @@ TEMPLATES = [
 # Indicate entrypoint for starting ASGI server
 ASGI_APPLICATION = "dials.asgi.application"
 
-
 # Database configuration
-DATABASES = {
-    "default": {
-        "ENGINE": config("DJANGO_DATABASE_ENGINE"),
-        "NAME": config("DJANGO_DATABASE_NAME"),
-        "USER": config("DJANGO_DATABASE_USER"),
-        "PASSWORD": config("DJANGO_DATABASE_PASSWORD"),
-        "HOST": config("DJANGO_DATABASE_HOST"),
-        "PORT": config("DJANGO_DATABASE_PORT"),
-    },
-}
+WORKSPACES = json.loads(config("DJANGO_WORKSPACES", default="{}"))
+if len(WORKSPACES) == 0:
+    raise Exception("Workspaces are empty, cannot start server.")
 
+DB_SERVER_URI = config("DJANGO_DATABASE_URI")
+DEFAULT_WORKSPACE = config("DJANGO_DEFAULT_WORKSPACE", default=None)
+DEFAULT_WORKSPACE = DEFAULT_WORKSPACE if DEFAULT_WORKSPACE else WORKSPACES.keys()[0]
+DATABASES = {name: dj_database_url.config(default=os.path.join(DB_SERVER_URI, name)) for name in WORKSPACES.keys()}
+DATABASES["default"] = DATABASES[DEFAULT_WORKSPACE]
 
 # Password validation
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
+AUTH_PASSWORD_VALIDATORS = []
 
 # Internationalization
 LANGUAGE_CODE = "en-us"
@@ -166,45 +122,30 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "DEBUG" if DEBUG else "WARNING",
+        "console": {"level": "DEBUG" if DEBUG else "WARNING", "class": "logging.StreamHandler", "formatter": "standard"}
     },
     "formatters": {
-        "verbose": {
+        "standard": {
             "format": "{levelname} - {asctime} - {module} - {message}",
             "style": "{",
         },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "WARNING",
+            "propagate": False,
+        },
+        "root": {"handlers": ["console"], "level": "DEBUG" if DEBUG else "WARNING", "propagate": False},
     },
 }
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Celery configuration options
-CELERY_BROKER_URL = config("DJANGO_CELERY_BROKER_URL")
-CELERY_TASK_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_RESULT_EXTENDED = True
-CELERY_CACHE_BACKEND = "django-cache"
-CELERY_BEAT_SCHEDULE = {
-    "Index new files and schedule ingestions": {
-        "task": "dqmio_file_indexer.tasks.handle_periodic",
-        "schedule": crontab(minute=0),
-    }
-}
-CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 21600}  # 6 hours in seconds
-
-# Path used in dqmio_file_indexer app to discover DQMIO files
-DIR_PATH_DQMIO_STORAGE = json.loads(config("DJANGO_DQMIO_STORAGE", default="[]"))
-
-# List of MEs to ingest
-DQMIO_MES_TO_INGEST = get_monitoring_elements_names()
 
 # Keycloak OIDC config
 KEYCLOAK_SERVER_URL = config("DJANGO_KEYCLOAK_SERVER_URL")
@@ -233,13 +174,12 @@ PERMISSIONS_POLICY = {
 }
 
 # Django-CSP
-CSP_INCLUDE_NONCE_IN = ["script-src", "style-src", "font-src"]
+CSP_INCLUDE_NONCE_IN = ["script-src", "connect-src", "style-src", "font-src", "img-src"]
 CSP_SCRIPT_SRC = [
     "'self'",
     "'unsafe-inline'",
     "'unsafe-eval'",
-    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-bundle.js",
-    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js",
+    "https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js",
 ] + [f"*{host}" if host.startswith(".") else host for host in ALLOWED_HOSTS]
 CSP_CONNECT_SRC = [
     "'self'",
@@ -247,7 +187,7 @@ CSP_CONNECT_SRC = [
 CSP_STYLE_SRC = [
     "'self'",
     "'unsafe-inline'",
-    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css",
+    "https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css",
 ]
 CSP_FONT_SRC = [
     "'self'",
@@ -255,5 +195,6 @@ CSP_FONT_SRC = [
 ] + [f"*{host}" if host.startswith(".") else host for host in ALLOWED_HOSTS]
 CSP_IMG_SRC = [
     "'self'",
-    "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png",
+    "data:",
+    "https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png",
 ]

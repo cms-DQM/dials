@@ -1,0 +1,33 @@
+from django.conf import settings
+from rest_framework.exceptions import NotFound
+
+
+def get_workspace_from_role(roles: list) -> str | None:
+    for workspace_name, workspace_role in settings.WORKSPACES.items():
+        if workspace_role in roles:
+            return workspace_name
+    return None
+
+
+class GenericViewSetRouter:
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        order_by = queryset.query.order_by
+        queryset = queryset.model.objects
+        workspace = self.request.headers.get("Workspace")
+
+        if workspace:
+            if workspace not in settings.WORKSPACES.keys():
+                raise NotFound(detail=f"Workspace '{workspace}' not found", code=404)
+            queryset = queryset.using(workspace)
+        else:
+            user_roles = self.request.user.cern_roles
+            workspace = get_workspace_from_role(user_roles)
+            workspace = workspace or settings.DEFAULT_WORKSPACE
+            queryset = queryset.using(workspace)
+
+        queryset = queryset.all()
+        for field in order_by:
+            queryset = queryset.order_by(field)
+
+        return queryset

@@ -1,6 +1,5 @@
 from functools import wraps
 
-from django.db.models import Func
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
@@ -36,8 +35,3 @@ def paginate(page_size, serializer_class):
         return wrapper
 
     return decorator
-
-
-class SplitPart(Func):
-    function = "split_part"
-    arity = 3

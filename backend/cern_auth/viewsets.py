@@ -3,7 +3,6 @@ import logging
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest
-from drf_spectacular.utils import extend_schema
 from keycloak.exceptions import KeycloakPostError
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -16,13 +15,10 @@ from utils.rest_framework_cern_sso.authentication import (
 from utils.rest_framework_cern_sso.user import CERNKeycloakUser
 
 from .serializers import (
-    DeviceCodeSerializer,
     DeviceSerializer,
     DeviceTokenSerializer,
     ExchangedTokenSerializer,
     PendingAuthorizationErrorSerializer,
-    RefreshTokenSerializer,
-    SubjectTokenSerializer,
 )
 
 
@@ -30,10 +26,6 @@ logger = logging.getLogger(__name__)
 
 
 class AuthViewSet(ViewSet):
-    @extend_schema(
-        request=SubjectTokenSerializer,
-        responses={200: ExchangedTokenSerializer},
-    )
     @action(
         detail=False,
         methods=["post"],
@@ -51,10 +43,6 @@ class AuthViewSet(ViewSet):
         payload = ExchangedTokenSerializer(confidential_token).data
         return Response(payload)
 
-    @extend_schema(
-        request=RefreshTokenSerializer,
-        responses={200: DeviceTokenSerializer},
-    )
     @action(detail=False, methods=["post"], name="Refresh confidential token", url_path=r"refresh-token")
     def refresh_token(self, request: Request):
         ref_token = request.data.get("refresh_token")
@@ -65,10 +53,6 @@ class AuthViewSet(ViewSet):
         payload = DeviceTokenSerializer(confidential_token).data
         return Response(payload)
 
-    @extend_schema(
-        request=None,
-        responses={200: DeviceSerializer},
-    )
     @action(
         detail=False,
         methods=["get"],
@@ -80,10 +64,6 @@ class AuthViewSet(ViewSet):
         payload = DeviceSerializer(issue_device).data
         return Response(payload)
 
-    @extend_schema(
-        request=DeviceCodeSerializer,
-        responses={200: DeviceTokenSerializer, 400: PendingAuthorizationErrorSerializer},
-    )
     @action(
         detail=False,
         methods=["post"],

@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run
+from .models import (
+    Lumisection,
+    LumisectionHistogram1D,
+    LumisectionHistogram1DMEs,
+    LumisectionHistogram2D,
+    LumisectionHistogram2DMEs,
+    Run,
+)
 
 
 class RunSerializer(serializers.ModelSerializer):
@@ -15,42 +22,25 @@ class LumisectionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class LumisectionHistogram1DSerializer(serializers.ModelSerializer):
-    ls_number = serializers.IntegerField(source="lumisection.ls_number")
-    run_number = serializers.IntegerField(source="lumisection.run.run_number")
+class LumisectionHistogram1DMEsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LumisectionHistogram1DMEs
+        fields = "__all__"
 
+
+class LumisectionHistogram1DSerializer(serializers.ModelSerializer):
     class Meta:
         model = LumisectionHistogram1D
         fields = "__all__"
 
 
-class LumisectionHistogram2DSerializer(serializers.ModelSerializer):
-    ls_number = serializers.IntegerField(source="lumisection.ls_number")
-    run_number = serializers.IntegerField(source="lumisection.run.run_number")
-
+class LumisectionHistogram2DMEsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LumisectionHistogram2D
+        model = LumisectionHistogram2DMEs
         fields = "__all__"
 
 
-class LumisectionHistogramsIngestionInputSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    queue = serializers.CharField()
-
-
-class LumisectionHistogramsSubsystemCountSerializer(serializers.Serializer):
-    subsystem = serializers.CharField()
-    count = serializers.IntegerField()
-
-
-class RunLumisectionsSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    ls_number = serializers.IntegerField()
-    hist1d_count = serializers.IntegerField()
-    hist2d_count = serializers.IntegerField()
-    int_lumi = serializers.IntegerField()
-    oms_zerobias_rate = serializers.IntegerField()
-
-
-class MEsSerializer(serializers.Serializer):
-    mes = serializers.ListSerializer(child=serializers.CharField())
+class LumisectionHistogram2DSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LumisectionHistogram2D
+        fields = "__all__"

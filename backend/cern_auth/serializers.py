@@ -1,14 +1,6 @@
 from rest_framework import serializers
 
 
-class SubjectTokenSerializer(serializers.Serializer):
-    subject_token = serializers.CharField()
-
-
-class RefreshTokenSerializer(serializers.Serializer):
-    refresh_token = serializers.CharField()
-
-
 class ExchangedTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
     expires_in = serializers.IntegerField()
@@ -18,10 +10,6 @@ class ExchangedTokenSerializer(serializers.Serializer):
     id_token = serializers.CharField()
     session_state = serializers.CharField()
     scope = serializers.CharField()
-
-
-class DeviceCodeSerializer(serializers.Serializer):
-    device_code = serializers.CharField()
 
 
 class DeviceSerializer(serializers.Serializer):

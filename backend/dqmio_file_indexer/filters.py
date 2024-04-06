@@ -2,30 +2,26 @@ from typing import ClassVar
 
 from django_filters import rest_framework as filters
 
-from .models import BadFileIndex, FileIndex, FileIndexStatus
+from .models import FileIndex
 
 
 class FileIndexFilter(filters.FilterSet):
-    path_contains = filters.CharFilter(label="File path contains", field_name="file_path", lookup_expr="contains")
-    era = filters.CharFilter(label="Data era", field_name="data_era", lookup_expr="exact")
-    min_size = filters.NumberFilter(label="Minimum file size", field_name="st_size", lookup_expr="gte")
-    status = filters.ChoiceFilter(
-        label="File contents ingestion status",
-        field_name="status",
-        lookup_expr="exact",
-        choices=[(v, v) for v in FileIndexStatus.all()],
+    min_size = filters.NumberFilter(label="Minimum file size", field_name="file_size", lookup_expr="gte")
+    era = filters.CharFilter(label="Era", field_name="era", lookup_expr="exact")
+    campaign = filters.CharFilter(label="Campaign", field_name="campaign", lookup_expr="contains")
+    dataset = filters.CharFilter(label="Dataset", field_name="dataset", lookup_expr="contains")
+    logical_file_name = filters.CharFilter(
+        label="Logical file name", field_name="logical_file_name", lookup_expr="contains"
     )
+    status = filters.CharFilter(label="ETL pipeline status", field_name="status", lookup_expr="exact")
 
     class Meta:
         model = FileIndex
-        fields: ClassVar[list[str]] = ["path_contains", "era", "min_size", "status"]
-
-
-class BadFileIndexFilter(filters.FilterSet):
-    path_contains = filters.CharFilter(label="File path contains", field_name="file_path", lookup_expr="contains")
-    era = filters.CharFilter(label="Data era", field_name="data_era", lookup_expr="exact")
-    min_size = filters.NumberFilter(label="Minimum file size", field_name="st_size", lookup_expr="gte")
-
-    class Meta:
-        model = BadFileIndex
-        fields: ClassVar[list[str]] = ["path_contains", "era", "min_size"]
+        fields: ClassVar[list[str]] = [
+            "min_size",
+            "era",
+            "campaign",
+            "dataset",
+            "logical_file_name",
+            "status",
+        ]
