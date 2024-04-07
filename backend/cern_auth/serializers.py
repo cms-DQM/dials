@@ -10,6 +10,7 @@ class ExchangedTokenSerializer(serializers.Serializer):
     id_token = serializers.CharField()
     session_state = serializers.CharField()
     scope = serializers.CharField()
+    default_workspace = serializers.CharField()
 
 
 class DeviceSerializer(serializers.Serializer):

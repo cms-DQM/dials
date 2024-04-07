@@ -2,10 +2,12 @@ from django.conf import settings
 from rest_framework.exceptions import NotFound
 
 
-def get_workspace_from_role(roles: list) -> str | None:
+def get_workspace_from_role(roles: list, use_default_if_not_found: bool = False) -> str | None:
     for workspace_name, workspace_role in settings.WORKSPACES.items():
         if workspace_role in roles:
             return workspace_name
+    if use_default_if_not_found:
+        return settings.DEFAULT_WORKSPACE
     return None
 
 

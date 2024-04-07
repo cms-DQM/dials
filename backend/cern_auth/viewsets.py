@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from utils.db_router import get_workspace_from_role
 from utils.rest_framework_cern_sso.authentication import (
     CERNKeycloakPublicAuthentication,
     confidential_kc,
@@ -40,6 +41,9 @@ class AuthViewSet(ViewSet):
 
         user: CERNKeycloakUser = request.user
         confidential_token = user.token.client.exchange_token(subject_token, settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID)
+        confidential_token["default_workspace"] = get_workspace_from_role(
+            user.cern_roles, use_default_if_not_found=True
+        )
         payload = ExchangedTokenSerializer(confidential_token).data
         return Response(payload)
 
