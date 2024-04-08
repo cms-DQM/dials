@@ -71,7 +71,7 @@ const listFileIndex = async ({
       campaign,
       dataset,
       era,
-      logicalFileName,
+      logical_file_name: logicalFileName,
       min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
       status,
     },

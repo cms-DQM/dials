@@ -16,39 +16,63 @@ import { toast } from 'react-toastify'
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pathContains, setPathContains] = useState()
-  const [dataEra, setDataEra] = useState()
+  const [campaign, setCampaign] = useState()
+  const [dataset, setDataset] = useState()
+  const [era, setEra] = useState()
+  const [logicalFileName, setLogicalFileName] = useState()
   const [minSize, setMinSize] = useState(0)
   const [fileStatus, setFileStatus] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
-    { dataField: 'file_path', text: 'Path', type: 'string' },
-    { dataField: 'data_era', text: 'Era', type: 'string' },
-    { dataField: 'st_size', text: 'Size (MB)', type: 'number' },
-    { dataField: 'st_ctime', text: 'Created at', type: 'string' },
-    { dataField: 'st_itime', text: 'Indexed at', type: 'string' },
+    { dataField: 'file_id', text: 'ID', type: 'number' },
+    { dataField: 'file_size', text: 'Size (MB)', type: 'number' },
+    { dataField: 'era', text: 'Era', type: 'string' },
+    { dataField: 'campaign', text: 'Campaign', type: 'string' },
+    { dataField: 'dataset', text: 'Dataset', type: 'string' },
+    {
+      dataField: 'last_modification_date',
+      text: 'Last Modification Date',
+      type: 'string',
+    },
+    {
+      dataField: 'logical_file_name',
+      text: 'Logical File Name',
+      type: 'string',
+    },
     { dataField: 'status', text: 'Status', type: 'string' },
   ]
 
-  const fetchData = ({ page, era, minSize, pathContains, status }) => {
+  const fetchData = ({
+    page,
+    campaign,
+    dataset,
+    era,
+    logicalFileName,
+    minSize,
+    status,
+  }) => {
     setLoading(true)
     API.fileIndex
       .list({
         page,
+        campaign,
+        dataset,
         era,
+        logicalFileName,
         minSize: minSize > 0 ? minSize : undefined,
-        pathContains,
         status,
       })
       .then((response) => {
         const results = response.results.map((item) => {
           return {
             ...item,
-            st_ctime: dateFormat(item.st_ctime, 'dd.MM.yyyy HH:mm:ss'),
-            st_itime: dateFormat(item.st_itime, 'dd.MM.yyyy HH:mm:ss'),
-            st_size: (item.st_size / 1024 ** 2).toFixed(1),
+            last_modification_date: dateFormat(
+              item.last_modification_date,
+              'dd.MM.yyyy HH:mm:ss'
+            ),
+            file_size: (item.file_size / 1024 ** 2).toFixed(1),
           }
         })
         setData(results)
@@ -76,23 +100,43 @@ const FileIndex = () => {
             Filters
           </Card.Header>
           <Card.Body>
-            <Form.Group className='mb-3' controlId='formPathContains'>
-              <Form.Label>Path contains</Form.Label>
+            <Form.Group className='mb-3' controlId='formCampaign'>
+              <Form.Label>Campaign contains</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter path substring'
-                value={pathContains}
-                onChange={(e) => setPathContains(e.target.value)}
+                placeholder='Enter campaign substring'
+                value={campaign}
+                onChange={(e) => setCampaign(e.target.value)}
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formDataEra'>
+            <Form.Group className='mb-3' controlId='formDataset'>
+              <Form.Label>Dataset contains</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter dataset substring'
+                value={dataset}
+                onChange={(e) => setDataset(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formEra'>
               <Form.Label>Era</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter data era'
-                value={dataEra}
-                onChange={(e) => setDataEra(e.target.value)}
+                placeholder='Enter era'
+                value={era}
+                onChange={(e) => setEra(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formLogicalFileName'>
+              <Form.Label>Logical file name contains</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter logical file name substring'
+                value={logicalFileName}
+                onChange={(e) => setLogicalFileName(e.target.value)}
               />
             </Form.Group>
 
@@ -145,9 +189,11 @@ const FileIndex = () => {
               onClick={() => {
                 fetchData({
                   page: 1,
-                  era: dataEra,
+                  campaign,
+                  dataset,
+                  era,
+                  logicalFileName,
                   minSize,
-                  pathContains,
                   status: fileStatus,
                 })
               }}
@@ -173,9 +219,11 @@ const FileIndex = () => {
                 if (type === 'pagination') {
                   fetchData({
                     page,
-                    era: dataEra,
+                    campaign,
+                    dataset,
+                    era,
+                    logicalFileName,
                     minSize,
-                    pathContains,
                     status: fileStatus,
                   })
                 }
