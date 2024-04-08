@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import { Table } from '../../components'
 import API from '../../services/api'
 import { isNumericNonZero } from '../../utils/sanitizer'
+import reverseCantorPairing from '../../utils/cantor'
 
 const Lumisections = () => {
   const navigate = useNavigate()
@@ -31,12 +32,12 @@ const Lumisections = () => {
 
   const columns = [
     {
-      dataField: 'run',
+      dataField: 'run_number',
       text: 'Run',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/runs/${row.run}`
-        return <Link to={linkTo}>{row.run}</Link>
+        const linkTo = `/runs/${row.run_number}`
+        return <Link to={linkTo}>{row.run_number}</Link>
       },
     },
     {
@@ -44,9 +45,19 @@ const Lumisections = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.id}`
+        const linkTo = `/lumisections/${row.ls_id}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
+    },
+    {
+      dataField: 'th1_count',
+      text: 'TH1 Count',
+      type: 'number',
+    },
+    {
+      dataField: 'th2_count',
+      text: 'TH2 Count',
+      type: 'number',
     },
     {
       dataField: 'oms_zerobias_rate',
@@ -75,7 +86,7 @@ const Lumisections = () => {
         if (response.count === 0) {
           toast.error('Lumisection not found!')
         } else {
-          navigate(`/lumisections/${response.results[0].id}`)
+          navigate(`/lumisections/${response.results[0].ls_id}`)
         }
       })
       .catch((error) => {
@@ -89,7 +100,13 @@ const Lumisections = () => {
     API.lumisection
       .list({ page, minLs, maxLs, minRun, maxRun })
       .then((response) => {
-        setData(response.results)
+        const results = response.results.map((item) => {
+          return {
+            ...item,
+            run_number: reverseCantorPairing(item.ls_id, item.ls_number)
+          }
+        })
+        setData(results)
         setTotalSize(response.count)
         setCurrentPage(page)
       })
