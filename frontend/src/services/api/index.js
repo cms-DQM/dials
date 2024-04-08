@@ -83,23 +83,6 @@ const listFileIndex = async ({
   return response.data
 }
 
-const listBadFileIndex = async ({ page, era, minSize, pathContains }) => {
-  const endpoint = `${API_URL}/bad-file-index/`
-  const params = sanitizedURLSearchParams(
-    {
-      page,
-      era,
-      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
-      path_contains: pathContains,
-    },
-    { repeatMode: false }
-  )
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
 const getRun = async ({ run }) => {
   const endpoint = `${API_URL}/run/${run}/`
   const response = await axiosApiInstance.get(endpoint)
@@ -223,9 +206,6 @@ const API = {
   fileIndex: {
     statusList: FILE_INDEX_STATUSES,
     list: listFileIndex,
-  },
-  badFileIndex: {
-    list: listBadFileIndex,
   },
   lumisection: {
     get: getLumisection,
