@@ -15,6 +15,7 @@ import os.path
 from pathlib import Path
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 from decouple import config
 
 
@@ -42,6 +43,8 @@ CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` wi
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = config("DJANGO_CORS_ALLOWED_ORIGINS", default="").split(" ")
+
+CORS_ALLOW_HEADERS = [*default_headers, "workspace"]
 
 # Application definition
 INSTALLED_APPS = [
