@@ -81,7 +81,7 @@ const Lumisections = () => {
     }
 
     API.lumisection
-      .list({ run: runNumber, ls: lsNumber })
+      .list({ runNumber, ls: lsNumber })
       .then((response) => {
         if (response.count === 0) {
           toast.error('Lumisection not found!')
@@ -103,7 +103,7 @@ const Lumisections = () => {
         const results = response.results.map((item) => {
           return {
             ...item,
-            run_number: reverseCantorPairing(item.ls_id, item.ls_number)
+            run_number: reverseCantorPairing(item.ls_id, item.ls_number),
           }
         })
         setData(results)

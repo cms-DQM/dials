@@ -60,7 +60,10 @@ const Histogram = (props) => {
             bargap: 0,
             margin: { t: 20, b: 20, l: 20, r: 20 },
           }
-          const lsNumber = reverseCantorPairing(response.ls_id, response.run_number)
+          const lsNumber = reverseCantorPairing(
+            response.ls_id,
+            response.run_number
+          )
           setData(response)
           setPlotData(data)
           setPlotLayout(layout)
@@ -130,7 +133,9 @@ const Histogram = (props) => {
                 linkAs={Link}
                 linkProps={{ to: `/lumisections/${data.ls_id}` }}
               >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
-              <Breadcrumb.Item active>{`H${dim}D #${data.hist_id}`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`H${dim}D #${data.hist_id}`}</Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>

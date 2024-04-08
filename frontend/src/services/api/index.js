@@ -105,15 +105,6 @@ const listRuns = async ({ page, maxRun, minRun }) => {
   return response.data
 }
 
-const listLumisectionsInRun = async ({ page, runNumber }) => {
-  const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
-  const params = sanitizedURLSearchParams({ page }, { repeatMode: false })
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
 const getLumisection = async ({ id }) => {
   const endpoint = `${API_URL}/lumisection/${id}/`
   const response = await axiosApiInstance.get(endpoint)
@@ -122,7 +113,7 @@ const getLumisection = async ({ id }) => {
 
 const listLumisections = async ({
   page,
-  run,
+  runNumber,
   ls,
   maxLs,
   minLs,
@@ -133,7 +124,7 @@ const listLumisections = async ({
   const params = sanitizedURLSearchParams(
     {
       page,
-      run_number: run,
+      run_number: runNumber,
       ls_number: ls,
       max_ls_number: maxLs,
       max_run_number: maxRun,
@@ -225,7 +216,6 @@ const API = {
   run: {
     get: getRun,
     list: listRuns,
-    listLumisections: listLumisectionsInRun,
   },
   config: {
     getWorkspaces,
