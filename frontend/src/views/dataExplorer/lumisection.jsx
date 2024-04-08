@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
+import reverseCantorPairing from '../../utils/cantor'
 
 const Lumisection = () => {
   const { id } = useParams()
@@ -58,7 +59,8 @@ const Lumisection = () => {
       API.lumisection
         .get({ id })
         .then((response) => {
-          setRun(response.run)
+          const runNumber = reverseCantorPairing(response.ls_id, response.ls_number)
+          setRun(runNumber)
           setLsNumber(response.ls_number)
         })
         .catch((error) => {
@@ -191,7 +193,7 @@ const Lumisection = () => {
                                 <Col key={innerIndex} sm={4}>
                                   <Card>
                                     <div className='card-img-top'>
-                                      <Link to={`/histograms-2d/${hist.id}`}>
+                                      <Link to={`/histograms-2d/${hist.hist_id}`}>
                                         <ResponsivePlot
                                           data={data}
                                           layout={layout}
@@ -202,7 +204,7 @@ const Lumisection = () => {
                                     </div>
                                     <Card.Body>
                                       <Card.Title>
-                                        <Link to={`/histograms-1d/${hist.id}`}>
+                                        <Link to={`/histograms-1d/${hist.hist_id}`}>
                                           {hist.title}
                                         </Link>
                                       </Card.Title>
@@ -253,7 +255,7 @@ const Lumisection = () => {
                                 <Col key={innerIndex} sm={4}>
                                   <Card>
                                     <div className='card-img-top'>
-                                      <Link to={`/histograms-2d/${hist.id}`}>
+                                      <Link to={`/histograms-2d/${hist.hist_id}`}>
                                         <ResponsivePlot
                                           data={data}
                                           layout={layout}
@@ -264,7 +266,7 @@ const Lumisection = () => {
                                     </div>
                                     <Card.Body>
                                       <Card.Title>
-                                        <Link to={`/histograms-2d/${hist.id}`}>
+                                        <Link to={`/histograms-2d/${hist.hist_id}`}>
                                           {hist.title}
                                         </Link>
                                       </Card.Title>
