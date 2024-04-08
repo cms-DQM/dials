@@ -294,7 +294,7 @@ const Histograms2D = () => {
           </Card.Header>
           <Card.Body>
             <Table
-              keyField='id'
+              keyField='hist_id'
               isLoading={isLoading}
               data={data}
               columns={columns}
