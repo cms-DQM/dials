@@ -170,6 +170,35 @@
         }
       }
     },
+    "/api/v1/auth/workspaces/": {
+      "get": {
+        "operationId": "auth_workspaces_list",
+        "tags": [
+          "auth"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfiguredWorkspaces"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/v1/file-index/": {
       "get": {
         "operationId": "file_index_list",
@@ -1066,6 +1095,20 @@
   },
   "components": {
     "schemas": {
+      "ConfiguredWorkspaces": {
+        "type": "object",
+        "properties": {
+          "workspaces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "workspaces"
+        ]
+      },
       "Device": {
         "type": "object",
         "properties": {

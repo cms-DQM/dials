@@ -32,3 +32,7 @@ class DeviceTokenSerializer(serializers.Serializer):
 class PendingAuthorizationErrorSerializer(serializers.Serializer):
     detail = serializers.CharField()
     code = serializers.CharField()
+
+
+class ConfiguredWorkspacesSerializer(serializers.Serializer):
+    workspaces = serializers.ListField(child=serializers.CharField())

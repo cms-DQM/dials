@@ -10,12 +10,15 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from utils.db_router import get_workspace_from_role
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakClientSecretAuthentication,
+    CERNKeycloakConfidentialAuthentication,
     CERNKeycloakPublicAuthentication,
     confidential_kc,
 )
 from utils.rest_framework_cern_sso.user import CERNKeycloakUser
 
 from .serializers import (
+    ConfiguredWorkspacesSerializer,
     DeviceSerializer,
     DeviceTokenSerializer,
     ExchangedTokenSerializer,
@@ -27,6 +30,18 @@ logger = logging.getLogger(__name__)
 
 
 class AuthViewSet(ViewSet):
+    @action(
+        detail=False,
+        methods=["get"],
+        name="Inspect configured workspaces",
+        url_path=r"workspaces",
+        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication],
+    )
+    def get_workspaces(self, request: Request):
+        payload = {"workspaces": list(settings.WORKSPACES.keys())}
+        payload = ConfiguredWorkspacesSerializer(payload).data
+        return Response(payload)
+
     @action(
         detail=False,
         methods=["post"],
