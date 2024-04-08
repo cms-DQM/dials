@@ -162,6 +162,10 @@ const listHistograms = async (
     minRun,
     minEntries,
     titleContains,
+    era,
+    campaign,
+    dataset,
+    fileId,
   }
 ) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/`
@@ -178,6 +182,10 @@ const listHistograms = async (
       min_run_number: minRun,
       min_entries: minEntries,
       title_contains: titleContains,
+      era,
+      campaign,
+      dataset,
+      file_id: fileId,
     },
     { repeatMode: false }
   )

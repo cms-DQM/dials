@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 
 import { ResponsivePlot, Table } from '../../components'
 import API from '../../services/api'
+import reverseCantorPairing from '../../utils/cantor'
 
 const Histograms1D = () => {
   const [isLoading, setLoading] = useState(true)
@@ -22,6 +23,10 @@ const Histograms1D = () => {
   const [maxLs, setMaxLs] = useState()
   const [titleContains, setTitleContains] = useState()
   const [minEntries, setMinEntries] = useState(0)
+  const [campaign, setCampaign] = useState()
+  const [dataset, setDataset] = useState()
+  const [era, setEra] = useState()
+  const [fileId, setFileId] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
@@ -40,7 +45,7 @@ const Histograms1D = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.lumisection}`
+        const linkTo = `/lumisections/${row.ls_id}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
@@ -50,7 +55,7 @@ const Histograms1D = () => {
       type: 'string',
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
-        const linkTo = `/histograms-1d/${row.id}`
+        const linkTo = `/histograms-1d/${row.hist_id}`
         return <Link to={linkTo}>{row.title}</Link>
       },
     },
@@ -59,7 +64,7 @@ const Histograms1D = () => {
       dataField: 'plot',
       text: 'Plot',
       formatter: (cell, row) => {
-        const linkTo = `/histograms-1d/${row.id}`
+        const linkTo = `/histograms-1d/${row.hist_id}`
         return <Link to={linkTo}>{cell}</Link>
       },
     },
@@ -73,6 +78,10 @@ const Histograms1D = () => {
     maxLs,
     titleContains,
     minEntries,
+    era,
+    campaign,
+    dataset,
+    fileId,
   }) => {
     setLoading(true)
     API.lumisection
@@ -84,6 +93,10 @@ const Histograms1D = () => {
         maxLs,
         titleContains,
         minEntries: minEntries > 0 ? minEntries : undefined,
+        era,
+        campaign,
+        dataset,
+        fileId,
       })
       .then((response) => {
         const results = response.results.map((item) => {
@@ -109,6 +122,7 @@ const Histograms1D = () => {
                 boxHeight={'100pt'}
               />
             ),
+            ls_number: reverseCantorPairing(item.ls_id, item.run_number),
           }
         })
         setData(results)
@@ -209,6 +223,46 @@ const Histograms1D = () => {
               </Col>
             </Form.Group>
 
+            <Form.Group className='mb-3' controlId='formCampaign'>
+              <Form.Label>Campaign contains</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter campaign substring'
+                value={campaign}
+                onChange={(e) => setCampaign(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formDataset'>
+              <Form.Label>Dataset contains</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter dataset substring'
+                value={dataset}
+                onChange={(e) => setDataset(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formEra'>
+              <Form.Label>Era</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter era'
+                value={era}
+                onChange={(e) => setEra(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formFileId'>
+              <Form.Label>File ID</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='Enter file id'
+                value={fileId}
+                onChange={(e) => setFileId(e.target.value)}
+              />
+            </Form.Group>
+
             <Button
               variant='primary'
               type='submit'
@@ -221,6 +275,10 @@ const Histograms1D = () => {
                   maxLs,
                   titleContains,
                   minEntries,
+                  campaign,
+                  dataset,
+                  era,
+                  fileId,
                 })
               }}
             >
@@ -253,6 +311,10 @@ const Histograms1D = () => {
                     maxLs,
                     titleContains,
                     minEntries,
+                    campaign,
+                    dataset,
+                    era,
+                    fileId,
                   })
                 }
               }}
