@@ -1157,6 +1157,9 @@
           },
           "scope": {
             "type": "string"
+          },
+          "default_workspace": {
+            "type": "string"
           }
         },
         "required": [
@@ -1167,7 +1170,8 @@
           "refresh_token",
           "scope",
           "session_state",
-          "token_type"
+          "token_type",
+          "default_workspace"
         ]
       },
       "FileIndex": {
