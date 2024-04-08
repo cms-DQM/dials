@@ -73,6 +73,7 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
             "era",
             "campaign",
             "dataset",
+            "file_id",
         ]
 
 
@@ -113,4 +114,5 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
             "era",
             "campaign",
             "dataset",
+            "file_id",
         ]
