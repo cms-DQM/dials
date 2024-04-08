@@ -20,6 +20,8 @@ class LumisectionFilter(filters.FilterSet):
     min_ls_number = filters.NumberFilter(label="Minimum lumisection number", field_name="ls_number", lookup_expr="gte")
     max_ls_number = filters.NumberFilter(label="Maximum lumisection number", field_name="ls_number", lookup_expr="lte")
     run_number = filters.NumberFilter(label="Run number", method="filter_by_run_number")
+    min_run_number = filters.NumberFilter(label="Minimum run number", method="filter_by_min_run_number")
+    max_run_number = filters.NumberFilter(label="Maximum run number", method="filter_by_max_run_number")
 
     class Meta:
         model = Lumisection
@@ -28,11 +30,23 @@ class LumisectionFilter(filters.FilterSet):
             "ls_number",
             "min_ls_number",
             "max_ls_number",
+            "min_run_number",
+            "max_run_number",
         ]
 
     def filter_by_run_number(self, queryset, name, value):
         return queryset.filter(
             Q(lumisectionhistogram1d__run_number=value) | Q(lumisectionhistogram2d__run_number=value)
+        ).distinct()
+
+    def filter_by_min_run_number(self, queryset, name, value):
+        return queryset.filter(
+            Q(lumisectionhistogram1d__run_number__gte=value) | Q(lumisectionhistogram2d__run_number__gte=value)
+        ).distinct()
+
+    def filter_by_max_run_number(self, queryset, name, value):
+        return queryset.filter(
+            Q(lumisectionhistogram1d__run_number__lte=value) | Q(lumisectionhistogram2d__run_number__lte=value)
         ).distinct()
 
 
