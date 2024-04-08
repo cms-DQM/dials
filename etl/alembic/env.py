@@ -1,11 +1,11 @@
 # ruff: noqa: INP001
 
-import json
 import logging
 import re
 from logging.config import fileConfig
 
 from alembic import context
+from decouple import config as decouple_config
 from sqlalchemy import create_engine, engine_from_config, exc, pool, text
 
 
@@ -27,18 +27,10 @@ logger = logging.getLogger("alembic.env")
 db_names = config.get_main_option("databases", "")
 
 # overwrite alembic-init db urls from the config file
-try:
-    with open("./alembic.env.json") as fd:
-        settings: dict = json.load(fd)
-except FileNotFoundError:
-    logger.warning("alembic.env.json not found - use default alembic.ini configuration")
-except Exception as err:  # noqa: BLE001
-    msg = f"Failed to load alembic.env.json - {err}"
-    logger.warning(msg)
-    quit()
-else:
-    for engine, conn_str in settings.items():
-        config.set_section_option(engine, "sqlalchemy.url", conn_str)
+database_uri = decouple_config("DATABASE_URI")
+for db_name in re.split(r",\s*", db_names):
+    conn_str = f"{database_uri}/{db_name}"
+    config.set_section_option(db_name, "sqlalchemy.url", conn_str)
 
 # add your model's MetaData objects here
 # for 'autogenerate' support.  These must be set
