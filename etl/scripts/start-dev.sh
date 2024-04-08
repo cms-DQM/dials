@@ -6,7 +6,7 @@ if [ "$(basename $CURR_PATH)" != "etl" ]; then
     cd "etl" || exit 1
 fi
 
-celery --app=python beat --loglevel=INFO --schedule=celerybeat-schedule &
+celery --app=python beat --loglevel=INFO -S redbeat.RedBeatScheduler &
 PID_1=$!
 
 celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=csc-indexer@%h --queues=indexer-csc &

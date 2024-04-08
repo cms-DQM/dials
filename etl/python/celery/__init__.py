@@ -2,8 +2,8 @@ from celery import Celery
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
+from ..config import workspaces
 from . import celeryconfig
-from .config import workspaces
 
 
 logger = get_task_logger(__name__)

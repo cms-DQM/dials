@@ -22,5 +22,6 @@ key_fpath = config("KEY_FPATH")
 
 celery_broker_url = config("CELERY_BROKER_URL")
 celery_result_backend = config("CELERY_RESULT_BACKEND")
+celery_redbeat_url = config("CELERY_REDBEAT_URL")
 
 mocked_dbs_fpath = config("MOCKED_DBS_FPATH", default="")
