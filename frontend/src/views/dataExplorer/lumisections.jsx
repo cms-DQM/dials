@@ -232,7 +232,7 @@ const Lumisections = () => {
           <Card.Header as='h4'>Lumisections</Card.Header>
           <Card.Body>
             <Table
-              keyField='id'
+              keyField='ls_id'
               isLoading={isLoading}
               data={data}
               columns={columns}
