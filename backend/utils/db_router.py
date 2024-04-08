@@ -28,8 +28,4 @@ class GenericViewSetRouter:
             workspace = workspace or settings.DEFAULT_WORKSPACE
             queryset = queryset.using(workspace)
 
-        queryset = queryset.all()
-        for field in order_by:
-            queryset = queryset.order_by(field)
-
-        return queryset
+        return queryset.all().order_by(*order_by)
