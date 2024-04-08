@@ -33,7 +33,7 @@ class LumisectionFilter(filters.FilterSet):
     def filter_by_run_number(self, queryset, name, value):
         return queryset.filter(
             Q(lumisectionhistogram1d__run_number=value) | Q(lumisectionhistogram2d__run_number=value)
-        )
+        ).distinct()
 
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
