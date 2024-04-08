@@ -216,36 +216,6 @@ const getIngestedMonitoringElements = async (dim) => {
   return response.data
 }
 
-const listTasks = async ({
-  page,
-  status,
-  taskName,
-  worker,
-  minDateCreated,
-  maxDateCreated,
-  minDateDone,
-  maxDateDone,
-}) => {
-  const endpoint = `${API_URL}/celery-tasks/`
-  const params = sanitizedURLSearchParams(
-    {
-      page,
-      status,
-      task_name: taskName,
-      worker,
-      min_date_created: minDateCreated,
-      max_date_created: maxDateCreated,
-      min_date_done: minDateDone,
-      max_date_done: maxDateDone,
-    },
-    { repeatMode: true }
-  )
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
 const API = {
   auth: {
     exchange: exchangeToken,
@@ -268,9 +238,6 @@ const API = {
     get: getRun,
     list: listRuns,
     listLumisections: listLumisectionsInRun,
-  },
-  jobQueue: {
-    list: listTasks,
   },
   config: {
     getWorkspaces,
