@@ -35,6 +35,11 @@ const Runs = () => {
         return <Link to={linkTo}>{row.run_number}</Link>
       },
     },
+    {
+      dataField: 'ls_count',
+      text: 'LS Count',
+      type: 'number',
+    },
     { dataField: 'year', text: 'Year', type: 'string' },
     { dataField: 'period', text: 'Period', type: 'string' },
     { dataField: 'oms_fill', text: 'OMS Fill', type: 'string' },
