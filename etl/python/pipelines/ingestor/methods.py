@@ -236,9 +236,7 @@ def post_load(engine: Engine, file_id: int) -> None:
 def error_handler(engine: Engine, file_id: int, err_trace: str, status: str) -> None:
     session = sessionmaker(bind=engine)
     with session() as sess:
-        sess.query(DQMIOIndex).filter_by(file_id=file_id).update(
-            {"status": StatusCollection.FAILED, "err_trace": err_trace}
-        )
+        sess.query(DQMIOIndex).filter_by(file_id=file_id).update({"status": status, "err_trace": err_trace})
         sess.commit()
 
 
