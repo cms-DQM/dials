@@ -22,3 +22,4 @@ export const OIDC_SCOPE = OPTIONS[[ENV]].OIDC_SCOPE
 export const OIDC_PUBLIC_TOKEN_NS = `oidc.user:${OIDC_AUTHORITY}:${OIDC_PUBLIC_CLIENT_ID}`
 export const OIDC_CONFIDENTIAL_TOKEN_NS = `oidc.user.confidential:${OIDC_AUTHORITY}:${OIDC_PUBLIC_CLIENT_ID}`
 export const EXCHANGED_TOKEN_EVT = 'confidential-token-stored'
+export const OIDC_USER_WORKSPACE = 'oidc.user.workspace'

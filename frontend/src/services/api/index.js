@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { sanitizedURLSearchParams } from '../../utils/sanitizer'
 import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
-import { API_URL } from '../../config/env'
+import { API_URL, OIDC_USER_WORKSPACE } from '../../config/env'
 
 const FILE_INDEX_STATUSES = [
   'INDEXED',
@@ -17,10 +17,12 @@ const axiosApiInstance = axios.create()
 
 axiosApiInstance.interceptors.request.use(
   async (config) => {
+    const workspace = localStorage.getItem(OIDC_USER_WORKSPACE)
     const oidc = getConfidentialToken()
     config.headers = {
       Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
       Accept: 'application/json',
+      Workspace: workspace,
     }
     return config
   },
@@ -28,6 +30,12 @@ axiosApiInstance.interceptors.request.use(
     Promise.reject(error)
   }
 )
+
+const getWorkspaces = async () => {
+  const endpoint = `${API_URL}/auth/workspaces/`
+  const response = await axiosApiInstance.get(endpoint)
+  return response.data
+}
 
 const exchangeToken = async ({ subjectToken }) => {
   const oidc = getPublicToken()
@@ -47,15 +55,25 @@ const exchangeToken = async ({ subjectToken }) => {
   return response.data
 }
 
-const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
+const listFileIndex = async ({
+  page,
+  campaign,
+  dataset,
+  era,
+  logicalFileName,
+  minSize,
+  status,
+}) => {
   const endpoint = `${API_URL}/file-index/`
   const params = sanitizedURLSearchParams(
     {
       page,
+      campaign,
+      dataset,
       era,
-      status,
+      logicalFileName,
       min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
-      path_contains: pathContains,
+      status,
     },
     { repeatMode: false }
   )
@@ -253,6 +271,9 @@ const API = {
   },
   jobQueue: {
     list: listTasks,
+  },
+  config: {
+    getWorkspaces,
   },
 }
 

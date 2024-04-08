@@ -12,7 +12,11 @@ import Modal from 'react-bootstrap/Modal'
 import logo from '../assets/img/logo.png'
 import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../config/env'
 
-const AppNavbar = () => {
+const AppNavbar = ({
+  allWorkspaces,
+  selectedWorkspace,
+  setSelectedWorkspace,
+}) => {
   const auth = useAuth()
 
   const [showLogoutModal, setShowLogoutModal] = useState(false)
@@ -67,6 +71,16 @@ const AppNavbar = () => {
               </NavDropdown>
             </Nav>
             <Nav>
+              <NavDropdown title={`Using workspace: ${selectedWorkspace}`}>
+                {allWorkspaces.map((workspace) => (
+                  <NavDropdown.Item
+                    key={`workspace-item-${workspace}`}
+                    onClick={() => setSelectedWorkspace(workspace)}
+                  >
+                    {workspace}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
               <Nav.Link className='me-3'>
                 Signed in as: {auth.user.profile.sub}
               </Nav.Link>
