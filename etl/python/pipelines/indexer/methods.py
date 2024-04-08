@@ -16,7 +16,7 @@ from ...models.dqmio_index import StatusCollection
 from ..ingestor.tasks import ingestor_pipeline_task
 
 
-CHUNK_SIZE = 10000
+CHUNK_SIZE = 5000
 
 
 def extract(workspace: dict) -> list:

@@ -20,7 +20,10 @@ from ...models import TH1, TH2, DQMIOIndex, Lumisection, Run
 from ...models.dqmio_index import StatusCollection
 
 
-CHUNK_SIZE = 10000
+CHUNK_SIZE = 5000  # General inserting chunk size
+CHUNK_SIZE_TH2 = (
+    1000  # Specific TH2 inserting chunk size (carefully chosen to use little memory but keeping high inserting speed)
+)
 
 
 def clean_file(fpath: str) -> None:
@@ -160,6 +163,7 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str) -
 
 
 def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pattern: str, file_id: int) -> None:
+    th_chunk_size = CHUNK_SIZE if th_table == "th1" else CHUNK_SIZE_TH2
     types = th1_types if th_table == "th1" else th2_types
     reader_func = reader.th1_from_cppyy if th_table == "th1" else reader.th2_from_cppyy
     run_lumi = reader.index_keys
@@ -179,7 +183,7 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
                 th_mes[th_entry.get("title")] += 1
 
             chunk_count += 1
-            if chunk_count == CHUNK_SIZE:
+            if chunk_count == th_chunk_size:
                 th_list = pd.DataFrame(th_list)
                 th_list["data"] = th_list.data.apply(
                     lambda x: str(x).replace("[", "{").replace("]", "}").replace(" ", "")
@@ -194,6 +198,8 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
                 th_list = []
                 chunk_count = 0
 
+    del chunk_count, me_list, th_entry
+
     if len(th_list) > 0:
         th_list = pd.DataFrame(th_list)
         th_list["data"] = th_list.data.apply(lambda x: str(x).replace("[", "{").replace("]", "}").replace(" ", ""))
@@ -204,6 +210,7 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
             index=False,
             method=copy_expert,
         )
+        del th_list
 
     expr = f"count = {th_table}_mes.count + EXCLUDED.count"
     method = partial(copy_expert_onconflict_update, conflict_key="title", expr=expr)
