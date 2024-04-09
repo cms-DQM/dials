@@ -38,7 +38,7 @@ def table_dqmio_index() -> list:
         sa.Column("file_size", sa.BigInteger),
         sa.Column("era", sa.String(length=5)),
         sa.Column("campaign", sa.String(length=15)),
-        sa.Column("dataset", sa.String(length=50)),
+        sa.Column("primary_dataset", sa.String(length=15)),
         sa.Column("creation_date", sa.DateTime),
         sa.Column("last_modification_date", sa.DateTime),
         sa.Column("logical_file_name", sa.String(length=255)),
@@ -48,7 +48,7 @@ def table_dqmio_index() -> list:
         sa.Index("idx_file_size", "file_size"),
         sa.Index("idx_era", "era"),
         sa.Index("idx_campaign", "campaign"),
-        sa.Index("idx_dataset", "dataset"),
+        sa.Index("idx_primary_dataset", "primary_dataset"),
         sa.Index("idx_logical_file_name", "logical_file_name"),
         sa.Index("idx_status", "status"),
     ]

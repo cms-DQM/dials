@@ -39,7 +39,7 @@ def process_file(file: dict) -> dict:
         "file_size": file["file_size"],
         "era": file["logical_file_name"].split("/")[3].replace("Run", ""),
         "campaign": "-".join(file["dataset"].split("/")[2].split("-")[1:]),
-        "dataset": file["dataset"],
+        "primary_dataset": file["dataset"].split("/")[1],
         "creation_date": datetime.fromtimestamp(file["creation_date"]),
         "last_modification_date": datetime.fromtimestamp(file["last_modification_date"]),
         "logical_file_name": file["logical_file_name"],
