@@ -24,6 +24,7 @@ logger = logging.getLogger("alembic.env")
 # gather section names referring to different
 # databases.  These are named "engine1", "engine2"
 # in the sample .ini file.
+config.set_main_option("databases", ", ".join(decouple_config("DATABASES").split(",")))
 db_names = config.get_main_option("databases", "")
 
 # overwrite alembic-init db urls from the config file
