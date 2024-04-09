@@ -48,6 +48,8 @@ CORS_ALLOW_HEADERS = [*default_headers, "workspace"]
 
 # Application definition
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
