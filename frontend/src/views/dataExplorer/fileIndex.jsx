@@ -17,7 +17,7 @@ const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [campaign, setCampaign] = useState()
-  const [dataset, setDataset] = useState()
+  const [primaryDataset, setPrimaryDataset] = useState()
   const [era, setEra] = useState()
   const [logicalFileName, setLogicalFileName] = useState()
   const [minSize, setMinSize] = useState(0)
@@ -30,7 +30,7 @@ const FileIndex = () => {
     { dataField: 'file_size', text: 'Size (MB)', type: 'number' },
     { dataField: 'era', text: 'Era', type: 'string' },
     { dataField: 'campaign', text: 'Campaign', type: 'string' },
-    { dataField: 'dataset', text: 'Dataset', type: 'string' },
+    { dataField: 'primary_dataset', text: 'Primary Dataset', type: 'string' },
     {
       dataField: 'last_modification_date',
       text: 'Last Modification Date',
@@ -47,7 +47,7 @@ const FileIndex = () => {
   const fetchData = ({
     page,
     campaign,
-    dataset,
+    primaryDataset,
     era,
     logicalFileName,
     minSize,
@@ -58,7 +58,7 @@ const FileIndex = () => {
       .list({
         page,
         campaign,
-        dataset,
+        primaryDataset,
         era,
         logicalFileName,
         minSize: minSize > 0 ? minSize : undefined,
@@ -110,13 +110,13 @@ const FileIndex = () => {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formDataset'>
-              <Form.Label>Dataset contains</Form.Label>
+            <Form.Group className='mb-3' controlId='formPrimaryDataset'>
+              <Form.Label>Primary Dataset</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter dataset substring'
-                value={dataset}
-                onChange={(e) => setDataset(e.target.value)}
+                placeholder='Enter primary dataset'
+                value={primaryDataset}
+                onChange={(e) => setPrimaryDataset(e.target.value)}
               />
             </Form.Group>
 
@@ -190,7 +190,7 @@ const FileIndex = () => {
                 fetchData({
                   page: 1,
                   campaign,
-                  dataset,
+                  primaryDataset,
                   era,
                   logicalFileName,
                   minSize,
@@ -220,7 +220,7 @@ const FileIndex = () => {
                   fetchData({
                     page,
                     campaign,
-                    dataset,
+                    primaryDataset,
                     era,
                     logicalFileName,
                     minSize,

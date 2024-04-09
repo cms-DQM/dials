@@ -58,7 +58,7 @@ const exchangeToken = async ({ subjectToken }) => {
 const listFileIndex = async ({
   page,
   campaign,
-  dataset,
+  primaryDataset,
   era,
   logicalFileName,
   minSize,
@@ -69,7 +69,7 @@ const listFileIndex = async ({
     {
       page,
       campaign,
-      dataset,
+      primary_dataset: primaryDataset,
       era,
       logical_file_name: logicalFileName,
       min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
@@ -155,7 +155,7 @@ const listHistograms = async (
     titleContains,
     era,
     campaign,
-    dataset,
+    primaryDataset,
     fileId,
   }
 ) => {
@@ -175,7 +175,7 @@ const listHistograms = async (
       title_contains: titleContains,
       era,
       campaign,
-      dataset,
+      primary_dataset: primaryDataset,
       file_id: fileId,
     },
     { repeatMode: false }

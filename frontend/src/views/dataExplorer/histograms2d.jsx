@@ -24,7 +24,7 @@ const Histograms2D = () => {
   const [titleContains, setTitleContains] = useState()
   const [minEntries, setMinEntries] = useState(0)
   const [campaign, setCampaign] = useState()
-  const [dataset, setDataset] = useState()
+  const [primaryDataset, setPrimaryDataset] = useState()
   const [era, setEra] = useState()
   const [fileId, setFileId] = useState()
   const [data, setData] = useState([])
@@ -80,7 +80,7 @@ const Histograms2D = () => {
     minEntries,
     era,
     campaign,
-    dataset,
+    primaryDataset,
     fileId,
   }) => {
     setLoading(true)
@@ -95,7 +95,7 @@ const Histograms2D = () => {
         minEntries: minEntries > 0 ? minEntries : undefined,
         era,
         campaign,
-        dataset,
+        primaryDataset,
         fileId,
       })
       .then((response) => {
@@ -233,13 +233,13 @@ const Histograms2D = () => {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formDataset'>
-              <Form.Label>Dataset contains</Form.Label>
+            <Form.Group className='mb-3' controlId='formPrimaryDataset'>
+              <Form.Label>Primary Dataset</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter dataset substring'
-                value={dataset}
-                onChange={(e) => setDataset(e.target.value)}
+                placeholder='Enter primary dataset'
+                value={primaryDataset}
+                onChange={(e) => setPrimaryDataset(e.target.value)}
               />
             </Form.Group>
 
@@ -276,7 +276,7 @@ const Histograms2D = () => {
                   titleContains,
                   minEntries,
                   campaign,
-                  dataset,
+                  primaryDataset,
                   era,
                   fileId,
                 })
@@ -312,7 +312,7 @@ const Histograms2D = () => {
                     titleContains,
                     minEntries,
                     campaign,
-                    dataset,
+                    primaryDataset,
                     era,
                     fileId,
                   })
