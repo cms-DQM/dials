@@ -198,7 +198,9 @@ def transform_load_th(th_table: str, engine: Engine, reader: DQMIOReader, me_pat
                 th_list = []
                 chunk_count = 0
 
-    del chunk_count, me_list, th_entry
+            del th_entry
+
+    del chunk_count, me_list
 
     if len(th_list) > 0:
         th_list = pd.DataFrame(th_list)
