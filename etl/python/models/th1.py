@@ -21,7 +21,7 @@ class TH1(Base):
     title = sa.Column("title", sa.String(length=255))
     x_min = sa.Column("x_min", sa.Float)
     x_max = sa.Column("x_max", sa.Float)
-    x_bin = sa.Column("x_bin", sa.Float)
+    x_bin = sa.Column("x_bin", sa.Integer)
     entries = sa.Column("entries", sa.Integer)
     data = sa.Column("data", sa.ARRAY(sa.Float))
 

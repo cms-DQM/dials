@@ -187,7 +187,7 @@ class DQMIOReader:
     def th1_from_cppyy(me: "MonitorElement") -> dict:
         me_name = me.name
         entries = int(me.data.GetEntries())
-        hist_x_bins = me.data.GetNbinsX()
+        hist_x_bins = int(me.data.GetNbinsX())
         hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
         hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins + 1)  # Takes low edge of overflow bin instead.
         data = [me.data.GetBinContent(i) for i in range(1, hist_x_bins + 1)]
@@ -204,8 +204,8 @@ class DQMIOReader:
     def th2_from_cppyy(me: "MonitorElement") -> dict:
         me_name = me.name
         entries = int(me.data.GetEntries())
-        hist_x_bins = me.data.GetNbinsX()
-        hist_y_bins = me.data.GetNbinsY()
+        hist_x_bins = int(me.data.GetNbinsX())
+        hist_y_bins = int(me.data.GetNbinsY())
         hist_x_min = me.data.GetXaxis().GetBinLowEdge(1)
         hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins) + me.data.GetXaxis().GetBinWidth(hist_x_bins)
         hist_y_min = me.data.GetYaxis().GetBinLowEdge(1)
