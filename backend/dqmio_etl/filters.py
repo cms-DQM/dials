@@ -64,7 +64,9 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
     era = filters.CharFilter(label="Data era", field_name="file_id__era", lookup_expr="exact")
     campaign = filters.CharFilter(label="Campaign", field_name="file_id__campaign", lookup_expr="contains")
-    dataset = filters.CharFilter(label="Dataset", field_name="file_id__dataset", lookup_expr="contains")
+    primary_dataset = filters.CharFilter(
+        label="Primary Dataset", field_name="file_id__primary_dataset", lookup_expr="contains"
+    )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
@@ -86,7 +88,7 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
             "min_entries",
             "era",
             "campaign",
-            "dataset",
+            "primary_dataset",
             "file_id",
         ]
 
@@ -105,7 +107,9 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
     era = filters.CharFilter(label="Data era", field_name="file_id__era", lookup_expr="exact")
     campaign = filters.CharFilter(label="Campaign", field_name="file_id__campaign", lookup_expr="contains")
-    dataset = filters.CharFilter(label="Dataset", field_name="file_id__dataset", lookup_expr="contains")
+    primary_dataset = filters.CharFilter(
+        label="Primary Dataset", field_name="file_id__primary_dataset", lookup_expr="contains"
+    )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
@@ -127,6 +131,6 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
             "min_entries",
             "era",
             "campaign",
-            "dataset",
+            "primary_dataset",
             "file_id",
         ]

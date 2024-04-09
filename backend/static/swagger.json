@@ -213,11 +213,11 @@
           },
           {
             "in": "query",
-            "name": "dataset",
+            "name": "primary_dataset",
             "schema": {
               "type": "string"
             },
-            "description": "Dataset"
+            "description": "Primary Dataset"
           },
           {
             "in": "query",
@@ -441,11 +441,11 @@
           },
           {
             "in": "query",
-            "name": "dataset",
+            "name": "primary_dataset",
             "schema": {
               "type": "string"
             },
-            "description": "Dataset"
+            "description": "Primary Dataset"
           },
           {
             "in": "query",
@@ -690,11 +690,11 @@
           },
           {
             "in": "query",
-            "name": "dataset",
+            "name": "primary_dataset",
             "schema": {
               "type": "string"
             },
-            "description": "Dataset"
+            "description": "Primary Dataset"
           },
           {
             "in": "query",
@@ -1240,7 +1240,7 @@
             "type": "string",
             "maxLength": 15
           },
-          "dataset": {
+          "primary_dataset": {
             "type": "string",
             "maxLength": 50
           },
@@ -1269,7 +1269,7 @@
         "required": [
           "campaign",
           "creation_date",
-          "dataset",
+          "primary_dataset",
           "era",
           "file_id",
           "file_size",

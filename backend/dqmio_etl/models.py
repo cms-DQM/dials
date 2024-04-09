@@ -54,7 +54,7 @@ class LumisectionHistogram1D(models.Model):
     title = models.CharField(max_length=255)
     x_min = models.FloatField()
     x_max = models.FloatField()
-    x_bin = models.FloatField()
+    x_bin = models.IntegerField()
     entries = models.IntegerField()
     data = ArrayField(models.FloatField())
 
@@ -93,10 +93,10 @@ class LumisectionHistogram2D(models.Model):
     title = models.CharField(max_length=255)
     x_min = models.FloatField()
     x_max = models.FloatField()
-    x_bin = models.FloatField()
+    x_bin = models.IntegerField()
     y_min = models.FloatField()
     y_max = models.FloatField()
-    y_bin = models.FloatField()
+    y_bin = models.IntegerField()
     entries = models.IntegerField()
     data = ArrayField(ArrayField(models.FloatField()))
 
