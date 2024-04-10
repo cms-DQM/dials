@@ -42,11 +42,13 @@ tqdm = "^4.66.2"
 psutil = "^5.9.8"
 matplotlib = "^3.8.3"
 ruff = "^0.3.2"
+pyyaml = "^6.0.1"
 
 [tool.poe.tasks]
 start-api = "./backend/scripts/start-dev.sh"
 start-etl = "./etl/scripts/start-dev.sh"
 start-monitor = "./scripts/monitor-pid.py"
+gen-compose = "./scripts/generate-compose.py"
 
 [tool.ruff]
 exclude = [
