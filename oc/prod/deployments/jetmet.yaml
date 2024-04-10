@@ -1,0 +1,211 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: jetmet-indexer
+  namespace: cms-dials-prod
+  labels:
+    app: jetmet-indexer
+    app.kubernetes.io/component: jetmet-indexer
+    app.kubernetes.io/instance: jetmet-indexer
+    app.kubernetes.io/name: jetmet-indexer
+    app.kubernetes.io/part-of: jetmet-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jetmet-indexer
+  template:
+    metadata:
+      labels:
+        app: jetmet-indexer
+        deployment: jetmet-indexer
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: jetmet-indexer
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=jetmet-indexer@%h
+              --queues=jetmet-indexer
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: jetmet-bulk
+  namespace: cms-dials-prod
+  labels:
+    app: jetmet-bulk
+    app.kubernetes.io/component: jetmet-bulk
+    app.kubernetes.io/instance: jetmet-bulk
+    app.kubernetes.io/name: jetmet-bulk
+    app.kubernetes.io/part-of: jetmet-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jetmet-bulk
+  template:
+    metadata:
+      labels:
+        app: jetmet-bulk
+        deployment: jetmet-bulk
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: jetmet-bulk
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=jetmet-bulk@%h
+              --queues=jetmet-bulk
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: jetmet-priority
+  namespace: cms-dials-prod
+  labels:
+    app: jetmet-priority
+    app.kubernetes.io/component: jetmet-priority
+    app.kubernetes.io/instance: jetmet-priority
+    app.kubernetes.io/name: jetmet-priority
+    app.kubernetes.io/part-of: jetmet-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jetmet-priority
+  template:
+    metadata:
+      labels:
+        app: jetmet-priority
+        deployment: jetmet-priority
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: jetmet-priority
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=jetmet-priority@%h
+              --queues=jetmet-priority
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

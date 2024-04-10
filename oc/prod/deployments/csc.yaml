@@ -1,0 +1,211 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: csc-indexer
+  namespace: cms-dials-prod
+  labels:
+    app: csc-indexer
+    app.kubernetes.io/component: csc-indexer
+    app.kubernetes.io/instance: csc-indexer
+    app.kubernetes.io/name: csc-indexer
+    app.kubernetes.io/part-of: csc-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csc-indexer
+  template:
+    metadata:
+      labels:
+        app: csc-indexer
+        deployment: csc-indexer
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: csc-indexer
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=csc-indexer@%h
+              --queues=csc-indexer
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: csc-bulk
+  namespace: cms-dials-prod
+  labels:
+    app: csc-bulk
+    app.kubernetes.io/component: csc-bulk
+    app.kubernetes.io/instance: csc-bulk
+    app.kubernetes.io/name: csc-bulk
+    app.kubernetes.io/part-of: csc-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csc-bulk
+  template:
+    metadata:
+      labels:
+        app: csc-bulk
+        deployment: csc-bulk
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: csc-bulk
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=csc-bulk@%h
+              --queues=csc-bulk
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: csc-priority
+  namespace: cms-dials-prod
+  labels:
+    app: csc-priority
+    app.kubernetes.io/component: csc-priority
+    app.kubernetes.io/instance: csc-priority
+    app.kubernetes.io/name: csc-priority
+    app.kubernetes.io/part-of: csc-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csc-priority
+  template:
+    metadata:
+      labels:
+        app: csc-priority
+        deployment: csc-priority
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: csc-priority
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 4096Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=csc-priority@%h
+              --queues=csc-priority
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
