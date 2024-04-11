@@ -12,7 +12,7 @@ metadata:
     app.openshift.io/runtime: django
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: backend
