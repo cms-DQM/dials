@@ -38,13 +38,15 @@ ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="").split(" ")
 CSRF_TRUSTED_ORIGINS = config("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(" ")
 
 # Cors
+WORKSPACE_HEADER = "workspace"
+
 CORS_ALLOW_ALL_ORIGINS = False  # If this is True then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = config("DJANGO_CORS_ALLOWED_ORIGINS", default="").split(" ")
 
-CORS_ALLOW_HEADERS = [*default_headers, "workspace"]
+CORS_ALLOW_HEADERS = [*default_headers, WORKSPACE_HEADER]
 
 # Application definition
 INSTALLED_APPS = [
@@ -203,3 +205,17 @@ CSP_IMG_SRC = [
     "data:",
     "https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png",
 ]
+
+# # Caching
+CACHE_TTL = 60 * 15  # 15 minutes
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": config("DJANGO_REDIS_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    }
+}
