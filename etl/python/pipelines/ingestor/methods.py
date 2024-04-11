@@ -41,6 +41,51 @@ def pre_extract(engine: Engine, file_id: int) -> str:
         return row.logical_file_name
 
 
+def extract_from_eos_mount(workspace_name: str, fname: str, landing_path: str, logical_file_name: str, tmp_fpath: str):
+    mounted_path = os.path.join(mounted_eos_path, workspace_name)
+    does_dir_exists = os.path.isdir(mounted_path)
+
+    if does_dir_exists is False:
+        os.makedirs(mounted_path, exist_ok=True)
+
+    mounted_fpath = os.path.join(mounted_path, fname)
+    if not os.path.isfile(mounted_fpath):
+        with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
+            does_dir_exists = client.is_dir(landing_path)
+            if does_dir_exists is False:
+                client.mkdir(landing_path)
+
+            client.init_proxy()
+            client.xrdcp(landing_path, logical_file_name)
+
+    try:
+        shutil.copy(mounted_fpath, tmp_fpath)
+    except Exception as e:
+        if os.path.isfile(tmp_fpath):
+            clean_file(tmp_fpath)
+        raise e
+
+
+def extract_from_eos_ssh(fname: str, landing_path: str, logical_file_name: str, tmp_fpath: str):
+    landing_fpath = os.path.join(landing_path, fname)
+    with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
+        does_dir_exists = client.is_dir(landing_path)
+        if does_dir_exists is False:
+            client.mkdir(landing_path)
+
+        is_file_available = client.is_file(landing_fpath)
+        if is_file_available is False:
+            client.init_proxy()
+            client.xrdcp(landing_path, logical_file_name)
+
+        try:
+            client.scp(landing_fpath, tmp_fpath)
+        except Exception as e:
+            if os.path.isfile(tmp_fpath):
+                clean_file(tmp_fpath)
+            raise e
+
+
 def extract(workspace_name: str, logical_file_name: str) -> str:
     """
     Extracts a DQMIO file from EOS and returns the local path to the extracted file.
@@ -85,43 +130,24 @@ def extract(workspace_name: str, logical_file_name: str) -> str:
     landing_path = os.path.join(eos_landing_zone, workspace_name)
 
     if mounted_eos_path:
-        mounted_path = os.path.join(mounted_eos_path, workspace_name)
-        does_dir_exists = os.path.isdir(mounted_path)
-        if does_dir_exists is False:
-            os.makedirs(mounted_path, exist_ok=True)
-
-        mounted_fpath = os.path.join(mounted_path, fname)
-        if not os.path.isfile(mounted_fpath):
-            with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
-                does_dir_exists = client.is_dir(landing_path)
-                if does_dir_exists is False:
-                    client.mkdir(landing_path)
-
-                client.init_proxy()
-                client.xrdcp(landing_path, logical_file_name)
-        shutil.copy(mounted_fpath, tmp_fpath)
+        extract_from_eos_mount(workspace_name, fname, landing_path, logical_file_name, tmp_fpath)
     else:
-        landing_fpath = os.path.join(landing_path, fname)
-        with MinimalLXPlusClient(lxplus_user, lxplus_pwd) as client:
-            does_dir_exists = client.is_dir(landing_path)
-            if does_dir_exists is False:
-                client.mkdir(landing_path)
+        extract_from_eos_ssh(fname, landing_path, logical_file_name, tmp_fpath)
 
-            is_file_available = client.is_file(landing_fpath)
-            if is_file_available is False:
-                client.init_proxy()
-                client.xrdcp(landing_path, logical_file_name)
-            client.scp(landing_fpath, tmp_fpath)
-
-    # Checking if the file is corrupted
-    try:
-        with ROOT.TFile(tmp_fpath) as root_file:
-            root_file.GetUUID().AsString()
-    except Exception as err:
-        clean_file(tmp_fpath)
-        raise err  # Re-raise to the caller, we just captured to delete the leftover file
+    # Well... if the previous function succeeded we should find the file locally in tmp_fpath.
+    if os.path.isfile(tmp_fpath) is False:
+        raise Exception(f"File {tmp_fpath} does not exist")
 
     return tmp_fpath
+
+
+def validate_root_file(fpath: str) -> None:
+    """
+    Opening the ROOT file and getting the UUID seems to be enough
+    to check fi the file is corrupted or not.
+    """
+    with ROOT.TFile(fpath) as root_file:
+        root_file.GetUUID().AsString()
 
 
 def transform_load_run(engine: Engine, reader: DQMIOReader) -> None:
@@ -250,27 +276,36 @@ def error_handler(engine: Engine, file_id: int, err_trace: str, status: str) -> 
 
 
 def pipeline(workspace_name: str, workspace_mes: str, file_id: int):
+    """
+    Note: always re-raise exceptions to mark the task as failed in celery broker
+    """
     me_pattern = f"({'|'.join(workspace_mes)}).*"
     engine = create_engine(f"{conn_str}/{workspace_name}")
     logical_file_name = pre_extract(engine, file_id)
 
-    # If this fails, the function already cleans the leftover file
-    # So we don't need to do it here (without knowing the generated tmp fpath)
+    # This function already clean the leftover root file if download fails
     try:
         fpath = extract(workspace_name, logical_file_name)
     except Exception as e:
         err_trace = traceback.format_exc()
         error_handler(engine, file_id, err_trace, StatusCollection.DOWNLOAD_ERROR)
-        raise e  # We are raising to mark the task as failed in celery broker
+        raise e
 
-    # Since we know the fpath at this stage, we need to clean the file if it fails
+    try:
+        validate_root_file(fpath)
+    except Exception as e:
+        clean_file(fpath)
+        err_trace = traceback.format_exc()
+        error_handler(engine, file_id, err_trace, StatusCollection.ROOTFILE_ERROR)
+        raise e
+
     try:
         transform_load(engine, me_pattern, file_id, fpath)
     except Exception as e:
         clean_file(fpath)
         err_trace = traceback.format_exc()
         error_handler(engine, file_id, err_trace, StatusCollection.PARSING_ERROR)
-        raise e  # We are raising to mark the task as failed in celery broker
+        raise e
 
     # If everything goes well, we can clean the file
     clean_file(fpath)

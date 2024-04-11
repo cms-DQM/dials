@@ -23,7 +23,8 @@ class MinimalLXPlusClient:
         """
         fname = fpath.replace("/", "_")[1:]
         out_fpath = f"{output_dir}/{fname}"
-        command = f"/usr/bin/xrdcp {redirector}/{fpath} {out_fpath}"
+        grid_fpath = f"{redirector}/{fpath}"
+        command = f"/usr/bin/xrdcp {grid_fpath} {out_fpath}"
         _, stdout, stderr = self.client.exec_command(command)
         stderr = stderr.read().decode("utf-8").strip()
         stdout = stdout.read().decode("utf-8").strip()
@@ -32,7 +33,7 @@ class MinimalLXPlusClient:
         if stdout == "" and stderr == "":
             return out_fpath
 
-        raise Exception(f"xrdcp failed. stdout: {stdout} stderr: {stderr}")
+        raise Exception(f"xrdcp failed for {grid_fpath}. stdout: {stdout} stderr: {stderr}")
 
     def scp(self, remote_fpath: str, local_fpath: str) -> str:
         scp = SCPClient(self.client.get_transport())
