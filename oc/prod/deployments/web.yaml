@@ -34,12 +34,37 @@ spec:
                 name: dials-backend-configmap
             - secretRef:
                 name: dials-backend-secrets
-          ports:
-            - containerPort: 8000
-              protocol: TCP
+          volumeMounts:
+            - name: staticfiles
+              mountPath: /var/www/api/
+              readOnly: false
           imagePullPolicy: Always
           image: >-
             image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+        - name: nginx
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: staticfiles
+              mountPath: /var/www/api/
+              readOnly: true
+          imagePullPolicy: Always
+          image: nginxinc/nginx-unprivileged
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: backend-nginx-conf
+        - name: staticfiles
+          emptyDir: {}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst

@@ -34,6 +34,9 @@ RUN pip3 wheel --no-cache-dir --no-deps --wheel-dir /usr/src/build/wheels -r req
 
 FROM python:3.10.13-alpine3.19 AS release
 
+# This is to print directly to stdout instead of buffering output
+ENV PYTHONUNBUFFERED 1
+
 ARG UID=1000
 ARG GID=1000
 
@@ -58,6 +61,9 @@ RUN chown -R $USERNAME:$USERNAME $APP_HOME
 
 USER $USERNAME
 
+RUN python -m compileall dials
+RUN $APP_HOME/scripts/setup-django-production.sh
+
 EXPOSE 8000
 
-CMD ["python", "-m", "gunicorn", "dials.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]
+CMD ${APP_HOME}/scripts/run-django-production.sh

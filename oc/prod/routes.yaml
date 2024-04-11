@@ -4,10 +4,10 @@ metadata:
   name: dials-backend
   namespace: cms-dials-prod
   labels:
-    app: backend
-    app.kubernetes.io/component: backend
-    app.kubernetes.io/instance: backend
-    app.kubernetes.io/name: backend
+    app: backend-nginx
+    app.kubernetes.io/component: backend-nginx
+    app.kubernetes.io/instance: backend-nginx
+    app.kubernetes.io/name: backend-nginx
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
   annotations:
@@ -18,10 +18,10 @@ spec:
   host: cmsdials-api.web.cern.ch
   to:
     kind: Service
-    name: backend
+    name: backend-nginx
     weight: 100
   port:
-    targetPort: 8000-tcp
+    targetPort: 8081-tcp
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect

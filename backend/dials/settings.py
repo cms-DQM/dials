@@ -100,13 +100,10 @@ TEMPLATES = [
 ASGI_APPLICATION = "dials.asgi.application"
 
 # Database configuration
-WORKSPACES = json.loads(config("DJANGO_WORKSPACES", default="{}"))
-if len(WORKSPACES) == 0:
-    raise Exception("Workspaces are empty, cannot start server.")
-
+WORKSPACES = json.loads(config("DJANGO_WORKSPACES"))
 DB_SERVER_URI = config("DJANGO_DATABASE_URI")
 DEFAULT_WORKSPACE = config("DJANGO_DEFAULT_WORKSPACE", default=None)
-DEFAULT_WORKSPACE = DEFAULT_WORKSPACE if DEFAULT_WORKSPACE else WORKSPACES.keys()[0]
+DEFAULT_WORKSPACE = DEFAULT_WORKSPACE if DEFAULT_WORKSPACE else next(iter(WORKSPACES.keys()))
 DATABASES = {name: dj_database_url.config(default=os.path.join(DB_SERVER_URI, name)) for name in WORKSPACES.keys()}
 DATABASES["default"] = DATABASES[DEFAULT_WORKSPACE]
 
@@ -148,8 +145,11 @@ LOGGING = {
 }
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

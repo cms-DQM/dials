@@ -1,22 +1,22 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: backend
+  name: backend-nginx
   namespace: cms-dials-prod
   labels:
-    app: backend
-    app.kubernetes.io/component: backend
-    app.kubernetes.io/instance: backend
-    app.kubernetes.io/name: backend
+    app: backend-nginx
+    app.kubernetes.io/component: backend-nginx
+    app.kubernetes.io/instance: backend-nginx
+    app.kubernetes.io/name: backend-nginx
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
 spec:
   type: ClusterIP
   ports:
-    - name: 8000-tcp
+    - name: 8081-tcp
       protocol: TCP
-      port: 8000
-      targetPort: 8000
+      port: 8081
+      targetPort: 8081
   selector:
     app: backend
     deployment: backend
