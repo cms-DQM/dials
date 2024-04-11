@@ -16,7 +16,7 @@ class GenericViewSetRouter:
         queryset = super().get_queryset()
         order_by = queryset.query.order_by
         queryset = queryset.model.objects
-        workspace = self.request.headers.get("Workspace")
+        workspace = self.request.headers.get(settings.WORKSPACE_HEADER.capitalize())
 
         if workspace:
             if workspace not in settings.WORKSPACES.keys():
