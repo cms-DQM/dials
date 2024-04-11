@@ -34,11 +34,11 @@ alembic = "^1.13.1"
 pandas = "^2.2.1"
 paramiko = "^3.4.0"
 scp = "^0.14.5"
+flower = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 poethepoet = "^0.24.4"
-flower = "^2.0.1"
 tqdm = "^4.66.2"
 psutil = "^5.9.8"
 matplotlib = "^3.8.3"
