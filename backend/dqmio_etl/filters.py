@@ -52,6 +52,7 @@ class LumisectionFilter(filters.FilterSet):
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
     ls_number = filters.NumberFilter(label="Lumisection number", field_name="ls_id__ls_number", lookup_expr="exact")
+    run_number = filters.NumberFilter(label="Run number", field_name="run_number", lookup_expr="exact")
     min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_number", lookup_expr="gte")
     max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_number", lookup_expr="lte")
     min_ls_number = filters.NumberFilter(
@@ -95,6 +96,7 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
 
 class LumisectionHistogram2DFilter(filters.FilterSet):
     ls_number = filters.NumberFilter(label="Lumisection number", field_name="ls_id__ls_number", lookup_expr="exact")
+    run_number = filters.NumberFilter(label="Run number", field_name="run_number", lookup_expr="exact")
     min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_number", lookup_expr="gte")
     max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_number", lookup_expr="lte")
     min_ls_number = filters.NumberFilter(
