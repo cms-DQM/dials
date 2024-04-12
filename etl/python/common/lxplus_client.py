@@ -5,13 +5,19 @@ from scp import SCPClient
 class MinimalLXPlusClient:
     SERVER = "lxplus.cern.ch"
 
-    def __init__(self, lxplus_user: str, lxplus_pwd: str):
+    def __init__(self, lxplus_user: str, lxplus_pwd: str, timeout: int = 20 * 60):
+        self.timeout = timeout
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.client.connect(self.SERVER, username=lxplus_user, password=lxplus_pwd)
 
     def init_proxy(self) -> None:
-        _, stdout, _ = self.client.exec_command("voms-proxy-init -voms cms -rfc")
+        _, stdout, _ = self.client.exec_command(f"/usr/bin/timeout {self.timeout} voms-proxy-init -voms cms -rfc")
+
+        return_code = stdout.channel.recv_exit_status()
+        if return_code == 124:
+            raise Exception(f"Voms proxy init timed out after {self.timeout} seconds")
+
         stdout = stdout.read().decode("utf-8").strip()
         return True if "Your proxy is valid" in stdout else False
 
@@ -24,20 +30,22 @@ class MinimalLXPlusClient:
         fname = fpath.replace("/", "_")[1:]
         out_fpath = f"{output_dir}/{fname}"
         grid_fpath = f"{redirector}/{fpath}"
-        command = f"/usr/bin/xrdcp {grid_fpath} {out_fpath}"
+        command = f"/usr/bin/timeout {self.timeout} /usr/bin/xrdcp {grid_fpath} {out_fpath}"
         _, stdout, stderr = self.client.exec_command(command)
+        return_code = stdout.channel.recv_exit_status()
         stderr = stderr.read().decode("utf-8").strip()
         stdout = stdout.read().decode("utf-8").strip()
 
-        # xrdcp succeeded if stdout and stderr are empty
-        if stdout == "" and stderr == "":
+        if return_code == 0:
             return out_fpath
-
-        raise Exception(f"xrdcp failed for {grid_fpath}. stdout: {stdout} stderr: {stderr}")
+        elif return_code == 124:
+            raise Exception(f"xrdcp (exit = {return_code}) timed out after {self.timeout} seconds for {grid_fpath}")
+        else:
+            raise Exception(f"xrdcp (exit = {return_code}) failed for {grid_fpath}. stderr: {stderr}")
 
     def scp(self, remote_fpath: str, local_fpath: str) -> str:
-        scp = SCPClient(self.client.get_transport())
-        scp.get(remote_fpath, local_fpath)
+        with SCPClient(self.client.get_transport()) as scp:
+            scp.get(remote_fpath, local_fpath)
 
     def ls(self, remote_path: str) -> list:
         _, stdout, _ = self.client.exec_command(f"ls {remote_path}")
