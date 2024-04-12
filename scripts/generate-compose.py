@@ -91,6 +91,7 @@ def gen_compose_header(mounted_eos_path):
                 "command": "bash -c 'celery --app=python flower'",
                 "network_mode": "host",
                 "depends_on": gen_common_depends_on(),
+                "environment": {"FLOWER_BASIC_AUTH": "admin:admin"},
             },
         }
     }
