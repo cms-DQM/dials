@@ -23,6 +23,7 @@ const Histograms2D = () => {
   const [maxLs, setMaxLs] = useState()
   const [titleContains, setTitleContains] = useState()
   const [minEntries, setMinEntries] = useState(0)
+  const [runNumber, setRunNumber] = useState()
   const [campaign, setCampaign] = useState()
   const [primaryDataset, setPrimaryDataset] = useState()
   const [era, setEra] = useState()
@@ -72,6 +73,7 @@ const Histograms2D = () => {
 
   const fetchData = ({
     page,
+    runNumber,
     minRun,
     maxRun,
     minLs,
@@ -87,6 +89,7 @@ const Histograms2D = () => {
     API.lumisection
       .listHistograms(2, {
         page,
+        run: runNumber,
         minRun,
         maxRun,
         minLs,
@@ -223,6 +226,16 @@ const Histograms2D = () => {
               </Col>
             </Form.Group>
 
+            <Form.Group className='mb-3' controlId='formRunNumber'>
+              <Form.Label>Run number</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='Enter run number'
+                value={runNumber}
+                onChange={(e) => setRunNumber(e.target.value)}
+              />
+            </Form.Group>
+
             <Form.Group className='mb-3' controlId='formCampaign'>
               <Form.Label>Campaign contains</Form.Label>
               <Form.Control
@@ -269,6 +282,7 @@ const Histograms2D = () => {
               onClick={() => {
                 fetchData({
                   page: 1,
+                  runNumber,
                   minRun,
                   maxRun,
                   minLs,
@@ -305,6 +319,7 @@ const Histograms2D = () => {
                 if (type === 'pagination') {
                   fetchData({
                     page,
+                    runNumber,
                     minRun,
                     maxRun,
                     minLs,
