@@ -105,7 +105,7 @@ spec:
             requests:
               memory: 1024Mi
             limits:
-              memory: 4096Mi
+              memory: 5120Mi
           command:
             - bash
             - '-c'
@@ -176,7 +176,7 @@ spec:
             requests:
               memory: 1024Mi
             limits:
-              memory: 4096Mi
+              memory: 5120Mi
           command:
             - bash
             - '-c'
