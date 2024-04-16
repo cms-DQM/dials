@@ -2,6 +2,10 @@
 
 DIALS service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deploy in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [backend](registry.cern.ch/cms-dqmdc/dials-backend-base) and [frontend](registry.cern.ch/cms-dqmdc/dials-frontend) are currently hosted in Docker Hub and are imported to Openshift via an `ImageStream`.
 
+## Setting up the service account (SA)
+
+Read [here](/docs/SETTING-UP-SA.md) how to do it.
+
 ## Application Portal
 
 This guide will show how to create new applications that suit the DIALS deployment, note that you don't need to re-create then on every deployment. We need to create at least the public, confidential and api client applications. If api clients need fine-grained access based on the roles linked to e-groups later you can create more api clients and update the `DJANGO_KEYCLOAK_API_CLIENTS` secret. Login to the [application portal](https://application-portal.web.cern.ch/) an create a new application:
@@ -55,6 +59,8 @@ Make sure to grant the permission to the public application to exchange token wi
 
 ![alt text](/docs/img/app_conf_grant_perm.png)
 
+Don't forget to add roles to confidential application matching e-groups to automatically route users to a specific workspace and force the role to all users on API Clients.
+
 ## Redis
 
 On a new project, click with the right button on black space and select `From Catalog`:
@@ -81,7 +87,7 @@ Since raw DQMIO data is stored in EOS, our containers need access to EOS and the
 
 Since a CERN Service Account is already created for this project and the resources deployment is made by a kubernetes yaml file (more on that later) you must follow only these topics in the above documentation: `Create the eos-credentials secret` and `Create and Mount an EOS Persistent Volume Claim`.
 
-Note: You can also deploy the secrets using the [template secrets file](/oc/prod/template-secrets.yaml), for that you need to fill all the values encoded as base64 according to the production environment variables and apply the configuration `oc apply -f ./os/prod/filled-secrets.yaml`. If you deploy like that you will only need to follow the topic `Create and Mount an EOS Persistent Volume Claim`.
+Note: You can also deploy the secrets using the [template secrets file](/oc/prod/secrets/eos-credentials.yaml), for that you need to fill all the values encoded as base64 according to the production environment variables and apply the configuration `oc apply -f ./os/prod/secrets/eos-credentials.yaml`. If you deploy like that you will only need to follow the topic `Create and Mount an EOS Persistent Volume Claim`.
 
 ## Secrets
 
@@ -89,7 +95,7 @@ Under `Secrets` in `Developer` view of PaaS create a `key/value secret` with the
 
 ![alt text](/docs/img/paas_secrets.png)
 
-Note: You can also deploy the secrets using the [template secrets file](/oc/prod/template-secrets.yaml), for that you need to fill all the values encoded as base64 according to production environment variables and apply the configuration `oc apply -f ./os/prod/filled-secrets.yaml`.
+Note: You can also deploy the secrets using the [template secrets file](/oc/prod/secrets), for that you need to fill all the values encoded as base64 according to production environment variables and apply the configuration `oc apply -f ./os/prod/secrets`.
 
 ## OC Cli
 
@@ -120,22 +126,25 @@ Then for a new deployment follow the order:
 
 ```bash
 oc apply -f ./oc/prod/image_stream.yaml
-oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend-base --confirm
+oc import-image etl --from=registry.cern.ch/cms-dqmdc/dials-etl --confirm
+oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend --confirm
 oc import-image frontend --from=registry.cern.ch/cms-dqmdc/dials-frontend --confirm
-oc apply -f ./oc/prod/deployment.yaml
+oc apply -f ./oc/prod/configmaps
+oc apply -f ./oc/prod/deployments
 oc apply -f ./oc/prod/services.yaml
 oc apply -f ./oc/prod/routes.yaml
 ```
 
-If resources are already deployed and just need to re-deploy the main deployments you don't need to re-apply `image_stream`, `services` and `routes`. Note that if you need to delete something in the stack you can do `oc delete -f ...` just like Kubernetes!
+If resources are already deployed and just need to re-deploy the main deployments you don't need to re-apply `image_stream`, `services`, `routes` and `configmaps`. Note that if you need to delete something in the stack you can do `oc delete -f ...` just like Kubernetes!
 
 ## Updating resources
 
-Suppose you have done a new release and you have updated the `backend` and `frontend` containers, first you should build then in your machine and push to Docker Hub then you need to import those images to Image Stream resources:
+Suppose you have done a new release and you have updated the `etl`, `backend` and `frontend` containers, first you should build then in your machine and push to Docker Hub then you need to import those images to Image Stream resources:
 
 ```bash
 ./scripts/push_container.sh
-oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend-base --confirm
+oc import-image etl --from=registry.cern.ch/cms-dqmdc/dials-etl --confirm
+oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend --confirm
 oc import-image frontend --from=registry.cern.ch/cms-dqmdc/dials-frontend --confirm
 ```
 
@@ -149,12 +158,25 @@ You can also rollout from `oc` cli, for that you need to get the deployment name
 oc get deployments
 
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-backend-api        1/1     1            1           7h32m
-backend-beat       0/0     0            0           7h32m
-backend-worker-1   0/0     0            0           7h32m
-backend-worker-2   0/0     0            0           7h32m
-backend-worker-3   0/0     0            0           7h32m
-frontend           1/1     1            1           7h32m
+backend            3/3     3            3           4d17h
+common-redbeat     1/1     1            1           3d23h
+csc-bulk           1/1     1            1           25h
+csc-indexer        1/1     1            1           25h
+csc-priority       1/1     1            1           25h
+ecal-bulk          1/1     1            1           25h
+ecal-indexer       1/1     1            1           25h
+ecal-priority      1/1     1            1           25h
+flower             1/1     1            1           3d23h
+frontend           3/3     3            3           4d17h
+hcal-bulk          1/1     1            1           25h
+hcal-indexer       1/1     1            1           25h
+hcal-priority      1/1     1            1           25h
+jetmet-bulk        1/1     1            1           25h
+jetmet-indexer     1/1     1            1           25h
+jetmet-priority    1/1     1            1           25h
+tracker-bulk       1/1     1            1           25h
+tracker-indexer    1/1     1            1           25h
+tracker-priority   1/1     1            1           25h
 ```
 
 Then you rollout a specific deployment:
@@ -163,4 +185,4 @@ Then you rollout a specific deployment:
 oc rollout restart deployment/frontend
 ```
 
-Note that when you rollout Kubernetes will replace the current pod with a new one, if any job is running in the job queue it might get lost!
+Note that when you rollout Kubernetes will replace the current pod with a new one, if any job is running in the job queue it might get lost. In order to avoid dead jobs connect to `flower` trough port-forward and disable the consumers, once the worker has finished processing all pre-fetched jobs you can safely rollout the pod.
