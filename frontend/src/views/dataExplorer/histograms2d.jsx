@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 
 import { ResponsivePlot, Table } from '../../components'
 import API from '../../services/api'
+import reverseCantorPairing from '../../utils/cantor'
 
 const Histograms2D = () => {
   const [isLoading, setLoading] = useState(true)
@@ -22,6 +23,11 @@ const Histograms2D = () => {
   const [maxLs, setMaxLs] = useState()
   const [titleContains, setTitleContains] = useState()
   const [minEntries, setMinEntries] = useState(0)
+  const [runNumber, setRunNumber] = useState()
+  const [campaign, setCampaign] = useState()
+  const [primaryDataset, setPrimaryDataset] = useState()
+  const [era, setEra] = useState()
+  const [fileId, setFileId] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
@@ -40,7 +46,7 @@ const Histograms2D = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.lumisection}`
+        const linkTo = `/lumisections/${row.ls_id}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
@@ -50,7 +56,7 @@ const Histograms2D = () => {
       type: 'string',
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
-        const linkTo = `/histograms-2d/${row.id}`
+        const linkTo = `/histograms-2d/${row.hist_id}`
         return <Link to={linkTo}>{row.title}</Link>
       },
     },
@@ -59,7 +65,7 @@ const Histograms2D = () => {
       dataField: 'plot',
       text: 'Plot',
       formatter: (cell, row) => {
-        const linkTo = `/histograms-2d/${row.id}`
+        const linkTo = `/histograms-2d/${row.hist_id}`
         return <Link to={linkTo}>{cell}</Link>
       },
     },
@@ -67,23 +73,33 @@ const Histograms2D = () => {
 
   const fetchData = ({
     page,
+    runNumber,
     minRun,
     maxRun,
     minLs,
     maxLs,
     titleContains,
     minEntries,
+    era,
+    campaign,
+    primaryDataset,
+    fileId,
   }) => {
     setLoading(true)
     API.lumisection
       .listHistograms(2, {
         page,
+        run: runNumber,
         minRun,
         maxRun,
         minLs,
         maxLs,
         titleContains,
         minEntries: minEntries > 0 ? minEntries : undefined,
+        era,
+        campaign,
+        primaryDataset,
+        fileId,
       })
       .then((response) => {
         const results = response.results.map((item) => {
@@ -109,6 +125,7 @@ const Histograms2D = () => {
                 boxHeight={'100pt'}
               />
             ),
+            ls_number: reverseCantorPairing(item.ls_id, item.run_number),
           }
         })
         setData(results)
@@ -209,18 +226,73 @@ const Histograms2D = () => {
               </Col>
             </Form.Group>
 
+            <Form.Group className='mb-3' controlId='formRunNumber'>
+              <Form.Label>Run number</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='Enter run number'
+                value={runNumber}
+                onChange={(e) => setRunNumber(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formCampaign'>
+              <Form.Label>Campaign contains</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter campaign substring'
+                value={campaign}
+                onChange={(e) => setCampaign(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formPrimaryDataset'>
+              <Form.Label>Primary Dataset</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter primary dataset'
+                value={primaryDataset}
+                onChange={(e) => setPrimaryDataset(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formEra'>
+              <Form.Label>Era</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter era'
+                value={era}
+                onChange={(e) => setEra(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formFileId'>
+              <Form.Label>File ID</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='Enter file id'
+                value={fileId}
+                onChange={(e) => setFileId(e.target.value)}
+              />
+            </Form.Group>
+
             <Button
               variant='primary'
               type='submit'
               onClick={() => {
                 fetchData({
                   page: 1,
+                  runNumber,
                   minRun,
                   maxRun,
                   minLs,
                   maxLs,
                   titleContains,
                   minEntries,
+                  campaign,
+                  primaryDataset,
+                  era,
+                  fileId,
                 })
               }}
             >
@@ -236,7 +308,7 @@ const Histograms2D = () => {
           </Card.Header>
           <Card.Body>
             <Table
-              keyField='id'
+              keyField='hist_id'
               isLoading={isLoading}
               data={data}
               columns={columns}
@@ -247,12 +319,17 @@ const Histograms2D = () => {
                 if (type === 'pagination') {
                   fetchData({
                     page,
+                    runNumber,
                     minRun,
                     maxRun,
                     minLs,
                     maxLs,
                     titleContains,
                     minEntries,
+                    campaign,
+                    primaryDataset,
+                    era,
+                    fileId,
                   })
                 }
               }}

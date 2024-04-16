@@ -1,10 +1,9 @@
-from django.contrib.auth.models import AnonymousUser
 from django.utils.functional import cached_property
 
 from .token import CERNKeycloakToken
 
 
-class CERNKeycloakUser(AnonymousUser):
+class CERNKeycloakUser:
     """
     A dummy user class modeled after django.contrib.auth.models.AnonymousUser.
     Used in conjunction with the `KeycloakAuthentication` backend to
@@ -30,7 +29,7 @@ class CERNKeycloakUser(AnonymousUser):
 
     @cached_property
     def resource_roles(self) -> list:
-        return self.token.claims["resource_roles"][self.token.aud]["roles"]
+        return self.token.claims["resource_access"][self.token.aud]["roles"]
 
     @property
     def is_anonymous(self) -> bool:

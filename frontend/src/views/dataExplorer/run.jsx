@@ -25,12 +25,12 @@ const Run = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.id}`
+        const linkTo = `/lumisections/${row.ls_id}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
-    { dataField: 'hist1d_count', text: '1D Histograms', type: 'number' },
-    { dataField: 'hist2d_count', text: '2D Histograms', type: 'number' },
+    { dataField: 'th1_count', text: '1D Histograms', type: 'number' },
+    { dataField: 'th2_count', text: '2D Histograms', type: 'number' },
     { dataField: 'int_lumi', text: 'Initial Luminosity', type: 'number' },
     {
       dataField: 'oms_zerobias_rate',
@@ -41,8 +41,8 @@ const Run = () => {
 
   const fetchData = ({ page, runNumber }) => {
     setLoading(true)
-    API.run
-      .listLumisections({ page, runNumber })
+    API.lumisection
+      .list({ page, runNumber })
       .then((response) => {
         setData(response.results)
         setTotalSize(response.count)

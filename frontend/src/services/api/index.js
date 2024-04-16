@@ -2,24 +2,28 @@ import axios from 'axios'
 
 import { sanitizedURLSearchParams } from '../../utils/sanitizer'
 import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
-import { API_URL } from '../../config/env'
+import { API_URL, OIDC_USER_WORKSPACE } from '../../config/env'
 
 const FILE_INDEX_STATUSES = [
   'INDEXED',
   'PENDING',
-  'RUNNING',
-  'PROCESSED',
-  'FAILED',
+  'STARTED',
+  'DOWNLOAD_ERROR',
+  'ROOTFILE_ERROR',
+  'PARSING_ERROR',
+  'FINISHED',
 ]
 
 const axiosApiInstance = axios.create()
 
 axiosApiInstance.interceptors.request.use(
   async (config) => {
+    const workspace = localStorage.getItem(OIDC_USER_WORKSPACE)
     const oidc = getConfidentialToken()
     config.headers = {
       Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
       Accept: 'application/json',
+      Workspace: workspace,
     }
     return config
   },
@@ -27,6 +31,12 @@ axiosApiInstance.interceptors.request.use(
     Promise.reject(error)
   }
 )
+
+const getWorkspaces = async () => {
+  const endpoint = `${API_URL}/auth/workspaces/`
+  const response = await axiosApiInstance.get(endpoint)
+  return response.data
+}
 
 const exchangeToken = async ({ subjectToken }) => {
   const oidc = getPublicToken()
@@ -46,32 +56,25 @@ const exchangeToken = async ({ subjectToken }) => {
   return response.data
 }
 
-const listFileIndex = async ({ page, era, minSize, pathContains, status }) => {
+const listFileIndex = async ({
+  page,
+  campaign,
+  primaryDataset,
+  era,
+  logicalFileName,
+  minSize,
+  status,
+}) => {
   const endpoint = `${API_URL}/file-index/`
   const params = sanitizedURLSearchParams(
     {
       page,
+      campaign,
+      primary_dataset: primaryDataset,
       era,
+      logical_file_name: logicalFileName,
+      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
       status,
-      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
-      path_contains: pathContains,
-    },
-    { repeatMode: false }
-  )
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
-const listBadFileIndex = async ({ page, era, minSize, pathContains }) => {
-  const endpoint = `${API_URL}/bad-file-index/`
-  const params = sanitizedURLSearchParams(
-    {
-      page,
-      era,
-      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
-      path_contains: pathContains,
     },
     { repeatMode: false }
   )
@@ -103,15 +106,6 @@ const listRuns = async ({ page, maxRun, minRun }) => {
   return response.data
 }
 
-const listLumisectionsInRun = async ({ page, runNumber }) => {
-  const endpoint = `${API_URL}/run/${runNumber}/lumisections/`
-  const params = sanitizedURLSearchParams({ page }, { repeatMode: false })
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
 const getLumisection = async ({ id }) => {
   const endpoint = `${API_URL}/lumisection/${id}/`
   const response = await axiosApiInstance.get(endpoint)
@@ -120,7 +114,7 @@ const getLumisection = async ({ id }) => {
 
 const listLumisections = async ({
   page,
-  run,
+  runNumber,
   ls,
   maxLs,
   minLs,
@@ -131,7 +125,7 @@ const listLumisections = async ({
   const params = sanitizedURLSearchParams(
     {
       page,
-      run_number: run,
+      run_number: runNumber,
       ls_number: ls,
       max_ls_number: maxLs,
       max_run_number: maxRun,
@@ -160,6 +154,10 @@ const listHistograms = async (
     minRun,
     minEntries,
     titleContains,
+    era,
+    campaign,
+    primaryDataset,
+    fileId,
   }
 ) => {
   const endpoint = `${API_URL}/lumisection-h${dim}d/`
@@ -176,6 +174,10 @@ const listHistograms = async (
       min_run_number: minRun,
       min_entries: minEntries,
       title_contains: titleContains,
+      era,
+      campaign,
+      primary_dataset: primaryDataset,
+      file_id: fileId,
     },
     { repeatMode: false }
   )
@@ -191,39 +193,9 @@ const getHistogram = async (dim, id) => {
   return response.data
 }
 
-const getIngestedSubsystems = async (dim) => {
-  const endpoint = `${API_URL}/lumisection-h${dim}d/count-by-subsystem/`
+const getIngestedMonitoringElements = async (dim) => {
+  const endpoint = `${API_URL}/lumisection-h${dim}d-mes/`
   const response = await axiosApiInstance.get(endpoint)
-  return response.data
-}
-
-const listTasks = async ({
-  page,
-  status,
-  taskName,
-  worker,
-  minDateCreated,
-  maxDateCreated,
-  minDateDone,
-  maxDateDone,
-}) => {
-  const endpoint = `${API_URL}/celery-tasks/`
-  const params = sanitizedURLSearchParams(
-    {
-      page,
-      status,
-      task_name: taskName,
-      worker,
-      min_date_created: minDateCreated,
-      max_date_created: maxDateCreated,
-      min_date_done: minDateDone,
-      max_date_done: maxDateDone,
-    },
-    { repeatMode: true }
-  )
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
   return response.data
 }
 
@@ -235,23 +207,19 @@ const API = {
     statusList: FILE_INDEX_STATUSES,
     list: listFileIndex,
   },
-  badFileIndex: {
-    list: listBadFileIndex,
-  },
   lumisection: {
     get: getLumisection,
     list: listLumisections,
     listHistograms,
-    getSubsystemCount: getIngestedSubsystems,
+    getIngestedMEs: getIngestedMonitoringElements,
     getHistogram,
   },
   run: {
     get: getRun,
     list: listRuns,
-    listLumisections: listLumisectionsInRun,
   },
-  jobQueue: {
-    list: listTasks,
+  config: {
+    getWorkspaces,
   },
 }
 

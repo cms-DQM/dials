@@ -1,0 +1,9 @@
+# Alembic configuration
+
+Alembic is used to manage database migrations from python code. Since our requirements is having a data mart for each workspace we need a multi-database configuration.
+
+## Configuration
+
+A multi-database configuration is not much different from a single-database from Alembic's point of view, the primary difference is that the coded migrations will run N times (depending on how many databases are configured). The file `alembic.ini` contains generic configurations for each database, you should not edit the configuration there in order not to leak connection credentials for each database. For that the `env.py` script was edited in order to read all necessary configuration from `alembic.env.json` that is ignored in the `.gitingore`.
+
+For adding new databases (lets say new workspaces) you need to include the names in `db_names` and a sample `engine` in `alembic.ini`, then add the proper connection credentials in `alembic.env.json`.

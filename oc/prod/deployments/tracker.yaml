@@ -1,0 +1,211 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tracker-indexer
+  namespace: cms-dials-prod
+  labels:
+    app: tracker-indexer
+    app.kubernetes.io/component: tracker-indexer
+    app.kubernetes.io/instance: tracker-indexer
+    app.kubernetes.io/name: tracker-indexer
+    app.kubernetes.io/part-of: tracker-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracker-indexer
+  template:
+    metadata:
+      labels:
+        app: tracker-indexer
+        deployment: tracker-indexer
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: tracker-indexer
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=tracker-indexer@%h
+              --queues=tracker-indexer
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tracker-bulk
+  namespace: cms-dials-prod
+  labels:
+    app: tracker-bulk
+    app.kubernetes.io/component: tracker-bulk
+    app.kubernetes.io/instance: tracker-bulk
+    app.kubernetes.io/name: tracker-bulk
+    app.kubernetes.io/part-of: tracker-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracker-bulk
+  template:
+    metadata:
+      labels:
+        app: tracker-bulk
+        deployment: tracker-bulk
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: tracker-bulk
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 5120Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=tracker-bulk@%h
+              --queues=tracker-bulk
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tracker-priority
+  namespace: cms-dials-prod
+  labels:
+    app: tracker-priority
+    app.kubernetes.io/component: tracker-priority
+    app.kubernetes.io/instance: tracker-priority
+    app.kubernetes.io/name: tracker-priority
+    app.kubernetes.io/part-of: tracker-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracker-priority
+  template:
+    metadata:
+      labels:
+        app: tracker-priority
+        deployment: tracker-priority
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: tracker-priority
+          resources:
+            requests:
+              memory: 1024Mi
+            limits:
+              memory: 5120Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=tracker-priority@%h
+              --queues=tracker-priority
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

@@ -1,0 +1,128 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend
+  namespace: cms-dials-prod
+  labels:
+    app: backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/instance: backend
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/part-of: dials
+    app.openshift.io/runtime: django
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        deployment: backend
+    spec:
+      containers:
+        - name: backend
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 2048Mi
+          envFrom:
+            - configMapRef:
+                name: dials-backend-configmap
+            - secretRef:
+                name: dials-backend-secrets
+          volumeMounts:
+            - name: staticfiles
+              mountPath: /var/www/api/
+              readOnly: false
+          imagePullPolicy: Always
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/backend:latest
+        - name: nginx
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: staticfiles
+              mountPath: /var/www/api/
+              readOnly: true
+          imagePullPolicy: Always
+          image: nginxinc/nginx-unprivileged
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: backend-nginx-conf
+        - name: staticfiles
+          emptyDir: {}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend
+  namespace: cms-dials-prod
+  labels:
+    app: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/instance: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: dials
+    app.openshift.io/runtime: nginx
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        deployment: frontend
+    spec:
+      containers:
+        - name: frontend
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          imagePullPolicy: Always
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/frontend:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

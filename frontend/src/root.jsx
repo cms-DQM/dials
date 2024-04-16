@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react'
 
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import { useAuth } from 'react-oidc-context'
 
-import { OIDC_CONFIDENTIAL_TOKEN_NS, EXCHANGED_TOKEN_EVT } from './config/env'
+import {
+  OIDC_CONFIDENTIAL_TOKEN_NS,
+  OIDC_USER_WORKSPACE,
+  EXCHANGED_TOKEN_EVT,
+} from './config/env'
 import { AppNavbar, AppRoutes } from './components'
 import onSigninComplete from './utils/auth'
+import { getUserWorkspace } from './utils/userTokens'
+import API from './services/api'
 
 const Root = () => {
   const auth = useAuth()
   const [tokenExchanged, setTokenExchanged] = useState(false)
+  const [selectedWorkspace, setSelectedWorkspace] = useState(null)
+  const [allWorkspaces, setAllWorkspaces] = useState([])
 
   // When user is redirected from SSO login, we capture this event
   // to finished authentication
@@ -50,6 +58,30 @@ const Root = () => {
     })
   }, [auth, auth.events, auth.signinSilent])
 
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      API.config
+        .getWorkspaces()
+        .then((response) => {
+          setAllWorkspaces(response.workspaces)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+    }
+    if (auth.isAuthenticated && tokenExchanged) {
+      setSelectedWorkspace(getUserWorkspace())
+      fetchWorkspaces()
+    }
+  }, [auth.isAuthenticated, tokenExchanged])
+
+  useEffect(() => {
+    if (selectedWorkspace) {
+      localStorage.setItem(OIDC_USER_WORKSPACE, selectedWorkspace)
+    }
+  }, [selectedWorkspace])
+
   // Will render authenticating div if auth provider is still loading
   // or user is authenticated (auth not loading anymore) but
   // token hasn't been exchanged yet
@@ -63,8 +95,12 @@ const Root = () => {
 
   return (
     <>
-      <AppNavbar />
-      <AppRoutes />
+      <AppNavbar
+        allWorkspaces={allWorkspaces}
+        selectedWorkspace={selectedWorkspace}
+        setSelectedWorkspace={setSelectedWorkspace}
+      />
+      <AppRoutes key={selectedWorkspace} />
       <ToastContainer position='bottom-right' />
     </>
   )

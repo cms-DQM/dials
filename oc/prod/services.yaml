@@ -1,25 +1,25 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: backend-restapi
+  name: backend-nginx
   namespace: cms-dials-prod
   labels:
-    app: backend-restapi
-    app.kubernetes.io/component: backend-restapi
-    app.kubernetes.io/instance: backend-restapi
-    app.kubernetes.io/name: backend-restapi
+    app: backend-nginx
+    app.kubernetes.io/component: backend-nginx
+    app.kubernetes.io/instance: backend-nginx
+    app.kubernetes.io/name: backend-nginx
     app.kubernetes.io/part-of: dials
     app.openshift.io/runtime-version: latest
 spec:
   type: ClusterIP
   ports:
-    - name: 8000-tcp
+    - name: 8081-tcp
       protocol: TCP
-      port: 8000
-      targetPort: 8000
+      port: 8081
+      targetPort: 8081
   selector:
-    app: backend-restapi
-    deployment: backend-restapi
+    app: backend
+    deployment: backend
 
 ---
 kind: Service

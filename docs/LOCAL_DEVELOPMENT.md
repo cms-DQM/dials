@@ -10,19 +10,23 @@ The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are mana
 
 ## Accessing DQMIO data from EOS
 
-The following commands will mount the specific DQMIO production data from EOS in read-only mode in your home folder (if you don't like the location you can change it):
+The following commands will mount the specific DQMIO production data from EOS in read-only mode mimicking lxplus/openshift eos mounting structure:
 
 ```bash
-mkdir -p $HOME/DQMIO
-sshfs -o default_permissions,ro $USER@lxplus.cern.ch:/eos/project/m/dials/public/DQMIO $HOME/DQMIO
+sudo mkdir -p /eos/project-m/mlplayground/public/DQMIO_workspaces
+sudo mkdir -p /eos/home-m/mlplayground/DQMIO_workspaces
+sudo chown -R $USER:$USER /eos
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /eos/project-m/mlplayground/public/DQMIO_workspaces
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/home-m/mlplayground/DQMIO_workspaces /eos/home-m/mlplayground/DQMIO_workspaces
 ```
 
-You can try running the application to ingest data from the production source, but given EOS limitations and network bandwidth limitation it is much simpler to copy some files (20 is enough) to a local directory and use that as the data source for the local application.
+You can try running the ETL workflow ingesting all available data, but for testing purposes you can just use a mocked DBS response with just 30 files per workspace.
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount $HOME/DQMIO
+umount /eos/project-m/mlplayground/public/DQMIO_workspaces
+umount /eos/home-m/mlplayground/DQMIO_workspaces
 ```
 
 ## Running PostgresSQL
@@ -54,66 +58,67 @@ docker run -d \
 
 # Environment variables
 
+For development you can set how many workspaces your hardware can handle (more workspace = more cpu and ram usage during ETL). Limit the number of workspace in the following variables: `DJANGO_WORKSPACES` and `DATABASES`.
+
+## Backend
+
 Create a `.env` file inside [`backend`](/backend/) with the following variables:
 
 ```bash
-DJANGO_ENV=development
-DJANGO_DEBUG=0
-DJANGO_SECRET_KEY=dont-tell-anyone-its-a-secret
+DJANGO_ENV=dev
+DJANGO_DEBUG=1
 DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
 DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
 DJANGO_CORS_ALLOWED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
-DJANGO_DATABASE_ENGINE=django.db.backends.postgresql
-DJANGO_DATABASE_NAME=dials-dev
-DJANGO_DATABASE_USER=postgres
-DJANGO_DATABASE_PASSWORD=postgres
-DJANGO_DATABASE_PORT=5432
-DJANGO_DATABASE_HOST=localhost
-DJANGO_CELERY_BROKER_URL=redis://localhost:6379
-DJANGO_DQMIO_STORAGE=/mnt/dqmio
+DJANGO_WORKSPACES={"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}
+DJANGO_DEFAULT_WORKSPACE=tracker
 DJANGO_KEYCLOAK_SERVER_URL=https://keycloak-qa.cern.ch/auth/
 DJANGO_KEYCLOAK_REALM=cern
+DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-public-app
+DJANGO_SECRET_KEY=potato
+DJANGO_REDIS_URL=redis://localhost:6379/3
+DJANGO_DATABASE_URI=postgres://postgres:postgres@localhost:5432
 DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID=cms-dials-confidential-app
 DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY=SECRET_HERE
-DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-public-app
 DJANGO_KEYCLOAK_API_CLIENTS={"SECRET_HERE": "cms-dials-api-client-1"}
 ```
 
 Login to [QA Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
 
-The `DJANGO_DQMIO_STORAGE` variable could be set to the directory where DQMIO data is mounted but that means you are going to ingest all DQMIO data locally (+700 GB), on the other hand you can pick just a fill files and save locally in the directory `/mnt/dqmio`.
+## ETL
 
-Note: Do not forget to create a database named `dials-dev` in your local postgresql instance.
-
-## Running Celery Workers
-
-Job queues need workers for collecting tasks from the queue, executing then and later acknowledge the task. Since we are running three queues, the following commands will spawn workers for then, given their specification.
+Create a `.env` file inside [`etl`](/etl/) with the following variables:
 
 ```bash
-celery -A dials worker -l INFO -c 1 -n worker1 -Q dqmio_file_indexer_queue
-celery -A dials worker -l INFO -c 1 -n worker2 -Q dqmio_etl_queue
-celery -A dials worker -l INFO -c 4 -n worker3 -Q celery_periodic
+ENV=dev
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/1
+CELERY_REDBEAT_URL=redis://localhost:6379/2
+DATABASES=csc,ecal,hcal,jetmet,tracker
+DATABASE_URI=postgresql://postgres:postgres@localhost:5432
+CERT_FPATH=/path/to/usercert.pem
+KEY_FPATH=/path/to/userkey.pem
+KEYTAB_USER=<lxplus-account>
+KEYTAB_PWD=<lxplus-password>
+EOS_LANDING_ZONE=/eos/project-m/mlplayground/public/DQMIO_workspaces
+MOUNTED_EOS_PATH=/eos/project-m/mlplayground/public/DQMIO_workspaces
+MOCKED_DBS_FPATH=/path/to/mocked/dbs/file
 ```
 
-## Running Celery Beat
+* `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
+* `MOCKED_DBS_FPATH` is optional, if not set it will try to ingest all available files indexed in DBS;
 
-Some tasks must be periodic, that is, execute in a specific time continuously. In a common UNIX like environment you would normally use CRON, here since we are already using Celery for managing our job queues it is much easier (and flexible) to use celery's beat scheduler.
+## Starting the etl natively
 
-```bash
-celery -A dials beat -l INFO
-```
+From within [`repository root's directory`](/) or [`etl`](/etl/) you can use the [`start-dev.sh`](/etl/scripts/start-dev.sh) script or the poe task `poe start-etl` to start the entire etl stack in one command.
 
-## Running django
+Note that before starting the ETL natively you need to setup the database, in order to do this from within [`etl`](/etl/) you can run `alembic upgrade head`. If you need to clean the database you can run `alembic downgrade -1`.
 
-Just using the simplest runserver you can start de development django server:
-
-```bashb
-python manage.py runserver 0.0.0.0:8000
-```
+Note: If running the commands separated you should execute then inside the [`etl`](/etl/) directory.
 
 ## Starting the backend natively
 
-From within [`repository root's directory`](/) or [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-dev` to start the entire backend stack in one command.
+From within [`repository root's directory`](/) or [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-api` to start the entire backend stack in one command.
 
 Note: If running the commands separated you should execute then inside the [`backend`](/backend/) directory.
 
@@ -121,13 +126,20 @@ Note: If running the commands separated you should execute then inside the [`bac
 
 Inside the [`frontend`](/frontend/) directory you can using the script `yarn run start` to start the react-scripts development server.
 
-## Starting backend and frontend using Docker
+## Docker
 
-Both the [`backend`](/backend/) and [`frontend`](/frontend/) ships a `Dockerfile` that can be used for local development. Using the [`docker-compose.yaml`](/docker-compose.yaml) (be sure to read the notes at file's header) you can start both services by first building and then starting from the [repository root's directory](/):
+The [`etl`](/elt/), [`backend`](/backend/) and [`frontend`](/frontend/) ships a `Dockerfile` that can be used for local development. The repository ships the script [`generate-compose.py`](/scripts/generate-compose.py) to automatically generate a docker-compose file based on the environment variables (e.g. related to how many workspace you want to use for development). You can start all services by first building, then starting the database and then starting from the [repository root's directory](/):
 
 ```bash
 docker compose build
+docker compose up dials-init
 docker compose up
+```
+
+In case you need to clean the database you can run:
+
+```bash
+docker compose up dials-purge
 ```
 
 You will notice that the docker compose file is set to bind-mount the code from backend and frontend in the host, so hot reloading works (i.e. you don't need to always build the container upon any modification)!!! In order to this work correctly you need to setup the current user GID and UID when building the container, **generally** UID and GID for single not-hardcore linux user are set to 1000 and both Dockerfiles use that as default values. In case you use a different UID/GID you can set then as build args:
@@ -136,15 +148,4 @@ You will notice that the docker compose file is set to bind-mount the code from 
 docker compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g)
 ```
 
-Note that we are not using the `-d` flag for running then detached from the current terminal, that is a good idea for development sessions and since we are not specifying any docker compose file it is automatically choosing the base file.
-
-## Simulating production
-
-Production environment can be simulated using [`docker-compose.prod.yaml`](/docker-compose.prod.yaml), you just need to set right production environment variables and build and spin up the container pointing to the correct yaml file:
-
-```bash
-docker compose -f docker-compose.prod.yaml build
-docker compose -f docker-compose.prod.yaml up
-```
-
-Differently from the local development yaml file, it doesn't bind-mount files from the container so you always need to rebuild the containers upon any modification and the commands/docker images are different.
+Note that we are not using the `-d` flag for running detached from the current terminal, that is a good idea for development sessions and since we are not specifying any docker compose file it is automatically choosing the base file.

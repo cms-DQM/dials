@@ -1,18 +1,12 @@
 # DIALS
 
-The backend can be divided in the following components:
+The backend is a simple Django application built on top of Django Rest Framework for connecting to multiple databases depending on users roles and querying data from the database. It is divided in the following components:
 
-* `DQMIO File Indexer`: Component responsible for keeping track of raw data (DQMIO rootfiles) stored in EOS using a database table. It should store good files and bad files metadata (Rootfile's fUUID, file era, number of entries, ...), filepath in EOS filesystem and processing status. In the sense of a data architecture it handles the raw data indexing.
+* `cern_auth`: Component responsible for handling authentication within rest api using two different authentication classes (`KeycloakAuthentication`, `KeycloakApiTokenAuthentication`) and exposes two viewsets (`KeycloakApiTokenViewSet`, `KeycloakExchangeViewSet`) for api token issue and token exchange. Note: we are using solely the CERN SSO authentication (that is **super** similar no Keycloak underneath).
 
-* `DQMIO ETL`: Component responsible for executing our ETL (Extract-Transform-Load) pipeline for each indexed file. The pipeline will import all Runs, Lumisections and Histograms to our database. In the sense of a data architecture it handles the raw data ingestion.
+* `dqmio_file_indexer`: Reads data from the indexer table;
 
-* `DQMIO Celery Tasks`: Component responsible for visualizing job queues state, configuring celery signal and generating serializers for api methods that schedule tasks instead returning the actual data.
-
-* `Custom Auth`: Component responsible for handling authentication within rest api using two different authentication classes (`KeycloakAuthentication`, `KeycloakApiTokenAuthentication`) and exposes two viewsets (`KeycloakApiTokenViewSet`, `KeycloakExchangeViewSet`) for api token issue and token exchange. Note: we are using solely the CERN SSO authentication (that is **super** similar no Keycloak underneath).
-
-The data pipeline is depicted in the following image:
-
-![alt text](/docs/img/backend_data_pipeline.png)
+* `dqmio_etl`: Reads data from multiple data tables;
 
 
 ## Useful sources

@@ -26,3 +26,12 @@ export const getConfidentialToken = () => {
     expiresIn: user.expires_in,
   }
 }
+
+export const getUserWorkspace = () => {
+  const oidcStorage = localStorage.getItem(OIDC_CONFIDENTIAL_TOKEN_NS)
+  if (!oidcStorage) {
+    throw new Error('User is not authenticated!')
+  }
+  const user = JSON.parse(oidcStorage)
+  return user.default_workspace
+}

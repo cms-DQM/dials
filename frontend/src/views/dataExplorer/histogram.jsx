@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
 import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
+import reverseCantorPairing from '../../utils/cantor'
 
 const Histogram = (props) => {
   const navigate = useNavigate()
@@ -59,11 +60,15 @@ const Histogram = (props) => {
             bargap: 0,
             margin: { t: 20, b: 20, l: 20, r: 20 },
           }
+          const lsNumber = reverseCantorPairing(
+            response.ls_id,
+            response.run_number
+          )
           setData(response)
           setPlotData(data)
           setPlotLayout(layout)
           setRunNumber(response.run_number)
-          setLsNumber(response.ls_number)
+          setLsNumber(lsNumber)
           setTitle(response.title)
         })
         .catch((error) => {
@@ -100,7 +105,7 @@ const Histogram = (props) => {
         if (response.count === 0) {
           toast.error('Histogram not found!')
         } else {
-          return navigate(`/histograms-${dim}d/${response.results[0].id}`)
+          return navigate(`/histograms-${dim}d/${response.results[0].hist_id}`)
         }
       })
       .catch((error) => {
@@ -126,9 +131,11 @@ const Histogram = (props) => {
               >{`Run ${data.run_number}`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 linkAs={Link}
-                linkProps={{ to: `/lumisections/${data.lumisection}` }}
-              >{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
-              <Breadcrumb.Item active>{`H${dim}D #${data.id}`}</Breadcrumb.Item>
+                linkProps={{ to: `/lumisections/${data.ls_id}` }}
+              >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`H${dim}D #${data.hist_id}`}</Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>

@@ -1,7 +1,8 @@
 from typing import ClassVar
 
+from django.db.models import Q
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import ParseError
+from utils.validators import validate_th_filterset
 
 from .models import Lumisection, LumisectionHistogram1D, LumisectionHistogram2D, Run
 
@@ -16,29 +17,11 @@ class RunFilter(filters.FilterSet):
 
 
 class LumisectionFilter(filters.FilterSet):
-    run_number = filters.NumberFilter(label="Run number", field_name="run__run_number", lookup_expr="exact")
     min_ls_number = filters.NumberFilter(label="Minimum lumisection number", field_name="ls_number", lookup_expr="gte")
     max_ls_number = filters.NumberFilter(label="Maximum lumisection number", field_name="ls_number", lookup_expr="lte")
-    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_id", lookup_expr="gte")
-    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_id", lookup_expr="lte")
-
-    def filter_queryset(self, queryset, *args, **kwargs):
-        queryset = super().filter_queryset(queryset, *args, **kwargs)
-
-        # It seems CharField values comes as empty string from django filters form
-        # In order to compare simultaneously excluding filters we need to also remove empty string values
-        cleaned_data = {
-            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
-        }
-
-        run_number_used = "run_number" in cleaned_data
-        min_run_number_used = "min_run_number" in cleaned_data
-        max_run_number_used = "max_run_number" in cleaned_data
-
-        if run_number_used and (min_run_number_used or max_run_number_used):
-            raise ParseError("run number and range run number filter cannot be used together.")
-
-        return queryset
+    run_number = filters.NumberFilter(label="Run number", method="filter_by_run_number")
+    min_run_number = filters.NumberFilter(label="Minimum run number", method="filter_by_min_run_number")
+    max_run_number = filters.NumberFilter(label="Maximum run number", method="filter_by_max_run_number")
 
     class Meta:
         model = Lumisection
@@ -51,65 +34,44 @@ class LumisectionFilter(filters.FilterSet):
             "max_run_number",
         ]
 
+    def filter_by_run_number(self, queryset, name, value):
+        return queryset.filter(
+            Q(lumisectionhistogram1d__run_number=value) | Q(lumisectionhistogram2d__run_number=value)
+        ).distinct()
+
+    def filter_by_min_run_number(self, queryset, name, value):
+        return queryset.filter(
+            Q(lumisectionhistogram1d__run_number__gte=value) | Q(lumisectionhistogram2d__run_number__gte=value)
+        ).distinct()
+
+    def filter_by_max_run_number(self, queryset, name, value):
+        return queryset.filter(
+            Q(lumisectionhistogram1d__run_number__lte=value) | Q(lumisectionhistogram2d__run_number__lte=value)
+        ).distinct()
+
 
 class LumisectionHistogram1DFilter(filters.FilterSet):
-    run_number = filters.NumberFilter(label="Run number", field_name="lumisection__run", lookup_expr="exact")
-    ls_number = filters.NumberFilter(
-        label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
-    )
-    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="lumisection__run", lookup_expr="gte")
-    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="lumisection__run", lookup_expr="lte")
+    ls_number = filters.NumberFilter(label="Lumisection number", field_name="ls_id__ls_number", lookup_expr="exact")
+    run_number = filters.NumberFilter(label="Run number", field_name="run_number", lookup_expr="exact")
+    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_number", lookup_expr="gte")
+    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_number", lookup_expr="lte")
     min_ls_number = filters.NumberFilter(
-        label="Minimum lumisection number", field_name="lumisection__ls_number", lookup_expr="gte"
+        label="Minimum lumisection number", field_name="ls_id__ls_number", lookup_expr="gte"
     )
     max_ls_number = filters.NumberFilter(
-        label="Maximum lumisection number", field_name="lumisection__ls_number", lookup_expr="lte"
+        label="Maximum lumisection number", field_name="ls_id__ls_number", lookup_expr="lte"
     )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
-    era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
-    dqmio_filepath_contains = filters.CharFilter(
-        label="DQMIO file path contains",
-        field_name="source_data_file__file_path",
-        lookup_expr="contains",
+    era = filters.CharFilter(label="Data era", field_name="file_id__era", lookup_expr="exact")
+    campaign = filters.CharFilter(label="Campaign", field_name="file_id__campaign", lookup_expr="contains")
+    primary_dataset = filters.CharFilter(
+        label="Primary Dataset", field_name="file_id__primary_dataset", lookup_expr="contains"
     )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
-
-        # It seems CharField values comes as empty string from django filters form
-        # In order to compare simultaneously excluding filters we need to also remove empty string values
-        cleaned_data = {
-            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
-        }
-
-        run_number_used = "run_number" in cleaned_data
-        min_run_number_used = "min_run_number" in cleaned_data
-        max_run_number_used = "max_run_number" in cleaned_data
-
-        if run_number_used and (min_run_number_used or max_run_number_used):
-            raise ParseError("run number and range run number cannot be used together.")
-
-        lumisection_id_used = "lumisection_id" in cleaned_data
-        ls_number_used = "ls_number" in cleaned_data
-        min_ls_number_used = "min_ls_number" in cleaned_data
-        max_ls_number_used = "max_ls_number" in cleaned_data
-
-        if ls_number_used and lumisection_id_used:
-            raise ParseError("ls number and lumisection id cannot be used together.")
-
-        if lumisection_id_used and (min_ls_number_used or max_ls_number_used):
-            raise ParseError("lumisection id and range ls number cannot be used together.")
-
-        if ls_number_used and (min_ls_number_used or max_ls_number_used):
-            raise ParseError("ls number and range ls number cannot be used together.")
-
-        title_used = "title" in cleaned_data
-        title_contains_used = "title_contains" in cleaned_data
-
-        if title_used and title_contains_used:
-            raise ParseError("title and title contains cannot be used together.")
-
+        validate_th_filterset(self.form)
         return queryset
 
     class Meta:
@@ -117,7 +79,7 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
         fields: ClassVar[list[str]] = [
             "run_number",
             "ls_number",
-            "lumisection_id",
+            "ls_id",
             "title",
             "min_run_number",
             "max_run_number",
@@ -126,68 +88,34 @@ class LumisectionHistogram1DFilter(filters.FilterSet):
             "title_contains",
             "min_entries",
             "era",
-            "dqmio_filepath_contains",
+            "campaign",
+            "primary_dataset",
+            "file_id",
         ]
 
 
 class LumisectionHistogram2DFilter(filters.FilterSet):
-    run_number = filters.NumberFilter(label="Run number", field_name="lumisection__run", lookup_expr="exact")
-    ls_number = filters.NumberFilter(
-        label="Lumisection number", field_name="lumisection__ls_number", lookup_expr="exact"
-    )
-    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="lumisection__run", lookup_expr="gte")
-    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="lumisection__run", lookup_expr="lte")
+    ls_number = filters.NumberFilter(label="Lumisection number", field_name="ls_id__ls_number", lookup_expr="exact")
+    run_number = filters.NumberFilter(label="Run number", field_name="run_number", lookup_expr="exact")
+    min_run_number = filters.NumberFilter(label="Minimum run number", field_name="run_number", lookup_expr="gte")
+    max_run_number = filters.NumberFilter(label="Maximum run number", field_name="run_number", lookup_expr="lte")
     min_ls_number = filters.NumberFilter(
-        label="Minimum lumisection number", field_name="lumisection__ls_number", lookup_expr="gte"
+        label="Minimum lumisection number", field_name="ls_id__ls_number", lookup_expr="gte"
     )
     max_ls_number = filters.NumberFilter(
-        label="Maximum lumisection number", field_name="lumisection__ls_number", lookup_expr="lte"
+        label="Maximum lumisection number", field_name="ls_id__ls_number", lookup_expr="lte"
     )
     title_contains = filters.CharFilter(label="Title contains", field_name="title", lookup_expr="contains")
     min_entries = filters.NumberFilter(label="Minimum number of entries", field_name="entries", lookup_expr="gte")
-    era = filters.CharFilter(label="Data era", field_name="source_data_file__data_era", lookup_expr="exact")
-    dqmio_filepath_contains = filters.CharFilter(
-        label="DQMIO file path contains",
-        field_name="source_data_file__file_path",
-        lookup_expr="contains",
+    era = filters.CharFilter(label="Data era", field_name="file_id__era", lookup_expr="exact")
+    campaign = filters.CharFilter(label="Campaign", field_name="file_id__campaign", lookup_expr="contains")
+    primary_dataset = filters.CharFilter(
+        label="Primary Dataset", field_name="file_id__primary_dataset", lookup_expr="contains"
     )
 
     def filter_queryset(self, queryset, *args, **kwargs):
         queryset = super().filter_queryset(queryset, *args, **kwargs)
-
-        # It seems CharField values comes as empty string from django filters form
-        # In order to compare simultaneously excluding filters we need to also remove empty string values
-        cleaned_data = {
-            key: value for key, value in self.form.cleaned_data.items() if value is not None and value != ""
-        }
-
-        run_number_used = "run_number" in cleaned_data
-        min_run_number_used = "min_run_number" in cleaned_data
-        max_run_number_used = "max_run_number" in cleaned_data
-
-        if run_number_used and (min_run_number_used or max_run_number_used):
-            raise ParseError("run number and range run number cannot be used together.")
-
-        lumisection_id_used = "lumisection_id" in cleaned_data
-        ls_number_used = "ls_number" in cleaned_data
-        min_ls_number_used = "min_ls_number" in cleaned_data
-        max_ls_number_used = "max_ls_number" in cleaned_data
-
-        if ls_number_used and lumisection_id_used:
-            raise ParseError("ls number and lumisection id cannot be used together.")
-
-        if lumisection_id_used and (min_ls_number_used or max_ls_number_used):
-            raise ParseError("lumisection id and range ls number cannot be used together.")
-
-        if ls_number_used and (min_ls_number_used or max_ls_number_used):
-            raise ParseError("ls number and range ls number cannot be used together.")
-
-        title_used = "title" in cleaned_data
-        title_contains_used = "title_contains" in cleaned_data
-
-        if title_used and title_contains_used:
-            raise ParseError("title and title contains cannot be used together.")
-
+        validate_th_filterset(self.form)
         return queryset
 
     class Meta:
@@ -195,7 +123,7 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
         fields: ClassVar[list[str]] = [
             "run_number",
             "ls_number",
-            "lumisection_id",
+            "ls_id",
             "title",
             "min_run_number",
             "max_run_number",
@@ -204,5 +132,7 @@ class LumisectionHistogram2DFilter(filters.FilterSet):
             "title_contains",
             "min_entries",
             "era",
-            "dqmio_filepath_contains",
+            "campaign",
+            "primary_dataset",
+            "file_id",
         ]

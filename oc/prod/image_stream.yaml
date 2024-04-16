@@ -1,6 +1,25 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
+  name: etl
+  namespace: cms-dials-prod
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: latest
+      annotations:
+        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/dials-etl
+      from:
+        kind: DockerImage
+        name: registry.cern.ch/cms-dqmdc/dials-etl
+      referencePolicy:
+        type: Local
+
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
   name: backend
   namespace: cms-dials-prod
 spec:
@@ -9,13 +28,12 @@ spec:
   tags:
     - name: latest
       annotations:
-        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/dials-backend-base
+        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/dials-backend
       from:
         kind: DockerImage
-        name: registry.cern.ch/cms-dqmdc/dials-backend-base
+        name: registry.cern.ch/cms-dqmdc/dials-backend
       referencePolicy:
         type: Local
-      pullSecret: cern-registry-credentials
 
 ---
 apiVersion: image.openshift.io/v1
@@ -35,4 +53,3 @@ spec:
         name: registry.cern.ch/cms-dqmdc/dials-frontend
       referencePolicy:
         type: Local
-      pullSecret: cern-registry-credentials

@@ -1,14 +1,6 @@
 from rest_framework import serializers
 
 
-class SubjectTokenSerializer(serializers.Serializer):
-    subject_token = serializers.CharField()
-
-
-class RefreshTokenSerializer(serializers.Serializer):
-    refresh_token = serializers.CharField()
-
-
 class ExchangedTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
     expires_in = serializers.IntegerField()
@@ -18,10 +10,7 @@ class ExchangedTokenSerializer(serializers.Serializer):
     id_token = serializers.CharField()
     session_state = serializers.CharField()
     scope = serializers.CharField()
-
-
-class DeviceCodeSerializer(serializers.Serializer):
-    device_code = serializers.CharField()
+    default_workspace = serializers.CharField()
 
 
 class DeviceSerializer(serializers.Serializer):
@@ -43,3 +32,7 @@ class DeviceTokenSerializer(serializers.Serializer):
 class PendingAuthorizationErrorSerializer(serializers.Serializer):
     detail = serializers.CharField()
     code = serializers.CharField()
+
+
+class ConfiguredWorkspacesSerializer(serializers.Serializer):
+    workspaces = serializers.ListField(child=serializers.CharField())

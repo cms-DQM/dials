@@ -7,37 +7,48 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-django = "^5.0.1"
+python-decouple = "^3.8"
 psycopg2-binary = "^2.9.9"
+requests = "^2.31.0"
+
+[tool.poetry.group.backend.dependencies]
+django = "^5.0.1"
 djangorestframework = "^3.14.0"
-drf-spectacular = "^0.27.0"
-celery = "^5.3.6"
-redis = "^5.0.1"
-django-celery-results = "^2.5.1"
 django-filter = "^23.5"
 django-cors-headers = "^4.3.1"
-python-keycloak = "^3.7.0"
-uvicorn = "^0.27.0.post1"
-gunicorn = "^21.2.0"
-requests = "^2.31.0"
-python-decouple = "^3.8"
 django-debreach = "^2.1.0"
 django-csp = "^3.8"
 django-permissions-policy = "^4.19.0"
+dj-database-url = "^2.1.0"
+django-redis = "^5.4.0"
+python-keycloak = "^3.7.0"
+uvicorn = "^0.27.0.post1"
+gunicorn = "^21.2.0"
+
+[tool.poetry.group.etl.dependencies]
+celery = "^5.3.6"
+redis = "^5.0.1"
+celery-redbeat = "^2.2.0"
+sqlalchemy = "^2.0.29"
+alembic = "^1.13.1"
+pandas = "^2.2.1"
+paramiko = "^3.4.0"
+scp = "^0.14.5"
+flower = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 poethepoet = "^0.24.4"
-flower = "^2.0.1"
-tqdm = "^4.66.2"
 psutil = "^5.9.8"
 matplotlib = "^3.8.3"
 ruff = "^0.3.2"
+pyyaml = "^6.0.1"
 
 [tool.poe.tasks]
-start-dev = "./backend/scripts/start-dev.sh"
-start-flower = "./backend/scripts/start-flower.sh"
+start-api = "./backend/scripts/start-dev.sh"
+start-etl = "./etl/scripts/start-dev.sh"
 start-monitor = "./scripts/monitor-pid.py"
+gen-compose = "./scripts/generate-compose.py"
 
 [tool.ruff]
 exclude = [

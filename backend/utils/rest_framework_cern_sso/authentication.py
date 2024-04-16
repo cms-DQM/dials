@@ -1,3 +1,5 @@
+from importlib import util as importlib_util
+
 from django.conf import settings
 from jose.exceptions import ExpiredSignatureError
 from rest_framework.authentication import BaseAuthentication
@@ -9,10 +11,11 @@ from .token import CERNKeycloakToken
 from .user import CERNKeycloakUser
 
 
-try:
-    from .schemes import *  # noqa: F401,F403
-except ImportError:
-    pass
+if importlib_util.find_spec("drf_spectacular"):
+    try:
+        from .schemes import *  # noqa: F401,F403
+    except ImportError:
+        pass
 
 public_kc = CERNKeycloakOIDC(
     server_url=settings.KEYCLOAK_SERVER_URL,
