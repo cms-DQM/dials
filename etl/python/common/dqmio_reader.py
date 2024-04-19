@@ -180,8 +180,7 @@ class DQMIOReader:
         return num_total_entries
 
     def close(self):
-        for f in self.rootfiles:
-            f.Close()
+        self.file.Close()
 
     @staticmethod
     def th1_from_cppyy(me: "MonitorElement") -> dict:
@@ -192,7 +191,7 @@ class DQMIOReader:
         hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins + 1)  # Takes low edge of overflow bin instead.
         data = [me.data.GetBinContent(i) for i in range(1, hist_x_bins + 1)]
         return {
-            "title": me_name,
+            "me": me_name,
             "x_min": hist_x_min,
             "x_max": hist_x_max,
             "x_bin": hist_x_bins,
@@ -215,7 +214,7 @@ class DQMIOReader:
         data = [[me.data.GetBinContent(j, i) for j in range(1, hist_x_bins + 1)] for i in range(1, hist_y_bins + 1)]
 
         return {
-            "title": me_name,
+            "me": me_name,
             "x_min": hist_x_min,
             "x_max": hist_x_max,
             "x_bin": hist_x_bins,

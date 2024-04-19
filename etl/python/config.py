@@ -41,9 +41,9 @@ workspaces = [
     },
 ]
 
-era_cmp_pattern = "Run202*-PromptReco-*"
+era_cmp_pattern = "Run202*"
 
-priority_era = "2024"
+priority_era = "Run2024"
 
 th1_types = (
     3,
@@ -58,3 +58,6 @@ th2_types = (
 )
 
 dev_env_label = "dev"
+
+common_chunk_size = 5000
+th2_chunk_size = 1000  # carefully chosen to use little memory but keep high inserting speed

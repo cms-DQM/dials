@@ -1,6 +1,8 @@
 import csv
 from io import StringIO
 
+import psycopg2.extras as extras
+
 
 def copy_expert(table, conn, keys, data_iter) -> int:
     """
@@ -15,8 +17,7 @@ def copy_expert(table, conn, keys, data_iter) -> int:
     Returns:
         int: The number of rows copied into the table.
     """
-    dbapi_conn = conn.connection
-    with dbapi_conn.cursor() as cur:
+    with conn.connection.cursor() as cur:
         columns = ", ".join(f'"{k}"' for k in keys)
         table_name = f"{table.schema}.{table.name}" if table.schema else table.name
 
@@ -34,7 +35,7 @@ def copy_expert_onconflict_skip(
     table, conn, keys, data_iter, return_ids: bool = False, pk: str | None = None
 ) -> int | list:
     """
-    Copy data from data_iter into the specified table, handling conflicts according to the specified keys.
+    Copy data from data_iter into the specified table, ignoring conflicts according to the specified keys.
     Optionally return the IDs of the affected rows.
 
     Args:
@@ -52,8 +53,7 @@ def copy_expert_onconflict_skip(
     if return_ids is True and pk is None:
         raise ValueError("Can't return ids if pk is None")
 
-    dbapi_conn = conn.connection
-    with dbapi_conn.cursor() as cur:
+    with conn.connection.cursor() as cur:
         columns = ", ".join(f'"{k}"' for k in keys)
         table_name = f"{table.schema}.{table.name}" if table.schema else table.name
 
@@ -89,7 +89,6 @@ def copy_expert_onconflict_skip(
 def copy_expert_onconflict_update(table, conn, keys, data_iter, conflict_key: str, expr: str) -> int:
     """
     Copy data from data_iter into the specified table, handling conflicts according to the specified keys.
-    Optionally return the IDs of the affected rows.
 
     Args:
         table: The table to copy data into.
@@ -101,8 +100,7 @@ def copy_expert_onconflict_update(table, conn, keys, data_iter, conflict_key: st
     Returns:
         int: The number of rows copied into the table.
     """
-    dbapi_conn = conn.connection
-    with dbapi_conn.cursor() as cur:
+    with conn.connection.cursor() as cur:
         columns = ", ".join(f'"{k}"' for k in keys)
         table_name = f"{table.schema}.{table.name}" if table.schema else table.name
 
@@ -125,7 +123,37 @@ def copy_expert_onconflict_update(table, conn, keys, data_iter, conflict_key: st
             f"INSERT INTO {table_name} SELECT * FROM {tmp_table_name} ON CONFLICT ({conflict_key}) DO UPDATE SET {expr}"  # noqa: S608
         )
         result = cur.rowcount
-
         cur.execute(f"DROP TABLE {tmp_table_name}")
 
         return result
+
+
+def insert_onconflict_update(table, conn, keys, data_iter, conflict_key: str, expr: str) -> int:
+    """
+    Insert data from data_iter into the specified table, handling conflicts according to the specified keys.
+
+    Args:
+        table: The table to insert data into.
+        conn: The connection to the database.
+        keys: The keys to use for conflict resolution.
+        data_iter: An iterable providing the data to be inserted.
+        expr: Update expression tha will run on conflict.
+
+    Returns:
+        int: The number of rows inserted into the table.
+    """
+    with conn.connection.cursor() as cur:
+        columns = ", ".join(f'"{k}"' for k in keys)
+        table_name = f"{table.schema}.{table.name}" if table.schema else table.name
+
+        # Insert data into the table
+        sql = "INSERT INTO %s (%s) VALUES %%s ON CONFLICT (%s) DO UPDATE SET %s" % (  # noqa: S608,UP031
+            table_name,
+            columns,
+            conflict_key,
+            expr,
+        )
+        extras.execute_values(cur, sql, data_iter)
+        conn.connection.commit()
+
+        return cur.rowcount

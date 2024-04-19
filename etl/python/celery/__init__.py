@@ -13,8 +13,8 @@ app = Celery("dials_etl")
 app.config_from_object(celeryconfig)
 
 app.conf.beat_schedule = {
-    f"{workspace['name']} / Indexer pipeline": {
-        "task": "indexer_pipeline",
+    f"{workspace['name']} / dataset indexing pipeline": {
+        "task": "dataset_indexer_pipeline",
         "schedule": crontab(minute=0),
         "options": {"queue": workspace["indexer_queue"]},
         "kwargs": {"workspace": workspace},

@@ -8,8 +8,8 @@ sys.path.insert(0, os.getcwd())
 
 from python.config import workspaces
 from python.env import conn_str
-from python.models import DQMIOIndex
-from python.pipelines.indexer.methods import post_load
+from python.models import FactFileIndex
+from python.pipelines.file_indexer.post_load import post_load
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -22,7 +22,7 @@ workspace = next(filter(lambda x: x["name"] == dm_name, workspaces))
 
 session = sessionmaker(bind=engine)
 with session() as sess:
-    query = sess.query(DQMIOIndex).filter(DQMIOIndex.file_id.in_(files_ids))
+    query = sess.query(FactFileIndex).filter(FactFileIndex.file_id.in_(files_ids))
     results = query.all()
     results = [{k: v for k, v in result.__dict__.items() if k != "_sa_instance_state"} for result in results]
 
