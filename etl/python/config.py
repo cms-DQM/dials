@@ -1,9 +1,8 @@
 workspaces = [
     {
         "name": "csc",
-        "primary_datasets": ["Muon"],
+        "primary_datasets": ["Muon", "StreamExpress"],
         "me_startswith": ["CSC/CSCOfflineMonitor/recHits/"],
-        "indexer_queue": "csc-indexer",
         "bulk_queue": "csc-bulk",
         "priority_queue": "csc-priority",
     },
@@ -11,7 +10,6 @@ workspaces = [
         "name": "ecal",
         "primary_datasets": ["ZeroBias"],
         "me_startswith": ["EcalBarrel/", "EcalEndcap/", "Ecal/EventInfo/"],
-        "indexer_queue": "ecal-indexer",
         "bulk_queue": "ecal-bulk",
         "priority_queue": "ecal-priority",
     },
@@ -19,7 +17,6 @@ workspaces = [
         "name": "hcal",
         "primary_datasets": ["ZeroBias"],
         "me_startswith": ["Hcal/DigiTask/"],
-        "indexer_queue": "hcal-indexer",
         "bulk_queue": "hcal-bulk",
         "priority_queue": "hcal-priority",
     },
@@ -27,21 +24,36 @@ workspaces = [
         "name": "jetmet",
         "primary_datasets": ["JetMET"],
         "me_startswith": ["JetMET/Jet/", "JetMET/MET/"],
-        "indexer_queue": "jetmet-indexer",
         "bulk_queue": "jetmet-bulk",
         "priority_queue": "jetmet-priority",
     },
     {
         "name": "tracker",
-        "primary_datasets": ["ZeroBias"],
+        "primary_datasets": [
+            "ZeroBias",
+            "StreamExpress",
+            "HIForward0",
+            "HIPhysicsRawPrime0",
+            "StreamHIExpressRawPrime",
+        ],
         "me_startswith": ["PixelPhase1/", "SiStrip/"],
-        "indexer_queue": "tracker-indexer",
         "bulk_queue": "tracker-bulk",
         "priority_queue": "tracker-priority",
     },
 ]
 
-era_cmp_pattern = "Run202*"
+primary_datasets = [elem for ws in workspaces for elem in ws["primary_datasets"]]
+primary_datasets = sorted(set(primary_datasets))
+
+pds_queues = {
+    primary_dataset: {
+        "bulk_queue": f"{primary_dataset}-downloader-bulk",
+        "priority_queue": f"{primary_dataset}-downloader-priority",
+    }
+    for primary_dataset in primary_datasets
+}
+
+era_cmp_pattern = "*Run202*"
 
 priority_era = "Run2024"
 
@@ -61,3 +73,5 @@ dev_env_label = "dev"
 
 common_chunk_size = 5000
 th2_chunk_size = 1000  # carefully chosen to use little memory but keep high inserting speed
+
+common_indexer_queue = "common-indexer"

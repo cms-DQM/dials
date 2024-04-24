@@ -1,24 +1,15 @@
 import traceback
 
 from sqlalchemy import create_engine
-from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import sessionmaker
 
 from ...env import conn_str
-from ...models import FactFileIndex
 from ...models.file_index import StatusCollection
+from ..utils import clean_file, error_handler
 from .extract import extract
 from .post_load import post_load
 from .pre_extract import pre_extract
 from .transform_load import transform_load
-from .utils import clean_file, validate_root_file
-
-
-def error_handler(engine: Engine, file_id: int, err_trace: str, status: str) -> None:
-    session = sessionmaker(bind=engine)
-    with session() as sess:
-        sess.query(FactFileIndex).filter_by(file_id=file_id).update({"status": status, "err_trace": err_trace})
-        sess.commit()
+from .utils import validate_root_file
 
 
 def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: int):
@@ -31,10 +22,10 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
 
     # This function already clean the leftover root file if download fails
     try:
-        fpath = extract(workspace_name, logical_file_name)
+        fpath = extract(logical_file_name)
     except Exception as e:
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.DOWNLOAD_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.COPY_ERROR)
         raise e
 
     try:

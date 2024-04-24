@@ -60,6 +60,14 @@ def gen_compose_header(mounted_eos_path):
                 "network_mode": "host",
                 "depends_on": gen_common_depends_on(),
             },
+            "dials-common-indexer": {
+                "container_name": "dials-common-indexer",
+                "image": "dials_etl",
+                "volumes": gen_volumes(mounted_eos_path),
+                "command": "bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=common-indexer@%h --queues=common-indexer'",
+                "network_mode": "host",
+                "depends_on": gen_common_depends_on(),
+            },
             "dials-backend": {
                 "container_name": "dials-backend",
                 "image": "dials_backend",
@@ -99,14 +107,6 @@ def gen_compose_header(mounted_eos_path):
 
 def gen_compose_workspace_workers(mounted_eos_path, db_name):
     return {
-        f"dials-{db_name}-indexer": {
-            "container_name": f"dials-{db_name}-indexer",
-            "image": "dials_etl",
-            "volumes": gen_volumes(mounted_eos_path),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={db_name}-indexer@%h --queues={db_name}-indexer'",
-            "network_mode": "host",
-            "depends_on": gen_common_depends_on(),
-        },
         f"dials-{db_name}-bulk": {
             "container_name": f"dials-{db_name}-bulk",
             "image": "dials_etl",
@@ -126,6 +126,27 @@ def gen_compose_workspace_workers(mounted_eos_path, db_name):
     }
 
 
+def gen_compose_downloader_workers(mounted_eos_path, pd_name):
+    return {
+        f"dials-{pd_name.lower()}-downloader-bulk": {
+            "container_name": f"dials-{pd_name.lower()}-downloader-bulk",
+            "image": "dials_etl",
+            "volumes": gen_volumes(mounted_eos_path),
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-bulk@%h --queues=${pd_name}-downloader-bulk'",
+            "network_mode": "host",
+            "depends_on": gen_common_depends_on(),
+        },
+        f"dials-{pd_name.lower()}-downloader-priority": {
+            "container_name": f"dials-{pd_name.lower()}-downloader-priority",
+            "image": "dials_etl",
+            "volumes": gen_volumes(mounted_eos_path),
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-priority@%h --queues=${pd_name}-downloader-priority'",
+            "network_mode": "host",
+            "depends_on": gen_common_depends_on(),
+        },
+    }
+
+
 if __name__ == "__main__":
     cwd = os.getcwd()
     if os.path.basename(cwd) != "dials":
@@ -135,22 +156,36 @@ if __name__ == "__main__":
     mounted_eos_path = config.get("MOUNTED_EOS_PATH")
     databases = config.get("DATABASES")
     databases = re.sub("\s+", "", databases).split(",")
+    pds_names = [
+        "Muon",
+        "StreamExpress",
+        "ZeroBias",
+        "JetMET",
+        "HIForward0",
+        "HIPhysicsRawPrime0",
+        "StreamHIExpressRawPrime",
+    ]
 
     comments = """# Notes
 #
-# 1. This docker-compose is not production-ready, you should use it only for development puporses
+# 1. This docker-compose is not production-ready, you should use it only for development purposes
 #    if do not want to run the entire stack natively
 #
 # 2. This file assumes that PostgreSQL and Redis are running as standalone docker containers
 #    as describe in backend's README, so we need to set network_mode to "host"
 #    in any application that need to communicate with those containers.
-#    Optionally you can modified it yourself an run PostgresSQL and Redis from it and remove the network_mode
+#    Optionally you can modify it yourself an run PostgresSQL and Redis from it and remove the network_mode
 #    but make sure to expose all the necessary ports and check the links between containers
 """
 
     docker_compose = gen_compose_header(mounted_eos_path)
+
     for db_name in databases:
         services = gen_compose_workspace_workers(mounted_eos_path, db_name)
+        docker_compose["services"].update(services)
+
+    for pd_name in pds_names:
+        services = gen_compose_downloader_workers(mounted_eos_path, pd_name)
         docker_compose["services"].update(services)
 
     with open("docker-compose.yaml", "w") as f:

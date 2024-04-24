@@ -16,6 +16,9 @@ else
     exit 1
 fi
 
+# Primary dataset download queue
+pds_names=("Muon" "StreamExpress" "ZeroBias" "JetMET" "HIForward0" "HIPhysicsRawPrime0" "StreamHIExpressRawPrime")
+
 # Parse databases set in environment
 databases_parsed=$(echo $DATABASES | sed 's/[ ][ ]*//g')
 IFS=',' read -r -a db_names <<< "$databases_parsed"
@@ -27,13 +30,23 @@ pids_arr=()
 poetry run celery --app=python beat --loglevel=INFO -S redbeat.RedBeatScheduler &
 pids_arr+=($!)
 
+# Start the common indexer queue
+poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=common-indexer@%h --queues=common-indexer &
+pids_arr+=($!)
+
 # Start workers for each workspace
 for db_name in "${db_names[@]}"; do
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${db_name}-indexer@%h --queues=${db_name}-indexer &
-    pids_arr+=($!)
     poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${db_name}-bulk@%h --queues=${db_name}-bulk &
     pids_arr+=($!)
     poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${db_name}-priority@%h --queues=${db_name}-priority &
+    pids_arr+=($!)
+done
+
+# Start downloader workers for each pd
+for pd_name in "${pds_names[@]}"; do
+    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-bulk@%h --queues=${pd_name}-downloader-bulk &
+    pids_arr+=($!)
+    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-priority@%h --queues=${pd_name}-downloader-priority &
     pids_arr+=($!)
 done
 

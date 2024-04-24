@@ -36,10 +36,10 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, d
         th2_me = reader.get_mes_for_lumi(run, lumi, types=th2_types, re_pattern=me_pattern)
         lumis.append(
             {
-                "ls_id": ls_id,
                 "dataset_id": dataset_id,
                 "run_number": run,
                 "ls_number": lumi,
+                "ls_id": ls_id,
                 "th1_count": len(th1_me),
                 "th2_count": len(th2_me),
             }

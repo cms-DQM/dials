@@ -1,13 +1,4 @@
-import os
-import os.path
-
 import ROOT
-
-
-def clean_file(fpath: str) -> None:
-    if os.path.isfile(fpath):
-        os.unlink(fpath)
-        os.rmdir(os.path.dirname(fpath))
 
 
 def validate_root_file(fpath: str) -> None:

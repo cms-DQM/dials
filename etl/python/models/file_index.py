@@ -7,8 +7,11 @@ Base = declarative_base()
 
 class StatusCollection:
     PENDING = "PENDING"
-    STARTED = "STARTED"
+    DOWNLOAD_STARTED = "DOWNLOAD_STARTED"
     DOWNLOAD_ERROR = "DOWNLOAD_ERROR"
+    DOWNLOAD_FINISHED = "DOWNLOAD_FINISHED"
+    INGESTION_STARTED = "INGESTION_STARTED"
+    COPY_ERROR = "COPY_ERROR"
     ROOTFILE_ERROR = "ROOTFILE_ERROR"
     PARSING_ERROR = "PARSING_ERROR"
     FINISHED = "FINISHED"
@@ -23,7 +26,7 @@ class FactFileIndex(Base):
     creation_date = sa.Column("creation_date", sa.DateTime)
     last_modification_date = sa.Column("last_modification_date", sa.DateTime)
     logical_file_name = sa.Column("logical_file_name", sa.String(length=255))
-    status = sa.Column("status", sa.String(length=15))
+    status = sa.Column("status", sa.String(length=255))
     err_trace = sa.Column("err_trace", sa.String(length=2295), nullable=True)
 
     __table_args__ = (
