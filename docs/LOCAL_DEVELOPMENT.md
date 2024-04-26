@@ -20,6 +20,17 @@ tunnel_to_cern () {
 }
 ```
 
+The `lxtunnel` alias resolves to the following ssh config:
+
+```
+Host lxtunnel
+        HostName lxtunnel.cern.ch
+        User <your-cern-username>
+        GSSAPITrustDNS yes
+        GSSAPIAuthentication yes
+        GSSAPIDelegateCredentials yes
+```
+
 More information on tunneling to CERN can be foudn [here](https://abpcomputing.web.cern.ch/guides/sshtunnel/) and [here](https://codimd.web.cern.ch/vjC8BHbTS7etHwJve-K2Uw#).
 
 ## Accessing DQMIO data from EOS
