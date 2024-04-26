@@ -56,7 +56,7 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, d
     )
 
 
-def transform_load_mes(engine: Engine, reader: DQMIOReader, me_pattern: str) -> None:
+def transform_mes(reader: DQMIOReader, me_pattern: str) -> list[dict]:
     run_lumi = reader.index_keys
     mes_list = {}
     for run, lumi, _ in run_lumi:
@@ -74,10 +74,16 @@ def transform_load_mes(engine: Engine, reader: DQMIOReader, me_pattern: str) -> 
                 dim = 1 if me.type in th1_types else 2
                 mes_list[me.name] = {"count": 0, "dim": dim}
             mes_list[me.name]["count"] += 1
-    mes_list = [{"me": me_name, **count_dim} for me_name, count_dim in mes_list.items()]
 
+    return [{"me": me_name, **count_dim} for me_name, count_dim in mes_list.items()]
+
+
+def load_mes(engine: Engine, mes_list: list[dict], set_zero_count: bool = False) -> None:
     expr = f"count = {DimMonitoringElements.__tablename__}.count + EXCLUDED.count"
     method = partial(insert_onconflict_update, conflict_key="me", expr=expr)
+    if set_zero_count:
+        mes_list = [{**me, "count": 0} for me in mes_list]
+
     mes_list = pd.DataFrame(mes_list)
     mes_list.to_sql(
         name=DimMonitoringElements.__tablename__,
@@ -141,9 +147,11 @@ def transform_load_th(
 
 def transform_load(engine: Engine, me_pattern: str, file_id: int, dataset_id: int, fpath: str) -> pd.DataFrame:
     reader = DQMIOReader(fpath)
-    transform_load_run(engine, reader, dataset_id)
-    transform_load_lumis(engine, reader, me_pattern, dataset_id)
-    transform_load_mes(engine, reader, me_pattern)
+    mes_list: list[dict] = transform_mes(reader, me_pattern)
+    load_mes(engine, mes_list, set_zero_count=True)
     transform_load_th(FactTH1.__tablename__, engine, reader, me_pattern, file_id, dataset_id)
     transform_load_th(FactTH2.__tablename__, engine, reader, me_pattern, file_id, dataset_id)
+    load_mes(engine, mes_list)
+    transform_load_lumis(engine, reader, me_pattern, dataset_id)
+    transform_load_run(engine, reader, dataset_id)
     reader.close()
