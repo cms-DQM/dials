@@ -20,7 +20,7 @@ class StatusCollection:
 class FactFileIndex(Base):
     __tablename__ = "fact_file_index"
 
-    dataset_id = sa.Column("dataset_id", sa.Integer)
+    dataset_id = sa.Column("dataset_id", sa.BigInteger)
     file_id = sa.Column("file_id", sa.BigInteger)
     file_size = sa.Column("file_size", sa.BigInteger)
     creation_date = sa.Column("creation_date", sa.DateTime)

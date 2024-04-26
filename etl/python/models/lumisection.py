@@ -8,7 +8,7 @@ Base = declarative_base()
 class FactLumisection(Base):
     __tablename__ = "fact_lumisection"
 
-    dataset_id = sa.Column("dataset_id", sa.Integer)
+    dataset_id = sa.Column("dataset_id", sa.BigInteger)
     run_number = sa.Column("run_number", sa.Integer)
     ls_number = sa.Column("ls_number", sa.Integer)
     ls_id = sa.Column("ls_id", sa.BigInteger)

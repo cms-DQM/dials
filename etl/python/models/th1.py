@@ -9,7 +9,7 @@ class FactTH1(Base):
     __tablename__ = "fact_th1"
 
     hist_id = sa.Column("hist_id", sa.BigInteger, autoincrement=True)
-    dataset_id = sa.Column("dataset_id", sa.Integer)
+    dataset_id = sa.Column("dataset_id", sa.BigInteger)
     file_id = sa.Column("file_id", sa.BigInteger)
     run_number = sa.Column("run_number", sa.Integer)
     ls_number = sa.Column("ls_number", sa.Integer)
