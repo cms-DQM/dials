@@ -158,26 +158,11 @@ class DQMIOReader:
                     continue
 
                 me_tree.GetEntry(x, 1)
-                value = me_tree.Value
-                # value = self.__extract_data_from_root(value)
+                value = me_tree.Value.Clone()
                 me = self.MonitorElement(run, lumi, me_name, entry.type, value)
                 result.append(me)
 
         return result
-
-    def count_mes(self, whitelist_mes: list | None = None, me_selection=(3, 4, 5, 6, 7, 8)):
-        """
-        Count how many monitoring elements exists given ME selection
-        """
-        num_total_entries = 0
-        for run, lumi, _ in self.index_keys:
-            melist = self.get_mes_for_lumi(run, lumi, "*")
-            for me in melist:
-                if whitelist_mes and me.name not in whitelist_mes:
-                    continue
-                if me.type in me_selection:
-                    num_total_entries += 1
-        return num_total_entries
 
     def close(self):
         self.file.Close()
