@@ -8,8 +8,8 @@ Base = declarative_base()
 class FactRun(Base):
     __tablename__ = "fact_run"
 
-    run_number = sa.Column("run_number", sa.Integer)
     dataset_id = sa.Column("dataset_id", sa.Integer)
+    run_number = sa.Column("run_number", sa.Integer)
     ls_count = sa.Column("ls_count", sa.Integer)
 
     __table_args__ = (
