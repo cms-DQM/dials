@@ -1,7 +1,7 @@
 workspaces = [
     {
         "name": "csc",
-        "primary_datasets": ["Muon", "StreamExpress"],
+        "primary_datasets": ["Muon", "Muon0", "StreamExpress"],
         "me_startswith": ["CSC/CSCOfflineMonitor/recHits/"],
         "bulk_queue": "csc-bulk",
         "priority_queue": "csc-priority",
@@ -22,7 +22,7 @@ workspaces = [
     },
     {
         "name": "jetmet",
-        "primary_datasets": ["JetMET"],
+        "primary_datasets": ["JetMET", "JetMET0"],
         "me_startswith": ["JetMET/Jet/", "JetMET/MET/"],
         "bulk_queue": "jetmet-bulk",
         "priority_queue": "jetmet-priority",
