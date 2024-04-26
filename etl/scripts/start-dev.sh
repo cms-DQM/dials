@@ -17,7 +17,7 @@ else
 fi
 
 # Primary dataset download queue
-pds_names=("Muon" "StreamExpress" "ZeroBias" "JetMET" "HIForward0" "HIPhysicsRawPrime0" "StreamHIExpressRawPrime")
+pds_names=("Muon" "Muon0" "StreamExpress" "ZeroBias" "JetMET" "JetMET0" "HIForward0" "HIPhysicsRawPrime0" "StreamHIExpressRawPrime")
 
 # Parse databases set in environment
 databases_parsed=$(echo $DATABASES | sed 's/[ ][ ]*//g')

@@ -158,9 +158,11 @@ if __name__ == "__main__":
     databases = re.sub("\s+", "", databases).split(",")
     pds_names = [
         "Muon",
+        "Muon0",
         "StreamExpress",
         "ZeroBias",
         "JetMET",
+        "JetMET0",
         "HIForward0",
         "HIPhysicsRawPrime0",
         "StreamHIExpressRawPrime",
