@@ -139,7 +139,9 @@ MOCKED_DBS_FPATH=/path/to/mocked/dbs/file
 * `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
 * `MOCKED_DBS_FPATH` is optional, if not set it will try to ingest all available files indexed in DBS.
 
-## Starting the etl natively
+# Running the project components
+
+## [Natively] ETL
 
 From within [`repository root's directory`](/) or [`etl`](/etl/) you can use the [`start-dev.sh`](/etl/scripts/start-dev.sh) script or the poe task `poe start-etl` to start the entire etl stack in one command.
 
@@ -147,13 +149,13 @@ Note that before starting the ETL natively you need to setup the database, in or
 
 Note: If running the commands separated you should execute then inside the [`etl`](/etl/) directory.
 
-## Starting the backend natively
+## [Natively] Backend
 
 From within [`repository root's directory`](/) or [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-api` to start the entire backend stack in one command.
 
 Note: If running the commands separated you should execute then inside the [`backend`](/backend/) directory.
 
-## Starting the frontend natively
+## [Natively] Frontend
 
 Inside the [`frontend`](/frontend/) directory you can using the script `yarn run start` to start the react-scripts development server.
 
