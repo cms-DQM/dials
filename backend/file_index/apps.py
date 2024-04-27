@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DqmioDataIndexerConfig(AppConfig):
+class FileIndexConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "dqmio_file_indexer"
+    name = "file_index"

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 @method_decorator(vary_on_headers(settings.WORKSPACE_HEADER), name="retrieve")
 @method_decorator(vary_on_headers(settings.WORKSPACE_HEADER), name="list")
 class FileIndexViewSet(GenericViewSetRouter, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = FileIndex.objects.all().order_by("file_id")
+    queryset = FileIndex.objects.all().order_by(FileIndex._meta.pk.name)
     serializer_class = FileIndexSerializer
     filterset_class = FileIndexFilter
     filter_backends: ClassVar[list[DjangoFilterBackend]] = [DjangoFilterBackend]

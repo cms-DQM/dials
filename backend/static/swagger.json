@@ -1,39 +1,130 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.0.2",
   "info": {
     "title": "DIALS",
     "version": "0.1.0"
   },
   "paths": {
-    "/api/v1/auth/device-token/": {
-      "post": {
-        "operationId": "auth_device_token_create",
+    "/api/v1/auth/workspaces/": {
+      "get": {
+        "operationId": "getWorkspacesAuthViewSet",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfiguredWorkspaces"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
         "tags": [
-          "auth"
+          "Authentication"
         ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/auth/new-device/": {
+      "get": {
+        "operationId": "getDeviceAuthViewSet",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Device"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/v1/auth/exchange-token/": {
+      "post": {
+        "operationId": "exchangeTokenAuthViewSet",
+        "description": "",
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceCode"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceCode"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceCode"
+                "type": "object",
+                "properties": {
+                  "subject_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "subject_token"
+                ]
               }
             }
-          },
-          "required": true
+          }
         },
-        "security": [
-          {}
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangedToken"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
         ],
+        "security": [
+          {
+            "Public JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/auth/device-token/": {
+      "post": {
+        "operationId": "issueDeviceTokenAuthViewSet",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "device_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "device_code"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "content": {
@@ -49,113 +140,52 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PendingAuthorizationError"
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "detail"
+                  ]
                 }
               }
             },
             "description": ""
           }
-        }
-      }
-    },
-    "/api/v1/auth/exchange-token/": {
-      "post": {
-        "operationId": "auth_exchange_token_create",
-        "tags": [
-          "auth"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubjectToken"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/SubjectToken"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/SubjectToken"
-              }
-            }
-          },
-          "required": true
         },
-        "security": [
-          {
-            "Public JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExchangedToken"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/auth/new-device/": {
-      "get": {
-        "operationId": "auth_new_device_retrieve",
         "tags": [
-          "auth"
-        ],
-        "security": [
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Device"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
+          "Authentication"
+        ]
       }
     },
     "/api/v1/auth/refresh-token/": {
       "post": {
-        "operationId": "auth_refresh_token_create",
-        "tags": [
-          "auth"
-        ],
+        "operationId": "refreshTokenAuthViewSet",
+        "description": "",
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RefreshToken"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshToken"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshToken"
+                "type": "object",
+                "properties": {
+                  "refresh_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refresh_token"
+                ]
               }
             }
-          },
-          "required": true
+          }
         },
-        "security": [
-          {}
-        ],
         "responses": {
           "200": {
             "content": {
@@ -167,82 +197,17 @@
             },
             "description": ""
           }
-        }
-      }
-    },
-    "/api/v1/auth/workspaces/": {
-      "get": {
-        "operationId": "auth_workspaces_list",
+        },
         "tags": [
-          "auth"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfiguredWorkspaces"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
+          "Authentication"
+        ]
       }
     },
-    "/api/v1/file-index/": {
+    "/api/v1/dataset-index/": {
       "get": {
-        "operationId": "file_index_list",
+        "operationId": "listDatasetIndexs",
+        "description": "",
         "parameters": [
-          {
-            "in": "query",
-            "name": "campaign",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Campaign"
-          },
-          {
-            "in": "query",
-            "name": "primary_dataset",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Primary Dataset"
-          },
-          {
-            "in": "query",
-            "name": "era",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Era"
-          },
-          {
-            "in": "query",
-            "name": "logical_file_name",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Logical file name"
-          },
-          {
-            "in": "query",
-            "name": "min_size",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum file size"
-          },
           {
             "name": "page",
             "required": false,
@@ -253,75 +218,71 @@
             }
           },
           {
+            "name": "dataset",
+            "required": false,
             "in": "query",
-            "name": "status",
+            "description": "dataset",
             "schema": {
               "type": "string"
-            },
-            "description": "ETL pipeline status"
+            }
           },
           {
-            "in": "header",
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
             "schema": {
               "type": "string"
-            },
-            "description": "Workspace"
+            }
           }
-        ],
-        "tags": [
-          "file-index"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedFileIndexList"
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DatasetIndex"
+                      }
+                    }
+                  }
                 }
               }
             },
             "description": ""
           }
-        }
-      }
-    },
-    "/api/v1/file-index/{file_id}/": {
-      "get": {
-        "operationId": "file_index_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "file_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
-            },
-            "description": "A unique value identifying this file index.",
-            "required": true
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
+        },
         "tags": [
-          "file-index"
+          "Dataset Index"
         ],
         "security": [
           {
@@ -331,6 +292,210 @@
             "Confidential JWT Token": []
           },
           {}
+        ]
+      }
+    },
+    "/api/v1/dataset-index/{dataset_id}/": {
+      "get": {
+        "operationId": "retrieveDatasetIndex",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this dataset index.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetIndex"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Dataset Index"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/file-index/": {
+      "get": {
+        "operationId": "listFileIndexs",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "logical_file_name",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name__regex",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_size",
+            "required": false,
+            "in": "query",
+            "description": "min_size",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FileIndex"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "File Index"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/file-index/{file_id}/": {
+      "get": {
+        "operationId": "retrieveFileIndex",
+        "description": "",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this file index.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -343,37 +508,26 @@
             },
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "File Index"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
       }
     },
-    "/api/v1/lumisection/": {
+    "/api/v1/mes/": {
       "get": {
-        "operationId": "lumisection_list",
-        "description": "You can see all ingested Lumisections metadata",
+        "operationId": "listMEs",
+        "description": "",
         "parameters": [
-          {
-            "in": "query",
-            "name": "ls_number",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "min_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum lumisection number"
-          },
           {
             "name": "page",
             "required": false,
@@ -384,227 +538,41 @@
             }
           },
           {
-            "in": "query",
-            "name": "run_number",
-            "schema": {
-              "type": "number"
-            },
-            "description": "Run number"
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
-        "tags": [
-          "lumisection"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedLumisectionList"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/lumisection-h1d/": {
-      "get": {
-        "operationId": "lumisection_h1d_list",
-        "description": "You can see all ingested 1d-histograms at lumisection granularity-level\n\nIf we need to return the fields from dqmio_index and lumisection tables\nwe can update the serializer and add select_related to this queryset:\n.select_related('ls_id').select_related('file_id')\n\nThis will ensure all requests will JOIN the tables and extract the fields\non the serializer we add:\nls_number = serializers.IntegerField(source=\"ls_id.ls_number\")\nera = serializers.CharField(source=\"file_id.era\")\n\nIf we don't add the \"select_related\" here the serializer will do a query for each\nelement returned by the queryset",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "campaign",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Campaign"
-          },
-          {
-            "in": "query",
-            "name": "primary_dataset",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Primary Dataset"
-          },
-          {
-            "in": "query",
-            "name": "era",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Data era"
-          },
-          {
-            "in": "query",
-            "name": "ls_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "max_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "max_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum run number"
-          },
-          {
-            "in": "query",
-            "name": "min_entries",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum number of entries"
-          },
-          {
-            "in": "query",
-            "name": "min_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "min_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum run number"
-          },
-          {
-            "name": "page",
+            "name": "me",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "run_number",
-            "schema": {
-              "type": "integer",
-              "maximum": 2147483647,
-              "minimum": -2147483648
-            }
-          },
-          {
-            "in": "query",
-            "name": "title",
+            "description": "me",
             "schema": {
               "type": "string"
             }
           },
           {
+            "name": "me__regex",
+            "required": false,
             "in": "query",
-            "name": "title_contains",
+            "description": "me__regex",
             "schema": {
               "type": "string"
-            },
-            "description": "Title contains"
+            }
           },
           {
-            "in": "header",
+            "name": "dim",
+            "required": false,
+            "in": "query",
+            "description": "dim",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
-        "tags": [
-          "lumisection-h1d"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedLumisectionHistogram1DList"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/lumisection-h1d-mes/": {
-      "get": {
-        "operationId": "lumisection_h1d_mes_list",
-        "parameters": [
-          {
+            "required": false,
             "in": "header",
-            "name": "workspace",
+            "description": "workspace",
             "schema": {
               "type": "string"
-            },
-            "description": "Workspace"
+            }
           }
-        ],
-        "tags": [
-          "lumisection-h1d-mes"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
         ],
         "responses": {
           "200": {
@@ -613,44 +581,16 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/LumisectionHistogram1DMEs"
+                    "$ref": "#/components/schemas/MEs"
                   }
                 }
               }
             },
             "description": ""
           }
-        }
-      }
-    },
-    "/api/v1/lumisection-h1d/{hist_id}/": {
-      "get": {
-        "operationId": "lumisection_h1d_retrieve",
-        "description": "You can see all ingested 1d-histograms at lumisection granularity-level\n\nIf we need to return the fields from dqmio_index and lumisection tables\nwe can update the serializer and add select_related to this queryset:\n.select_related('ls_id').select_related('file_id')\n\nThis will ensure all requests will JOIN the tables and extract the fields\non the serializer we add:\nls_number = serializers.IntegerField(source=\"ls_id.ls_number\")\nera = serializers.CharField(source=\"file_id.era\")\n\nIf we don't add the \"select_related\" here the serializer will do a query for each\nelement returned by the queryset",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "hist_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
-            },
-            "description": "A unique value identifying this lumisection histogram1d.",
-            "required": true
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
+        },
         "tags": [
-          "lumisection-h1d"
+          "MEs"
         ],
         "security": [
           {
@@ -660,152 +600,47 @@
             "Confidential JWT Token": []
           },
           {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LumisectionHistogram1D"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
+        ]
       }
     },
-    "/api/v1/lumisection-h2d/": {
+    "/api/v1/mes/{me_id}/": {
       "get": {
-        "operationId": "lumisection_h2d_list",
-        "description": "You can see all ingested 2d-histograms at lumisection granularity-level",
+        "operationId": "retrieveMEs",
+        "description": "",
         "parameters": [
           {
-            "in": "query",
-            "name": "campaign",
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique integer value identifying this m es.",
             "schema": {
               "type": "string"
-            },
-            "description": "Campaign"
-          },
-          {
-            "in": "query",
-            "name": "primary_dataset",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Primary Dataset"
-          },
-          {
-            "in": "query",
-            "name": "era",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Data era"
-          },
-          {
-            "in": "query",
-            "name": "ls_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
             }
           },
           {
-            "in": "query",
-            "name": "ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "max_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "max_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum run number"
-          },
-          {
-            "in": "query",
-            "name": "min_entries",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum number of entries"
-          },
-          {
-            "in": "query",
-            "name": "min_ls_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum lumisection number"
-          },
-          {
-            "in": "query",
-            "name": "min_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum run number"
-          },
-          {
-            "name": "page",
+            "name": "workspace",
             "required": false,
-            "in": "query",
-            "description": "A page number within the paginated result set.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "run_number",
-            "schema": {
-              "type": "integer",
-              "maximum": 2147483647,
-              "minimum": -2147483648
-            }
-          },
-          {
-            "in": "query",
-            "name": "title",
+            "in": "header",
+            "description": "workspace",
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "in": "query",
-            "name": "title_contains",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Title contains"
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
           }
         ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MEs"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
         "tags": [
-          "lumisection-h2d"
+          "MEs"
         ],
         "security": [
           {
@@ -815,188 +650,14 @@
             "Confidential JWT Token": []
           },
           {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedLumisectionHistogram2DList"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/lumisection-h2d-mes/": {
-      "get": {
-        "operationId": "lumisection_h2d_mes_list",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
-        "tags": [
-          "lumisection-h2d-mes"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/LumisectionHistogram2DMEs"
-                  }
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/lumisection-h2d/{hist_id}/": {
-      "get": {
-        "operationId": "lumisection_h2d_retrieve",
-        "description": "You can see all ingested 2d-histograms at lumisection granularity-level",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "hist_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
-            },
-            "description": "A unique value identifying this lumisection histogram2d.",
-            "required": true
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
-        "tags": [
-          "lumisection-h2d"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LumisectionHistogram2D"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/lumisection/{ls_id}/": {
-      "get": {
-        "operationId": "lumisection_retrieve",
-        "description": "You can see all ingested Lumisections metadata",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "ls_id",
-            "schema": {
-              "type": "integer",
-              "maximum": 9223372036854776000,
-              "minimum": -9223372036854776000,
-              "format": "int64"
-            },
-            "description": "A unique value identifying this lumisection.",
-            "required": true
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
-        "tags": [
-          "lumisection"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Lumisection"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
+        ]
       }
     },
     "/api/v1/run/": {
       "get": {
-        "operationId": "run_list",
-        "description": "You can see all ingested Runs metadata",
+        "operationId": "listRuns",
+        "description": "",
         "parameters": [
-          {
-            "in": "query",
-            "name": "max_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Maximum run number"
-          },
-          {
-            "in": "query",
-            "name": "min_run_number",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Minimum run number"
-          },
           {
             "name": "page",
             "required": false,
@@ -1007,67 +668,107 @@
             }
           },
           {
-            "in": "header",
-            "name": "workspace",
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
             "schema": {
               "type": "string"
-            },
-            "description": "Workspace"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
           }
-        ],
-        "tags": [
-          "run"
-        ],
-        "security": [
-          {
-            "Client Secret Key": []
-          },
-          {
-            "Confidential JWT Token": []
-          },
-          {}
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedRunList"
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Run"
+                      }
+                    }
+                  }
                 }
               }
             },
             "description": ""
           }
-        }
-      }
-    },
-    "/api/v1/run/{run_number}/": {
-      "get": {
-        "operationId": "run_retrieve",
-        "description": "You can see all ingested Runs metadata",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_number",
-            "schema": {
-              "type": "integer",
-              "maximum": 2147483647,
-              "minimum": -2147483648
-            },
-            "description": "A unique value identifying this run.",
-            "required": true
-          },
-          {
-            "in": "header",
-            "name": "workspace",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Workspace"
-          }
-        ],
+        },
         "tags": [
-          "run"
+          "Run"
         ],
         "security": [
           {
@@ -1077,6 +778,41 @@
             "Confidential JWT Token": []
           },
           {}
+        ]
+      }
+    },
+    "/api/v1/run/{dataset_id}/{run_number}/": {
+      "get": {
+        "operationId": "retrieveRun",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1089,7 +825,742 @@
             },
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "Run"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/lumisection/": {
+      "get": {
+        "operationId": "listLumisections",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number",
+            "required": false,
+            "in": "query",
+            "description": "ls_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Lumisection"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/lumiscetion/{dataset_id}/{run_number}/{ls_number}/": {
+      "get": {
+        "operationId": "retrieveLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "ls_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lumisection"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/th1/": {
+      "get": {
+        "operationId": "listTH1s",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file_id",
+            "required": false,
+            "in": "query",
+            "description": "file_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number",
+            "required": false,
+            "in": "query",
+            "description": "ls_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me_id",
+            "required": false,
+            "in": "query",
+            "description": "me_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_id",
+            "required": false,
+            "in": "query",
+            "description": "ls_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entries__gte",
+            "required": false,
+            "in": "query",
+            "description": "entries__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name__regex",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me",
+            "required": false,
+            "in": "query",
+            "description": "me",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me__regex",
+            "required": false,
+            "in": "query",
+            "description": "me__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TH1"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "TH1"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/th1/{hist_id}/": {
+      "get": {
+        "operationId": "retrieveTH1",
+        "description": "",
+        "parameters": [
+          {
+            "name": "hist_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this t h1.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TH1"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "TH1"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/th2/": {
+      "get": {
+        "operationId": "listTH2s",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file_id",
+            "required": false,
+            "in": "query",
+            "description": "file_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number",
+            "required": false,
+            "in": "query",
+            "description": "ls_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me_id",
+            "required": false,
+            "in": "query",
+            "description": "me_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_id",
+            "required": false,
+            "in": "query",
+            "description": "ls_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entries__gte",
+            "required": false,
+            "in": "query",
+            "description": "entries__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name__regex",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me",
+            "required": false,
+            "in": "query",
+            "description": "me",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me__regex",
+            "required": false,
+            "in": "query",
+            "description": "me__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TH2"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "TH2"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/th2/{hist_id}/": {
+      "get": {
+        "operationId": "retrieveTH2",
+        "description": "",
+        "parameters": [
+          {
+            "name": "hist_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this t h2.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TH2"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "TH2"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
       }
     }
   },
@@ -1126,17 +1597,6 @@
           "device_code",
           "expires_in",
           "verification_uri_complete"
-        ]
-      },
-      "DeviceCode": {
-        "type": "object",
-        "properties": {
-          "device_code": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "device_code"
         ]
       },
       "DeviceToken": {
@@ -1217,10 +1677,61 @@
           "default_workspace"
         ]
       },
+      "DatasetIndex": {
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "era": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "data_tier": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "primary_ds_name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "processing_version": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "last_modification_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "dataset_id",
+          "dataset",
+          "era",
+          "data_tier",
+          "primary_ds_name",
+          "processing_version",
+          "last_modification_date"
+        ]
+      },
       "FileIndex": {
         "type": "object",
         "properties": {
           "file_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "dataset_id": {
             "type": "integer",
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
@@ -1231,18 +1742,6 @@
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
             "format": "int64"
-          },
-          "era": {
-            "type": "string",
-            "maxLength": 5
-          },
-          "campaign": {
-            "type": "string",
-            "maxLength": 15
-          },
-          "primary_dataset": {
-            "type": "string",
-            "maxLength": 50
           },
           "creation_date": {
             "type": "string",
@@ -1258,39 +1757,108 @@
           },
           "status": {
             "type": "string",
-            "maxLength": 15
+            "maxLength": 255
           },
           "err_trace": {
             "type": "string",
-            "nullable": true,
-            "maxLength": 5000
+            "maxLength": 2295
           }
         },
         "required": [
-          "campaign",
-          "creation_date",
-          "primary_dataset",
-          "era",
           "file_id",
+          "dataset_id",
           "file_size",
+          "creation_date",
           "last_modification_date",
           "logical_file_name",
           "status"
         ]
       },
-      "Lumisection": {
+      "MEs": {
         "type": "object",
         "properties": {
-          "ls_id": {
+          "me_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "me": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "dim": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          }
+        },
+        "required": [
+          "me",
+          "count",
+          "dim"
+        ]
+      },
+      "Run": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "dataset_id": {
             "type": "integer",
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
             "format": "int64"
           },
+          "run_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "ls_count": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          }
+        },
+        "required": [
+          "dataset_id",
+          "run_number",
+          "ls_count"
+        ]
+      },
+      "Lumisection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "dataset_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "run_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
           "ls_number": {
             "type": "integer",
             "maximum": 2147483647,
             "minimum": -2147483648
+          },
+          "ls_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
           },
           "th1_count": {
             "type": "integer",
@@ -1304,13 +1872,15 @@
           }
         },
         "required": [
-          "ls_id",
+          "dataset_id",
+          "run_number",
           "ls_number",
+          "ls_id",
           "th1_count",
           "th2_count"
         ]
       },
-      "LumisectionHistogram1D": {
+      "TH1": {
         "type": "object",
         "properties": {
           "hist_id": {
@@ -1319,33 +1889,11 @@
             "minimum": -9223372036854776000,
             "format": "int64"
           },
-          "title": {
-            "type": "string",
-            "maxLength": 255
-          },
-          "x_min": {
-            "type": "number",
-            "format": "double"
-          },
-          "x_max": {
-            "type": "number",
-            "format": "double"
-          },
-          "x_bin": {
-            "type": "number",
-            "format": "double"
-          },
-          "entries": {
+          "dataset_id": {
             "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "number",
-              "format": "double"
-            }
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
           },
           "file_id": {
             "type": "integer",
@@ -1358,46 +1906,61 @@
             "maximum": 2147483647,
             "minimum": -2147483648
           },
+          "ls_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "me_id": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
           "ls_id": {
             "type": "integer",
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
             "format": "int64"
-          }
-        },
-        "required": [
-          "data",
-          "entries",
-          "file_id",
-          "hist_id",
-          "ls_id",
-          "run_number",
-          "title",
-          "x_bin",
-          "x_max",
-          "x_min"
-        ]
-      },
-      "LumisectionHistogram1DMEs": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "maxLength": 255
           },
-          "count": {
+          "x_min": {
+            "type": "number"
+          },
+          "x_max": {
+            "type": "number"
+          },
+          "x_bin": {
             "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "entries": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
           }
         },
         "required": [
-          "count",
-          "title"
+          "hist_id",
+          "dataset_id",
+          "file_id",
+          "run_number",
+          "ls_number",
+          "me_id",
+          "ls_id",
+          "x_min",
+          "x_max",
+          "x_bin",
+          "entries",
+          "data"
         ]
       },
-      "LumisectionHistogram2D": {
+      "TH2": {
         "type": "object",
         "properties": {
           "hist_id": {
@@ -1406,33 +1969,60 @@
             "minimum": -9223372036854776000,
             "format": "int64"
           },
-          "title": {
-            "type": "string",
-            "maxLength": 255
+          "dataset_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "file_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "run_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "ls_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "me_id": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "ls_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
           },
           "x_min": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "x_max": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "x_bin": {
-            "type": "number",
-            "format": "double"
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
           },
           "y_min": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "y_max": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "y_bin": {
-            "type": "number",
-            "format": "double"
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
           },
           "entries": {
             "type": "integer",
@@ -1442,256 +2032,26 @@
           "data": {
             "type": "array",
             "items": {
-              "type": "array",
-              "items": {
-                "type": "number",
-                "format": "double",
-                "title": "Data"
-              }
+              "type": "number"
             }
-          },
-          "file_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
-          "run_number": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
-          },
-          "ls_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
           }
         },
         "required": [
-          "data",
-          "entries",
-          "file_id",
           "hist_id",
-          "ls_id",
+          "dataset_id",
+          "file_id",
           "run_number",
-          "title",
-          "x_bin",
-          "x_max",
+          "ls_number",
+          "me_id",
+          "ls_id",
           "x_min",
-          "y_bin",
+          "x_max",
+          "x_bin",
+          "y_min",
           "y_max",
-          "y_min"
-        ]
-      },
-      "LumisectionHistogram2DMEs": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "maxLength": 255
-          },
-          "count": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          }
-        },
-        "required": [
-          "count",
-          "title"
-        ]
-      },
-      "PaginatedFileIndexList": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=4"
-          },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=2"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FileIndex"
-            }
-          }
-        }
-      },
-      "PaginatedLumisectionHistogram1DList": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=4"
-          },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=2"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LumisectionHistogram1D"
-            }
-          }
-        }
-      },
-      "PaginatedLumisectionHistogram2DList": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=4"
-          },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=2"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LumisectionHistogram2D"
-            }
-          }
-        }
-      },
-      "PaginatedLumisectionList": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=4"
-          },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=2"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Lumisection"
-            }
-          }
-        }
-      },
-      "PaginatedRunList": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=4"
-          },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?page=2"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Run"
-            }
-          }
-        }
-      },
-      "PendingAuthorizationError": {
-        "type": "object",
-        "properties": {
-          "detail": {
-            "type": "string"
-          },
-          "code": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "detail"
-        ]
-      },
-      "RefreshToken": {
-        "type": "object",
-        "properties": {
-          "refresh_token": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "refresh_token"
-        ]
-      },
-      "Run": {
-        "type": "object",
-        "properties": {
-          "run_number": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
-          },
-          "ls_count": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
-          }
-        },
-        "required": [
-          "ls_count",
-          "run_number"
-        ]
-      },
-      "SubjectToken": {
-        "type": "object",
-        "properties": {
-          "subject_token": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "subject_token"
+          "y_bin",
+          "entries",
+          "data"
         ]
       }
     },

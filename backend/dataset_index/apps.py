@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DqmioEtlConfig(AppConfig):
+class DatasetIndexConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "dqmio_etl"
+    name = "dataset_index"

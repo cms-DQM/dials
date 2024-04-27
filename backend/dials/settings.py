@@ -55,8 +55,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "dqmio_file_indexer.apps.DqmioDataIndexerConfig",
-    "dqmio_etl.apps.DqmioEtlConfig",
+    "dataset_index.apps.DatasetIndexConfig",
+    "file_index.apps.FileIndexConfig",
+    "dim_mes.apps.MesConfig",
+    "run.apps.RunConfig",
+    "lumisection.apps.LumisectionConfig",
+    "th1.apps.TH1Config",
+    "th2.apps.TH2Config",
     "cern_auth.apps.CERNAuthConfig",
 ]
 
