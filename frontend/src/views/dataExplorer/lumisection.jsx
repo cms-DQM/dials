@@ -11,22 +11,24 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
-import reverseCantorPairing from '../../utils/cantor'
 
 const Lumisection = () => {
-  const { id } = useParams()
-
-  const [isLumiLoading, setLumiLoading] = useState(true)
+  const { datasetId, runNumber, lsNumber } = useParams()
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
-  const [run, setRun] = useState()
-  const [lsNumber, setLsNumber] = useState()
+
+  // API results
   const [h1dData, setH1DData] = useState([])
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
 
-  const genericFetchAllPages = async ({ dim, run, lsNumber }) => {
+  const genericFetchAllPages = async ({
+    dim,
+    datasetId,
+    runNumber,
+    lsNumber,
+  }) => {
     const allData = []
     let nextPageExists = true
     let page = 0
@@ -34,10 +36,11 @@ const Lumisection = () => {
     while (nextPageExists) {
       page++
       try {
-        const { results, next } = await API.lumisection.listHistograms(dim, {
+        const { results, next } = await API.histogram.list(dim, {
           page,
-          run,
-          ls: lsNumber,
+          datasetId,
+          runNumber,
+          lsNumber,
         })
         results.forEach((e) => allData.unshift(e))
         nextPageExists = !(next === null)
@@ -54,38 +57,12 @@ const Lumisection = () => {
   }
 
   useEffect(() => {
-    const fetchData = () => {
-      setLumiLoading(true)
-      API.lumisection
-        .get({ id })
-        .then((response) => {
-          const runNumber = reverseCantorPairing(
-            response.ls_id,
-            response.ls_number
-          )
-          setRun(runNumber)
-          setLsNumber(response.ls_number)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-        .finally(() => {
-          setLumiLoading(false)
-        })
-    }
-
-    fetchData()
-  }, [id])
-
-  useEffect(() => {
-    if (isLumiLoading) return
-
     const fetchH1D = () => {
       setH1DLoading(true)
       genericFetchAllPages({
         dim: 1,
-        run,
+        datasetId,
+        runNumber,
         lsNumber,
       })
         .then((response) => {
@@ -110,7 +87,8 @@ const Lumisection = () => {
       setH2DLoading(true)
       genericFetchAllPages({
         dim: 2,
-        run,
+        datasetId,
+        runNumber,
         lsNumber,
       })
         .then((response) => {
@@ -133,7 +111,7 @@ const Lumisection = () => {
 
     fetchH1D()
     fetchH2D()
-  }, [isLumiLoading, run, lsNumber])
+  }, [datasetId, runNumber, lsNumber])
 
   return (
     <>
@@ -142,19 +120,12 @@ const Lumisection = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
-          {isLumiLoading ? (
-            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
-          ) : (
-            <>
-              <Breadcrumb.Item
-                linkAs={Link}
-                linkProps={{ to: `/runs/${run}` }}
-              >{`Run ${run}`}</Breadcrumb.Item>
-              <Breadcrumb.Item
-                active
-              >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
-            </>
-          )}
+          <Breadcrumb.Item active>{`Dataset ${datasetId}`}</Breadcrumb.Item>
+          <Breadcrumb.Item
+            linkAs={Link}
+            linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
+          >{`Run ${runNumber}`}</Breadcrumb.Item>
+          <Breadcrumb.Item active>{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
@@ -212,7 +183,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-1d/${hist.hist_id}`}
                                         >
-                                          {hist.title}
+                                          {hist.me_id}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>
@@ -278,7 +249,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-2d/${hist.hist_id}`}
                                         >
-                                          {hist.title}
+                                          {hist.me_id}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>
@@ -295,7 +266,7 @@ const Lumisection = () => {
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={isLumiLoading} runNumber={run} />
+          <CMSOMSCard runNumber={runNumber} />
         </Col>
       </Row>
     </>

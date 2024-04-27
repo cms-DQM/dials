@@ -12,10 +12,13 @@ import API from '../../services/api'
 import { CMSOMSCard, Table } from '../../components'
 
 const Run = () => {
-  const { runNumber } = useParams()
-
+  const { datasetId, runNumber } = useParams()
   const [isLoading, setLoading] = useState(true)
+
+  // Filters
   const [currentPage, setCurrentPage] = useState(1)
+
+  // API results
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
@@ -25,24 +28,18 @@ const Run = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.ls_id}`
+        const linkTo = `/lumisections/${row.dataset_id}/${row.run_number}/${row.ls_number}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
     { dataField: 'th1_count', text: '1D Histograms', type: 'number' },
     { dataField: 'th2_count', text: '2D Histograms', type: 'number' },
-    { dataField: 'int_lumi', text: 'Initial Luminosity', type: 'number' },
-    {
-      dataField: 'oms_zerobias_rate',
-      text: 'OMS ZeroBias Rate',
-      type: 'number',
-    },
   ]
 
-  const fetchData = ({ page, runNumber }) => {
+  const fetchData = ({ page, datasetId, runNumber }) => {
     setLoading(true)
     API.lumisection
-      .list({ page, runNumber })
+      .list({ page, datasetId, runNumber })
       .then((response) => {
         setData(response.results)
         setTotalSize(response.count)
@@ -58,8 +55,8 @@ const Run = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1, runNumber })
-  }, [runNumber])
+    fetchData({ page: 1, datasetId, runNumber })
+  }, [datasetId, runNumber])
 
   return (
     <>
@@ -68,6 +65,7 @@ const Run = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
+          <Breadcrumb.Item active>{`Dataset ${datasetId}`}</Breadcrumb.Item>
           <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
         </Breadcrumb>
       </Row>

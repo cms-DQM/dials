@@ -11,32 +11,49 @@ import { toast } from 'react-toastify'
 
 import { Table } from '../../components'
 import API from '../../services/api'
-import { isNumericNonZero } from '../../utils/sanitizer'
-import reverseCantorPairing from '../../utils/cantor'
+import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Lumisections = () => {
   const navigate = useNavigate()
-
   const [isLoading, setLoading] = useState(true)
+
+  // Filters
   const [currentPage, setCurrentPage] = useState(1)
-  const [minLs, setMinLs] = useState()
-  const [maxLs, setMaxLs] = useState()
-  const [minRun, setMinRun] = useState()
-  const [maxRun, setMaxRun] = useState()
+  const [dataset, setDataset] = useState()
+  const [datasetRegex, setDatasetRegex] = useState()
   const [runNumber, setRunNumber] = useState()
-  const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
-  const [lsNumberIsInvalid, setLsNumberIsInvalid] = useState()
+  const [runNumberLte, setRunNumberLte] = useState()
+  const [runNumberGte, setRunNumberGte] = useState()
   const [lsNumber, setLsNumber] = useState()
+  const [lsNumberLte, setLsNumberNumberLte] = useState()
+  const [lsNumberGte, setLsNumberNumberGte] = useState()
+
+  // Search
+  const [searchDataset, setSearchDataset] = useState()
+  const [searchRunNumber, setSearchRunNumber] = useState()
+  const [searchLsNumber, setSearchLsNumber] = useState()
+
+  // Form validation
+  const [searchDatasetIsInvalid, setSearchDatasetIsInvalid] = useState()
+  const [searchRunNumberIsInvalid, setSearchRunNumberIsInvalid] = useState()
+  const [searchLsNumberIsInvalid, setSearchLsNumberIsInvalid] = useState()
+
+  // API results
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
     {
+      dataField: 'dataset_id',
+      text: 'Dataset Id',
+      type: 'number',
+    },
+    {
       dataField: 'run_number',
       text: 'Run',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/runs/${row.run_number}`
+        const linkTo = `/runs/${row.dataset_id}/${row.run_number}`
         return <Link to={linkTo}>{row.run_number}</Link>
       },
     },
@@ -45,7 +62,7 @@ const Lumisections = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.ls_id}`
+        const linkTo = `/lumisections/${row.dataset_id}/${row.run_number}/${row.ls_number}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
@@ -59,19 +76,16 @@ const Lumisections = () => {
       text: 'TH2 Count',
       type: 'number',
     },
-    {
-      dataField: 'oms_zerobias_rate',
-      text: 'OMS ZeroBias Rate',
-      type: 'string',
-    },
   ]
 
   const validateSearchForm = () => {
-    const isRunValid = isNumericNonZero(runNumber)
-    const isLsValid = isNumericNonZero(lsNumber)
-    setRunNumberIsInvalid(!isRunValid)
-    setLsNumberIsInvalid(!isLsValid)
-    return isRunValid && isLsValid
+    const isDatasetValid = isStringNonEmpty(searchDataset)
+    const isRunValid = isNumericNonZero(searchRunNumber)
+    const isLsValid = isNumericNonZero(searchLsNumber)
+    setSearchDatasetIsInvalid(!isDatasetValid)
+    setSearchRunNumberIsInvalid(!isRunValid)
+    setSearchLsNumberIsInvalid(!isLsValid)
+    return isDatasetValid && isRunValid && isLsValid
   }
 
   const handleSearch = () => {
@@ -80,33 +94,68 @@ const Lumisections = () => {
       return
     }
 
-    API.lumisection
-      .list({ runNumber, ls: lsNumber })
+    API.dataset
+      .list({ dataset: searchDataset })
       .then((response) => {
         if (response.count === 0) {
-          toast.error('Lumisection not found!')
+          toast.error('Dataset not found!')
         } else {
-          navigate(`/lumisections/${response.results[0].ls_id}`)
+          const datasetId = response.results[0].dataset_id
+          API.lumisection
+            .get({
+              datasetId,
+              runNumber: searchRunNumber,
+              lsNumber: searchLsNumber,
+            })
+            .then((lsResponse) => {
+              return navigate(
+                `${datasetId}/${searchRunNumber}/${searchLsNumber}`
+              )
+            })
+            .catch((error) => {
+              if (error.response.status === 404) {
+                toast.error('Lumisection not found!')
+              } else {
+                toast.error('Failure to communicate with the API!')
+              }
+            })
         }
       })
       .catch((error) => {
-        console.error(error)
-        toast.error('Failure to communicate with the API!')
+        if (error.response.status === 404) {
+          toast.error('Dataset not found!')
+        } else {
+          toast.error('Failure to communicate with the API!')
+        }
       })
   }
 
-  const fetchData = ({ page, minLs, maxLs, minRun, maxRun }) => {
+  const fetchData = ({
+    page,
+    dataset,
+    datasetRegex,
+    runNumber,
+    runNumberLte,
+    runNumberGte,
+    lsNumber,
+    lsNumberLte,
+    lsNumberGte,
+  }) => {
     setLoading(true)
     API.lumisection
-      .list({ page, minLs, maxLs, minRun, maxRun })
+      .list({
+        page,
+        dataset,
+        datasetRegex,
+        runNumber,
+        runNumberLte,
+        runNumberGte,
+        lsNumber,
+        lsNumberLte,
+        lsNumberGte,
+      })
       .then((response) => {
-        const results = response.results.map((item) => {
-          return {
-            ...item,
-            run_number: reverseCantorPairing(item.ls_id, item.ls_number),
-          }
-        })
-        setData(results)
+        setData(response.results)
         setTotalSize(response.count)
         setCurrentPage(page)
       })
@@ -132,45 +181,85 @@ const Lumisections = () => {
               Filters
             </Card.Header>
             <Card.Body>
+              <Form.Group className='mb-3' controlId='formDataset'>
+                <Form.Label>Dataset</Form.Label>
+                <Form.Control
+                  type='string'
+                  placeholder='Enter dataset'
+                  value={dataset}
+                  onChange={(e) => setDataset(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formDatasetRegex'>
+                <Form.Label>Dataset regex</Form.Label>
+                <Form.Control
+                  type='string'
+                  placeholder='Enter dataset regex'
+                  value={datasetRegex}
+                  onChange={(e) => setDatasetRegex(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formRunNumber'>
+                <Form.Label>Run</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Enter run number'
+                  value={runNumber}
+                  onChange={(e) => setRunNumber(e.target.value)}
+                />
+              </Form.Group>
+
               <Form.Group className='mb-3' controlId='formRunRange'>
-                <Form.Label>Run Range</Form.Label>
+                <Form.Label>Run range</Form.Label>
                 <Row>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={minRun}
+                      value={runNumberGte}
                       placeholder='Min'
-                      onChange={(e) => setMinRun(e.target.value)}
+                      onChange={(e) => setRunNumberGte(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={maxRun}
+                      value={runNumberLte}
                       placeholder='Max'
-                      onChange={(e) => setMaxRun(e.target.value)}
+                      onChange={(e) => setRunNumberLte(e.target.value)}
                     />
                   </Col>
                 </Row>
               </Form.Group>
 
+              <Form.Group className='mb-3' controlId='formLsNumber'>
+                <Form.Label>Lumisection</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Enter lumisection number'
+                  value={lsNumber}
+                  onChange={(e) => setLsNumber(e.target.value)}
+                />
+              </Form.Group>
+
               <Form.Group className='mb-3' controlId='formLsRange'>
-                <Form.Label>Lumisection Range</Form.Label>
+                <Form.Label>Lumisection range</Form.Label>
                 <Row>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={minLs}
+                      value={lsNumberGte}
                       placeholder='Min'
-                      onChange={(e) => setMinLs(e.target.value)}
+                      onChange={(e) => setLsNumberNumberGte(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={maxLs}
+                      value={lsNumberLte}
                       placeholder='Max'
-                      onChange={(e) => setMaxLs(e.target.value)}
+                      onChange={(e) => setLsNumberNumberLte(e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -180,7 +269,17 @@ const Lumisections = () => {
                 variant='primary'
                 type='submit'
                 onClick={() => {
-                  fetchData({ page: 1, minLs, maxLs, minRun, maxRun })
+                  fetchData({
+                    page: 1,
+                    dataset,
+                    datasetRegex,
+                    runNumber,
+                    runNumberLte,
+                    runNumberGte,
+                    lsNumber,
+                    lsNumberLte,
+                    lsNumberGte,
+                  })
                 }}
               >
                 Submit
@@ -194,13 +293,26 @@ const Lumisections = () => {
               Search
             </Card.Header>
             <Card.Body>
-              <Form.Group className='mb-3' controlId='formRunNumber'>
-                <Form.Label>Run Number</Form.Label>
+              <Form.Group className='mb-3' controlId='formSearchDataset'>
+                <Form.Label>Dataset</Form.Label>
+                <Form.Control
+                  type='string'
+                  value={searchDataset}
+                  onChange={(e) => setSearchDataset(e.target.value)}
+                  isInvalid={searchDatasetIsInvalid}
+                />
+                <Form.Control.Feedback type='invalid'>
+                  Dataset cannot be empty
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formSearchRunNumber'>
+                <Form.Label>Run number</Form.Label>
                 <Form.Control
                   type='number'
-                  value={runNumber}
-                  onChange={(e) => setRunNumber(e.target.value)}
-                  isInvalid={runNumberIsInvalid}
+                  value={searchRunNumber}
+                  onChange={(e) => setSearchRunNumber(e.target.value)}
+                  isInvalid={searchRunNumberIsInvalid}
                 />
                 <Form.Control.Feedback type='invalid'>
                   Run number cannot be empty
@@ -208,12 +320,12 @@ const Lumisections = () => {
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='formRunNumber'>
-                <Form.Label>Lumisection Number</Form.Label>
+                <Form.Label>Lumisection number</Form.Label>
                 <Form.Control
                   type='number'
-                  value={lsNumber}
-                  onChange={(e) => setLsNumber(e.target.value)}
-                  isInvalid={lsNumberIsInvalid}
+                  value={searchLsNumber}
+                  onChange={(e) => setSearchLsNumber(e.target.value)}
+                  isInvalid={searchLsNumberIsInvalid}
                 />
                 <Form.Control.Feedback type='invalid'>
                   Lumisection number cannot be empty
@@ -241,7 +353,17 @@ const Lumisections = () => {
               remote
               onTableChange={(type, { page }) => {
                 if (type === 'pagination') {
-                  fetchData({ page, minLs, maxLs, minRun, maxRun })
+                  fetchData({
+                    page,
+                    dataset,
+                    datasetRegex,
+                    runNumber,
+                    runNumberLte,
+                    runNumberGte,
+                    lsNumber,
+                    lsNumberLte,
+                    lsNumberGte,
+                  })
                 }
               }}
               pagination={paginationFactory({

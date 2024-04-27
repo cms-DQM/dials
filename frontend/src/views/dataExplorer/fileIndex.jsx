@@ -15,22 +15,24 @@ import { toast } from 'react-toastify'
 
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
+
+  // Filters
   const [currentPage, setCurrentPage] = useState(1)
-  const [campaign, setCampaign] = useState()
-  const [primaryDataset, setPrimaryDataset] = useState()
-  const [era, setEra] = useState()
   const [logicalFileName, setLogicalFileName] = useState()
-  const [minSize, setMinSize] = useState(0)
+  const [logicalFileNameRegex, setLogicalFileNameRegex] = useState()
   const [fileStatus, setFileStatus] = useState()
+  const [minSize, setMinSize] = useState(0)
+  const [dataset, setDataset] = useState()
+  const [datasetRegex, setDatasetRegex] = useState()
+
+  // API results
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
-    { dataField: 'file_id', text: 'ID', type: 'number' },
+    { dataField: 'dataset_id', text: 'Dataset Id', type: 'number' },
+    { dataField: 'file_id', text: 'File Id', type: 'number' },
     { dataField: 'file_size', text: 'Size (MB)', type: 'number' },
-    { dataField: 'era', text: 'Era', type: 'string' },
-    { dataField: 'campaign', text: 'Campaign', type: 'string' },
-    { dataField: 'primary_dataset', text: 'Primary Dataset', type: 'string' },
     {
       dataField: 'last_modification_date',
       text: 'Last Modification Date',
@@ -46,23 +48,23 @@ const FileIndex = () => {
 
   const fetchData = ({
     page,
-    campaign,
-    primaryDataset,
-    era,
     logicalFileName,
-    minSize,
+    logicalFileNameRegex,
     status,
+    minSize,
+    dataset,
+    datasetRegex,
   }) => {
     setLoading(true)
     API.fileIndex
       .list({
         page,
-        campaign,
-        primaryDataset,
-        era,
         logicalFileName,
-        minSize: minSize > 0 ? minSize : undefined,
+        logicalFileNameRegex,
         status,
+        minSize: minSize > 0 ? minSize : undefined,
+        dataset,
+        datasetRegex,
       })
       .then((response) => {
         const results = response.results.map((item) => {
@@ -100,43 +102,43 @@ const FileIndex = () => {
             Filters
           </Card.Header>
           <Card.Body>
-            <Form.Group className='mb-3' controlId='formCampaign'>
-              <Form.Label>Campaign contains</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter campaign substring'
-                value={campaign}
-                onChange={(e) => setCampaign(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formPrimaryDataset'>
-              <Form.Label>Primary Dataset</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter primary dataset'
-                value={primaryDataset}
-                onChange={(e) => setPrimaryDataset(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formEra'>
-              <Form.Label>Era</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter era'
-                value={era}
-                onChange={(e) => setEra(e.target.value)}
-              />
-            </Form.Group>
-
             <Form.Group className='mb-3' controlId='formLogicalFileName'>
-              <Form.Label>Logical file name contains</Form.Label>
+              <Form.Label>Logical file name</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter logical file name substring'
+                placeholder='Enter logical file name'
                 value={logicalFileName}
                 onChange={(e) => setLogicalFileName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formLogicalFileNameRegex'>
+              <Form.Label>Logical file name regex</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter logical file name regex'
+                value={logicalFileNameRegex}
+                onChange={(e) => setLogicalFileNameRegex(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formDataset'>
+              <Form.Label>Dataset</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter dataset'
+                value={dataset}
+                onChange={(e) => setDataset(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formDatasetRegex'>
+              <Form.Label>Dataset regex</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter dataset regex'
+                value={datasetRegex}
+                onChange={(e) => setDatasetRegex(e.target.value)}
               />
             </Form.Group>
 
@@ -189,12 +191,12 @@ const FileIndex = () => {
               onClick={() => {
                 fetchData({
                   page: 1,
-                  campaign,
-                  primaryDataset,
-                  era,
                   logicalFileName,
-                  minSize,
+                  logicalFileNameRegex,
                   status: fileStatus,
+                  minSize,
+                  dataset,
+                  datasetRegex,
                 })
               }}
             >
@@ -219,12 +221,12 @@ const FileIndex = () => {
                 if (type === 'pagination') {
                   fetchData({
                     page,
-                    campaign,
-                    primaryDataset,
-                    era,
                     logicalFileName,
-                    minSize,
+                    logicalFileNameRegex,
                     status: fileStatus,
+                    minSize,
+                    dataset,
+                    datasetRegex,
                   })
                 }
               }}

@@ -12,32 +12,42 @@ import { toast } from 'react-toastify'
 
 import { ResponsivePlot, Table } from '../../components'
 import API from '../../services/api'
-import reverseCantorPairing from '../../utils/cantor'
 
 const Histograms2D = () => {
   const [isLoading, setLoading] = useState(true)
+
+  // Filters
   const [currentPage, setCurrentPage] = useState(1)
-  const [minRun, setMinRun] = useState()
-  const [maxRun, setMaxRun] = useState()
-  const [minLs, setMinLs] = useState()
-  const [maxLs, setMaxLs] = useState()
-  const [titleContains, setTitleContains] = useState()
-  const [minEntries, setMinEntries] = useState(0)
+  const [dataset, setDataset] = useState()
+  const [datasetRegex, setDatasetRegex] = useState()
+  const [logicalFileName, setLogicalFileName] = useState()
+  const [logicalFileNameRegex, setLogicalFileNameRegex] = useState()
   const [runNumber, setRunNumber] = useState()
-  const [campaign, setCampaign] = useState()
-  const [primaryDataset, setPrimaryDataset] = useState()
-  const [era, setEra] = useState()
-  const [fileId, setFileId] = useState()
+  const [runNumberLte, setRunNumberLte] = useState()
+  const [runNumberGte, setRunNumberGte] = useState()
+  const [lsNumber, setLsNumber] = useState()
+  const [lsNumberLte, setLsNumberNumberLte] = useState()
+  const [lsNumberGte, setLsNumberNumberGte] = useState()
+  const [me, setMe] = useState()
+  const [meRegex, setMeRegex] = useState()
+  const [entriesGte, setEntriesGte] = useState(0)
+
+  // API results
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
     {
+      dataField: 'dataset_id',
+      text: 'Dataset Id',
+      type: 'number',
+    },
+    {
       dataField: 'run_number',
       text: 'Run',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/runs/${row.run_number}`
+        const linkTo = `/runs/${row.dataset_id}/${row.run_number}`
         return <Link to={linkTo}>{row.run_number}</Link>
       },
     },
@@ -46,18 +56,18 @@ const Histograms2D = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.ls_id}`
+        const linkTo = `/lumisections/${row.dataset_id}/${row.run_number}/${row.ls_number}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
     {
-      dataField: 'title',
-      text: 'Title',
+      dataField: 'me_id',
+      text: 'ME Id',
       type: 'string',
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
         const linkTo = `/histograms-2d/${row.hist_id}`
-        return <Link to={linkTo}>{row.title}</Link>
+        return <Link to={linkTo}>{row.me_id}</Link>
       },
     },
     { dataField: 'entries', text: 'Entries', type: 'number' },
@@ -74,32 +84,36 @@ const Histograms2D = () => {
   const fetchData = ({
     page,
     runNumber,
-    minRun,
-    maxRun,
-    minLs,
-    maxLs,
-    titleContains,
-    minEntries,
-    era,
-    campaign,
-    primaryDataset,
-    fileId,
+    runNumberLte,
+    runNumberGte,
+    lsNumber,
+    lsNumberLte,
+    lsNumberGte,
+    entriesGte,
+    dataset,
+    datasetRegex,
+    logicalFileName,
+    logicalFileNameRegex,
+    me,
+    meRegex,
   }) => {
     setLoading(true)
-    API.lumisection
-      .listHistograms(2, {
+    API.histogram
+      .list(2, {
         page,
-        run: runNumber,
-        minRun,
-        maxRun,
-        minLs,
-        maxLs,
-        titleContains,
-        minEntries: minEntries > 0 ? minEntries : undefined,
-        era,
-        campaign,
-        primaryDataset,
-        fileId,
+        runNumber,
+        runNumberLte,
+        runNumberGte,
+        lsNumber,
+        lsNumberLte,
+        lsNumberGte,
+        entriesGte: entriesGte > 0 ? entriesGte : undefined,
+        dataset,
+        datasetRegex,
+        logicalFileName,
+        logicalFileNameRegex,
+        me,
+        meRegex,
       })
       .then((response) => {
         const results = response.results.map((item) => {
@@ -125,7 +139,6 @@ const Histograms2D = () => {
                 boxHeight={'100pt'}
               />
             ),
-            ls_number: reverseCantorPairing(item.ls_id, item.run_number),
           }
         })
         setData(results)
@@ -153,81 +166,48 @@ const Histograms2D = () => {
             Filters
           </Card.Header>
           <Card.Body>
-            <Form.Group className='mb-3' controlId='formRunRange'>
-              <Form.Label>Run Range</Form.Label>
-              <Row>
-                <Col xs={6}>
-                  <Form.Control
-                    type='number'
-                    value={minRun}
-                    placeholder='Min'
-                    onChange={(e) => setMinRun(e.target.value)}
-                  />
-                </Col>
-                <Col xs={6}>
-                  <Form.Control
-                    type='number'
-                    value={maxRun}
-                    placeholder='Max'
-                    onChange={(e) => setMaxRun(e.target.value)}
-                  />
-                </Col>
-              </Row>
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formLsRange'>
-              <Form.Label>Lumisection Range</Form.Label>
-              <Row>
-                <Col xs={6}>
-                  <Form.Control
-                    type='number'
-                    value={minLs}
-                    placeholder='Min'
-                    onChange={(e) => setMinLs(e.target.value)}
-                  />
-                </Col>
-                <Col xs={6}>
-                  <Form.Control
-                    type='number'
-                    value={maxLs}
-                    placeholder='Max'
-                    onChange={(e) => setMaxLs(e.target.value)}
-                  />
-                </Col>
-              </Row>
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formTitleContains'>
-              <Form.Label>Title contains</Form.Label>
+            <Form.Group className='mb-3' controlId='formDataset'>
+              <Form.Label>Dataset</Form.Label>
               <Form.Control
                 type='string'
-                placeholder='Enter title substring'
-                value={titleContains}
-                onChange={(e) => setTitleContains(e.target.value)}
+                placeholder='Enter dataset'
+                value={dataset}
+                onChange={(e) => setDataset(e.target.value)}
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formMinEntries' as={Row}>
-              <Form.Label>Minimum number of entries</Form.Label>
-              <Col xs={3}>
-                <Form.Control
-                  type='number'
-                  value={minEntries}
-                  onChange={(e) => setMinEntries(e.target.value)}
-                />
-              </Col>
-              <Col xs={9}>
-                <RangeSlider
-                  min={0}
-                  max={100000}
-                  value={minEntries}
-                  onChange={(e) => setMinEntries(e.target.value)}
-                />
-              </Col>
+            <Form.Group className='mb-3' controlId='formDatasetRegex'>
+              <Form.Label>Dataset regex</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter dataset regex'
+                value={datasetRegex}
+                onChange={(e) => setDatasetRegex(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formLogicalFileName'>
+              <Form.Label>Logical file name</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter logical file name'
+                value={logicalFileName}
+                onChange={(e) => setLogicalFileName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formLogicalFileNameRegex'>
+              <Form.Label>Logical file name regex</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter logical file name regex'
+                value={logicalFileNameRegex}
+                onChange={(e) => setLogicalFileNameRegex(e.target.value)}
+              />
             </Form.Group>
 
             <Form.Group className='mb-3' controlId='formRunNumber'>
-              <Form.Label>Run number</Form.Label>
+              <Form.Label>Run</Form.Label>
               <Form.Control
                 type='number'
                 placeholder='Enter run number'
@@ -236,44 +216,97 @@ const Histograms2D = () => {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formCampaign'>
-              <Form.Label>Campaign contains</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter campaign substring'
-                value={campaign}
-                onChange={(e) => setCampaign(e.target.value)}
-              />
+            <Form.Group className='mb-3' controlId='formRunRange'>
+              <Form.Label>Run range</Form.Label>
+              <Row>
+                <Col xs={6}>
+                  <Form.Control
+                    type='number'
+                    value={runNumberGte}
+                    placeholder='Min'
+                    onChange={(e) => setRunNumberGte(e.target.value)}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <Form.Control
+                    type='number'
+                    value={runNumberLte}
+                    placeholder='Max'
+                    onChange={(e) => setRunNumberLte(e.target.value)}
+                  />
+                </Col>
+              </Row>
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formPrimaryDataset'>
-              <Form.Label>Primary Dataset</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter primary dataset'
-                value={primaryDataset}
-                onChange={(e) => setPrimaryDataset(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formEra'>
-              <Form.Label>Era</Form.Label>
-              <Form.Control
-                type='string'
-                placeholder='Enter era'
-                value={era}
-                onChange={(e) => setEra(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className='mb-3' controlId='formFileId'>
-              <Form.Label>File ID</Form.Label>
+            <Form.Group className='mb-3' controlId='formLsNumber'>
+              <Form.Label>Lumisection</Form.Label>
               <Form.Control
                 type='number'
-                placeholder='Enter file id'
-                value={fileId}
-                onChange={(e) => setFileId(e.target.value)}
+                placeholder='Enter lumisection number'
+                value={lsNumber}
+                onChange={(e) => setLsNumber(e.target.value)}
               />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formLsRange'>
+              <Form.Label>Lumisection range</Form.Label>
+              <Row>
+                <Col xs={6}>
+                  <Form.Control
+                    type='number'
+                    value={lsNumberGte}
+                    placeholder='Min'
+                    onChange={(e) => setLsNumberNumberGte(e.target.value)}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <Form.Control
+                    type='number'
+                    value={lsNumberLte}
+                    placeholder='Max'
+                    onChange={(e) => setLsNumberNumberLte(e.target.value)}
+                  />
+                </Col>
+              </Row>
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formMe'>
+              <Form.Label>Monitoring element</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter monitoring element'
+                value={me}
+                onChange={(e) => setMe(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formMeRegex'>
+              <Form.Label>Monitoring element regex</Form.Label>
+              <Form.Control
+                type='string'
+                placeholder='Enter monitoring element regex'
+                value={meRegex}
+                onChange={(e) => setMeRegex(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className='mb-3' controlId='formEntriesGte' as={Row}>
+              <Form.Label>Minimum number of entries</Form.Label>
+              <Col xs={3}>
+                <Form.Control
+                  type='number'
+                  value={entriesGte}
+                  onChange={(e) => setEntriesGte(e.target.value)}
+                />
+              </Col>
+              <Col xs={9}>
+                <RangeSlider
+                  min={0}
+                  max={100000}
+                  value={entriesGte}
+                  onChange={(e) => setEntriesGte(e.target.value)}
+                />
+              </Col>
             </Form.Group>
 
             <Button
@@ -283,16 +316,18 @@ const Histograms2D = () => {
                 fetchData({
                   page: 1,
                   runNumber,
-                  minRun,
-                  maxRun,
-                  minLs,
-                  maxLs,
-                  titleContains,
-                  minEntries,
-                  campaign,
-                  primaryDataset,
-                  era,
-                  fileId,
+                  runNumberLte,
+                  runNumberGte,
+                  lsNumber,
+                  lsNumberLte,
+                  lsNumberGte,
+                  entriesGte,
+                  dataset,
+                  datasetRegex,
+                  logicalFileName,
+                  logicalFileNameRegex,
+                  me,
+                  meRegex,
                 })
               }}
             >
@@ -320,16 +355,18 @@ const Histograms2D = () => {
                   fetchData({
                     page,
                     runNumber,
-                    minRun,
-                    maxRun,
-                    minLs,
-                    maxLs,
-                    titleContains,
-                    minEntries,
-                    campaign,
-                    primaryDataset,
-                    era,
-                    fileId,
+                    runNumberLte,
+                    runNumberGte,
+                    lsNumber,
+                    lsNumberLte,
+                    lsNumberGte,
+                    entriesGte,
+                    dataset,
+                    datasetRegex,
+                    logicalFileName,
+                    logicalFileNameRegex,
+                    me,
+                    meRegex,
                   })
                 }
               }}

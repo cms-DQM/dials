@@ -11,27 +11,44 @@ import { toast } from 'react-toastify'
 
 import { Table } from '../../components'
 import API from '../../services/api'
-import { isNumericNonZero } from '../../utils/sanitizer'
+import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Runs = () => {
   const navigate = useNavigate()
-
   const [isLoading, setLoading] = useState(true)
+
+  // Filters
   const [currentPage, setCurrentPage] = useState(1)
-  const [minRun, setMinRun] = useState()
-  const [maxRun, setMaxRun] = useState()
+  const [dataset, setDataset] = useState()
+  const [datasetRegex, setDatasetRegex] = useState()
   const [runNumber, setRunNumber] = useState()
-  const [runNumberIsInvalid, setRunNumberIsInvalid] = useState()
+  const [runNumberLte, setRunNumberLte] = useState()
+  const [runNumberGte, setRunNumberGte] = useState()
+
+  // Search
+  const [searchDataset, setSearchDataset] = useState()
+  const [searchRunNumber, setSearchRunNumber] = useState()
+
+  // Form validation
+  const [searchDatasetIsInvalid, setSearchDatasetIsInvalid] = useState()
+  const [searchRunNumberIsInvalid, setSearchRunNumberIsInvalid] = useState()
+
+  // API results
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
     {
+      dataField: 'dataset_id',
+      text: 'Dataset Id',
+      type: 'number',
+    },
+    {
       dataField: 'run_number',
       text: 'Run',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = row.run_number.toString()
+        const linkTo = `${row.dataset_id}/${row.run_number}`
         return <Link to={linkTo}>{row.run_number}</Link>
       },
     },
@@ -40,18 +57,14 @@ const Runs = () => {
       text: 'LS Count',
       type: 'number',
     },
-    { dataField: 'year', text: 'Year', type: 'string' },
-    { dataField: 'period', text: 'Period', type: 'string' },
-    { dataField: 'oms_fill', text: 'OMS Fill', type: 'string' },
-    { dataField: 'oms_lumisections', text: 'OMS Lumisections', type: 'string' },
-    { dataField: 'oms_initial_lumi', text: 'OMS Initial Lumi', type: 'string' },
-    { dataField: 'oms_end_lumi', text: 'OMS End Lumi', type: 'string' },
   ]
 
   const validateSearchForm = () => {
-    const isRunValid = isNumericNonZero(runNumber)
-    setRunNumberIsInvalid(!isRunValid)
-    return isRunValid
+    const isDatasetValid = isStringNonEmpty(searchDataset)
+    const isRunValid = isNumericNonZero(searchRunNumber)
+    setSearchDatasetIsInvalid(!isDatasetValid)
+    setSearchRunNumberIsInvalid(!isRunValid)
+    return isDatasetValid && isRunValid
   }
 
   const handleSearch = () => {
@@ -60,24 +73,54 @@ const Runs = () => {
       return
     }
 
-    API.run
-      .get({ run: runNumber })
+    API.dataset
+      .list({ dataset: searchDataset })
       .then((response) => {
-        return navigate(runNumber)
+        if (response.count === 0) {
+          toast.error('Dataset not found!')
+        } else {
+          const datasetId = response.results[0].dataset_id
+          API.run
+            .get({ datasetId, runNumber: searchRunNumber })
+            .then((runResponse) => {
+              return navigate(`${datasetId}/${searchRunNumber}`)
+            })
+            .catch((error) => {
+              if (error.response.status === 404) {
+                toast.error('Run not found!')
+              } else {
+                toast.error('Failure to communicate with the API!')
+              }
+            })
+        }
       })
       .catch((error) => {
         if (error.response.status === 404) {
-          toast.error('Run not found!')
+          toast.error('Dataset not found!')
         } else {
           toast.error('Failure to communicate with the API!')
         }
       })
   }
 
-  const fetchData = ({ page, minRun, maxRun }) => {
+  const fetchData = ({
+    page,
+    dataset,
+    datasetRegex,
+    runNumber,
+    runNumberGte,
+    runNumberLte,
+  }) => {
     setLoading(true)
     API.run
-      .list({ page, minRun, maxRun })
+      .list({
+        page,
+        dataset,
+        datasetRegex,
+        runNumber,
+        runNumberGte,
+        runNumberLte,
+      })
       .then((response) => {
         setData(response.results)
         setTotalSize(response.count)
@@ -105,23 +148,53 @@ const Runs = () => {
               Filters
             </Card.Header>
             <Card.Body>
+              <Form.Group className='mb-3' controlId='formDataset'>
+                <Form.Label>Dataset</Form.Label>
+                <Form.Control
+                  type='string'
+                  placeholder='Enter dataset'
+                  value={dataset}
+                  onChange={(e) => setDataset(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formDatasetRegex'>
+                <Form.Label>Dataset regex</Form.Label>
+                <Form.Control
+                  type='string'
+                  placeholder='Enter dataset regex'
+                  value={datasetRegex}
+                  onChange={(e) => setDatasetRegex(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formRunNumber'>
+                <Form.Label>Run</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Enter run number'
+                  value={runNumber}
+                  onChange={(e) => setRunNumber(e.target.value)}
+                />
+              </Form.Group>
+
               <Form.Group className='mb-3' controlId='formRunRange'>
-                <Form.Label>Run Range</Form.Label>
+                <Form.Label>Run range</Form.Label>
                 <Row>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={minRun}
+                      value={runNumberGte}
                       placeholder='Min'
-                      onChange={(e) => setMinRun(e.target.value)}
+                      onChange={(e) => setRunNumberGte(e.target.value)}
                     />
                   </Col>
                   <Col xs={6}>
                     <Form.Control
                       type='number'
-                      value={maxRun}
+                      value={runNumberLte}
                       placeholder='Max'
-                      onChange={(e) => setMaxRun(e.target.value)}
+                      onChange={(e) => setRunNumberLte(e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -133,8 +206,11 @@ const Runs = () => {
                 onClick={() => {
                   fetchData({
                     page: 1,
-                    minRun,
-                    maxRun,
+                    runNumber,
+                    runNumberGte,
+                    runNumberLte,
+                    dataset,
+                    datasetRegex,
                   })
                 }}
               >
@@ -149,13 +225,26 @@ const Runs = () => {
               Search
             </Card.Header>
             <Card.Body>
-              <Form.Group className='mb-3' controlId='formRunNumber'>
-                <Form.Label>Run Number</Form.Label>
+              <Form.Group className='mb-3' controlId='formSearchDataset'>
+                <Form.Label>Dataset</Form.Label>
+                <Form.Control
+                  type='string'
+                  value={searchDataset}
+                  onChange={(e) => setSearchDataset(e.target.value)}
+                  isInvalid={searchDatasetIsInvalid}
+                />
+                <Form.Control.Feedback type='invalid'>
+                  Dataset cannot be empty
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='formSearchRunNumber'>
+                <Form.Label>Run number</Form.Label>
                 <Form.Control
                   type='number'
-                  value={runNumber}
-                  onChange={(e) => setRunNumber(e.target.value)}
-                  isInvalid={runNumberIsInvalid}
+                  value={searchRunNumber}
+                  onChange={(e) => setSearchRunNumber(e.target.value)}
+                  isInvalid={searchRunNumberIsInvalid}
                 />
                 <Form.Control.Feedback type='invalid'>
                   Run number cannot be empty
@@ -185,8 +274,11 @@ const Runs = () => {
                 if (type === 'pagination') {
                   fetchData({
                     page,
-                    minRun,
-                    maxRun,
+                    runNumber,
+                    runNumberGte,
+                    runNumberLte,
+                    dataset,
+                    datasetRegex,
                   })
                 }
               }}
