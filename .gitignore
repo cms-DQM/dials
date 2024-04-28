@@ -332,3 +332,4 @@ yarn-error.log*
 *.benchmark-dat
 mocked_dbs.json
 docker-compose.yaml
+DQMIO/
