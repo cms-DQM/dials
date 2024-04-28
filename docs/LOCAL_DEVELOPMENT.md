@@ -37,21 +37,17 @@ More information on tunneling to CERN can be foudn [here](https://abpcomputing.w
 
 Note: This step is *optional*, if you don't mount EOS locally the ETL workflow will download the data locally trough *scp*.
 
-The following commands will mount the specific DQMIO production data from EOS in read-only mode mimicking lxplus/openshift eos mounting structure:
+The following command will mount the production data directory from EOS in read-only mode:
 
 ```bash
-sudo mkdir -p /eos/project-m/mlplayground/public/DQMIO_workspaces
-sudo mkdir -p /eos/home-m/mlplayground/DQMIO_workspaces
-sudo chown -R $USER:$USER /eos
-sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /eos/project-m/mlplayground/public/DQMIO_workspaces
-sshfs -o default_permissions,ro mlplayground@lxplus:/eos/home-m/mlplayground/DQMIO_workspaces /eos/home-m/mlplayground/DQMIO_workspaces
+mkdir ./DQMIO
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /DQMIO
 ```
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount /eos/project-m/mlplayground/public/DQMIO_workspaces
-umount /eos/home-m/mlplayground/DQMIO_workspaces
+umount ./DQMIO
 ```
 
 ## Getting data from DBS
