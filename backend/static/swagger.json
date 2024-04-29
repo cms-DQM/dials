@@ -515,6 +515,107 @@
         ]
       }
     },
+    "/api/v1/file-index/count/": {
+      "get": {
+        "operationId": "countFileIndexs",
+        "description": "",
+        "parameters": [
+          {
+            "name": "logical_file_name",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name__regex",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_size",
+            "required": false,
+            "in": "query",
+            "description": "min_size",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "number",
+                      "example": 55
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "File Index"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
     "/api/v1/mes/": {
       "get": {
         "operationId": "listMEs",
@@ -819,6 +920,107 @@
         ]
       }
     },
+    "/api/v1/run/count/": {
+      "get": {
+        "operationId": "countRuns",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "number",
+                      "example": 55
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Run"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
     "/api/v1/lumisection/": {
       "get": {
         "operationId": "listLumisections",
@@ -970,7 +1172,7 @@
         ]
       }
     },
-    "/api/v1/lumiscetion/{dataset_id}/{run_number}/{ls_number}/": {
+    "/api/v1/lumisection/{dataset_id}/{run_number}/{ls_number}/": {
       "get": {
         "operationId": "retrieveLumisection",
         "description": "",
@@ -1018,6 +1220,107 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Lumisection"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/lumisection/count/": {
+      "get": {
+        "operationId": "countLumisections",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "number",
+                      "example": 55
+                    }
+                  }
                 }
               }
             },

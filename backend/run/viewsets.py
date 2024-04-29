@@ -60,3 +60,12 @@ class RunViewSet(GenericViewSetRouter, mixins.ListModelMixin, viewsets.GenericVi
         queryset = get_object_or_404(queryset, dataset_id=dataset_id, run_number=run_number)
         serializer = self.serializer_class(queryset)
         return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        url_path=r"count",
+    )
+    def count(self, request):
+        count = self.filter_queryset(self.get_queryset()).count()
+        return Response({"count": count})

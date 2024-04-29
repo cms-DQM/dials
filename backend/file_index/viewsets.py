@@ -8,6 +8,8 @@ from django.views.decorators.vary import vary_on_headers
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
     CERNKeycloakClientSecretAuthentication,
@@ -35,3 +37,12 @@ class FileIndexViewSet(GenericViewSetRouter, mixins.RetrieveModelMixin, mixins.L
         CERNKeycloakClientSecretAuthentication,
         CERNKeycloakConfidentialAuthentication,
     ]
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        url_path=r"count",
+    )
+    def count(self, request):
+        count = self.filter_queryset(self.get_queryset()).count()
+        return Response({"count": count})
