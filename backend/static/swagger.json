@@ -1731,6 +1731,10 @@
             "minimum": -9223372036854776000,
             "format": "int64"
           },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
+          },
           "dataset_id": {
             "type": "integer",
             "maximum": 9223372036854776000,
@@ -1808,6 +1812,10 @@
             "type": "integer",
             "readOnly": true
           },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
+          },
           "dataset_id": {
             "type": "integer",
             "maximum": 9223372036854776000,
@@ -1837,6 +1845,10 @@
           "id": {
             "type": "integer",
             "readOnly": true
+          },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
           },
           "dataset_id": {
             "type": "integer",
@@ -1888,6 +1900,14 @@
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
             "format": "int64"
+          },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "me": {
+            "type": "string",
+            "maxLength": 255
           },
           "dataset_id": {
             "type": "integer",
@@ -1968,6 +1988,14 @@
             "maximum": 9223372036854776000,
             "minimum": -9223372036854776000,
             "format": "int64"
+          },
+          "dataset": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "me": {
+            "type": "string",
+            "maxLength": 255
           },
           "dataset_id": {
             "type": "integer",
