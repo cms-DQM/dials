@@ -143,12 +143,16 @@ const Lumisection = () => {
             <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
           ) : (
             <>
-              <Breadcrumb.Item active>{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 linkAs={Link}
                 linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
               >{`Run ${runNumber}`}</Breadcrumb.Item>
-              <Breadcrumb.Item active>{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>

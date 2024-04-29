@@ -241,10 +241,12 @@ const getHistogram = async (dim, histId) => {
   return response.data
 }
 
-const listMEs = async (dim) => {
+const listMEs = async ({ me, meRegex, dim }) => {
   const endpoint = `${API_URL}/mes/`
   const params = sanitizedURLSearchParams(
     {
+      me,
+      me__regex: meRegex,
       dim,
     },
     { repeatMode: false }

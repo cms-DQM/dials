@@ -71,7 +71,9 @@ const Run = () => {
             <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
           ) : (
             <>
-              <Breadcrumb.Item active>{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                active
+              >{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
               <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
             </>
           )}

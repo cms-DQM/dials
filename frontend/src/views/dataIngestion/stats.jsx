@@ -109,7 +109,7 @@ const IngestionStatistics = () => {
     const fetchH1DCount = () => {
       setIsLoadingH1D(true)
       API.mes
-        .list(1)
+        .list({ dim: 1 })
         .then((data) => {
           const groupedData = groupBySplitME(data)
           setDataH1DPlot([
@@ -136,7 +136,7 @@ const IngestionStatistics = () => {
     const fetchH2DCount = () => {
       setIsLoadingH2D(true)
       API.mes
-        .list(2)
+        .list({ dim: 2 })
         .then((data) => {
           const groupedData = groupBySplitME(data)
           setDataH2DPlot([

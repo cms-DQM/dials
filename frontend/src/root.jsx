@@ -90,7 +90,10 @@ const Root = () => {
   // Will render authenticating div if auth provider is still loading
   // or user is authenticated (auth not loading anymore) but
   // token hasn't been exchanged yet
-  if (!silentSignin && (auth.isLoading || (auth.isAuthenticated && !tokenExchanged))) {
+  if (
+    !silentSignin &&
+    (auth.isLoading || (auth.isAuthenticated && !tokenExchanged))
+  ) {
     return <div>Authenticating...</div>
   }
 
