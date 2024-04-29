@@ -211,8 +211,8 @@ CSP_IMG_SRC = [
     "https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png",
 ]
 
-# # Caching
-CACHE_TTL = 60 * 15  # 15 minutes
+# Caching
+CACHE_TTL = config("DJANGO_CACHE_TTL", cast=int, default=60 * 15)  # 15 minutes
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
