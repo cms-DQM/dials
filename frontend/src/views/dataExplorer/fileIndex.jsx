@@ -6,18 +6,17 @@ import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 
 import { Table } from '../../components'
 import dateFormat from '../../utils/date'
 import API from '../../services/api'
 import { toast } from 'react-toastify'
+import { getNextToken } from '../../utils/sanitizer'
 
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
 
   // Filters
-  const [currentPage, setCurrentPage] = useState(1)
   const [logicalFileName, setLogicalFileName] = useState()
   const [logicalFileNameRegex, setLogicalFileNameRegex] = useState()
   const [fileStatus, setFileStatus] = useState()
@@ -27,7 +26,8 @@ const FileIndex = () => {
 
   // API results
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     { dataField: 'dataset', text: 'Dataset', type: 'number' },
@@ -47,7 +47,7 @@ const FileIndex = () => {
   ]
 
   const fetchData = ({
-    page,
+    nextToken,
     logicalFileName,
     logicalFileNameRegex,
     status,
@@ -58,7 +58,7 @@ const FileIndex = () => {
     setLoading(true)
     API.fileIndex
       .list({
-        page,
+        nextToken,
         logicalFileName,
         logicalFileNameRegex,
         status,
@@ -77,9 +77,11 @@ const FileIndex = () => {
             file_size: (item.file_size / 1024 ** 2).toFixed(1),
           }
         })
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
         setData(results)
-        setTotalSize(response.count)
-        setCurrentPage(page)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -91,7 +93,7 @@ const FileIndex = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1 })
+    fetchData({})
   }, [])
 
   return (
@@ -190,7 +192,6 @@ const FileIndex = () => {
               type='submit'
               onClick={() => {
                 fetchData({
-                  page: 1,
                   logicalFileName,
                   logicalFileNameRegex,
                   status: fileStatus,
@@ -210,32 +211,38 @@ const FileIndex = () => {
           <Card.Header as='h4'>Files</Card.Header>
           <Card.Body>
             <Table
-              keyField='file_path'
+              keyField='file_id'
               isLoading={isLoading}
               data={data}
               columns={columns}
               bordered={false}
               hover={true}
               remote
-              onTableChange={(type, { page }) => {
-                if (type === 'pagination') {
-                  fetchData({
-                    page,
-                    logicalFileName,
-                    logicalFileNameRegex,
-                    status: fileStatus,
-                    minSize,
-                    dataset,
-                    datasetRegex,
-                  })
-                }
+              cursorPagination={true}
+              previousToken={previousToken}
+              nextToken={nextToken}
+              previousOnClick={() => {
+                fetchData({
+                  nextToken: previousToken,
+                  logicalFileName,
+                  logicalFileNameRegex,
+                  status: fileStatus,
+                  minSize,
+                  dataset,
+                  datasetRegex,
+                })
               }}
-              pagination={paginationFactory({
-                totalSize,
-                page: currentPage,
-                hideSizePerPage: true,
-                showTotal: true,
-              })}
+              nextOnClick={() => {
+                fetchData({
+                  nextToken,
+                  logicalFileName,
+                  logicalFileNameRegex,
+                  status: fileStatus,
+                  minSize,
+                  dataset,
+                  datasetRegex,
+                })
+              }}
             />
           </Card.Body>
         </Card>

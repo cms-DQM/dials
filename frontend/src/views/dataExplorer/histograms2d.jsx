@@ -7,17 +7,16 @@ import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
 import { ResponsivePlot, Table } from '../../components'
 import API from '../../services/api'
+import { getNextToken } from '../../utils/sanitizer'
 
 const Histograms2D = () => {
   const [isLoading, setLoading] = useState(true)
 
   // Filters
-  const [currentPage, setCurrentPage] = useState(1)
   const [dataset, setDataset] = useState()
   const [datasetRegex, setDatasetRegex] = useState()
   const [logicalFileName, setLogicalFileName] = useState()
@@ -34,7 +33,8 @@ const Histograms2D = () => {
 
   // API results
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     {
@@ -82,7 +82,7 @@ const Histograms2D = () => {
   ]
 
   const fetchData = ({
-    page,
+    nextToken,
     runNumber,
     runNumberLte,
     runNumberGte,
@@ -100,7 +100,7 @@ const Histograms2D = () => {
     setLoading(true)
     API.histogram
       .list(2, {
-        page,
+        nextToken,
         runNumber,
         runNumberLte,
         runNumberGte,
@@ -141,9 +141,11 @@ const Histograms2D = () => {
             ),
           }
         })
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
         setData(results)
-        setTotalSize(response.count)
-        setCurrentPage(page)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -155,7 +157,7 @@ const Histograms2D = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1 })
+    fetchData({})
   }, [])
 
   return (
@@ -314,7 +316,6 @@ const Histograms2D = () => {
               type='submit'
               onClick={() => {
                 fetchData({
-                  page: 1,
                   runNumber,
                   runNumberLte,
                   runNumberGte,
@@ -350,32 +351,45 @@ const Histograms2D = () => {
               bordered={false}
               hover={true}
               remote
-              onTableChange={(type, { page }) => {
-                if (type === 'pagination') {
-                  fetchData({
-                    page,
-                    runNumber,
-                    runNumberLte,
-                    runNumberGte,
-                    lsNumber,
-                    lsNumberLte,
-                    lsNumberGte,
-                    entriesGte,
-                    dataset,
-                    datasetRegex,
-                    logicalFileName,
-                    logicalFileNameRegex,
-                    me,
-                    meRegex,
-                  })
-                }
+              cursorPagination={true}
+              previousToken={previousToken}
+              nextToken={nextToken}
+              previousOnClick={() => {
+                fetchData({
+                  nextToken: previousToken,
+                  runNumber,
+                  runNumberLte,
+                  runNumberGte,
+                  lsNumber,
+                  lsNumberLte,
+                  lsNumberGte,
+                  entriesGte,
+                  dataset,
+                  datasetRegex,
+                  logicalFileName,
+                  logicalFileNameRegex,
+                  me,
+                  meRegex,
+                })
               }}
-              pagination={paginationFactory({
-                totalSize,
-                page: currentPage,
-                hideSizePerPage: true,
-                showTotal: true,
-              })}
+              nextOnClick={() => {
+                fetchData({
+                  nextToken,
+                  runNumber,
+                  runNumberLte,
+                  runNumberGte,
+                  lsNumber,
+                  lsNumberLte,
+                  lsNumberGte,
+                  entriesGte,
+                  dataset,
+                  datasetRegex,
+                  logicalFileName,
+                  logicalFileNameRegex,
+                  me,
+                  meRegex,
+                })
+              }}
             />
           </Card.Body>
         </Card>

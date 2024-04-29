@@ -45,7 +45,7 @@ const IngestionStatistics = () => {
   useEffect(() => {
     const fetchTotalIndexedFiles = () => {
       API.fileIndex
-        .list({})
+        .count({})
         .then((response) => {
           setTotalFiles(response.count)
         })
@@ -57,7 +57,7 @@ const IngestionStatistics = () => {
 
     const fetchTotalIngestedRuns = () => {
       API.run
-        .list({})
+        .count({})
         .then((response) => {
           setTotalRuns(response.count)
         })
@@ -69,7 +69,7 @@ const IngestionStatistics = () => {
 
     const fetchTotalIngestedLumis = () => {
       API.lumisection
-        .list({})
+        .count({})
         .then((response) => {
           setTotalLumisection(response.count)
         })
@@ -84,7 +84,7 @@ const IngestionStatistics = () => {
       try {
         const data = await Promise.all(
           API.fileIndex.statusList.map(async (item) => {
-            const data = await API.fileIndex.list({ status: item })
+            const data = await API.fileIndex.count({ status: item })
             return {
               status: item,
               count: data.count,

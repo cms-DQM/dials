@@ -6,19 +6,21 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
 import { Table } from '../../components'
 import API from '../../services/api'
-import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
+import {
+  isNumericNonZero,
+  isStringNonEmpty,
+  getNextToken,
+} from '../../utils/sanitizer'
 
 const Runs = () => {
   const navigate = useNavigate()
   const [isLoading, setLoading] = useState(true)
 
   // Filters
-  const [currentPage, setCurrentPage] = useState(1)
   const [dataset, setDataset] = useState()
   const [datasetRegex, setDatasetRegex] = useState()
   const [runNumber, setRunNumber] = useState()
@@ -35,7 +37,8 @@ const Runs = () => {
 
   // API results
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     {
@@ -76,7 +79,7 @@ const Runs = () => {
     API.dataset
       .list({ dataset: searchDataset })
       .then((response) => {
-        if (response.count === 0) {
+        if (response.length === 0) {
           toast.error('Dataset not found!')
         } else {
           const datasetId = response.results[0].dataset_id
@@ -104,7 +107,7 @@ const Runs = () => {
   }
 
   const fetchData = ({
-    page,
+    nextToken,
     dataset,
     datasetRegex,
     runNumber,
@@ -114,7 +117,7 @@ const Runs = () => {
     setLoading(true)
     API.run
       .list({
-        page,
+        nextToken,
         dataset,
         datasetRegex,
         runNumber,
@@ -122,9 +125,11 @@ const Runs = () => {
         runNumberLte,
       })
       .then((response) => {
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
         setData(response.results)
-        setTotalSize(response.count)
-        setCurrentPage(page)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -136,7 +141,7 @@ const Runs = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1 })
+    fetchData({})
   }, [])
 
   return (
@@ -205,7 +210,6 @@ const Runs = () => {
                 type='submit'
                 onClick={() => {
                   fetchData({
-                    page: 1,
                     runNumber,
                     runNumberGte,
                     runNumberLte,
@@ -270,24 +274,29 @@ const Runs = () => {
               bordered={false}
               hover={true}
               remote
-              onTableChange={(type, { page }) => {
-                if (type === 'pagination') {
-                  fetchData({
-                    page,
-                    runNumber,
-                    runNumberGte,
-                    runNumberLte,
-                    dataset,
-                    datasetRegex,
-                  })
-                }
+              cursorPagination={true}
+              previousToken={previousToken}
+              nextToken={nextToken}
+              previousOnClick={() => {
+                fetchData({
+                  nextToken: previousToken,
+                  runNumber,
+                  runNumberGte,
+                  runNumberLte,
+                  dataset,
+                  datasetRegex,
+                })
               }}
-              pagination={paginationFactory({
-                totalSize,
-                page: currentPage,
-                hideSizePerPage: true,
-                showTotal: true,
-              })}
+              nextOnClick={() => {
+                fetchData({
+                  nextToken,
+                  runNumber,
+                  runNumberGte,
+                  runNumberLte,
+                  dataset,
+                  datasetRegex,
+                })
+              }}
             />
           </Card.Body>
         </Card>

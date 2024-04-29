@@ -5,23 +5,21 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, Table } from '../../components'
+import { getNextToken } from '../../utils/sanitizer'
 
 const Run = () => {
   const { datasetId, runNumber } = useParams()
   const [isLoading, setLoading] = useState(true)
 
-  // Filters
-  const [currentPage, setCurrentPage] = useState(1)
-
   // API results
   const [dataset, setDataset] = useState()
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     {
@@ -37,15 +35,18 @@ const Run = () => {
     { dataField: 'th2_count', text: '2D Histograms', type: 'number' },
   ]
 
-  const fetchData = ({ page, datasetId, runNumber }) => {
+  const fetchData = ({ nextToken, datasetId, runNumber }) => {
     setLoading(true)
     API.lumisection
-      .list({ page, datasetId, runNumber })
+      .list({ nextToken, datasetId, runNumber })
       .then((response) => {
+        const dataset = response.results?.[0]?.dataset
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
         setData(response.results)
-        setTotalSize(response.count)
-        setDataset(response.results[0]?.dataset)
-        setCurrentPage(page)
+        setDataset(dataset)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -57,7 +58,7 @@ const Run = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1, datasetId, runNumber })
+    fetchData({ datasetId, runNumber })
   }, [datasetId, runNumber])
 
   return (
@@ -85,28 +86,34 @@ const Run = () => {
             <Card.Header as='h4'>
               {isLoading
                 ? 'Loading run...'
-                : `This run has ${totalSize} lumisections`}
+                : `Lumisections found in Run #${runNumber}`}
             </Card.Header>
             <Card.Body>
               <Table
-                keyField='id'
+                keyField='ls_number'
                 isLoading={isLoading}
                 data={data}
                 columns={columns}
                 bordered={false}
                 hover={true}
                 remote
-                onTableChange={(type, { page }) => {
-                  if (type === 'pagination') {
-                    fetchData({ page, runNumber })
-                  }
+                cursorPagination={true}
+                previousToken={previousToken}
+                nextToken={nextToken}
+                previousOnClick={() => {
+                  fetchData({
+                    nextToken: previousToken,
+                    datasetId,
+                    runNumber,
+                  })
                 }}
-                pagination={paginationFactory({
-                  totalSize,
-                  page: currentPage,
-                  hideSizePerPage: true,
-                  showTotal: true,
-                })}
+                nextOnClick={() => {
+                  fetchData({
+                    nextToken,
+                    datasetId,
+                    runNumber,
+                  })
+                }}
               />
             </Card.Body>
           </Card>

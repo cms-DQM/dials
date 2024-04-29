@@ -64,11 +64,11 @@ const getDataset = async ({ datasetId }) => {
   return response.data
 }
 
-const listDatasets = async ({ page, dataset, datasetRegex }) => {
+const listDatasets = async ({ nextToken, dataset, datasetRegex }) => {
   const endpoint = `${API_URL}/dataset-index/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
       dataset,
       dataset__regex: datasetRegex,
     },
@@ -81,7 +81,7 @@ const listDatasets = async ({ page, dataset, datasetRegex }) => {
 }
 
 const listFileIndex = async ({
-  page,
+  nextToken,
   logicalFileName,
   logicalFileNameRegex,
   status,
@@ -92,7 +92,33 @@ const listFileIndex = async ({
   const endpoint = `${API_URL}/file-index/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
+      logical_file_name: logicalFileName,
+      logical_file_name__regex: logicalFileNameRegex,
+      status,
+      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countFileIndex = async ({
+  logicalFileName,
+  logicalFileNameRegex,
+  status,
+  minSize,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/file-index/count/`
+  const params = sanitizedURLSearchParams(
+    {
       logical_file_name: logicalFileName,
       logical_file_name__regex: logicalFileNameRegex,
       status,
@@ -115,7 +141,7 @@ const getRun = async ({ datasetId, runNumber }) => {
 }
 
 const listRuns = async ({
-  page,
+  nextToken,
   datasetId,
   runNumber,
   runNumberLte,
@@ -126,7 +152,33 @@ const listRuns = async ({
   const endpoint = `${API_URL}/run/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
+      dataset_id: datasetId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countRuns = async ({
+  datasetId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/run/count/`
+  const params = sanitizedURLSearchParams(
+    {
       dataset_id: datasetId,
       run_number: runNumber,
       run_number__lte: runNumberLte,
@@ -149,7 +201,7 @@ const getLumisection = async ({ datasetId, runNumber, lsNumber }) => {
 }
 
 const listLumisections = async ({
-  page,
+  nextToken,
   datasetId,
   runNumber,
   runNumberLte,
@@ -163,7 +215,39 @@ const listLumisections = async ({
   const endpoint = `${API_URL}/lumisection/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
+      dataset_id: datasetId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      ls_number: lsNumber,
+      ls_number__lte: lsNumberLte,
+      ls_number__gte: lsNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countLumisections = async ({
+  datasetId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  lsNumber,
+  lsNumberLte,
+  lsNumberGte,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/lumisection/count/`
+  const params = sanitizedURLSearchParams(
+    {
       dataset_id: datasetId,
       run_number: runNumber,
       run_number__lte: runNumberLte,
@@ -185,7 +269,7 @@ const listLumisections = async ({
 const listHistograms = async (
   dim,
   {
-    page,
+    nextToken,
     datasetId,
     fileId,
     runNumber,
@@ -208,7 +292,7 @@ const listHistograms = async (
   const endpoint = `${API_URL}/th${dim}/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
       dataset_id: datasetId,
       file_id: fileId,
       run_number: runNumber,
@@ -269,14 +353,17 @@ const API = {
   fileIndex: {
     statusList: FILE_INDEX_STATUSES,
     list: listFileIndex,
+    count: countFileIndex,
   },
   run: {
     get: getRun,
     list: listRuns,
+    count: countRuns,
   },
   lumisection: {
     get: getLumisection,
     list: listLumisections,
+    count: countLumisections,
   },
   mes: {
     list: listMEs,

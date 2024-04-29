@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
+import { getNextToken } from '../../utils/sanitizer'
 
 const Lumisection = () => {
   const { datasetId, runNumber, lsNumber } = useParams()
@@ -33,19 +34,21 @@ const Lumisection = () => {
   }) => {
     const allData = []
     let nextPageExists = true
-    let page = 0
+    let nextToken = null
     let errorCount = 0
+    let totalPages = 0
     while (nextPageExists) {
-      page++
+      totalPages++
       try {
         const { results, next } = await API.histogram.list(dim, {
-          page,
+          nextToken,
           datasetId,
           runNumber,
           lsNumber,
         })
         results.forEach((e) => allData.unshift(e))
         nextPageExists = !(next === null)
+        nextToken = getNextToken({ next }, 'next')
       } catch (err) {
         errorCount++
       }
@@ -54,7 +57,7 @@ const Lumisection = () => {
       results: allData,
       count: allData.length,
       error: errorCount,
-      totalPages: page,
+      totalPages,
     }
   }
 

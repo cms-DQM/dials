@@ -6,19 +6,21 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
 import { Table } from '../../components'
 import API from '../../services/api'
-import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
+import {
+  isNumericNonZero,
+  isStringNonEmpty,
+  getNextToken,
+} from '../../utils/sanitizer'
 
 const Lumisections = () => {
   const navigate = useNavigate()
   const [isLoading, setLoading] = useState(true)
 
   // Filters
-  const [currentPage, setCurrentPage] = useState(1)
   const [dataset, setDataset] = useState()
   const [datasetRegex, setDatasetRegex] = useState()
   const [runNumber, setRunNumber] = useState()
@@ -40,7 +42,8 @@ const Lumisections = () => {
 
   // API results
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     {
@@ -97,7 +100,7 @@ const Lumisections = () => {
     API.dataset
       .list({ dataset: searchDataset })
       .then((response) => {
-        if (response.count === 0) {
+        if (response.length === 0) {
           toast.error('Dataset not found!')
         } else {
           const datasetId = response.results[0].dataset_id
@@ -131,7 +134,7 @@ const Lumisections = () => {
   }
 
   const fetchData = ({
-    page,
+    nextToken,
     dataset,
     datasetRegex,
     runNumber,
@@ -144,7 +147,7 @@ const Lumisections = () => {
     setLoading(true)
     API.lumisection
       .list({
-        page,
+        nextToken,
         dataset,
         datasetRegex,
         runNumber,
@@ -155,9 +158,11 @@ const Lumisections = () => {
         lsNumberGte,
       })
       .then((response) => {
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
         setData(response.results)
-        setTotalSize(response.count)
-        setCurrentPage(page)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -169,7 +174,7 @@ const Lumisections = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1 })
+    fetchData({})
   }, [])
 
   return (
@@ -270,7 +275,6 @@ const Lumisections = () => {
                 type='submit'
                 onClick={() => {
                   fetchData({
-                    page: 1,
                     dataset,
                     datasetRegex,
                     runNumber,
@@ -351,27 +355,35 @@ const Lumisections = () => {
               bordered={false}
               hover={true}
               remote
-              onTableChange={(type, { page }) => {
-                if (type === 'pagination') {
-                  fetchData({
-                    page,
-                    dataset,
-                    datasetRegex,
-                    runNumber,
-                    runNumberLte,
-                    runNumberGte,
-                    lsNumber,
-                    lsNumberLte,
-                    lsNumberGte,
-                  })
-                }
+              cursorPagination={true}
+              previousToken={previousToken}
+              nextToken={nextToken}
+              previousOnClick={() => {
+                fetchData({
+                  nextToken: previousToken,
+                  dataset,
+                  datasetRegex,
+                  runNumber,
+                  runNumberLte,
+                  runNumberGte,
+                  lsNumber,
+                  lsNumberLte,
+                  lsNumberGte,
+                })
               }}
-              pagination={paginationFactory({
-                totalSize,
-                page: currentPage,
-                hideSizePerPage: true,
-                showTotal: true,
-              })}
+              nextOnClick={() => {
+                fetchData({
+                  nextToken,
+                  dataset,
+                  datasetRegex,
+                  runNumber,
+                  runNumberLte,
+                  runNumberGte,
+                  lsNumber,
+                  lsNumberLte,
+                  lsNumberGte,
+                })
+              }}
             />
           </Card.Body>
         </Card>
