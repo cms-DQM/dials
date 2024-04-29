@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
-import { isNumericNonZero } from '../../utils/sanitizer'
+import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Histogram = (props) => {
   const navigate = useNavigate()
@@ -69,10 +69,10 @@ const Histogram = (props) => {
           setData(response)
           setPlotData(data)
           setPlotLayout(layout)
-          setSearchDataset(response.dataset_id)
+          setSearchDataset(response.dataset)
           setSearchRunNumber(response.run_number)
           setSearchLsNumber(response.ls_number)
-          setSearchMe(response.me_id)
+          setSearchMe(response.me)
         })
         .catch((error) => {
           console.error(error)
@@ -87,10 +87,10 @@ const Histogram = (props) => {
   }, [dim, histId])
 
   const validateSearhForm = () => {
-    const isDatasetValid = isNumericNonZero(searchDataset)
+    const isDatasetValid = isStringNonEmpty(searchDataset)
     const isRunValid = isNumericNonZero(searchRunNumber)
     const isLsValid = isNumericNonZero(searchLsNumber)
-    const isMeValid = isNumericNonZero(searchMe)
+    const isMeValid = isStringNonEmpty(searchMe)
     setSearchDatasetIsInvalid(!isDatasetValid)
     setSearchRunNumberIsInvalid(!isRunValid)
     setSearchLsNumberIsInvalid(!isLsValid)
@@ -137,7 +137,7 @@ const Histogram = (props) => {
             <>
               <Breadcrumb.Item
                 active
-              >{`Dataset ${data.dataset_id}`}</Breadcrumb.Item>
+              >{`Dataset ${data.dataset_id} (${data.dataset})`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 linkAs={Link}
                 linkProps={{
@@ -163,7 +163,7 @@ const Histogram = (props) => {
             {isLoading ? (
               <Spinner animation='border' role='status' />
             ) : (
-              <Card.Header>{`${data.me_id} - ${data.entries} entries`}</Card.Header>
+              <Card.Header>{`${data.me} - ${data.entries} entries`}</Card.Header>
             )}
             <Card.Body>
               {isLoading ? (
@@ -189,7 +189,7 @@ const Histogram = (props) => {
               <Form.Group className='mb-3' controlId='formSearchDataset'>
                 <Form.Label>Dataset</Form.Label>
                 <Form.Control
-                  type='number'
+                  type='string'
                   value={searchDataset}
                   onChange={(e) => setSearchDataset(e.target.value)}
                   isInvalid={searchDatasetIsInvalid}

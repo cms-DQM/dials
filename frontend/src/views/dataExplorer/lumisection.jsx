@@ -14,10 +14,12 @@ import { CMSOMSCard, ResponsivePlot } from '../../components'
 
 const Lumisection = () => {
   const { datasetId, runNumber, lsNumber } = useParams()
+  const [isDatasetLoading, setDatasetLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
 
   // API results
+  const [dataset, setDataset] = useState()
   const [h1dData, setH1DData] = useState([])
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
@@ -57,6 +59,22 @@ const Lumisection = () => {
   }
 
   useEffect(() => {
+    const fetchDataset = () => {
+      setDatasetLoading(true)
+      API.dataset
+        .get({ datasetId })
+        .then((response) => {
+          setDataset(response.dataset)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+        .finally(() => {
+          setDatasetLoading(false)
+        })
+    }
+
     const fetchH1D = () => {
       setH1DLoading(true)
       genericFetchAllPages({
@@ -109,6 +127,7 @@ const Lumisection = () => {
         })
     }
 
+    fetchDataset()
     fetchH1D()
     fetchH2D()
   }, [datasetId, runNumber, lsNumber])
@@ -120,12 +139,18 @@ const Lumisection = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Dataset ${datasetId}`}</Breadcrumb.Item>
-          <Breadcrumb.Item
-            linkAs={Link}
-            linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
-          >{`Run ${runNumber}`}</Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+          {isDatasetLoading ? (
+            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+          ) : (
+            <>
+              <Breadcrumb.Item active>{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
+              >{`Run ${runNumber}`}</Breadcrumb.Item>
+              <Breadcrumb.Item active>{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+            </>
+          )}
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
@@ -183,7 +208,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-1d/${hist.hist_id}`}
                                         >
-                                          {hist.me_id}
+                                          {hist.me}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>
@@ -249,7 +274,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-2d/${hist.hist_id}`}
                                         >
-                                          {hist.me_id}
+                                          {hist.me}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>

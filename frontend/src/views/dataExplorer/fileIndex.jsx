@@ -30,7 +30,7 @@ const FileIndex = () => {
   const [totalSize, setTotalSize] = useState()
 
   const columns = [
-    { dataField: 'dataset_id', text: 'Dataset Id', type: 'number' },
+    { dataField: 'dataset', text: 'Dataset', type: 'number' },
     { dataField: 'file_id', text: 'File Id', type: 'number' },
     { dataField: 'file_size', text: 'Size (MB)', type: 'number' },
     {

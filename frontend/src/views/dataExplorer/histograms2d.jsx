@@ -38,8 +38,8 @@ const Histograms2D = () => {
 
   const columns = [
     {
-      dataField: 'dataset_id',
-      text: 'Dataset Id',
+      dataField: 'dataset',
+      text: 'Dataset',
       type: 'number',
     },
     {
@@ -61,13 +61,13 @@ const Histograms2D = () => {
       },
     },
     {
-      dataField: 'me_id',
-      text: 'ME Id',
+      dataField: 'me',
+      text: 'ME',
       type: 'string',
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
         const linkTo = `/histograms-2d/${row.hist_id}`
-        return <Link to={linkTo}>{row.me_id}</Link>
+        return <Link to={linkTo}>{row.me}</Link>
       },
     },
     { dataField: 'entries', text: 'Entries', type: 'number' },

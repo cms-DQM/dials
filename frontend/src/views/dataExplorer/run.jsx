@@ -19,6 +19,7 @@ const Run = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   // API results
+  const [dataset, setDataset] = useState()
   const [data, setData] = useState([])
   const [totalSize, setTotalSize] = useState()
 
@@ -43,6 +44,7 @@ const Run = () => {
       .then((response) => {
         setData(response.results)
         setTotalSize(response.count)
+        setDataset(response.results[0]?.dataset)
         setCurrentPage(page)
       })
       .catch((error) => {
@@ -65,8 +67,14 @@ const Run = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Dataset ${datasetId}`}</Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
+          {isLoading ? (
+            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+          ) : (
+            <>
+              <Breadcrumb.Item active>{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
+            </>
+          )}
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>

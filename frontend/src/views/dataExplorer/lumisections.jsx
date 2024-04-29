@@ -44,8 +44,8 @@ const Lumisections = () => {
 
   const columns = [
     {
-      dataField: 'dataset_id',
-      text: 'Dataset Id',
+      dataField: 'dataset',
+      text: 'Dataset',
       type: 'number',
     },
     {
