@@ -209,12 +209,12 @@
         "description": "",
         "parameters": [
           {
-            "name": "page",
+            "name": "next_token",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
+            "description": "next_token",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
@@ -252,21 +252,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
@@ -351,12 +347,12 @@
         "description": "",
         "parameters": [
           {
-            "name": "page",
+            "name": "next_token",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
+            "description": "next_token",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
@@ -430,21 +426,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
@@ -650,12 +642,12 @@
         "description": "",
         "parameters": [
           {
-            "name": "page",
+            "name": "next_token",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
+            "description": "next_token",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
@@ -729,21 +721,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
@@ -837,12 +825,12 @@
         "description": "",
         "parameters": [
           {
-            "name": "page",
+            "name": "next_token",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
+            "description": "next_token",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
@@ -943,21 +931,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
@@ -1060,12 +1044,12 @@
         "description": "",
         "parameters": [
           {
-            "name": "page",
+            "name": "next_token",
             "required": false,
             "in": "query",
-            "description": "A page number within the paginated result set.",
+            "description": "next_token",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
@@ -1238,21 +1222,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
@@ -1336,178 +1316,178 @@
         "operationId": "listTH2s",
         "description": "",
         "parameters": [
-            {
-              "name": "page",
-              "required": false,
-              "in": "query",
-              "description": "A page number within the paginated result set.",
-              "schema": {
-                "type": "integer"
-              }
-            },
-            {
-              "name": "dataset_id",
-              "required": false,
-              "in": "query",
-              "description": "dataset_id",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "file_id",
-              "required": false,
-              "in": "query",
-              "description": "file_id",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "run_number",
-              "required": false,
-              "in": "query",
-              "description": "run_number",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "run_number__lte",
-              "required": false,
-              "in": "query",
-              "description": "run_number__lte",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "run_number__gte",
-              "required": false,
-              "in": "query",
-              "description": "run_number__gte",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "ls_number",
-              "required": false,
-              "in": "query",
-              "description": "ls_number",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "ls_number__lte",
-              "required": false,
-              "in": "query",
-              "description": "ls_number__lte",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "ls_number__gte",
-              "required": false,
-              "in": "query",
-              "description": "ls_number__gte",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "me_id",
-              "required": false,
-              "in": "query",
-              "description": "me_id",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "ls_id",
-              "required": false,
-              "in": "query",
-              "description": "ls_id",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "entries__gte",
-              "required": false,
-              "in": "query",
-              "description": "entries__gte",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "dataset",
-              "required": false,
-              "in": "query",
-              "description": "dataset",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "dataset__regex",
-              "required": false,
-              "in": "query",
-              "description": "dataset__regex",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "logical_file_name",
-              "required": false,
-              "in": "query",
-              "description": "logical_file_name",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "logical_file_name__regex",
-              "required": false,
-              "in": "query",
-              "description": "logical_file_name__regex",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "me",
-              "required": false,
-              "in": "query",
-              "description": "me",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "me__regex",
-              "required": false,
-              "in": "query",
-              "description": "me__regex",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "workspace",
-              "required": false,
-              "in": "header",
-              "description": "workspace",
-              "schema": {
-                "type": "string"
-              }
+          {
+            "name": "next_token",
+            "required": false,
+            "in": "query",
+            "description": "next_token",
+            "schema": {
+              "type": "string"
             }
-          ],
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file_id",
+            "required": false,
+            "in": "query",
+            "description": "file_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "run_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number",
+            "required": false,
+            "in": "query",
+            "description": "ls_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__lte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__lte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number__gte",
+            "required": false,
+            "in": "query",
+            "description": "ls_number__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me_id",
+            "required": false,
+            "in": "query",
+            "description": "me_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_id",
+            "required": false,
+            "in": "query",
+            "description": "ls_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entries__gte",
+            "required": false,
+            "in": "query",
+            "description": "entries__gte",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "logical_file_name__regex",
+            "required": false,
+            "in": "query",
+            "description": "logical_file_name__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me",
+            "required": false,
+            "in": "query",
+            "description": "me",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me__regex",
+            "required": false,
+            "in": "query",
+            "description": "me__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -1515,21 +1495,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "count": {
-                      "type": "integer",
-                      "example": 123
-                    },
                     "next": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=4"
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
                     },
                     "previous": {
                       "type": "string",
                       "nullable": true,
                       "format": "uri",
-                      "example": "http://api.example.org/accounts/?page=2"
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
                     },
                     "results": {
                       "type": "array",
