@@ -1,9 +1,10 @@
 from rest_framework import serializers
+from utils.serializers_mixins import DatasetNameMixin
 
 from .models import Lumisection
 
 
-class LumisectionSerializer(serializers.ModelSerializer):
+class LumisectionSerializer(DatasetNameMixin, serializers.ModelSerializer):
     class Meta:
         model = Lumisection
         fields = "__all__"
