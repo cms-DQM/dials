@@ -102,6 +102,7 @@ DJANGO_DEFAULT_WORKSPACE=tracker
 DJANGO_KEYCLOAK_SERVER_URL=https://keycloak-qa.cern.ch/auth/
 DJANGO_KEYCLOAK_REALM=cern
 DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-public-app
+DJANGO_CACHE_TTL=0
 DJANGO_SECRET_KEY=potato
 DJANGO_REDIS_URL=redis://localhost:6379/3
 DJANGO_DATABASE_URI=postgres://postgres:postgres@localhost:5432
