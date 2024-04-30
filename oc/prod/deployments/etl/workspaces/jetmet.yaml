@@ -1,26 +1,26 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ecal-indexer
+  name: jetmet-bulk
   namespace: cms-dials-prod
   labels:
-    app: ecal-indexer
-    app.kubernetes.io/component: ecal-indexer
-    app.kubernetes.io/instance: ecal-indexer
-    app.kubernetes.io/name: ecal-indexer
-    app.kubernetes.io/part-of: ecal-etl
+    app: jetmet-bulk
+    app.kubernetes.io/component: jetmet-bulk
+    app.kubernetes.io/instance: jetmet-bulk
+    app.kubernetes.io/name: jetmet-bulk
+    app.kubernetes.io/part-of: jetmet-etl
     app.openshift.io/runtime: redis
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ecal-indexer
+      app: jetmet-bulk
   template:
     metadata:
       labels:
-        app: ecal-indexer
-        deployment: ecal-indexer
+        app: jetmet-bulk
+        deployment: jetmet-bulk
       annotations:
         eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
     spec:
@@ -29,19 +29,19 @@ spec:
           persistentVolumeClaim:
             claimName: eos-storage
       containers:
-        - name: ecal-indexer
+        - name: jetmet-bulk
           resources:
             requests:
-              memory: 256Mi
-            limits:
               memory: 1024Mi
+            limits:
+              memory: 5120Mi
           command:
             - bash
             - '-c'
             - >-
               celery --app=python worker --loglevel=INFO --concurrency=1
-              --autoscale=1,0 --max-tasks-per-child=1 --hostname=ecal-indexer@%h
-              --queues=ecal-indexer
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=jetmet-bulk@%h
+              --queues=jetmet-bulk
           envFrom:
             - configMapRef:
                 name: dials-etl-configmap
@@ -72,26 +72,26 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ecal-bulk
+  name: jetmet-priority
   namespace: cms-dials-prod
   labels:
-    app: ecal-bulk
-    app.kubernetes.io/component: ecal-bulk
-    app.kubernetes.io/instance: ecal-bulk
-    app.kubernetes.io/name: ecal-bulk
-    app.kubernetes.io/part-of: ecal-etl
+    app: jetmet-priority
+    app.kubernetes.io/component: jetmet-priority
+    app.kubernetes.io/instance: jetmet-priority
+    app.kubernetes.io/name: jetmet-priority
+    app.kubernetes.io/part-of: jetmet-etl
     app.openshift.io/runtime: redis
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ecal-bulk
+      app: jetmet-priority
   template:
     metadata:
       labels:
-        app: ecal-bulk
-        deployment: ecal-bulk
+        app: jetmet-priority
+        deployment: jetmet-priority
       annotations:
         eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
     spec:
@@ -100,7 +100,7 @@ spec:
           persistentVolumeClaim:
             claimName: eos-storage
       containers:
-        - name: ecal-bulk
+        - name: jetmet-priority
           resources:
             requests:
               memory: 1024Mi
@@ -111,79 +111,8 @@ spec:
             - '-c'
             - >-
               celery --app=python worker --loglevel=INFO --concurrency=1
-              --autoscale=1,0 --max-tasks-per-child=1 --hostname=ecal-bulk@%h
-              --queues=ecal-bulk
-          envFrom:
-            - configMapRef:
-                name: dials-etl-configmap
-            - secretRef:
-                name: dials-etl-secrets
-            - secretRef:
-                name: eos-credentials
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: eos-storage
-              readOnly: true
-              mountPath: /eos
-          image: >-
-            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: ecal-priority
-  namespace: cms-dials-prod
-  labels:
-    app: ecal-priority
-    app.kubernetes.io/component: ecal-priority
-    app.kubernetes.io/instance: ecal-priority
-    app.kubernetes.io/name: ecal-priority
-    app.kubernetes.io/part-of: ecal-etl
-    app.openshift.io/runtime: redis
-    app.openshift.io/runtime-namespace: cms-dials-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ecal-priority
-  template:
-    metadata:
-      labels:
-        app: ecal-priority
-        deployment: ecal-priority
-      annotations:
-        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
-    spec:
-      volumes:
-        - name: eos-storage
-          persistentVolumeClaim:
-            claimName: eos-storage
-      containers:
-        - name: ecal-priority
-          resources:
-            requests:
-              memory: 1024Mi
-            limits:
-              memory: 5120Mi
-          command:
-            - bash
-            - '-c'
-            - >-
-              celery --app=python worker --loglevel=INFO --concurrency=1
-              --autoscale=1,0 --max-tasks-per-child=1 --hostname=ecal-priority@%h
-              --queues=ecal-priority
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=jetmet-priority@%h
+              --queues=jetmet-priority
           envFrom:
             - configMapRef:
                 name: dials-etl-configmap

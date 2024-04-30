@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: common-redbeat
     app.kubernetes.io/instance: common-redbeat
     app.kubernetes.io/name: common-redbeat
-    app.kubernetes.io/part-of: celery-beats
+    app.kubernetes.io/part-of: common-etl
     app.openshift.io/runtime: redis
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
