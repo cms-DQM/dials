@@ -11,7 +11,6 @@ class TH2(models.Model):
     run_number = models.IntegerField()
     ls_number = models.IntegerField()
     me_id = models.IntegerField()
-    ls_id = models.BigIntegerField()
     x_min = models.FloatField()
     x_max = models.FloatField()
     x_bin = models.IntegerField()
@@ -30,7 +29,6 @@ class TH2(models.Model):
             models.Index(name="idx_th2_run_number", fields=["run_number"]),
             models.Index(name="idx_th2_ls_number", fields=["ls_number"]),
             models.Index(name="idx_th2_me_id", fields=["me_id"]),
-            models.Index(name="idx_th2_ls_id", fields=["ls_id"]),
         ]
 
     def __str__(self) -> str:

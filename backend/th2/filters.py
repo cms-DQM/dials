@@ -17,6 +17,5 @@ class TH2Filter(
             "run_number": ["exact", "lte", "gte"],
             "ls_number": ["exact", "lte", "gte"],
             "me_id": ["exact"],
-            "ls_id": ["exact"],
             "entries": ["gte"],
         }

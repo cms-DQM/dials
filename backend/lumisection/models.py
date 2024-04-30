@@ -13,7 +13,6 @@ class Lumisection(models.Model):
     dataset_id = models.BigIntegerField(primary_key=True)
     run_number = models.IntegerField()
     ls_number = models.IntegerField()
-    ls_id = models.BigIntegerField()
     th1_count = models.IntegerField()
     th2_count = models.IntegerField()
 
@@ -21,7 +20,6 @@ class Lumisection(models.Model):
         managed = False
         db_table = "fact_lumisection"
         indexes: ClassVar[list[models.Index]] = [
-            models.Index(name="idx_fls_ls_id", fields=["ls_id"]),
             models.Index(name="idx_fls_dataset_id", fields=["dataset_id"]),
             models.Index(name="idx_fls_run_number", fields=["run_number"]),
             models.Index(name="idx_fls_ls_number", fields=["ls_number"]),

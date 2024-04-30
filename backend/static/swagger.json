@@ -1437,15 +1437,6 @@
             }
           },
           {
-            "name": "ls_id",
-            "required": false,
-            "in": "query",
-            "description": "ls_id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "entries__gte",
             "required": false,
             "in": "query",
@@ -1705,15 +1696,6 @@
             "required": false,
             "in": "query",
             "description": "me_id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "ls_id",
-            "required": false,
-            "in": "query",
-            "description": "ls_id",
             "schema": {
               "type": "string"
             }
@@ -2190,12 +2172,6 @@
             "maximum": 2147483647,
             "minimum": -2147483648
           },
-          "ls_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "th1_count": {
             "type": "integer",
             "maximum": 2147483647,
@@ -2211,7 +2187,6 @@
           "dataset_id",
           "run_number",
           "ls_number",
-          "ls_id",
           "th1_count",
           "th2_count"
         ]
@@ -2260,12 +2235,6 @@
             "maximum": 2147483647,
             "minimum": -2147483648
           },
-          "ls_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "x_min": {
             "type": "number"
           },
@@ -2296,7 +2265,6 @@
           "run_number",
           "ls_number",
           "me_id",
-          "ls_id",
           "x_min",
           "x_max",
           "x_bin",
@@ -2348,12 +2316,6 @@
             "maximum": 2147483647,
             "minimum": -2147483648
           },
-          "ls_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "x_min": {
             "type": "number"
           },
@@ -2395,7 +2357,6 @@
           "run_number",
           "ls_number",
           "me_id",
-          "ls_id",
           "x_min",
           "x_max",
           "x_bin",
