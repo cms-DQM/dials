@@ -55,14 +55,19 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "dqmio_file_indexer.apps.DqmioDataIndexerConfig",
-    "dqmio_etl.apps.DqmioEtlConfig",
+    "dataset_index.apps.DatasetIndexConfig",
+    "file_index.apps.FileIndexConfig",
+    "dim_mes.apps.MesConfig",
+    "run.apps.RunConfig",
+    "lumisection.apps.LumisectionConfig",
+    "th1.apps.TH1Config",
+    "th2.apps.TH2Config",
     "cern_auth.apps.CERNAuthConfig",
 ]
 
 # Django Rest Framework (DRF) configuration
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "utils.paginate.LargeTablePageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "utils.pagination.DynamicMultiOrderingCursorPagination",
     "PAGE_SIZE": 10,
 }
 
@@ -206,8 +211,8 @@ CSP_IMG_SRC = [
     "https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png",
 ]
 
-# # Caching
-CACHE_TTL = 60 * 15  # 15 minutes
+# Caching
+CACHE_TTL = config("DJANGO_CACHE_TTL", cast=int, default=60 * 15)  # 15 minutes
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

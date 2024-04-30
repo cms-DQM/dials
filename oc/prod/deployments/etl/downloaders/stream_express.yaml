@@ -1,0 +1,140 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: stream-express-downloader-bulk
+  namespace: cms-dials-prod
+  labels:
+    app: stream-express-downloader-bulk
+    app.kubernetes.io/component: stream-express-downloader-bulk
+    app.kubernetes.io/instance: stream-express-downloader-bulk
+    app.kubernetes.io/name: stream-express-downloader-bulk
+    app.kubernetes.io/part-of: downloader-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stream-express-downloader-bulk
+  template:
+    metadata:
+      labels:
+        app: stream-express-downloader-bulk
+        deployment: stream-express-downloader-bulk
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: stream-express-downloader-bulk
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=StreamExpress-downloader-bulk@%h
+              --queues=StreamExpress-downloader-bulk
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: stream-express-downloader-priority
+  namespace: cms-dials-prod
+  labels:
+    app: stream-express-downloader-priority
+    app.kubernetes.io/component: stream-express-downloader-priority
+    app.kubernetes.io/instance: stream-express-downloader-priority
+    app.kubernetes.io/name: stream-express-downloader-priority
+    app.kubernetes.io/part-of: downloader-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stream-express-downloader-priority
+  template:
+    metadata:
+      labels:
+        app: stream-express-downloader-priority
+        deployment: stream-express-downloader-priority
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: stream-express-downloader-priority
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=StreamExpress-downloader-priority@%h
+              --queues=StreamExpress-downloader-priority
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

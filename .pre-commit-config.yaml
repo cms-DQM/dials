@@ -36,11 +36,3 @@ repos:
               .+\.setup\.js|
               \.eslintrc\.js
             )$
-      #   pass_filenames: true
-      # - id: missing-migrations
-      #   name: missing-migrations-local
-      #   entry: poetry run python backend/manage.py makemigrations --check
-      #   language: system
-      #   # Only run missing migration check if migration-generating files have changed:
-      #   files: (.*/?(settings|migrations|models)/.+|.+models\.py|.+constants\.py|.+choices\.py|.+pyproject\.toml)
-      #   pass_filenames: false

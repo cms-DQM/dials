@@ -14,6 +14,7 @@ accept_content = ["json"]
 timezone = "UTC"
 enable_utc = True
 imports = (
-    "python.pipelines.indexer.tasks",
-    "python.pipelines.ingestor.tasks",
+    "python.pipelines.dataset_indexer.tasks",
+    "python.pipelines.file_indexer.tasks",
+    "python.pipelines.file_ingesting.tasks",
 )

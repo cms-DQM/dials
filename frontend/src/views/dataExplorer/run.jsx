@@ -5,19 +5,21 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, Table } from '../../components'
+import { getNextToken } from '../../utils/sanitizer'
 
 const Run = () => {
-  const { runNumber } = useParams()
-
+  const { datasetId, runNumber } = useParams()
   const [isLoading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
+
+  // API results
+  const [dataset, setDataset] = useState()
   const [data, setData] = useState([])
-  const [totalSize, setTotalSize] = useState()
+  const [nextToken, setNextToken] = useState(null)
+  const [previousToken, setPreviousToken] = useState(null)
 
   const columns = [
     {
@@ -25,28 +27,32 @@ const Run = () => {
       text: 'Lumisection',
       type: 'number',
       formatter: (cell, row) => {
-        const linkTo = `/lumisections/${row.ls_id}`
+        const linkTo = `/lumisections/${row.dataset_id}/${row.run_number}/${row.ls_number}`
         return <Link to={linkTo}>{row.ls_number}</Link>
       },
     },
     { dataField: 'th1_count', text: '1D Histograms', type: 'number' },
     { dataField: 'th2_count', text: '2D Histograms', type: 'number' },
-    { dataField: 'int_lumi', text: 'Initial Luminosity', type: 'number' },
-    {
-      dataField: 'oms_zerobias_rate',
-      text: 'OMS ZeroBias Rate',
-      type: 'number',
-    },
   ]
 
-  const fetchData = ({ page, runNumber }) => {
+  const fetchData = ({ nextToken, datasetId, runNumber }) => {
     setLoading(true)
     API.lumisection
-      .list({ page, runNumber })
+      .list({ nextToken, datasetId, runNumber })
       .then((response) => {
-        setData(response.results)
-        setTotalSize(response.count)
-        setCurrentPage(page)
+        const results = response.results.map((item) => {
+          return {
+            ...item,
+            keyField: `${item.dataset_id}_${item.run_number}_${item.ls_number}`,
+          }
+        })
+        const dataset = response.results?.[0]?.dataset
+        const nextToken = getNextToken(response, 'next')
+        const previousToken = getNextToken(response, 'previous')
+        setData(results)
+        setDataset(dataset)
+        setNextToken(nextToken)
+        setPreviousToken(previousToken)
       })
       .catch((error) => {
         console.error(error)
@@ -58,8 +64,8 @@ const Run = () => {
   }
 
   useEffect(() => {
-    fetchData({ page: 1, runNumber })
-  }, [runNumber])
+    fetchData({ datasetId, runNumber })
+  }, [datasetId, runNumber])
 
   return (
     <>
@@ -68,7 +74,16 @@ const Run = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
+          {isLoading ? (
+            <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
+          ) : (
+            <>
+              <Breadcrumb.Item
+                active
+              >{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item active>{`Run ${runNumber}`}</Breadcrumb.Item>
+            </>
+          )}
         </Breadcrumb>
       </Row>
       <Row className='mt-1 mb-3 m-3'>
@@ -77,28 +92,34 @@ const Run = () => {
             <Card.Header as='h4'>
               {isLoading
                 ? 'Loading run...'
-                : `This run has ${totalSize} lumisections`}
+                : `Lumisections found in Run #${runNumber}`}
             </Card.Header>
             <Card.Body>
               <Table
-                keyField='id'
+                keyField='keyField'
                 isLoading={isLoading}
                 data={data}
                 columns={columns}
                 bordered={false}
                 hover={true}
                 remote
-                onTableChange={(type, { page }) => {
-                  if (type === 'pagination') {
-                    fetchData({ page, runNumber })
-                  }
+                cursorPagination={true}
+                previousToken={previousToken}
+                nextToken={nextToken}
+                previousOnClick={() => {
+                  fetchData({
+                    nextToken: previousToken,
+                    datasetId,
+                    runNumber,
+                  })
                 }}
-                pagination={paginationFactory({
-                  totalSize,
-                  page: currentPage,
-                  hideSizePerPage: true,
-                  showTotal: true,
-                })}
+                nextOnClick={() => {
+                  fetchData({
+                    nextToken,
+                    datasetId,
+                    runNumber,
+                  })
+                }}
               />
             </Card.Body>
           </Card>

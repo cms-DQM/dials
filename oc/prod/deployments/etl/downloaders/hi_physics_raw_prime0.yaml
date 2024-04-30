@@ -1,0 +1,140 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hi-physics-raw-prime0-downloader-bulk
+  namespace: cms-dials-prod
+  labels:
+    app: hi-physics-raw-prime0-downloader-bulk
+    app.kubernetes.io/component: hi-physics-raw-prime0-downloader-bulk
+    app.kubernetes.io/instance: hi-physics-raw-prime0-downloader-bulk
+    app.kubernetes.io/name: hi-physics-raw-prime0-downloader-bulk
+    app.kubernetes.io/part-of: downloader-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hi-physics-raw-prime0-downloader-bulk
+  template:
+    metadata:
+      labels:
+        app: hi-physics-raw-prime0-downloader-bulk
+        deployment: hi-physics-raw-prime0-downloader-bulk
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: hi-physics-raw-prime0-downloader-bulk
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=HIPhysicsRawPrime0-downloader-bulk@%h
+              --queues=HIPhysicsRawPrime0-downloader-bulk
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hi-physics-raw-prime0-downloader-priority
+  namespace: cms-dials-prod
+  labels:
+    app: hi-physics-raw-prime0-downloader-priority
+    app.kubernetes.io/component: hi-physics-raw-prime0-downloader-priority
+    app.kubernetes.io/instance: hi-physics-raw-prime0-downloader-priority
+    app.kubernetes.io/name: hi-physics-raw-prime0-downloader-priority
+    app.kubernetes.io/part-of: downloader-etl
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hi-physics-raw-prime0-downloader-priority
+  template:
+    metadata:
+      labels:
+        app: hi-physics-raw-prime0-downloader-priority
+        deployment: hi-physics-raw-prime0-downloader-priority
+      annotations:
+        eos.okd.cern.ch/mount-eos-with-credentials-from-secret: eos-credentials
+    spec:
+      volumes:
+        - name: eos-storage
+          persistentVolumeClaim:
+            claimName: eos-storage
+      containers:
+        - name: hi-physics-raw-prime0-downloader-priority
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          command:
+            - bash
+            - '-c'
+            - >-
+              celery --app=python worker --loglevel=INFO --concurrency=1
+              --autoscale=1,0 --max-tasks-per-child=1 --hostname=HIPhysicsRawPrime0-downloader-priority@%h
+              --queues=HIPhysicsRawPrime0-downloader-priority
+          envFrom:
+            - configMapRef:
+                name: dials-etl-configmap
+            - secretRef:
+                name: dials-etl-secrets
+            - secretRef:
+                name: eos-credentials
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: eos-storage
+              readOnly: true
+              mountPath: /eos
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/cms-dials-prod/etl:latest
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

@@ -109,7 +109,7 @@ class DQMIOReader:
         # (else unwanted behavior when trying to retrieve lumisections that are not present;
         # in case of defaultdict they are added to the index as empty lists of IndexEntries)
         self.index = dict(self.index)
-        self.index_keys = [(run, lumi, int(self.cantor_pairing(run, lumi))) for run, lumi in self.index.keys()]
+        self.index_keys = [(run, lumi) for run, lumi in self.index.keys()]
 
     def get_mes_for_lumi(self, run: int, lumi: int, types: tuple | list | None = None, re_pattern: str | None = None):
         """
@@ -158,30 +158,14 @@ class DQMIOReader:
                     continue
 
                 me_tree.GetEntry(x, 1)
-                value = me_tree.Value
-                # value = self.__extract_data_from_root(value)
+                value = me_tree.Value.Clone()
                 me = self.MonitorElement(run, lumi, me_name, entry.type, value)
                 result.append(me)
 
         return result
 
-    def count_mes(self, whitelist_mes: list | None = None, me_selection=(3, 4, 5, 6, 7, 8)):
-        """
-        Count how many monitoring elements exists given ME selection
-        """
-        num_total_entries = 0
-        for run, lumi, _ in self.index_keys:
-            melist = self.get_mes_for_lumi(run, lumi, "*")
-            for me in melist:
-                if whitelist_mes and me.name not in whitelist_mes:
-                    continue
-                if me.type in me_selection:
-                    num_total_entries += 1
-        return num_total_entries
-
     def close(self):
-        for f in self.rootfiles:
-            f.Close()
+        self.file.Close()
 
     @staticmethod
     def th1_from_cppyy(me: "MonitorElement") -> dict:
@@ -192,7 +176,7 @@ class DQMIOReader:
         hist_x_max = me.data.GetXaxis().GetBinLowEdge(hist_x_bins + 1)  # Takes low edge of overflow bin instead.
         data = [me.data.GetBinContent(i) for i in range(1, hist_x_bins + 1)]
         return {
-            "title": me_name,
+            "me": me_name,
             "x_min": hist_x_min,
             "x_max": hist_x_max,
             "x_bin": hist_x_bins,
@@ -215,7 +199,7 @@ class DQMIOReader:
         data = [[me.data.GetBinContent(j, i) for j in range(1, hist_x_bins + 1)] for i in range(1, hist_y_bins + 1)]
 
         return {
-            "title": me_name,
+            "me": me_name,
             "x_min": hist_x_min,
             "x_max": hist_x_max,
             "x_bin": hist_x_bins,
@@ -225,7 +209,3 @@ class DQMIOReader:
             "entries": entries,
             "data": data,
         }
-
-    @staticmethod
-    def cantor_pairing(x, y):
-        return 0.5 * (x + y) * (x + y + 1) + y

@@ -15,6 +15,7 @@ import API from './services/api'
 
 const Root = () => {
   const auth = useAuth()
+  const [silentSignin, setSilentSignin] = useState(false)
   const [tokenExchanged, setTokenExchanged] = useState(false)
   const [selectedWorkspace, setSelectedWorkspace] = useState(null)
   const [allWorkspaces, setAllWorkspaces] = useState([])
@@ -36,6 +37,7 @@ const Root = () => {
 
   useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
+      setSilentSignin(true)
       auth
         .signinSilent()
         .then(async (_user) => {
@@ -47,8 +49,11 @@ const Root = () => {
         .catch((err) => {
           console.error(err)
         })
+        .finally(() => {
+          setSilentSignin(false)
+        })
     })
-  }, [auth, auth.events, auth.signinSilent])
+  }, [silentSignin, auth, auth.events, auth.signinSilent])
 
   useEffect(() => {
     return auth.events.addAccessTokenExpired(() => {
@@ -85,7 +90,10 @@ const Root = () => {
   // Will render authenticating div if auth provider is still loading
   // or user is authenticated (auth not loading anymore) but
   // token hasn't been exchanged yet
-  if (auth.isLoading || (auth.isAuthenticated && !tokenExchanged)) {
+  if (
+    !silentSignin &&
+    (auth.isLoading || (auth.isAuthenticated && !tokenExchanged))
+  ) {
     return <div>Authenticating...</div>
   }
 

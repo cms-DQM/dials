@@ -8,26 +8,53 @@ The backend uses `Python` `^3.10.13`, the third-party dependencies are managed b
 
 The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint`.
 
-## Accessing DQMIO data from EOS
+## Tunneling to CERN
 
-The following commands will mount the specific DQMIO production data from EOS in read-only mode mimicking lxplus/openshift eos mounting structure:
+When development outside CERN network is important to always tunnel your connection trough `lxtunnel`, since the QA authentication server can only be accessible trough CERN. For doing that you can use [sshuttle](https://github.com/sshuttle/sshuttle), it is a “poor man’s VPN” solution which works on macOS and Linux. It uses SSH tunnelling to transparently redirect certain parts of your traffic to the internal network.
+
+This is the command I use (I save it in my zshrc file):
 
 ```bash
-sudo mkdir -p /eos/project-m/mlplayground/public/DQMIO_workspaces
-sudo mkdir -p /eos/home-m/mlplayground/DQMIO_workspaces
-sudo chown -R $USER:$USER /eos
-sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /eos/project-m/mlplayground/public/DQMIO_workspaces
-sshfs -o default_permissions,ro mlplayground@lxplus:/eos/home-m/mlplayground/DQMIO_workspaces /eos/home-m/mlplayground/DQMIO_workspaces
+tunnel_to_cern () {
+	sshuttle --dns -vr lxtunnel 137.138.0.0/16 128.141.0.0/16 128.142.0.0/16 188.184.0.0/15 --python=python3
+}
 ```
 
-You can try running the ETL workflow ingesting all available data, but for testing purposes you can just use a mocked DBS response with just 30 files per workspace.
+The `lxtunnel` alias resolves to the following ssh config:
+
+```
+Host lxtunnel
+        HostName lxtunnel.cern.ch
+        User <your-cern-username>
+        GSSAPITrustDNS yes
+        GSSAPIAuthentication yes
+        GSSAPIDelegateCredentials yes
+```
+
+More information on tunneling to CERN can be foudn [here](https://abpcomputing.web.cern.ch/guides/sshtunnel/) and [here](https://codimd.web.cern.ch/vjC8BHbTS7etHwJve-K2Uw#).
+
+## Accessing DQMIO data from EOS
+
+Note: This step is *optional*, if you don't mount EOS locally the ETL workflow will download the data locally trough *scp*.
+
+The following command will mount the production data directory from EOS in read-only mode:
+
+```bash
+mkdir ./DQMIO
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces ./DQMIO
+```
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount /eos/project-m/mlplayground/public/DQMIO_workspaces
-umount /eos/home-m/mlplayground/DQMIO_workspaces
+umount ./DQMIO
 ```
+
+## Getting data from DBS
+
+The dataset and files indexing pipelines read data from DBS to trigger ETL jobs periodically, so it is important to have a configured grid certificate (check [here](/docs/SETTING-UP-SA.md) how to generate a certificate) that can be used to access DBS. The dataset indexing pipeline is used mainly to gather datasets metadata, so ingesting the entire index is not an issue, but the files indexing pipeline is used to trigger ETL jobs for each DQMIO file which means that if you ingest all the index locally you are going to ingest all DQMIO files.
+
+To avoid running out of space instead of ingesting the entire index you can provide a mocked DBS response to the indexing pipeline, which is enough to test the ingestion locally. An example can be found in `/eos/project-m/mlplayground/public/mocked_dbs_files.json`.
 
 ## Running PostgresSQL
 
@@ -75,12 +102,13 @@ DJANGO_DEFAULT_WORKSPACE=tracker
 DJANGO_KEYCLOAK_SERVER_URL=https://keycloak-qa.cern.ch/auth/
 DJANGO_KEYCLOAK_REALM=cern
 DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-public-app
+DJANGO_CACHE_TTL=0
 DJANGO_SECRET_KEY=potato
 DJANGO_REDIS_URL=redis://localhost:6379/3
 DJANGO_DATABASE_URI=postgres://postgres:postgres@localhost:5432
 DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID=cms-dials-confidential-app
-DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY=SECRET_HERE
-DJANGO_KEYCLOAK_API_CLIENTS={"SECRET_HERE": "cms-dials-api-client-1"}
+DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY=SECRET_HERE_1
+DJANGO_KEYCLOAK_API_CLIENTS={"SECRET_HERE_2": "cms-dials-api-client-1"}
 ```
 
 Login to [QA Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
@@ -103,12 +131,15 @@ KEYTAB_PWD=<lxplus-password>
 EOS_LANDING_ZONE=/eos/project-m/mlplayground/public/DQMIO_workspaces
 MOUNTED_EOS_PATH=/eos/project-m/mlplayground/public/DQMIO_workspaces
 MOCKED_DBS_FPATH=/path/to/mocked/dbs/file
+ETL_CONFIG_FPATH=/paht/to/etl.config.json
 ```
 
 * `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
-* `MOCKED_DBS_FPATH` is optional, if not set it will try to ingest all available files indexed in DBS;
+* `MOCKED_DBS_FPATH` is optional, if not set it will try to ingest all available files indexed in DBS.
 
-## Starting the etl natively
+# Running the project components
+
+## [Natively] ETL
 
 From within [`repository root's directory`](/) or [`etl`](/etl/) you can use the [`start-dev.sh`](/etl/scripts/start-dev.sh) script or the poe task `poe start-etl` to start the entire etl stack in one command.
 
@@ -116,13 +147,13 @@ Note that before starting the ETL natively you need to setup the database, in or
 
 Note: If running the commands separated you should execute then inside the [`etl`](/etl/) directory.
 
-## Starting the backend natively
+## [Natively] Backend
 
 From within [`repository root's directory`](/) or [`backend`](/backend/) you can use the [`start-dev.sh`](/backend/scripts/start-dev.sh) script or the poe task `poe start-api` to start the entire backend stack in one command.
 
 Note: If running the commands separated you should execute then inside the [`backend`](/backend/) directory.
 
-## Starting the frontend natively
+## [Natively] Frontend
 
 Inside the [`frontend`](/frontend/) directory you can using the script `yarn run start` to start the react-scripts development server.
 

@@ -330,5 +330,8 @@ yarn-error.log*
 
 ### Custom ###
 *.benchmark-dat
-mocked_dbs.json
+mocked_dbs*.json
 docker-compose.yaml
+DQMIO/
+usercert.pem
+userkey.pem

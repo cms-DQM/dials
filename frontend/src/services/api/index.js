@@ -5,10 +5,12 @@ import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
 import { API_URL, OIDC_USER_WORKSPACE } from '../../config/env'
 
 const FILE_INDEX_STATUSES = [
-  'INDEXED',
   'PENDING',
-  'STARTED',
+  'DOWNLOAD_STARTED',
   'DOWNLOAD_ERROR',
+  'DOWNLOAD_FINISHED',
+  'INGESTION_STARTED',
+  'COPY_ERROR',
   'ROOTFILE_ERROR',
   'PARSING_ERROR',
   'FINISHED',
@@ -56,47 +58,19 @@ const exchangeToken = async ({ subjectToken }) => {
   return response.data
 }
 
-const listFileIndex = async ({
-  page,
-  campaign,
-  primaryDataset,
-  era,
-  logicalFileName,
-  minSize,
-  status,
-}) => {
-  const endpoint = `${API_URL}/file-index/`
-  const params = sanitizedURLSearchParams(
-    {
-      page,
-      campaign,
-      primary_dataset: primaryDataset,
-      era,
-      logical_file_name: logicalFileName,
-      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
-      status,
-    },
-    { repeatMode: false }
-  )
-  const response = await axiosApiInstance.get(endpoint, {
-    params,
-  })
-  return response.data
-}
-
-const getRun = async ({ run }) => {
-  const endpoint = `${API_URL}/run/${run}/`
+const getDataset = async ({ datasetId }) => {
+  const endpoint = `${API_URL}/dataset-index/${datasetId}/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
-const listRuns = async ({ page, maxRun, minRun }) => {
-  const endpoint = `${API_URL}/run/`
+const listDatasets = async ({ nextToken, dataset, datasetRegex }) => {
+  const endpoint = `${API_URL}/dataset-index/`
   const params = sanitizedURLSearchParams(
     {
-      page,
-      max_run_number: maxRun,
-      min_run_number: minRun,
+      next_token: nextToken,
+      dataset,
+      dataset__regex: datasetRegex,
     },
     { repeatMode: false }
   )
@@ -106,31 +80,183 @@ const listRuns = async ({ page, maxRun, minRun }) => {
   return response.data
 }
 
-const getLumisection = async ({ id }) => {
-  const endpoint = `${API_URL}/lumisection/${id}/`
+const listFileIndex = async ({
+  nextToken,
+  logicalFileName,
+  logicalFileNameRegex,
+  status,
+  minSize,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/file-index/`
+  const params = sanitizedURLSearchParams(
+    {
+      next_token: nextToken,
+      logical_file_name: logicalFileName,
+      logical_file_name__regex: logicalFileNameRegex,
+      status,
+      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countFileIndex = async ({
+  logicalFileName,
+  logicalFileNameRegex,
+  status,
+  minSize,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/file-index/count/`
+  const params = sanitizedURLSearchParams(
+    {
+      logical_file_name: logicalFileName,
+      logical_file_name__regex: logicalFileNameRegex,
+      status,
+      min_size: !isNaN(minSize) ? parseInt(minSize) * 1024 ** 2 : undefined, // Transforming from MB (user input) to B
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getRun = async ({ datasetId, runNumber }) => {
+  const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/`
+  const response = await axiosApiInstance.get(endpoint)
+  return response.data
+}
+
+const listRuns = async ({
+  nextToken,
+  datasetId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/run/`
+  const params = sanitizedURLSearchParams(
+    {
+      next_token: nextToken,
+      dataset_id: datasetId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countRuns = async ({
+  datasetId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/run/count/`
+  const params = sanitizedURLSearchParams(
+    {
+      dataset_id: datasetId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getLumisection = async ({ datasetId, runNumber, lsNumber }) => {
+  const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/${lsNumber}/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
 const listLumisections = async ({
-  page,
+  nextToken,
+  datasetId,
   runNumber,
-  ls,
-  maxLs,
-  minLs,
-  maxRun,
-  minRun,
+  runNumberLte,
+  runNumberGte,
+  lsNumber,
+  lsNumberLte,
+  lsNumberGte,
+  dataset,
+  datasetRegex,
 }) => {
   const endpoint = `${API_URL}/lumisection/`
   const params = sanitizedURLSearchParams(
     {
-      page,
+      next_token: nextToken,
+      dataset_id: datasetId,
       run_number: runNumber,
-      ls_number: ls,
-      max_ls_number: maxLs,
-      max_run_number: maxRun,
-      min_ls_number: minLs,
-      min_run_number: minRun,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      ls_number: lsNumber,
+      ls_number__lte: lsNumberLte,
+      ls_number__gte: lsNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const countLumisections = async ({
+  datasetId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  lsNumber,
+  lsNumberLte,
+  lsNumberGte,
+  dataset,
+  datasetRegex,
+}) => {
+  const endpoint = `${API_URL}/lumisection/count/`
+  const params = sanitizedURLSearchParams(
+    {
+      dataset_id: datasetId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      ls_number: lsNumber,
+      ls_number__lte: lsNumberLte,
+      ls_number__gte: lsNumberGte,
+      dataset,
+      dataset__regex: datasetRegex,
     },
     { repeatMode: false }
   )
@@ -143,41 +269,45 @@ const listLumisections = async ({
 const listHistograms = async (
   dim,
   {
-    page,
-    run,
-    ls,
-    lsId,
-    title,
-    maxLs,
-    minLs,
-    maxRun,
-    minRun,
-    minEntries,
-    titleContains,
-    era,
-    campaign,
-    primaryDataset,
+    nextToken,
+    datasetId,
     fileId,
+    runNumber,
+    runNumberLte,
+    runNumberGte,
+    lsNumber,
+    lsNumberLte,
+    lsNumberGte,
+    meId,
+    entriesGte,
+    dataset,
+    datasetRegex,
+    logicalFileName,
+    logicalFileNameRegex,
+    me,
+    meRegex,
   }
 ) => {
-  const endpoint = `${API_URL}/lumisection-h${dim}d/`
+  const endpoint = `${API_URL}/th${dim}/`
   const params = sanitizedURLSearchParams(
     {
-      page,
-      run_number: run,
-      ls_number: ls,
-      lumisection_id: lsId,
-      title,
-      max_ls_number: maxLs,
-      max_run_number: maxRun,
-      min_ls_number: minLs,
-      min_run_number: minRun,
-      min_entries: minEntries,
-      title_contains: titleContains,
-      era,
-      campaign,
-      primary_dataset: primaryDataset,
+      next_token: nextToken,
+      dataset_id: datasetId,
       file_id: fileId,
+      run_number: runNumber,
+      run_number__lte: runNumberLte,
+      run_number__gte: runNumberGte,
+      ls_number: lsNumber,
+      ls_number__lte: lsNumberLte,
+      ls_number__gte: lsNumberGte,
+      me_id: meId,
+      entries__gte: entriesGte,
+      dataset,
+      dataset__regex: datasetRegex,
+      logical_file_name: logicalFileName,
+      logical_file_name__regex: logicalFileNameRegex,
+      me,
+      me__regex: meRegex,
     },
     { repeatMode: false }
   )
@@ -187,15 +317,23 @@ const listHistograms = async (
   return response.data
 }
 
-const getHistogram = async (dim, id) => {
-  const endpoint = `${API_URL}/lumisection-h${dim}d/${id}/`
+const getHistogram = async (dim, histId) => {
+  const endpoint = `${API_URL}/th${dim}/${histId}/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
-const getIngestedMonitoringElements = async (dim) => {
-  const endpoint = `${API_URL}/lumisection-h${dim}d-mes/`
-  const response = await axiosApiInstance.get(endpoint)
+const listMEs = async ({ me, meRegex, dim }) => {
+  const endpoint = `${API_URL}/mes/`
+  const params = sanitizedURLSearchParams(
+    {
+      me,
+      me__regex: meRegex,
+      dim,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, { params })
   return response.data
 }
 
@@ -203,23 +341,34 @@ const API = {
   auth: {
     exchange: exchangeToken,
   },
+  config: {
+    getWorkspaces,
+  },
+  dataset: {
+    get: getDataset,
+    list: listDatasets,
+  },
   fileIndex: {
     statusList: FILE_INDEX_STATUSES,
     list: listFileIndex,
-  },
-  lumisection: {
-    get: getLumisection,
-    list: listLumisections,
-    listHistograms,
-    getIngestedMEs: getIngestedMonitoringElements,
-    getHistogram,
+    count: countFileIndex,
   },
   run: {
     get: getRun,
     list: listRuns,
+    count: countRuns,
   },
-  config: {
-    getWorkspaces,
+  lumisection: {
+    get: getLumisection,
+    list: listLumisections,
+    count: countLumisections,
+  },
+  mes: {
+    list: listMEs,
+  },
+  histogram: {
+    get: getHistogram,
+    list: listHistograms,
   },
 }
 

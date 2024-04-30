@@ -36,9 +36,16 @@ const sanitizedURLSearchParams = (values, { repeatMode }) => {
   return params
 }
 
+const getNextToken = (response, key) => {
+  return response[[key]]
+    ? new URLSearchParams(response[[key]].split('?')[1]).get('next_token')
+    : null
+}
+
 export {
   toUndefined,
   isNumericNonZero,
   isStringNonEmpty,
   sanitizedURLSearchParams,
+  getNextToken,
 }

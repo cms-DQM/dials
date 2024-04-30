@@ -11,36 +11,44 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../../components'
-import reverseCantorPairing from '../../utils/cantor'
+import { getNextToken } from '../../utils/sanitizer'
 
 const Lumisection = () => {
-  const { id } = useParams()
-
-  const [isLumiLoading, setLumiLoading] = useState(true)
+  const { datasetId, runNumber, lsNumber } = useParams()
+  const [isDatasetLoading, setDatasetLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
-  const [run, setRun] = useState()
-  const [lsNumber, setLsNumber] = useState()
+
+  // API results
+  const [dataset, setDataset] = useState()
   const [h1dData, setH1DData] = useState([])
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
 
-  const genericFetchAllPages = async ({ dim, run, lsNumber }) => {
+  const genericFetchAllPages = async ({
+    dim,
+    datasetId,
+    runNumber,
+    lsNumber,
+  }) => {
     const allData = []
     let nextPageExists = true
-    let page = 0
+    let nextToken = null
     let errorCount = 0
+    let totalPages = 0
     while (nextPageExists) {
-      page++
+      totalPages++
       try {
-        const { results, next } = await API.lumisection.listHistograms(dim, {
-          page,
-          run,
-          ls: lsNumber,
+        const { results, next } = await API.histogram.list(dim, {
+          nextToken,
+          datasetId,
+          runNumber,
+          lsNumber,
         })
         results.forEach((e) => allData.unshift(e))
         nextPageExists = !(next === null)
+        nextToken = getNextToken({ next }, 'next')
       } catch (err) {
         errorCount++
       }
@@ -49,43 +57,33 @@ const Lumisection = () => {
       results: allData,
       count: allData.length,
       error: errorCount,
-      totalPages: page,
+      totalPages,
     }
   }
 
   useEffect(() => {
-    const fetchData = () => {
-      setLumiLoading(true)
-      API.lumisection
-        .get({ id })
+    const fetchDataset = () => {
+      setDatasetLoading(true)
+      API.dataset
+        .get({ datasetId })
         .then((response) => {
-          const runNumber = reverseCantorPairing(
-            response.ls_id,
-            response.ls_number
-          )
-          setRun(runNumber)
-          setLsNumber(response.ls_number)
+          setDataset(response.dataset)
         })
         .catch((error) => {
           console.error(error)
           toast.error('Failure to communicate with the API!')
         })
         .finally(() => {
-          setLumiLoading(false)
+          setDatasetLoading(false)
         })
     }
-
-    fetchData()
-  }, [id])
-
-  useEffect(() => {
-    if (isLumiLoading) return
 
     const fetchH1D = () => {
       setH1DLoading(true)
       genericFetchAllPages({
         dim: 1,
-        run,
+        datasetId,
+        runNumber,
         lsNumber,
       })
         .then((response) => {
@@ -110,7 +108,8 @@ const Lumisection = () => {
       setH2DLoading(true)
       genericFetchAllPages({
         dim: 2,
-        run,
+        datasetId,
+        runNumber,
         lsNumber,
       })
         .then((response) => {
@@ -131,9 +130,10 @@ const Lumisection = () => {
         })
     }
 
+    fetchDataset()
     fetchH1D()
     fetchH2D()
-  }, [isLumiLoading, run, lsNumber])
+  }, [datasetId, runNumber, lsNumber])
 
   return (
     <>
@@ -142,14 +142,17 @@ const Lumisection = () => {
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/runs' }}>
             All runs
           </Breadcrumb.Item>
-          {isLumiLoading ? (
+          {isDatasetLoading ? (
             <Breadcrumb.Item active>Loading...</Breadcrumb.Item>
           ) : (
             <>
               <Breadcrumb.Item
+                active
+              >{`Dataset ${datasetId} (${dataset})`}</Breadcrumb.Item>
+              <Breadcrumb.Item
                 linkAs={Link}
-                linkProps={{ to: `/runs/${run}` }}
-              >{`Run ${run}`}</Breadcrumb.Item>
+                linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
+              >{`Run ${runNumber}`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 active
               >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
@@ -212,7 +215,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-1d/${hist.hist_id}`}
                                         >
-                                          {hist.title}
+                                          {hist.me}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>
@@ -278,7 +281,7 @@ const Lumisection = () => {
                                         <Link
                                           to={`/histograms-2d/${hist.hist_id}`}
                                         >
-                                          {hist.title}
+                                          {hist.me}
                                         </Link>
                                       </Card.Title>
                                     </Card.Body>
@@ -295,7 +298,7 @@ const Lumisection = () => {
           </Accordion>
         </Col>
         <Col sm={3}>
-          <CMSOMSCard isLoading={isLumiLoading} runNumber={run} />
+          <CMSOMSCard runNumber={runNumber} />
         </Col>
       </Row>
     </>

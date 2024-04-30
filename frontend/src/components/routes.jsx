@@ -33,7 +33,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Runs} />}
         />
         <Route
-          path=':runNumber'
+          path=':datasetId/:runNumber'
           element={<PrivateRoute component={Views.DataExplorer.Run} />}
         />
       </Route>
@@ -43,7 +43,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Lumisections} />}
         />
         <Route
-          path=':id'
+          path=':datasetId/:runNumber/:lsNumber'
           element={<PrivateRoute component={Views.DataExplorer.Lumisection} />}
         />
       </Route>
@@ -53,7 +53,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Histograms1D} />}
         />
         <Route
-          path=':id'
+          path=':histId'
           element={
             <PrivateRoute component={Views.DataExplorer.Histogram} dim={1} />
           }
@@ -65,7 +65,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Histograms2D} />}
         />
         <Route
-          path=':id'
+          path=':histId'
           element={
             <PrivateRoute component={Views.DataExplorer.Histogram} dim={2} />
           }

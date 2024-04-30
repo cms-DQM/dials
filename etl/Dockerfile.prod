@@ -20,7 +20,7 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     && rm Python-${PYTHON_VERSION}.tgz \
     && cd Python-${PYTHON_VERSION} \
     && ./configure \
-    && make -j$(( $(nproc --all) - 2 )) \
+    && make -j$(( $(getconf _NPROCESSORS_ONLN) - 2 )) \
     && make install \
     && cd .. \
     && rm -rf Python-${PYTHON_VERSION}

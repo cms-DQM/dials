@@ -8,14 +8,14 @@ import Card from 'react-bootstrap/Card'
 import { ResponsivePlot } from '../../components'
 import API from '../../services/api'
 
-const gruopBySplitTitle = (data) => {
+const groupBySplitME = (data) => {
   const groupedData = data.reduce((acc, item) => {
-    const [firstPart, secondPart] = item.title.split('/')
+    const [firstPart, secondPart] = item.me.split('/')
     const key = `${firstPart}/${secondPart.split('/')[0]}`
 
     if (!acc[key]) {
       acc[key] = {
-        title: key,
+        me: key,
         count: item.count,
       }
     } else {
@@ -45,7 +45,7 @@ const IngestionStatistics = () => {
   useEffect(() => {
     const fetchTotalIndexedFiles = () => {
       API.fileIndex
-        .list({})
+        .count({})
         .then((response) => {
           setTotalFiles(response.count)
         })
@@ -57,7 +57,7 @@ const IngestionStatistics = () => {
 
     const fetchTotalIngestedRuns = () => {
       API.run
-        .list({})
+        .count({})
         .then((response) => {
           setTotalRuns(response.count)
         })
@@ -69,7 +69,7 @@ const IngestionStatistics = () => {
 
     const fetchTotalIngestedLumis = () => {
       API.lumisection
-        .list({})
+        .count({})
         .then((response) => {
           setTotalLumisection(response.count)
         })
@@ -84,7 +84,7 @@ const IngestionStatistics = () => {
       try {
         const data = await Promise.all(
           API.fileIndex.statusList.map(async (item) => {
-            const data = await API.fileIndex.list({ status: item })
+            const data = await API.fileIndex.count({ status: item })
             return {
               status: item,
               count: data.count,
@@ -108,14 +108,14 @@ const IngestionStatistics = () => {
 
     const fetchH1DCount = () => {
       setIsLoadingH1D(true)
-      API.lumisection
-        .getIngestedMEs(1)
+      API.mes
+        .list({ dim: 1 })
         .then((data) => {
-          const groupedData = gruopBySplitTitle(data)
+          const groupedData = groupBySplitME(data)
           setDataH1DPlot([
             {
               values: groupedData.map((item) => item.count),
-              labels: groupedData.map((item) => item.title),
+              labels: groupedData.map((item) => item.me),
               type: 'pie',
               textinfo: 'value+percent',
             },
@@ -135,14 +135,14 @@ const IngestionStatistics = () => {
 
     const fetchH2DCount = () => {
       setIsLoadingH2D(true)
-      API.lumisection
-        .getIngestedMEs(2)
+      API.mes
+        .list({ dim: 2 })
         .then((data) => {
-          const groupedData = gruopBySplitTitle(data)
+          const groupedData = groupBySplitME(data)
           setDataH2DPlot([
             {
               values: groupedData.map((item) => item.count),
-              labels: groupedData.map((item) => item.title),
+              labels: groupedData.map((item) => item.me),
               type: 'pie',
               textinfo: 'value+percent',
             },
@@ -173,7 +173,7 @@ const IngestionStatistics = () => {
       <Row className='mt-5 mb-3'>
         <Col sm={4}>
           <Card className='text-center'>
-            <Card.Header>Good Files</Card.Header>
+            <Card.Header>Files</Card.Header>
             <Card.Body>
               <h1>{totalFiles}</h1>
             </Card.Body>

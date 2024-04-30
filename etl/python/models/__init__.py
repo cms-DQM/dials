@@ -1,14 +1,18 @@
-from .dqmio_index import DQMIOIndex
-from .lumisection import Lumisection
-from .run import Run
-from .th1 import TH1
-from .th2 import TH2
+from .dataset_index import FactDatasetIndex
+from .dim_mes import DimMonitoringElements
+from .file_index import FactFileIndex
+from .lumisection import FactLumisection
+from .run import FactRun
+from .th1 import FactTH1
+from .th2 import FactTH2
 
 
 __all__ = [
-    "DQMIOIndex",
-    "Run",
-    "Lumisection",
-    "TH1",
-    "TH2",
+    "DimMonitoringElements",
+    "FactDatasetIndex",
+    "FactFileIndex",
+    "FactRun",
+    "FactLumisection",
+    "FactTH1",
+    "FactTH2",
 ]
