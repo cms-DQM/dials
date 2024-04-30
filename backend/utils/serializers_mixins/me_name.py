@@ -13,6 +13,6 @@ class MENameMixin(serializers.ModelSerializer):
         if obj.me_id in self.context[self.ME_CONTEXT_KEY]:
             return self.context[self.ME_CONTEXT_KEY][obj.me_id]
 
-        me_index = MEs.objects.get(pk=obj.me_id)
+        me_index = MEs.objects.using(obj._state.db).get(pk=obj.me_id)
         self.context[self.ME_CONTEXT_KEY][obj.me_id] = me_index.me
         return me_index.me

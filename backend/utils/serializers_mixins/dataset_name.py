@@ -13,6 +13,6 @@ class DatasetNameMixin(serializers.ModelSerializer):
         if obj.dataset_id in self.context[self.DATASET_CONTEXT_KEY]:
             return self.context[self.DATASET_CONTEXT_KEY][obj.dataset_id]
 
-        dataset_index = DatasetIndex.objects.get(pk=obj.dataset_id)
+        dataset_index = DatasetIndex.objects.using(obj._state.db).get(pk=obj.dataset_id)
         self.context[self.DATASET_CONTEXT_KEY][obj.dataset_id] = dataset_index.dataset
         return dataset_index.dataset
