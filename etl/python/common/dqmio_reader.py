@@ -109,7 +109,7 @@ class DQMIOReader:
         # (else unwanted behavior when trying to retrieve lumisections that are not present;
         # in case of defaultdict they are added to the index as empty lists of IndexEntries)
         self.index = dict(self.index)
-        self.index_keys = [(run, lumi, int(self.cantor_pairing(run, lumi))) for run, lumi in self.index.keys()]
+        self.index_keys = [(run, lumi) for run, lumi in self.index.keys()]
 
     def get_mes_for_lumi(self, run: int, lumi: int, types: tuple | list | None = None, re_pattern: str | None = None):
         """
@@ -209,7 +209,3 @@ class DQMIOReader:
             "entries": entries,
             "data": data,
         }
-
-    @staticmethod
-    def cantor_pairing(x, y):
-        return 0.5 * (x + y) * (x + y + 1) + y

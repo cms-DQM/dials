@@ -107,11 +107,9 @@ def fact_lumisection() -> list:
             sa.Column("dataset_id", sa.BigInteger),
             sa.Column("run_number", sa.Integer),
             sa.Column("ls_number", sa.Integer),
-            sa.Column("ls_id", sa.BigInteger),
             sa.Column("th1_count", sa.Integer),
             sa.Column("th2_count", sa.Integer),
             sa.PrimaryKeyConstraint("dataset_id", "run_number", "ls_number"),
-            sa.Index("idx_fls_ls_id", "ls_id"),
             sa.Index("idx_fls_dataset_id", "dataset_id"),
             sa.Index("idx_fls_run_number", "run_number"),
             sa.Index("idx_fls_ls_number", "ls_number"),
@@ -129,7 +127,6 @@ def fact_th1() -> list:
             sa.Column("run_number", sa.Integer),
             sa.Column("ls_number", sa.Integer),
             sa.Column("me_id", sa.Integer),
-            sa.Column("ls_id", sa.BigInteger),
             sa.Column("x_min", sa.Float),
             sa.Column("x_max", sa.Float),
             sa.Column("x_bin", sa.Float),
@@ -141,7 +138,6 @@ def fact_th1() -> list:
             sa.Index("idx_th1_run_number", "run_number"),
             sa.Index("idx_th1_ls_number", "ls_number"),
             sa.Index("idx_th1_me_id", "me_id"),
-            sa.Index("idx_th1_ls_id", "ls_id"),
         ],
     }
 
@@ -165,7 +161,6 @@ def fact_th2() -> list:
             sa.Column("run_number", sa.Integer),
             sa.Column("ls_number", sa.Integer),
             sa.Column("me_id", sa.Integer),
-            sa.Column("ls_id", sa.BigInteger),
             sa.Column("x_min", sa.Float),
             sa.Column("x_max", sa.Float),
             sa.Column("x_bin", sa.Float),
@@ -180,7 +175,6 @@ def fact_th2() -> list:
             sa.Index("idx_th2_run_number", "run_number"),
             sa.Index("idx_th2_ls_number", "ls_number"),
             sa.Index("idx_th2_me_id", "me_id"),
-            sa.Index("idx_th2_ls_id", "ls_id"),
         ],
     }
 

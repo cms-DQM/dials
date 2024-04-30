@@ -31,7 +31,7 @@ def transform_load_run(engine: Engine, reader: DQMIOReader, dataset_id: int) -> 
 def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, dataset_id: int) -> None:
     run_lumi = reader.index_keys
     lumis = []
-    for run, lumi, ls_id in run_lumi:
+    for run, lumi in run_lumi:
         th1_me = reader.get_mes_for_lumi(run, lumi, types=th1_types, re_pattern=me_pattern)
         th2_me = reader.get_mes_for_lumi(run, lumi, types=th2_types, re_pattern=me_pattern)
         lumis.append(
@@ -39,7 +39,6 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, d
                 "dataset_id": dataset_id,
                 "run_number": run,
                 "ls_number": lumi,
-                "ls_id": ls_id,
                 "th1_count": len(th1_me),
                 "th2_count": len(th2_me),
             }
@@ -59,7 +58,7 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, d
 def transform_mes(reader: DQMIOReader, me_pattern: str) -> list[dict]:
     run_lumi = reader.index_keys
     mes_list = {}
-    for run, lumi, _ in run_lumi:
+    for run, lumi in run_lumi:
         mes = reader.get_mes_for_lumi(
             run,
             lumi,
@@ -111,7 +110,7 @@ def transform_load_th(
 
     th_list = []
     chunk_count = 0
-    for run, lumi, ls_id in run_lumi:
+    for run, lumi in run_lumi:
         me_list = reader.get_mes_for_lumi(run, lumi, types=types, re_pattern=me_pattern)
         for me in me_list:
             th_entry = reader_func(me)
@@ -119,7 +118,6 @@ def transform_load_th(
             th_entry = {
                 "file_id": file_id,
                 "dataset_id": dataset_id,
-                "ls_id": ls_id,
                 "run_number": run,
                 "ls_number": lumi,
                 **th_entry,

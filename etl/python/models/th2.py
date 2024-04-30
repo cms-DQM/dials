@@ -14,7 +14,6 @@ class FactTH2(Base):
     run_number = sa.Column("run_number", sa.Integer)
     ls_number = sa.Column("ls_number", sa.Integer)
     me_id = sa.Column("me_id", sa.Integer)
-    ls_id = sa.Column("ls_id", sa.BigInteger)
     x_min = sa.Column("x_min", sa.Float)
     x_max = sa.Column("x_max", sa.Float)
     x_bin = sa.Column("x_bin", sa.Float)
@@ -31,5 +30,4 @@ class FactTH2(Base):
         sa.Index("idx_th2_run_number", "run_number"),
         sa.Index("idx_th2_ls_number", "ls_number"),
         sa.Index("idx_th2_me_id", "me_id"),
-        sa.Index("idx_th2_ls_id", "ls_id"),
     )
