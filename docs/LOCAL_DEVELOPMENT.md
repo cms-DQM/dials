@@ -41,7 +41,7 @@ The following command will mount the production data directory from EOS in read-
 
 ```bash
 mkdir ./DQMIO
-sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces /DQMIO
+sshfs -o default_permissions,ro mlplayground@lxplus:/eos/project-m/mlplayground/public/DQMIO_workspaces ./DQMIO
 ```
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
