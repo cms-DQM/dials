@@ -1,0 +1,80 @@
+{
+  "common_chunk_size": 5000,
+  "common_indexer_queue": "common-indexer",
+  "dev_env_label": "dev",
+  "downloader_bulk_suffix": "-downloader-bulk",
+  "downloader_priority_suffix": "-downloader-priority",
+  "era_cmp_pattern": "*Run202*",
+  "priority_era": "Run2024",
+  "th1_types": [3,4,5],
+  "th2_types": [6,7,8],
+  "th2_chunk_size": 1000,
+  "workspaces": [
+    {
+      "name": "csc",
+      "primary_datasets": [
+        "Muon",
+        "Muon0",
+        "StreamExpress"
+      ],
+      "me_startswith": [
+        "CSC/CSCOfflineMonitor/recHits/"
+      ],
+      "bulk_queue": "csc-bulk",
+      "priority_queue": "csc-priority"
+    },
+    {
+      "name": "ecal",
+      "primary_datasets": [
+        "ZeroBias"
+      ],
+      "me_startswith": [
+        "EcalBarrel/",
+        "EcalEndcap/",
+        "Ecal/EventInfo/"
+      ],
+      "bulk_queue": "ecal-bulk",
+      "priority_queue": "ecal-priority"
+    },
+    {
+      "name": "hcal",
+      "primary_datasets": [
+        "ZeroBias"
+      ],
+      "me_startswith": [
+        "Hcal/DigiTask/"
+      ],
+      "bulk_queue": "hcal-bulk",
+      "priority_queue": "hcal-priority"
+    },
+    {
+      "name": "jetmet",
+      "primary_datasets": [
+        "JetMET",
+        "JetMET0"
+      ],
+      "me_startswith": [
+        "JetMET/Jet/",
+        "JetMET/MET/"
+      ],
+      "bulk_queue": "jetmet-bulk",
+      "priority_queue": "jetmet-priority"
+    },
+    {
+      "name": "tracker",
+      "primary_datasets": [
+        "ZeroBias",
+        "StreamExpress",
+        "HIForward0",
+        "HIPhysicsRawPrime0",
+        "StreamHIExpressRawPrime"
+      ],
+      "me_startswith": [
+        "PixelPhase1/",
+        "SiStrip/"
+      ],
+      "bulk_queue": "tracker-bulk",
+      "priority_queue": "tracker-priority"
+    }
+  ]
+}

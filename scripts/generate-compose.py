@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import os
 import re
 
@@ -132,7 +133,7 @@ def gen_compose_downloader_workers(mounted_eos_path, pd_name):
             "container_name": f"dials-{pd_name.lower()}-downloader-bulk",
             "image": "dials_etl",
             "volumes": gen_volumes(mounted_eos_path),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-bulk@%h --queues=${pd_name}-downloader-bulk'",
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={pd_name}-downloader-bulk@%h --queues={pd_name}-downloader-bulk'",
             "network_mode": "host",
             "depends_on": gen_common_depends_on(),
         },
@@ -140,7 +141,7 @@ def gen_compose_downloader_workers(mounted_eos_path, pd_name):
             "container_name": f"dials-{pd_name.lower()}-downloader-priority",
             "image": "dials_etl",
             "volumes": gen_volumes(mounted_eos_path),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-priority@%h --queues=${pd_name}-downloader-priority'",
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={pd_name}-downloader-priority@%h --queues={pd_name}-downloader-priority'",
             "network_mode": "host",
             "depends_on": gen_common_depends_on(),
         },
@@ -155,18 +156,11 @@ if __name__ == "__main__":
     config = Config(RepositoryEnv(f"{cwd}/etl/.env"))
     mounted_eos_path = config.get("MOUNTED_EOS_PATH")
     databases = config.get("DATABASES")
+    etl_config_fpath = config("ETL_CONFIG_FPATH")
     databases = re.sub("\s+", "", databases).split(",")
-    pds_names = [
-        "Muon",
-        "Muon0",
-        "StreamExpress",
-        "ZeroBias",
-        "JetMET",
-        "JetMET0",
-        "HIForward0",
-        "HIPhysicsRawPrime0",
-        "StreamHIExpressRawPrime",
-    ]
+    with open(etl_config_fpath) as f:
+        primary_datasets = [elem for ws in json.load(f)["workspaces"] for elem in ws["primary_datasets"]]
+        primary_datasets = sorted(set(primary_datasets))
 
     comments = """# Notes
 #
@@ -186,7 +180,7 @@ if __name__ == "__main__":
         services = gen_compose_workspace_workers(mounted_eos_path, db_name)
         docker_compose["services"].update(services)
 
-    for pd_name in pds_names:
+    for pd_name in primary_datasets:
         services = gen_compose_downloader_workers(mounted_eos_path, pd_name)
         docker_compose["services"].update(services)
 
