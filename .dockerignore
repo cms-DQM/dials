@@ -31,3 +31,8 @@
 **/.env
 **/.aws
 **/build/
+
+# ETL files
+**/mocked_dbs*.json
+**/usercert.pem
+**/userkey.pem
