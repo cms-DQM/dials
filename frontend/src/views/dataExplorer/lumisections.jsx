@@ -158,9 +158,15 @@ const Lumisections = () => {
         lsNumberGte,
       })
       .then((response) => {
+        const results = response.results.map((item) => {
+          return {
+            ...item,
+            keyField: `${item.dataset_id}_${item.run_number}_${item.ls_number}`,
+          }
+        })
         const nextToken = getNextToken(response, 'next')
         const previousToken = getNextToken(response, 'previous')
-        setData(response.results)
+        setData(results)
         setNextToken(nextToken)
         setPreviousToken(previousToken)
       })
@@ -348,7 +354,7 @@ const Lumisections = () => {
           <Card.Header as='h4'>Lumisections</Card.Header>
           <Card.Body>
             <Table
-              keyField='ls_id'
+              keyField='keyField'
               isLoading={isLoading}
               data={data}
               columns={columns}

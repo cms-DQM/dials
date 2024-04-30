@@ -40,10 +40,16 @@ const Run = () => {
     API.lumisection
       .list({ nextToken, datasetId, runNumber })
       .then((response) => {
+        const results = response.results.map((item) => {
+          return {
+            ...item,
+            keyField: `${item.dataset_id}_${item.run_number}_${item.ls_number}`,
+          }
+        })
         const dataset = response.results?.[0]?.dataset
         const nextToken = getNextToken(response, 'next')
         const previousToken = getNextToken(response, 'previous')
-        setData(response.results)
+        setData(results)
         setDataset(dataset)
         setNextToken(nextToken)
         setPreviousToken(previousToken)
@@ -90,7 +96,7 @@ const Run = () => {
             </Card.Header>
             <Card.Body>
               <Table
-                keyField='ls_number'
+                keyField='keyField'
                 isLoading={isLoading}
                 data={data}
                 columns={columns}

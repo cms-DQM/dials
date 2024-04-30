@@ -125,9 +125,12 @@ const Runs = () => {
         runNumberLte,
       })
       .then((response) => {
+        const results = response.results.map((item) => {
+          return { ...item, keyField: `${item.dataset_id}_${item.run_number}` }
+        })
         const nextToken = getNextToken(response, 'next')
         const previousToken = getNextToken(response, 'previous')
-        setData(response.results)
+        setData(results)
         setNextToken(nextToken)
         setPreviousToken(previousToken)
       })
@@ -267,7 +270,7 @@ const Runs = () => {
           <Card.Header as='h4'>Runs</Card.Header>
           <Card.Body>
             <Table
-              keyField='run_number'
+              keyField='keyField'
               isLoading={isLoading}
               data={data}
               columns={columns}
