@@ -67,7 +67,7 @@ INSTALLED_APPS = [
 
 # Django Rest Framework (DRF) configuration
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "utils.paginate.EndlessPagination",
+    "DEFAULT_PAGINATION_CLASS": "utils.pagination.DynamicMultiOrderingCursorPagination",
     "PAGE_SIZE": 10,
 }
 
