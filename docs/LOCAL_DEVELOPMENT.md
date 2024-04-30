@@ -131,6 +131,7 @@ KEYTAB_PWD=<lxplus-password>
 EOS_LANDING_ZONE=/eos/project-m/mlplayground/public/DQMIO_workspaces
 MOUNTED_EOS_PATH=/eos/project-m/mlplayground/public/DQMIO_workspaces
 MOCKED_DBS_FPATH=/path/to/mocked/dbs/file
+ETL_CONFIG_FPATH=/paht/to/etl.config.json
 ```
 
 * `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
