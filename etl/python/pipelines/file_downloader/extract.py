@@ -30,4 +30,4 @@ def extract(logical_file_name: str) -> None:
         if client.is_file(remote_file_path):
             return
         client.init_proxy()
-        client.xrdcp(logical_file_name, remote_file_path)
+        client.xrdcp(remote_landing_dir, logical_file_name)
