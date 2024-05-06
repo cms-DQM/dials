@@ -21,15 +21,15 @@ class MinimalLXPlusClient:
         stdout = stdout.read().decode("utf-8").strip()
         return True if "Your proxy is valid" in stdout else False
 
-    def xrdcp(self, output_dir: str, fpath: str, redirector: str = "root://cms-xrd-global.cern.ch") -> str:
+    def xrdcp(self, output_dir: str, logical_file_name: str, redirector: str = "root://cms-xrd-global.cern.ch") -> str:
         """
         If multiple processes are trying to download the same file using xrdcp in the same destination,
         we found ourselves in a race condition, because xrdcp will fail with "Run: [ERROR] Local error: file exists:  (destination)"
         for every process that lost the race.
         """
-        fname = fpath.replace("/", "_")[1:]
+        fname = logical_file_name.replace("/", "_")[1:]
         out_fpath = f"{output_dir}/{fname}"
-        grid_fpath = f"{redirector}/{fpath}"
+        grid_fpath = f"{redirector}/{logical_file_name}"
         command = f"/usr/bin/timeout {self.timeout} /usr/bin/xrdcp {grid_fpath} {out_fpath}"
         _, stdout, stderr = self.client.exec_command(command)
         return_code = stdout.channel.recv_exit_status()
