@@ -37,7 +37,7 @@ spec:
             - bash
             - '-c'
             - >-
-              celery --app=python flower
+              celery --app=python flower --purge_offline_workers=120
           envFrom:
             - configMapRef:
                 name: dials-etl-configmap
