@@ -106,13 +106,13 @@ const Histogram = (props) => {
 
     API.histogram
       .list(dim, {
-        datasetId: searchDataset,
+        dataset: searchDataset,
         runNumber: searchRunNumber,
         lsNumber: searchLsNumber,
-        meId: searchMe,
+        me: searchMe,
       })
       .then((response) => {
-        if (response.count === 0) {
+        if (response.results.length === 0) {
           toast.error('Histogram not found!')
         } else {
           return navigate(`/histograms-${dim}d/${response.results[0].hist_id}`)
