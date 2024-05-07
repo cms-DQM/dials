@@ -79,7 +79,7 @@ const Runs = () => {
     API.dataset
       .list({ dataset: searchDataset })
       .then((response) => {
-        if (response.length === 0) {
+        if (response.results.length === 0) {
           toast.error('Dataset not found!')
         } else {
           const datasetId = response.results[0].dataset_id
