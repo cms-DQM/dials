@@ -42,7 +42,7 @@ class CERNKeycloakOIDC:
     def get_device(self) -> dict:
         return self._kc.device()
 
-    def decode_token(self, token: str, options: dict) -> dict:
+    def decode_token(self, token: str) -> dict:
         if self.skip_pk is True:
             raise KeycloakClientError
         options = {"verify_signature": True, "verify_aud": True, "verify_exp": True}
