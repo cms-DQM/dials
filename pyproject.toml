@@ -12,7 +12,7 @@ psycopg2-binary = "^2.9.9"
 requests = "^2.31.0"
 
 [tool.poetry.group.backend.dependencies]
-django = "^5.0.1"
+django = "^5.0.6"
 djangorestframework = "^3.14.0"
 django-filter = "^23.5"
 django-cors-headers = "^4.3.1"
@@ -23,7 +23,7 @@ dj-database-url = "^2.1.0"
 django-redis = "^5.4.0"
 python-keycloak = "^3.7.0"
 uvicorn = "^0.27.0.post1"
-gunicorn = "^21.2.0"
+gunicorn = "^22.0.0"
 
 [tool.poetry.group.etl.dependencies]
 celery = "^5.3.6"
