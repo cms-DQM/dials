@@ -207,6 +207,7 @@ const IngestionStatistics = () => {
                 layout={layoutH1DPlot}
                 config={{ staticPlot: true }}
                 isLoading={isLoadingH1D}
+                style={{ width: '100%', height: '100%' }}
               />
             </Card.Body>
           </Card>
@@ -220,6 +221,7 @@ const IngestionStatistics = () => {
                 layout={layoutH2DPlot}
                 config={{ staticPlot: true }}
                 isLoading={isLoadingH2D}
+                style={{ width: '100%', height: '100%' }}
               />
             </Card.Body>
           </Card>
@@ -235,6 +237,7 @@ const IngestionStatistics = () => {
                 data={dataFilesPlot}
                 config={{ staticPlot: true }}
                 isLoading={isLoadingFiles}
+                style={{ width: '100%', height: '100%' }}
               />
             </Card.Body>
           </Card>
