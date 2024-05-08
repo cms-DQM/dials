@@ -1,7 +1,8 @@
 from importlib import util as importlib_util
 
 from django.conf import settings
-from jose.exceptions import ExpiredSignatureError
+from jwcrypto.jws import InvalidJWSSignature
+from jwcrypto.jwt import JWTExpired, JWTNotYetValid
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
 
@@ -122,8 +123,16 @@ class CERNKeycloakBearerAuthentication(BaseAuthentication):
 
         try:
             token.validate(valid_aud, valid_azp)
-        except ExpiredSignatureError as err:
+        except InvalidJWSSignature as err:
+            raise AuthenticationFailed(
+                "Found and invalid jws signature while decoding the access token.", "access_token_invalid_jws_signature"
+            ) from err
+        except JWTExpired as err:
             raise AuthenticationFailed("Access token has expired.", "access_token_expired") from err
+        except JWTNotYetValid as err:
+            raise AuthenticationFailed("Access token not yet valid.", "access_token_not_yet_valid") from err
+        except Exception as err:  # noqa: BLE001
+            raise AuthenticationFailed("Unexpected error validating token.", "access_token_unexpected_error") from err
 
         return CERNKeycloakUser(token), token
 
