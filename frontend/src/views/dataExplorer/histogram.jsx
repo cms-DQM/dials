@@ -173,8 +173,7 @@ const Histogram = (props) => {
                   <ResponsivePlot
                     data={plotData}
                     layout={plotLayout}
-                    boxWidth='100%'
-                    boxHeight='70vh'
+                    style={{ width: '100%', height: '70vh' }}
                   />
                 </>
               )}

@@ -135,8 +135,7 @@ const Histograms1D = () => {
                 data={data}
                 layout={layout}
                 config={{ staticPlot: true }}
-                boxWidth={'200pt'}
-                boxHeight={'100pt'}
+                style={{ width: '100%', height: '100pt' }}
               />
             ),
           }
