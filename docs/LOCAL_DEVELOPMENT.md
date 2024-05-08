@@ -167,10 +167,38 @@ docker compose up dials-init
 docker compose up
 ```
 
+In order to force the indexing it is possible to run the `trigger-indexing` script from inside the docker container with:
+
+```bash
+docker exec -it dials-flower bash -c 'python3 scripts/trigger-indexing.py'
+```
+
+Tasks can be monitored trough flower, the default username and password for local development is `admin`.
+
 In case you need to clean the database you can run:
 
 ```bash
 docker compose up dials-purge
+```
+
+In case you stop the containers before finishing all tasks in celery queue you may need to clear redis before restarting the ETL from 0, this can be quickly done by restarting the redis container (since it is not configured to have persistent storage):
+
+```bash
+docker stop redis_local
+docker rm redis_local
+docker run -d \
+    --restart always \
+    --name redis_local \
+    -p 6379:6379 \
+    redis
+```
+
+It is also possible to manually flush the database by using the redis-cli inside the container:
+
+```bash
+docker exec -it redis_local bash
+redis-cli
+flushall
 ```
 
 You will notice that the docker compose file is set to bind-mount the code from backend and frontend in the host, so hot reloading works (i.e. you don't need to always build the container upon any modification)!!! In order to this work correctly you need to setup the current user GID and UID when building the container, **generally** UID and GID for single not-hardcore linux user are set to 1000 and both Dockerfiles use that as default values. In case you use a different UID/GID you can set then as build args:
@@ -180,3 +208,10 @@ docker compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g)
 ```
 
 Note that we are not using the `-d` flag for running detached from the current terminal, that is a good idea for development sessions and since we are not specifying any docker compose file it is automatically choosing the base file.
+
+In case you need to remove generated containers and images you can run:
+
+```bash
+docker ps -a --filter name=dials\* -q | xargs docker rm
+docker images dials\* -q | xargs docker rmi
+```
