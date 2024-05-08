@@ -23,10 +23,6 @@ This project is a full-stack application written in Python (^3.10) and JavaScrip
 -   [Authentication](/docs/AUTHENTICATION.md)
 -   [Deployment](/docs/DEPLOYMENT.md)
 
-# Planning and TODO
-
-Check development planning [here](/docs/PLANNING.md) and TODO tracker [here](/docs/TODO.md).
-
 # Contributing
 
 Check development guidelines [here](/docs/CONTRIBUTING.md) and local development instructions [here](/docs/LOCAL_DEVELOPMENT.md).
