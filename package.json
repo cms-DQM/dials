@@ -10,7 +10,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
-    "axios": "^1.6.5",
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.2",
     "date-fns": "^3.3.1",
     "oidc-client-ts": "^3.0.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.4",
-    "vite": "^5.1.6",
+    "vite": "^5.1.7",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-svgr": "^4.2.0"
   },
