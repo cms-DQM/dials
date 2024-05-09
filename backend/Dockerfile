@@ -20,7 +20,7 @@ RUN poetry export --with=backend --format=requirements.txt > requirements.txt
 # BUILDER IMAGE
 ###############################
 
-FROM python:3.10.13-alpine3.19 AS builder
+FROM python:3.10.13-slim AS builder
 
 WORKDIR /usr/src/build
 
@@ -32,7 +32,7 @@ RUN pip3 wheel --no-cache-dir --no-deps --wheel-dir /usr/src/build/wheels -r req
 # RELEASE IMAGE
 ###############################
 
-FROM python:3.10.13-alpine3.19 AS release
+FROM python:3.10.13-slim AS release
 
 # This is to print directly to stdout instead of buffering output
 ENV PYTHONUNBUFFERED 1
