@@ -1,9 +1,15 @@
 export const ENV = import.meta.env.VITE_APP_ENV ?? 'development'
 
 const OPTIONS = {
-  development: {
+  qa: {
     API_URL: 'http://localhost:8000/api/v1',
     OIDC_AUTHORITY: 'https://keycloak-qa.cern.ch/auth/realms/cern/',
+    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-public-app',
+    OIDC_SCOPE: 'openid profile email',
+  },
+  development: {
+    API_URL: 'http://localhost:8000/api/v1',
+    OIDC_AUTHORITY: 'https://auth.cern.ch/auth/realms/cern/',
     OIDC_PUBLIC_CLIENT_ID: 'cms-dials-public-app',
     OIDC_SCOPE: 'openid profile email',
   },
