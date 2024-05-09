@@ -109,6 +109,7 @@ def gen_compose_header(paths_to_mount):
                     "context": ".",
                     "args": ["UID", "GID"],
                 },
+                "volumes": ["./frontend/:/home/app/web/frontend"],
                 "network_mode": "host",
                 "depends_on": gen_common_depends_on(),
             },

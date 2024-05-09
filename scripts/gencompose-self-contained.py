@@ -143,6 +143,7 @@ def gen_compose_header(postgres_path, paths_to_mount):
                     "context": ".",
                     "args": ["UID", "GID"],
                 },
+                "volumes": ["./frontend/:/home/app/web/frontend"],
                 "depends_on": gen_common_depends_on(),
                 "ports": ["3000:3000"],
             },
