@@ -52,7 +52,7 @@ umount ./DQMIO
 
 ## Getting data from DBS
 
-The dataset and files indexing pipelines read data from DBS to trigger ETL jobs periodically, so it is important to have a configured grid certificate (check [here](/docs/SETTING-UP-SA.md) how to generate a certificate) that can be used to access DBS. The dataset indexing pipeline is used mainly to gather datasets metadata, so ingesting the entire index is not an issue, but the files indexing pipeline is used to trigger ETL jobs for each DQMIO file which means that if you ingest all the index locally you are going to ingest all DQMIO files.
+The dataset and files indexing pipelines read data from DBS to trigger ETL jobs periodically, so it is important to have a configured grid certificate (check [here](/docs/SETTING_UP_SA.md) how to generate a certificate) that can be used to access DBS. The dataset indexing pipeline is used mainly to gather datasets metadata, so ingesting the entire index is not an issue, but the files indexing pipeline is used to trigger ETL jobs for each DQMIO file which means that if you ingest all the index locally you are going to ingest all DQMIO files.
 
 To avoid running out of space instead of ingesting the entire index you can provide a mocked DBS response to the indexing pipeline, which is enough to test the ingestion locally. An example can be found in `/eos/project-m/mlplayground/public/mocked_dbs_files.json`.
 

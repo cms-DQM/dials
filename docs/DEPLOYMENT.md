@@ -4,7 +4,7 @@ DIALS service components and Redis are currently deployed in [CERN's Openshift P
 
 ## Setting up the service account (SA)
 
-Read [here](/docs/SETTING-UP-SA.md) how to do it.
+Read [here](/docs/SETTING_UP_SA.md) how to do it.
 
 ## Application Portal
 
