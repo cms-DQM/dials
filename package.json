@@ -6,7 +6,7 @@
   "scripts": {
     "build": "VITE_APP_ENV=production vite build",
     "lint": "prettier --write \"+(frontend)/**/*.+(js|jsx)\" && eslint \"+(frontend)/**/*.+(js|jsx)\" --fix",
-    "start": "vite"
+    "start": "vite --host"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
