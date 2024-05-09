@@ -10,7 +10,7 @@ const OPTIONS = {
   development: {
     API_URL: 'http://localhost:8000/api/v1',
     OIDC_AUTHORITY: 'https://auth.cern.ch/auth/realms/cern/',
-    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-public-app',
+    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-dev-public-app',
     OIDC_SCOPE: 'openid profile email',
   },
   production: {
