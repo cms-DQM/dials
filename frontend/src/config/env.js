@@ -4,7 +4,7 @@ const OPTIONS = {
   qa: {
     API_URL: 'http://localhost:8000/api/v1',
     OIDC_AUTHORITY: 'https://keycloak-qa.cern.ch/auth/realms/cern/',
-    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-public-app',
+    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-qa-public-app',
     OIDC_SCOPE: 'openid profile email',
   },
   development: {
