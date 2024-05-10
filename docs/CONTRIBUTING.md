@@ -16,6 +16,8 @@ This project tries to always follow the Git flow branching model that you can re
 * `hotfix`: quickly address necessary changes in `main` branch, should always start from `main` anb be merge back into both the `main` and `develop`.
 * `release`: used to prepare new production releases.
 
+Check the following [documentation](/docs/RELEASE_PROCEDURE.md) to understand the release procedure.
+
 ## Committing
 
 Always ensure you write descriptive commit messages adhering to the [Conventional Commits](https://www.conventionalcommits.org/) standard:
