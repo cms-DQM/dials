@@ -12,7 +12,11 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
--   `yarn run build:prod`
+-   `yarn run start:qa`
+
+Runs the app in the qa mode.
+
+-   `yarn run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -20,21 +24,10 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
--   `yarn run build:staging`
-
-Generates the same minified build as production but using `staging` variables.
-
--   `yarn run check-unused-deps`
-
-Check for unused dependencies installed in `package.json`.
-
 -   `yarn run lint`
 
-Check for lint errors in the code base.
+Check for lint errors in the code base and try to fix any style related errors with prettier and eslint.
 
--   `yarn run lint:fix`
-
-Try to fix any style related lint errors.
 
 ## Useful sources
 
