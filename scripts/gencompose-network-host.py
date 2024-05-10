@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import json
 import os
 import re
@@ -108,6 +109,7 @@ def gen_compose_header(paths_to_mount):
                     "context": ".",
                     "args": ["UID", "GID"],
                 },
+                "volumes": ["./frontend/:/home/app/web/frontend"],
                 "network_mode": "host",
                 "depends_on": gen_common_depends_on(),
             },
@@ -171,7 +173,12 @@ if __name__ == "__main__":
     if os.path.basename(cwd) != "dials":
         raise Exception(f"Expected to be in dials directory, but got {cwd}")
 
-    config = Config(RepositoryEnv(f"{cwd}/etl/.env"))
+    # CLI
+    parser = argparse.ArgumentParser(description="Re-download files script.")
+    parser.add_argument("--etl-env-file", help="Path to etl .env file.", default=f"{cwd}/etl/.env")
+    args = parser.parse_args()
+
+    config = Config(RepositoryEnv(args.etl_env_file))
 
     # Databases configured
     databases = config.get("DATABASES")
