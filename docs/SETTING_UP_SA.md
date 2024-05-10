@@ -40,10 +40,12 @@ Now you should successfully execute `voms-proxy-init` from lxplus and generate a
 
 9. Go to SA account's lxplus and test `voms-proxy-init -voms cms -rfc`.
 
+## Notes
 
-NOTE: Beware that Grid certificates generated in step (3.) expire, so you should always renew once it gets close to expire (you can check the expiration date [here](https://ca.cern.ch/ca/user/MyCertificates.aspx)) and re-do steps (4.), (5.) and (6.).
+- Beware that Grid certificates generated in step (3.) expire, so you should always renew once it gets close to expire (you can check the expiration date [here](https://ca.cern.ch/ca/user/MyCertificates.aspx)) and re-do steps (4.), (5.) and (6.).
 
-NOTE: Since the SA certificate is tied to your CMS VOMS user account when your account gets inactive (e.g. you leave CERN), the SA will stop authenticating against the CMS VOMS server and a new CMS VOMS user should re-do steps (7.) and (8.) with a valid grid certificate (if the current one is expired, re-do all steps).
+- Since the SA certificate is tied to your CMS VOMS user account when your account gets inactive (e.g. you leave CERN), the SA will stop authenticating against the CMS VOMS server and a new CMS VOMS user should re-do steps (7.) and (8.) with a valid grid certificate (if the current one is expired, re-do all steps).
 
+## Sources
 
 [*] https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookStartingGrid#ObtainingCert
