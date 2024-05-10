@@ -26,3 +26,7 @@ This project is a full-stack application written in Python (^3.10) and JavaScrip
 # Contributing
 
 Check development guidelines [here](/docs/CONTRIBUTING.md) and local development instructions [here](/docs/LOCAL_DEVELOPMENT.md).
+
+# Backlog
+
+A dedicated [project](https://github.com/orgs/cms-DQM/projects/3) was created to track the project's backlog.
