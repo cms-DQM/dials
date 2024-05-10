@@ -1,6 +1,6 @@
 # Deployment
 
-DIALS service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deploy in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [backend](registry.cern.ch/cms-dqmdc/dials-backend-base) and [frontend](registry.cern.ch/cms-dqmdc/dials-frontend) are currently hosted in Docker Hub and are imported to Openshift via an `ImageStream`.
+DIALS service components and Redis are currently deployed in [CERN's Openshift PaaS](https://paas.cern.ch/topology/all-namespaces?view=graph), which is based on Kubernetes. PostgreSQL on the other hand is deployed in [CERN DB on demand](https://dbod.web.cern.ch/). The base docker containers for [etl](registry.cern.ch/cms-dqmdc/dials-etl), [backend](registry.cern.ch/cms-dqmdc/dials-backend) and [frontend](registry.cern.ch/cms-dqmdc/dials-frontend) are currently stored in [CERN's Harbor registry](https://registry.cern.ch) and are imported in Openshift via an `ImageStream`.
 
 ## Setting up the service account (SA)
 
@@ -12,7 +12,7 @@ This guide will show how to create new applications that suit the DIALS deployme
 
 ![alt text](/docs/img/app_my_applications.png)
 
-Fill the following form according to:
+Fill the following form with to:
 
 * Public application
     - Application Identifier: cms-dials-public-app
@@ -24,15 +24,15 @@ Fill the following form according to:
     - Name: cms-dials-confidential-app
     - Category: Official
     - Administrator Group: cms-dqm-coreteam
-* Api client 1 application
+* Api client test application
     - Application Identifier: cms-dials-public-app
-    - Name: cms-dials-api-client-1
+    - Name: cms-dials-api-client-test
     - Category: Official
     - Administrator Group: cms-dqm-coreteam
 
 ![alt text](/docs/img/app_add_application.png)
 
-Fill the next step form according to:
+Fill the next step form with to:
 
 * Public application
     - Security protocol: OpenID Connect (OIDC)
@@ -43,7 +43,7 @@ Fill the next step form according to:
     - Security protocol: OpenID Connect (OIDC)
     - Redirect URI(s): https://cmsdials-api.web.cern.ch/api/v1/swagger
     - Base URL: https://cmsdials-api.web.cern.ch/api/v1/swagger
-* Api client 1 application
+* Api client test application
     - Security protocol: OpenID Connect (OIDC)
     - Redirect URI(s): https://cmsdials-api.web.cern.ch/api/v1/swagger
     - Base URL: https://cmsdials-api.web.cern.ch/api/v1/swagger
@@ -130,12 +130,15 @@ oc import-image etl --from=registry.cern.ch/cms-dqmdc/dials-etl --confirm
 oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend --confirm
 oc import-image frontend --from=registry.cern.ch/cms-dqmdc/dials-frontend --confirm
 oc apply -f ./oc/prod/configmaps
-oc apply -f ./oc/prod/deployments
+oc apply -f ./oc/prod/deployments/etl/common
+oc apply -f ./oc/prod/deployments/etl/downloaders
+oc apply -f ./oc/prod/deployments/etl/workspaces
+oc apply -f ./oc/prod/deployments/web
 oc apply -f ./oc/prod/services.yaml
 oc apply -f ./oc/prod/routes.yaml
 ```
 
-If resources are already deployed and just need to re-deploy the main deployments you don't need to re-apply `image_stream`, `services`, `routes` and `configmaps`. Note that if you need to delete something in the stack you can do `oc delete -f ...` just like Kubernetes!
+If resources are already deployed and just need to re-deploy some resources you don't need to re-apply `image_stream`, `services`, `routes` and `configmaps`. Note that if you need to delete something in the stack you can do `oc delete -f ...` just like Kubernetes!
 
 ## Updating resources
 
