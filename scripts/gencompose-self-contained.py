@@ -54,7 +54,6 @@ def gen_compose_header(postgres_path, paths_to_mount):
             "postgresql-local": {
                 "container_name": "postgresql-local",
                 "image": "postgres",
-                "restart": "always",
                 "volumes": [f"{postgres_path}:/var/lib/postgresql/data"],
                 "ports": ["5432:5432"],
                 "environment": {"POSTGRES_USER": "postgres", "POSTGRES_PASSWORD": "postgres"},
@@ -68,7 +67,6 @@ def gen_compose_header(postgres_path, paths_to_mount):
             "redis-local": {
                 "container_name": "redis-local",
                 "image": "redis",
-                "restart": "always",
                 "ports": ["6379:6379"],
                 "healthcheck": {
                     "test": ["CMD", "redis-cli", "--raw", "incr", "ping"],
