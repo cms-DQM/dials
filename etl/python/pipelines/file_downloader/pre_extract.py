@@ -10,5 +10,6 @@ def pre_extract(engine: Engine, file_id: int) -> str:
     with session() as sess:
         row = sess.query(FactFileIndex).filter_by(file_id=file_id).first()
         row.status = StatusCollection.DOWNLOAD_STARTED
+        row.err_trace = None
         sess.commit()
         return row.logical_file_name
