@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from ...env import conn_str
 from ...models.file_index import StatusCollection
 from ..utils import clean_file, error_handler
+from .exceptions import PipelineCopyError, PipelineRootfileError
 from .extract import extract
 from .post_load import post_load
 from .pre_extract import pre_extract
@@ -23,22 +24,22 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     # This function already clean the leftover root file if download fails
     try:
         fpath = extract(logical_file_name)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         err_trace = traceback.format_exc()
         error_handler(engine, file_id, err_trace, StatusCollection.COPY_ERROR)
-        raise e
+        raise PipelineCopyError from e
 
     try:
         validate_root_file(fpath)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
         error_handler(engine, file_id, err_trace, StatusCollection.ROOTFILE_ERROR)
-        raise e
+        raise PipelineRootfileError from e
 
     try:
         transform_load(engine, me_pattern, file_id, dataset_id, fpath)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
         error_handler(engine, file_id, err_trace, StatusCollection.PARSING_ERROR)
