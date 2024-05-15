@@ -7,7 +7,7 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
 
 from .backends import CERNKeycloakOIDC
-from .exceptions import AuthenticationFailed
+from .exceptions import AuthenticationFailed, InvalidToken
 from .token import CERNKeycloakToken
 from .user import CERNKeycloakUser
 
@@ -75,7 +75,7 @@ class CERNKeycloakClientSecretAuthentication(BaseAuthentication):
             return None
 
         if secret_key not in api_clients_kc:
-            raise AuthenticationFailed("App secret is not authorized." "app_secret_not_authorized")
+            raise InvalidToken
 
         kc: CERNKeycloakOIDC = api_clients_kc[secret_key]
         issued_token = kc.issue_api_token()
