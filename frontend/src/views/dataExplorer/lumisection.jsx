@@ -206,7 +206,7 @@ const Lumisection = () => {
                                           data={data}
                                           layout={layout}
                                           config={{ staticPlot: true }}
-                                          boxHeight={'200pt'}
+                                          style={{ width: '100%', height: '100%'}}
                                         />
                                       </Link>
                                     </div>
@@ -272,7 +272,7 @@ const Lumisection = () => {
                                           data={data}
                                           layout={layout}
                                           config={{ staticPlot: true }}
-                                          boxHeight={'200pt'}
+                                          style={{ width: '100%', height: '100%'}}
                                         />
                                       </Link>
                                     </div>
