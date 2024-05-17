@@ -9,7 +9,8 @@ def pre_extract(engine: Engine, file_id: int) -> str:
     session = sessionmaker(bind=engine)
     with session() as sess:
         row = sess.query(FactFileIndex).filter_by(file_id=file_id).first()
+        last_status = row.status
         row.status = StatusCollection.INGESTION_STARTED
         row.err_trace = None
         sess.commit()
-        return row.logical_file_name
+        return row.logical_file_name, last_status

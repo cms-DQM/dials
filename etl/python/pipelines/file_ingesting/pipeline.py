@@ -19,7 +19,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     """
     me_pattern = f"({'|'.join(workspace_mes)}).*"
     engine = create_engine(f"{conn_str}/{workspace_name}")
-    logical_file_name = pre_extract(engine, file_id)
+    logical_file_name, last_status = pre_extract(engine, file_id)
 
     # This function already clean the leftover root file if download fails
     try:
@@ -38,7 +38,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
         raise PipelineRootfileError from e
 
     try:
-        transform_load(engine, me_pattern, file_id, dataset_id, fpath)
+        transform_load(engine, me_pattern, file_id, dataset_id, fpath, last_status)
     except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()

@@ -8,6 +8,7 @@ from ...common.dqmio_reader import DQMIOReader
 from ...common.pgsql import copy_expert, copy_expert_onconflict_update, insert_onconflict_update
 from ...config import common_chunk_size, th1_types, th2_chunk_size, th2_types
 from ...models import DimMonitoringElements, FactLumisection, FactRun, FactTH1, FactTH2
+from ...models.file_index import StatusCollection
 from ..utils import list_to_sql_array, sqlachemy_asdict
 
 
@@ -28,7 +29,9 @@ def transform_load_run(engine: Engine, reader: DQMIOReader, dataset_id: int) -> 
     )
 
 
-def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, dataset_id: int) -> None:
+def transform_load_lumis(
+    engine: Engine, reader: DQMIOReader, me_pattern: str, dataset_id: int, update_on_conflict: bool = False
+) -> None:
     run_lumi = reader.index_keys
     lumis = []
     for run, lumi in run_lumi:
@@ -43,15 +46,21 @@ def transform_load_lumis(engine: Engine, reader: DQMIOReader, me_pattern: str, d
                 "th2_count": len(th2_me),
             }
         )
-
     lumis = pd.DataFrame(lumis)
+
+    if update_on_conflict:
+        expr = f"th1_count = {FactLumisection.__tablename__}.th1_count + EXCLUDED.th1_count, th2_count = {FactLumisection.__tablename__}.th2_count + EXCLUDED.th2_count"
+        method = partial(copy_expert_onconflict_update, conflict_key="dataset_id, run_number, ls_number", expr=expr)
+    else:
+        method = copy_expert
+
     lumis.to_sql(
         name=FactLumisection.__tablename__,
         con=engine,
         if_exists="append",
         index=False,
         chunksize=common_chunk_size,
-        method=copy_expert,
+        method=method,
     )
 
 
@@ -143,7 +152,9 @@ def transform_load_th(
         del th_list
 
 
-def transform_load(engine: Engine, me_pattern: str, file_id: int, dataset_id: int, fpath: str) -> pd.DataFrame:
+def transform_load(
+    engine: Engine, me_pattern: str, file_id: int, dataset_id: int, fpath: str, last_status: str
+) -> pd.DataFrame:
     reader = DQMIOReader(fpath)
 
     # - First extract all MEs from the DQMIO file and insert into the database with their count equal to 0
@@ -175,12 +186,16 @@ def transform_load(engine: Engine, me_pattern: str, file_id: int, dataset_id: in
     # if this step fails, you should manually check if this situation occurred or another bug happened
     # - if this situation occurred: we'll need to figured out how to generalize this table to satisfy this condition
     # - if another bug happened: remember to clean TH1 and TH2 histograms and subtract their respective count in MEs table before re-ingesting
-    transform_load_lumis(engine, reader, me_pattern, dataset_id)
+    #
+    # Note: the update_on_conflict argument is used to re-ingested successfully finished files to add different MEs not specified before in the etl.config
+    update_on_conflict = last_status == StatusCollection.FINISHED
+    transform_load_lumis(engine, reader, me_pattern, dataset_id, update_on_conflict)
 
     # This step will never fail regarding conflicting data, because we update the ls_count in each iteration
     # But, beware that this step should never run more than once for the same file
     # otherwise we'll end up with an incorrect ls_count for the run
-    transform_load_run(engine, reader, dataset_id)
+    if last_status != StatusCollection.FINISHED:
+        transform_load_run(engine, reader, dataset_id)
 
     # Close the reader and the root file
     reader.close()
