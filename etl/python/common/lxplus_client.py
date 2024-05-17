@@ -5,7 +5,7 @@ from scp import SCPClient
 class MinimalLXPlusClient:
     SERVER = "lxplus.cern.ch"
 
-    def __init__(self, lxplus_user: str, lxplus_pwd: str, timeout: int = 20 * 60):
+    def __init__(self, lxplus_user: str, lxplus_pwd: str, timeout: int = 5 * 60):
         self.timeout = timeout
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
