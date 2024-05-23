@@ -86,7 +86,7 @@ class AuthViewSet(ViewSet):
     @action(
         detail=False,
         methods=["post"],
-        name="Verify if device code was authenticate and issue token",
+        name="Verify if device code was authenticated and issue token",
         url_path=r"device-token",
     )
     def issue_device_token(self, request: Request):
@@ -98,8 +98,6 @@ class AuthViewSet(ViewSet):
             token = confidential_kc.issue_device_token(device_code=device_code)
         except KeycloakPostError as err:
             err_msg = json.loads(err.error_message.decode("utf-8"))
-            if err_msg.get("error") != "authorization_pending":
-                raise err
             err_msg = {"detail": err_msg.get("error_description"), "code": err_msg.get("error")}
             payload = PendingAuthorizationErrorSerializer(err_msg).data
             response = Response(payload, status=err.response_code)
