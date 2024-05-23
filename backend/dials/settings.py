@@ -211,8 +211,17 @@ CSP_IMG_SRC = [
     "https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png",
 ]
 
-# Caching
-CACHE_TTL = config("DJANGO_CACHE_TTL", cast=int, default=60 * 15)  # 15 minutes
+# -- Caching
+# If the CACHE TTL is too big you can have problems with Redis
+# since in production it is running in OC (Kubernetes) with a memory request limit
+# bigger ttl means more memory occupied for longer a longer period of time
+# and if we are receiving too much requests with different parameters (covered in the cache config for each route)
+# we can exceed the memory request limit and Redis will forcefully restart.
+# When Redis restart nginx hangs waiting the backend which hangs waiting for redis
+# which will cause timeout for the users (504 Gateway Time-out).
+# If we really need a bigger TTL, we need to check if we have enough memory available in the OC cluster
+# to increase Redis memory requests limit.
+CACHE_TTL = config("DJANGO_CACHE_TTL", cast=int, default=30)  # 30 seconds
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
