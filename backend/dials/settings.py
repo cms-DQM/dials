@@ -127,6 +127,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Logging
+ENABLE_SQL_LOGS = bool(config("DJANGO_ENABLE_SQL_LOGS", cast=int, default=0))  # 0 is False
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -142,7 +143,7 @@ LOGGING = {
     "loggers": {
         "django.db.backends": {
             "handlers": ["console"],
-            "level": "DEBUG" if DEBUG else "WARNING",
+            "level": "DEBUG" if ENABLE_SQL_LOGS else "WARNING",
             "propagate": False,
         },
         "root": {"handlers": ["console"], "level": "DEBUG" if DEBUG else "WARNING", "propagate": False},
