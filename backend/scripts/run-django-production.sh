@@ -7,4 +7,8 @@ if [ "$DJANGO_ENV" != "dev" ]; then
     cp -R staticfiles /var/www/api/static
 fi
 
-python -m gunicorn dials.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+if [ "${GUNICORN_LOG_TO_STDOUT}" == 1 ]; then
+    extra_args="--access-logfile=- --error-logfile=-"
+fi
+
+python -m gunicorn dials.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_N_WORKERS:=3} --timeout ${GUNICORN_TIMEOUT:=30} $extra_args

@@ -101,8 +101,8 @@ TEMPLATES = [
     },
 ]
 
-# Indicate entrypoint for starting ASGI server
-ASGI_APPLICATION = "dials.asgi.application"
+# Indicate entrypoint for starting WSGI server
+WSGI_APPLICATION = "dials.wsgi.application"
 
 # Database configuration
 WORKSPACES = json.loads(config("DJANGO_WORKSPACES"))
