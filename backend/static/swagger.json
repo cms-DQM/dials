@@ -1555,20 +1555,11 @@
         ]
       }
     },
-    "/api/v1/th1/{hist_id}/": {
+    "/api/v1/th1/{dataset_id}/{run_number}/{ls_number}/{me_id}/": {
       "get": {
         "operationId": "retrieveTH1",
         "description": "",
         "parameters": [
-          {
-            "name": "hist_id",
-            "in": "path",
-            "required": true,
-            "description": "A unique value identifying this t h1.",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "workspace",
             "required": false,
@@ -1819,20 +1810,11 @@
         ]
       }
     },
-    "/api/v1/th2/{hist_id}/": {
+    "/api/v1/th2/{dataset_id}/{run_number}/{ls_number}/{me_id}/": {
       "get": {
         "operationId": "retrieveTH2",
         "description": "",
         "parameters": [
-          {
-            "name": "hist_id",
-            "in": "path",
-            "required": true,
-            "description": "A unique value identifying this t h2.",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "workspace",
             "required": false,
@@ -2194,12 +2176,6 @@
       "TH1": {
         "type": "object",
         "properties": {
-          "hist_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "dataset": {
             "type": "string",
             "maxLength": 255
@@ -2259,7 +2235,6 @@
           }
         },
         "required": [
-          "hist_id",
           "dataset_id",
           "file_id",
           "run_number",
@@ -2275,12 +2250,6 @@
       "TH2": {
         "type": "object",
         "properties": {
-          "hist_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "dataset": {
             "type": "string",
             "maxLength": 255
@@ -2351,7 +2320,6 @@
           }
         },
         "required": [
-          "hist_id",
           "dataset_id",
           "file_id",
           "run_number",
