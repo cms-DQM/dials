@@ -188,7 +188,6 @@ def main():
     args = parser.parse_args()
 
     if hasattr(args, "handler"):
-        print(args)
         args.handler(args)
     else:
         parser.print_help()
