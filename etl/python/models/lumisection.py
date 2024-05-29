@@ -16,7 +16,6 @@ class FactLumisection(Base):
 
     __table_args__ = (
         sa.PrimaryKeyConstraint("dataset_id", "run_number", "ls_number"),
-        sa.Index("idx_fls_dataset_id", "dataset_id"),
         sa.Index("idx_fls_run_number", "run_number"),
         sa.Index("idx_fls_ls_number", "ls_number"),
     )

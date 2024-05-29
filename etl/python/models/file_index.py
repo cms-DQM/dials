@@ -30,8 +30,7 @@ class FactFileIndex(Base):
     err_trace = sa.Column("err_trace", sa.String(length=2295), nullable=True)
 
     __table_args__ = (
-        sa.PrimaryKeyConstraint("file_id"),
-        sa.Index("idx_fdi_dataset_id", "dataset_id"),
+        sa.PrimaryKeyConstraint("dataset_id", "file_id"),
         sa.Index("idx_fdi_logical_file_name", "logical_file_name"),
         sa.Index("idx_fdi_status", "status"),
     )

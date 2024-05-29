@@ -10,7 +10,7 @@ from ...models import FactFileIndex
 
 
 def load(engine: Engine, file_index: pd.DataFrame) -> list:
-    pk_name = inspect(FactFileIndex).primary_key[0].name
+    pk_name = inspect(FactFileIndex).primary_key[1].name  # Be sure to select "file_id"
     method = partial(copy_expert_onconflict_skip, return_ids=True, pk=pk_name)
     return file_index.to_sql(
         name=FactFileIndex.__tablename__,

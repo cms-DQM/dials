@@ -13,7 +13,6 @@ class FactRun(Base):
     ls_count = sa.Column("ls_count", sa.Integer)
 
     __table_args__ = (
-        sa.PrimaryKeyConstraint("run_number", "dataset_id"),
-        sa.Index("idx_fr_dataset_id", "dataset_id"),
+        sa.PrimaryKeyConstraint("dataset_id", "run_number"),
         sa.Index("idx_fr_run_number", "run_number"),
     )
