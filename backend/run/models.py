@@ -18,7 +18,6 @@ class Run(models.Model):
         managed = False
         db_table = "fact_run"
         indexes: ClassVar[list[models.Index]] = [
-            models.Index(name="idx_fr_dataset_id", fields=["dataset_id"]),
             models.Index(name="idx_fr_run_number", fields=["run_number"]),
         ]
         constraints: ClassVar[list[models.Index]] = [
