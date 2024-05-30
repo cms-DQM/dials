@@ -465,11 +465,20 @@
         ]
       }
     },
-    "/api/v1/file-index/{file_id}/": {
+    "/api/v1/file-index/{dataset_id}/{file_id}/": {
       "get": {
         "operationId": "retrieveFileIndex",
         "description": "",
         "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
           {
             "name": "file_id",
             "in": "path",
@@ -1561,6 +1570,42 @@
         "description": "",
         "parameters": [
           {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "ls_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "me_id",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
             "name": "workspace",
             "required": false,
             "in": "header",
@@ -1815,6 +1860,42 @@
         "operationId": "retrieveTH2",
         "description": "",
         "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "ls_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "me_id",
+            "schema": {
+              "type": "int"
+            }
+          },
           {
             "name": "workspace",
             "required": false,
