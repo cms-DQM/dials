@@ -66,7 +66,7 @@ const Histograms1D = () => {
       type: 'string',
       headerStyle: { 'min-width': '300px', 'word-break': 'break-all' },
       formatter: (cell, row) => {
-        const linkTo = `/histograms-1d/${row.hist_id}`
+        const linkTo = `/histograms-1d/${row.dataset_id}/${row.run_number}/${row.ls_number}/${row.me_id}`
         return <Link to={linkTo}>{row.me}</Link>
       },
     },
@@ -75,7 +75,7 @@ const Histograms1D = () => {
       dataField: 'plot',
       text: 'Plot',
       formatter: (cell, row) => {
-        const linkTo = `/histograms-1d/${row.hist_id}`
+        const linkTo = `/histograms-1d/${row.dataset_id}/${row.run_number}/${row.ls_number}/${row.me_id}`
         return <Link to={linkTo}>{cell}</Link>
       },
     },
@@ -138,6 +138,7 @@ const Histograms1D = () => {
                 style={{ width: '100%', height: '100pt' }}
               />
             ),
+            keyField: `${item.dataset_id}/${item.run_number}/${item.ls_number}/${item.me_id}`,
           }
         })
         const nextToken = getNextToken(response, 'next')
@@ -343,7 +344,7 @@ const Histograms1D = () => {
           </Card.Header>
           <Card.Body>
             <Table
-              keyField='hist_id'
+              keyField='keyField'
               isLoading={isLoading}
               data={data}
               columns={columns}

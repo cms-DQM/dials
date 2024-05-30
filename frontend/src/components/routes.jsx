@@ -53,7 +53,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Histograms1D} />}
         />
         <Route
-          path=':histId'
+          path=':datasetId/:runNumber/:lsNumber/:meId'
           element={
             <PrivateRoute component={Views.DataExplorer.Histogram} dim={1} />
           }
@@ -65,7 +65,7 @@ const AppRoutes = () => {
           element={<PrivateRoute component={Views.DataExplorer.Histograms2D} />}
         />
         <Route
-          path=':histId'
+          path=':datasetId/:runNumber/:lsNumber/:meId'
           element={
             <PrivateRoute component={Views.DataExplorer.Histogram} dim={2} />
           }

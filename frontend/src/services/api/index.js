@@ -317,8 +317,8 @@ const listHistograms = async (
   return response.data
 }
 
-const getHistogram = async (dim, histId) => {
-  const endpoint = `${API_URL}/th${dim}/${histId}/`
+const getHistogram = async ({ dim, datasetId, runNumber, lsNumber, meId }) => {
+  const endpoint = `${API_URL}/th${dim}/${datasetId}/${runNumber}/${lsNumber}/${meId}/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
