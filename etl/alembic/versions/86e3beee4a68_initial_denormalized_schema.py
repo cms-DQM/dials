@@ -20,14 +20,6 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
-def upgrade(engine_name: str) -> None:
-    globals()["upgrade_%s" % engine_name]()
-
-
-def downgrade(engine_name: str) -> None:
-    globals()["downgrade_%s" % engine_name]()
-
-
 # All data marts have the same modeling schema
 # so we define all schemas generically
 # and call the from each upgrade/downgrade function
@@ -198,41 +190,16 @@ def delete_tables() -> None:
     op.execute("DROP FUNCTION create_partition(TEXT, TEXT, BIGINT)")
 
 
-def upgrade_csc() -> None:
+def upgrade(engine_name: str) -> None:
+    # We don't need to create a function for each engine
+    # if they are going to run the same code
+    # By default alembic will execute the upgrade function for each engine separatedly
+    # globals()["upgrade_%s" % engine_name]()
     create_tables()
 
 
-def upgrade_ecal() -> None:
-    create_tables()
-
-
-def upgrade_hcal() -> None:
-    create_tables()
-
-
-def upgrade_jetmet() -> None:
-    create_tables()
-
-
-def upgrade_tracker() -> None:
-    create_tables()
-
-
-def downgrade_csc() -> None:
-    delete_tables()
-
-
-def downgrade_ecal() -> None:
-    delete_tables()
-
-
-def downgrade_hcal() -> None:
-    delete_tables()
-
-
-def downgrade_jetmet() -> None:
-    delete_tables()
-
-
-def downgrade_tracker() -> None:
+def downgrade(engine_name: str) -> None:
+    # Just like the upgrade function, we don't need a specific
+    # downgrade function for each engine
+    # globals()["downgrade_%s" % engine_name]()
     delete_tables()
