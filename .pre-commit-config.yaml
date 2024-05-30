@@ -27,7 +27,7 @@ repos:
     hooks:
       - id: eslint
         name: eslint-local
-        entry: yarn run lint
+        entry: yarn run precommit
         language: system
         types: [javascript]
         exclude: >

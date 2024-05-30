@@ -6,6 +6,7 @@
   "scripts": {
     "build": "VITE_APP_ENV=production vite build",
     "lint": "prettier --write \"+(frontend)/**/*.+(js|jsx)\" && eslint \"+(frontend)/**/*.+(js|jsx)\" --fix",
+    "precommit": "prettier --write $(git diff --staged --name-only --diff-filter d | grep -E '^frontend/.*.(js|jsx)$' | xargs) && eslint $(git diff --staged --name-only --diff-filter d | grep -E '^frontend/.*.(js|jsx)$' | xargs) --fix",
     "start": "VITE_APP_ENV=development vite --host",
     "start:qa": "VITE_APP_ENV=qa vite --host"
   },
