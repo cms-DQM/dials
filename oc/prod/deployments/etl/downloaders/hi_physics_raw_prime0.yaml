@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: hi-physics-raw-prime0-downloader-bulk
     app.kubernetes.io/name: hi-physics-raw-prime0-downloader-bulk
     app.kubernetes.io/part-of: downloader-etl
-    app.openshift.io/runtime: redis
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
@@ -80,7 +80,7 @@ metadata:
     app.kubernetes.io/instance: hi-physics-raw-prime0-downloader-priority
     app.kubernetes.io/name: hi-physics-raw-prime0-downloader-priority
     app.kubernetes.io/part-of: downloader-etl
-    app.openshift.io/runtime: redis
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
