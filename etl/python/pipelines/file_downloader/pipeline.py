@@ -2,6 +2,7 @@ import traceback
 
 from sqlalchemy import create_engine
 
+from ...common.lxplus_client import XrdcpNoServersAvailableToReadFileError
 from ...config import priority_era
 from ...env import conn_str
 from ...models.file_index import StatusCollection
@@ -25,9 +26,14 @@ def pipeline(
     try:
         extract(logical_file_name)
     except Exception as e:
+        err_status = (
+            StatusCollection.DOWNLOAD_FILE_NOT_AVAILABLE
+            if isinstance(e, XrdcpNoServersAvailableToReadFileError)
+            else StatusCollection.DOWNLOAD_ERROR
+        )
         err_trace = traceback.format_exc()
         for ws in wss:
-            error_handler(engines[ws["name"]], file_id, err_trace, StatusCollection.DOWNLOAD_ERROR)
+            error_handler(engines[ws["name"]], file_id, err_trace, err_status)
             engines[ws["name"]].dispose()
         raise e
 
