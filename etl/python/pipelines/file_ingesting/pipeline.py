@@ -26,7 +26,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
         fpath = extract(logical_file_name)
     except Exception as e:  # noqa: BLE001
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.COPY_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_COPY_ERROR)
         raise PipelineCopyError from e
 
     try:
@@ -34,7 +34,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.ROOTFILE_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_ROOTFILE_ERROR)
         raise PipelineRootfileError from e
 
     try:
@@ -42,7 +42,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.PARSING_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_PARSING_ERROR)
         raise e
 
     # If everything goes well, we can clean the file
