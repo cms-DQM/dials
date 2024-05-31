@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: stream-hi-express-raw-prime-downloader-bulk
     app.kubernetes.io/instance: stream-hi-express-raw-prime-downloader-bulk
     app.kubernetes.io/name: stream-hi-express-raw-prime-downloader-bulk
-    app.kubernetes.io/part-of: downloader-etl
+    app.kubernetes.io/part-of: stream-hi-express-raw-prime-downloader
     app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
@@ -79,7 +79,7 @@ metadata:
     app.kubernetes.io/component: stream-hi-express-raw-prime-downloader-priority
     app.kubernetes.io/instance: stream-hi-express-raw-prime-downloader-priority
     app.kubernetes.io/name: stream-hi-express-raw-prime-downloader-priority
-    app.kubernetes.io/part-of: downloader-etl
+    app.kubernetes.io/part-of: stream-hi-express-raw-prime-downloader
     app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
