@@ -16,7 +16,7 @@ import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Histogram = (props) => {
   const navigate = useNavigate()
-  const { histId } = useParams()
+  const { datasetId, runNumber, lsNumber, meId } = useParams()
   const { dim } = props
   const [isLoading, setLoading] = useState(true)
 
@@ -41,7 +41,7 @@ const Histogram = (props) => {
     const fetchData = () => {
       setLoading(true)
       API.histogram
-        .get(dim, histId)
+        .get({ dim, datasetId, runNumber, lsNumber, meId })
         .then((response) => {
           const data =
             dim === 1
@@ -84,7 +84,7 @@ const Histogram = (props) => {
     }
 
     fetchData()
-  }, [dim, histId])
+  }, [dim, datasetId, runNumber, lsNumber, meId])
 
   const validateSearhForm = () => {
     const isDatasetValid = isStringNonEmpty(searchDataset)
@@ -115,7 +115,10 @@ const Histogram = (props) => {
         if (response.results.length === 0) {
           toast.error('Histogram not found!')
         } else {
-          return navigate(`/histograms-${dim}d/${response.results[0].hist_id}`)
+          const elem = response.results[0]
+          return navigate(
+            `/histograms-${dim}d/${elem.dataset_id}/${elem.run_number}/${elem.ls_number}/${elem.me_id}`
+          )
         }
       })
       .catch((error) => {
@@ -152,7 +155,7 @@ const Histogram = (props) => {
               >{`Lumisection ${data.ls_number}`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 active
-              >{`H${dim}D #${data.hist_id}`}</Breadcrumb.Item>
+              >{`H${dim}D ME #${data.me_id}`}</Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>

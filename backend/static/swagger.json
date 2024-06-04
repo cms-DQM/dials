@@ -465,11 +465,20 @@
         ]
       }
     },
-    "/api/v1/file-index/{file_id}/": {
+    "/api/v1/file-index/{dataset_id}/{file_id}/": {
       "get": {
         "operationId": "retrieveFileIndex",
         "description": "",
         "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "dataset_id",
+            "schema": {
+              "type": "int"
+            }
+          },
           {
             "name": "file_id",
             "in": "path",
@@ -1555,18 +1564,45 @@
         ]
       }
     },
-    "/api/v1/th1/{hist_id}/": {
+    "/api/v1/th1/{dataset_id}/{run_number}/{ls_number}/{me_id}/": {
       "get": {
         "operationId": "retrieveTH1",
         "description": "",
         "parameters": [
           {
-            "name": "hist_id",
+            "name": "dataset_id",
             "in": "path",
             "required": true,
-            "description": "A unique value identifying this t h1.",
+            "description": "dataset_id",
             "schema": {
-              "type": "string"
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "ls_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "me_id",
+            "schema": {
+              "type": "int"
             }
           },
           {
@@ -1819,18 +1855,45 @@
         ]
       }
     },
-    "/api/v1/th2/{hist_id}/": {
+    "/api/v1/th2/{dataset_id}/{run_number}/{ls_number}/{me_id}/": {
       "get": {
         "operationId": "retrieveTH2",
         "description": "",
         "parameters": [
           {
-            "name": "hist_id",
+            "name": "dataset_id",
             "in": "path",
             "required": true,
-            "description": "A unique value identifying this t h2.",
+            "description": "dataset_id",
             "schema": {
-              "type": "string"
+              "type": "int"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "run_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "ls_number",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "me_id",
+            "schema": {
+              "type": "int"
             }
           },
           {
@@ -2194,12 +2257,6 @@
       "TH1": {
         "type": "object",
         "properties": {
-          "hist_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "dataset": {
             "type": "string",
             "maxLength": 255
@@ -2259,7 +2316,6 @@
           }
         },
         "required": [
-          "hist_id",
           "dataset_id",
           "file_id",
           "run_number",
@@ -2275,12 +2331,6 @@
       "TH2": {
         "type": "object",
         "properties": {
-          "hist_id": {
-            "type": "integer",
-            "maximum": 9223372036854776000,
-            "minimum": -9223372036854776000,
-            "format": "int64"
-          },
           "dataset": {
             "type": "string",
             "maxLength": 255
@@ -2351,7 +2401,6 @@
           }
         },
         "required": [
-          "hist_id",
           "dataset_id",
           "file_id",
           "run_number",

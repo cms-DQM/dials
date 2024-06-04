@@ -8,7 +8,6 @@ Base = declarative_base()
 class FactTH2(Base):
     __tablename__ = "fact_th2"
 
-    hist_id = sa.Column("hist_id", sa.BigInteger, autoincrement=True)
     dataset_id = sa.Column("dataset_id", sa.BigInteger)
     file_id = sa.Column("file_id", sa.BigInteger)
     run_number = sa.Column("run_number", sa.Integer)
@@ -24,10 +23,10 @@ class FactTH2(Base):
     data = sa.Column("data", sa.ARRAY(sa.Float))
 
     __table_args__ = (
-        sa.PrimaryKeyConstraint("hist_id"),
-        sa.Index("idx_th2_dataset_id", "dataset_id"),
+        sa.PrimaryKeyConstraint("dataset_id", "run_number", "ls_number", "me_id"),
         sa.Index("idx_th2_file_id", "file_id"),
         sa.Index("idx_th2_run_number", "run_number"),
         sa.Index("idx_th2_ls_number", "ls_number"),
         sa.Index("idx_th2_me_id", "me_id"),
+        sa.Index("idx_th2_run_number_me_id", "run_number", "me_id"),
     )

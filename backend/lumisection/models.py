@@ -20,7 +20,6 @@ class Lumisection(models.Model):
         managed = False
         db_table = "fact_lumisection"
         indexes: ClassVar[list[models.Index]] = [
-            models.Index(name="idx_fls_dataset_id", fields=["dataset_id"]),
             models.Index(name="idx_fls_run_number", fields=["run_number"]),
             models.Index(name="idx_fls_ls_number", fields=["ls_number"]),
         ]

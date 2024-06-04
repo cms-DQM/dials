@@ -9,11 +9,12 @@ class StatusCollection:
     PENDING = "PENDING"
     DOWNLOAD_STARTED = "DOWNLOAD_STARTED"
     DOWNLOAD_ERROR = "DOWNLOAD_ERROR"
+    DOWNLOAD_FILE_NOT_AVAILABLE = "DOWNLOAD_FILE_NOT_AVAILABLE"
     DOWNLOAD_FINISHED = "DOWNLOAD_FINISHED"
     INGESTION_STARTED = "INGESTION_STARTED"
-    COPY_ERROR = "COPY_ERROR"
-    ROOTFILE_ERROR = "ROOTFILE_ERROR"
-    PARSING_ERROR = "PARSING_ERROR"
+    INGESTION_COPY_ERROR = "INGESTION_COPY_ERROR"
+    INGESTION_ROOTFILE_ERROR = "INGESTION_ROOTFILE_ERROR"
+    INGESTION_PARSING_ERROR = "INGESTION_PARSING_ERROR"
     FINISHED = "FINISHED"
 
 
@@ -30,8 +31,7 @@ class FactFileIndex(Base):
     err_trace = sa.Column("err_trace", sa.String(length=2295), nullable=True)
 
     __table_args__ = (
-        sa.PrimaryKeyConstraint("file_id"),
-        sa.Index("idx_fdi_dataset_id", "dataset_id"),
+        sa.PrimaryKeyConstraint("dataset_id", "file_id"),
         sa.Index("idx_fdi_logical_file_name", "logical_file_name"),
         sa.Index("idx_fdi_status", "status"),
     )

@@ -120,7 +120,9 @@ def clean_parsing_error_handler(args):
     engine = get_engine(args.workspace)
     Session = sessionmaker(bind=engine)  # noqa: N806
     with Session() as session:
-        results = session.query(FactFileIndex).filter(FactFileIndex.status == StatusCollection.PARSING_ERROR).all()
+        results = (
+            session.query(FactFileIndex).filter(FactFileIndex.status == StatusCollection.INGESTION_PARSING_ERROR).all()
+        )
         results = [{k: v for k, v in result.__dict__.items() if k != "_sa_instance_state"} for result in results]
         file_ids = [res.get("file_id") for res in results]
         if len(file_ids) > 0:
@@ -167,7 +169,11 @@ def main():
         "--status",
         nargs="+",
         type=str,
-        choices=[StatusCollection.COPY_ERROR, StatusCollection.ROOTFILE_ERROR, StatusCollection.FINISHED],
+        choices=[
+            StatusCollection.INGESTION_COPY_ERROR,
+            StatusCollection.INGESTION_ROOTFILE_ERROR,
+            StatusCollection.FINISHED,
+        ],
         help="List of status used to search files when --all flag is specified.",
     )
     ingesting_parser.add_argument("-m", "--me-startswith", nargs="+", type=str, help="Custom MEs to ingest.")
@@ -188,7 +194,6 @@ def main():
     args = parser.parse_args()
 
     if hasattr(args, "handler"):
-        print(args)
         args.handler(args)
     else:
         parser.print_help()

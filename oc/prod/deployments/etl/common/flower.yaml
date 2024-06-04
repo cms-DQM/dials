@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: flower
     app.kubernetes.io/name: flower
     app.kubernetes.io/part-of: common-etl
-    app.openshift.io/runtime: redis
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1

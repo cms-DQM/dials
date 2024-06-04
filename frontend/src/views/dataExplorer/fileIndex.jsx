@@ -75,6 +75,7 @@ const FileIndex = () => {
               'dd.MM.yyyy HH:mm:ss'
             ),
             file_size: (item.file_size / 1024 ** 2).toFixed(1),
+            keyField: `${item.dataset_id}_${item.file_id}`,
           }
         })
         const nextToken = getNextToken(response, 'next')
@@ -211,7 +212,7 @@ const FileIndex = () => {
           <Card.Header as='h4'>Files</Card.Header>
           <Card.Body>
             <Table
-              keyField='file_id'
+              keyField='keyField'
               isLoading={isLoading}
               data={data}
               columns={columns}

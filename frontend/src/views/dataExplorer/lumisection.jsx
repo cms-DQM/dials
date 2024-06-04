@@ -200,20 +200,23 @@ const Lumisection = () => {
                                   <Card>
                                     <div className='card-img-top'>
                                       <Link
-                                        to={`/histograms-2d/${hist.hist_id}`}
+                                        to={`/histograms-1d/${hist.dataset_id}/${hist.run_number}/${hist.ls_number}/${hist.me_id}`}
                                       >
                                         <ResponsivePlot
                                           data={data}
                                           layout={layout}
                                           config={{ staticPlot: true }}
-                                          style={{ width: '100%', height: '100%'}}
+                                          style={{
+                                            width: '100%',
+                                            height: '100%',
+                                          }}
                                         />
                                       </Link>
                                     </div>
                                     <Card.Body>
                                       <Card.Title>
                                         <Link
-                                          to={`/histograms-1d/${hist.hist_id}`}
+                                          to={`/histograms-1d/${hist.dataset_id}/${hist.run_number}/${hist.ls_number}/${hist.me_id}`}
                                         >
                                           {hist.me}
                                         </Link>
@@ -266,20 +269,23 @@ const Lumisection = () => {
                                   <Card>
                                     <div className='card-img-top'>
                                       <Link
-                                        to={`/histograms-2d/${hist.hist_id}`}
+                                        to={`/histograms-2d/${hist.dataset_id}/${hist.run_number}/${hist.ls_number}/${hist.me_id}`}
                                       >
                                         <ResponsivePlot
                                           data={data}
                                           layout={layout}
                                           config={{ staticPlot: true }}
-                                          style={{ width: '100%', height: '100%'}}
+                                          style={{
+                                            width: '100%',
+                                            height: '100%',
+                                          }}
                                         />
                                       </Link>
                                     </div>
                                     <Card.Body>
                                       <Card.Title>
                                         <Link
-                                          to={`/histograms-2d/${hist.hist_id}`}
+                                          to={`/histograms-2d/${hist.dataset_id}/${hist.run_number}/${hist.ls_number}/${hist.me_id}`}
                                         >
                                           {hist.me}
                                         </Link>

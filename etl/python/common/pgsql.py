@@ -2,6 +2,7 @@ import csv
 from io import StringIO
 
 import psycopg2.extras as extras
+from sqlalchemy import text
 
 
 def copy_expert(table, conn, keys, data_iter) -> int:
@@ -157,3 +158,21 @@ def insert_onconflict_update(table, conn, keys, data_iter, conflict_key: str, ex
         conn.connection.commit()
 
         return cur.rowcount
+
+
+def plsql_create_dataset_ids_partitions():
+    return text("""
+    DO $$
+    DECLARE
+        dataset_id_list BIGINT[] := :dataset_id_list;
+        dataset_id BIGINT;
+        partition_name TEXT;
+        table_name TEXT := :table_name;
+    BEGIN
+        FOREACH dataset_id IN ARRAY dataset_id_list
+        LOOP
+            partition_name := format('%s_%s', table_name, dataset_id::TEXT);
+            PERFORM create_partition(table_name, partition_name, dataset_id);
+        END LOOP;
+    END $$;
+    """)

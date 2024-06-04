@@ -44,3 +44,51 @@ spec:
   selector:
     app: frontend
     deployment: frontend
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: redis-web-cache
+  namespace: cms-dials-prod
+  labels:
+    app: redis-web-cache
+    app.kubernetes.io/component: redis-web-cache
+    app.kubernetes.io/instance: redis-web-cache
+    app.kubernetes.io/name: redis-web-cache
+    app.kubernetes.io/part-of: dials
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: redis-web-cache
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-web-cache
+    deployment: redis-web-cache
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: redis-etl-broker
+  namespace: cms-dials-prod
+  labels:
+    app: redis-etl-broker
+    app.kubernetes.io/component: redis-etl-broker
+    app.kubernetes.io/instance: redis-etl-broker
+    app.kubernetes.io/name: redis-etl-broker
+    app.kubernetes.io/part-of: dials
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: redis-etl-broker
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-etl-broker
+    deployment: redis-etl-broker

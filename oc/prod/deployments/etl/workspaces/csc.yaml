@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: csc-bulk
     app.kubernetes.io/name: csc-bulk
     app.kubernetes.io/part-of: csc-etl
-    app.openshift.io/runtime: redis
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
@@ -80,7 +80,7 @@ metadata:
     app.kubernetes.io/instance: csc-priority
     app.kubernetes.io/name: csc-priority
     app.kubernetes.io/part-of: csc-etl
-    app.openshift.io/runtime: redis
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1

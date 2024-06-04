@@ -2,8 +2,21 @@ import paramiko
 from scp import SCPClient
 
 
+class XrdcpNoServersAvailableToReadFileError(Exception):
+    pass
+
+
+class XrdcpTimeoutError(Exception):
+    pass
+
+
+class XrdcpUnknownError(Exception):
+    pass
+
+
 class MinimalLXPlusClient:
     SERVER = "lxplus.cern.ch"
+    ERROR_MSG_3011 = "[3011] No servers are available to read the file."
 
     def __init__(self, lxplus_user: str, lxplus_pwd: str, timeout: int = 5 * 60):
         self.timeout = timeout
@@ -36,12 +49,19 @@ class MinimalLXPlusClient:
         stderr = stderr.read().decode("utf-8").strip()
         stdout = stdout.read().decode("utf-8").strip()
 
+        if self.ERROR_MSG_3011 in stderr:
+            raise XrdcpNoServersAvailableToReadFileError(
+                f"xrdcp (exit = {return_code}) file not found on servers. stderr: {stderr}"
+            )
+
         if return_code == 0:
             return out_fpath
         elif return_code == 124:
-            raise Exception(f"xrdcp (exit = {return_code}) timed out after {self.timeout} seconds for {grid_fpath}")
+            raise XrdcpTimeoutError(
+                f"xrdcp (exit = {return_code}) timed out after {self.timeout} seconds for {grid_fpath}"
+            )
         else:
-            raise Exception(f"xrdcp (exit = {return_code}) failed for {grid_fpath}. stderr: {stderr}")
+            raise XrdcpUnknownError(f"xrdcp (exit = {return_code}) failed for {grid_fpath}. stderr: {stderr}")
 
     def scp(self, remote_fpath: str, local_fpath: str) -> str:
         with SCPClient(self.client.get_transport()) as scp:

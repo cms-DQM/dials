@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/component: muon0-downloader-bulk
     app.kubernetes.io/instance: muon0-downloader-bulk
     app.kubernetes.io/name: muon0-downloader-bulk
-    app.kubernetes.io/part-of: downloader-etl
-    app.openshift.io/runtime: redis
+    app.kubernetes.io/part-of: muon0-downloader
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1
@@ -79,8 +79,8 @@ metadata:
     app.kubernetes.io/component: muon0-downloader-priority
     app.kubernetes.io/instance: muon0-downloader-priority
     app.kubernetes.io/name: muon0-downloader-priority
-    app.kubernetes.io/part-of: downloader-etl
-    app.openshift.io/runtime: redis
+    app.kubernetes.io/part-of: muon0-downloader
+    app.openshift.io/runtime: python
     app.openshift.io/runtime-namespace: cms-dials-prod
 spec:
   replicas: 1

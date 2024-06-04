@@ -8,11 +8,12 @@ const FILE_INDEX_STATUSES = [
   'PENDING',
   'DOWNLOAD_STARTED',
   'DOWNLOAD_ERROR',
+  'DOWNLOAD_FILE_NOT_AVAILABLE',
   'DOWNLOAD_FINISHED',
   'INGESTION_STARTED',
-  'COPY_ERROR',
-  'ROOTFILE_ERROR',
-  'PARSING_ERROR',
+  'INGESTION_COPY_ERROR',
+  'INGESTION_ROOTFILE_ERROR',
+  'INGESTION_PARSING_ERROR',
   'FINISHED',
 ]
 
@@ -317,8 +318,8 @@ const listHistograms = async (
   return response.data
 }
 
-const getHistogram = async (dim, histId) => {
-  const endpoint = `${API_URL}/th${dim}/${histId}/`
+const getHistogram = async ({ dim, datasetId, runNumber, lsNumber, meId }) => {
+  const endpoint = `${API_URL}/th${dim}/${datasetId}/${runNumber}/${lsNumber}/${meId}/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }

@@ -1,0 +1,80 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: redis-web-cache
+  namespace: cms-dials-prod
+  labels:
+    app: redis-web-cache
+    app.kubernetes.io/component: redis-web-cache
+    app.kubernetes.io/instance: redis-web-cache
+    app.kubernetes.io/name: redis-web-cache
+    app.kubernetes.io/part-of: databases
+    app.openshift.io/runtime: redis
+    app.openshift.io/runtime-namespace: cms-dials-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-web-cache
+  template:
+    metadata:
+      labels:
+        app: redis-web-cache
+        deployment: redis-web-cache
+    spec:
+      containers:
+        - name: redis
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 1024Mi
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-i'
+                - '-c'
+                - >-
+                  test "$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)" ==
+                  "PONG"
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-web-cache
+                  key: database-password
+          securityContext:
+            capabilities: {}
+            privileged: false
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/redis@sha256:5ea57e4833e80e77686b9a1485c2a0945442d05a74303ad1118aa5a3afd91ee3
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
