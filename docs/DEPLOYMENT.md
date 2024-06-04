@@ -61,26 +61,6 @@ Make sure to grant the permission to the public application to exchange token wi
 
 Don't forget to add roles to confidential application matching e-groups to automatically route users to a specific workspace and force the role to all users on API Clients.
 
-## Redis
-
-On a new project, click with the right button on black space and select `From Catalog`:
-
-![alt text](/docs/img/paas_from_catalog.png)
-
-Search for `redis` in the search field, click on the `Redis` template (non-ephemeral) and click on `Instantiate Template`:
-
-![alt text](/docs/img/paas_redis_template.png)
-
-On the next form select the right project `Namespace`, choose a password (if empty will be automatically generated) and change the `Version of Redis Image` to `5-el8` (for some reason the version `6-el8` does not boot):
-
-![alt text](/docs/img/paas_redis_form.png)
-
-The redis password will be stored in a `Secret` named `redis`, there you can check which password was automatically generated (if you didn't specify one):
-
-![alt text](/docs/img/paas_redis_secret.png)
-
-Congratulations! Redis is deployed and you can access it from within the project network by pointing to the host `redis`.
-
 ## EOS
 
 Since raw DQMIO data is stored in EOS, our containers need access to EOS and the simplest way to have access to it is mounting EOS inside our container filesystem. That is easily achievable following [this documentation](https://paas.docs.cern.ch/3._Storage/eos/#create-the-eos-credentials-secret).
@@ -113,6 +93,10 @@ It will load a blank page with one link called `Display token`, once click it wi
 ![alt text](/docs/img/paas_cli_api_token.png)
 
 Note that the token expire, so every once in a while you need to request a new token and re-run the `oc login` command!
+
+## Redis
+
+Both redis instances for the ETL and the backend (and their secrets) should be deployed using `OC` cli. The only thing that you need to do in PAAS interface is creating the a PVC with at least 1G of storage, named `redis-etl-broker` that will be picked up by ETL redis instance.
 
 ## Resources
 
