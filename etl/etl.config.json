@@ -39,7 +39,7 @@
     {
       "name": "egamma",
       "primary_datasets": [
-        "EGamma"
+        "EGamma0"
       ],
       "me_startswith": [
         "Egamma/"
