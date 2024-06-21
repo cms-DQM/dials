@@ -104,7 +104,7 @@
         "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_RelativeDifference_byFoldingmap_ImpactPoint_GenTk",
         "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_RelativeDifference_byFoldingmap_op_ImpactPoint_GenTk",
         "OfflinePV/offlinePrimaryVertices/tagDiffX",
-        "OfflinePV/offlinePrimaryVertices/tagDiffY",
+        "OfflinePV/offlinePrimaryVertices/tagDiffY"
       ],
       "bulk_queue": "tracker-bulk",
       "priority_queue": "tracker-priority"
