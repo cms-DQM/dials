@@ -37,6 +37,17 @@
       "priority_queue": "ecal-priority"
     },
     {
+      "name": "egamma",
+      "primary_datasets": [
+        "EGamma"
+      ],
+      "me_startswith": [
+        "Egamma/"
+      ],
+      "bulk_queue": "egamma-bulk",
+      "priority_queue": "egamma-priority"
+    },
+    {
       "name": "hcal",
       "primary_datasets": [
         "ZeroBias"
