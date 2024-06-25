@@ -21,15 +21,16 @@ depends_on: str | Sequence[str] | None = None
 
 
 def fact_ml_bad_lumis() -> list:
+    # We don't need extra indexes
     op.execute("""
     CREATE TABLE IF NOT EXISTS fact_ml_bad_lumis (
-        model_name VARCHAR(255),
+        model_id BIGINT,
         dataset_id BIGINT,
         file_id BIGINT,
         run_number INT,
         ls_number INT,
         me_id INT,
-        CONSTRAINT fact_ml_bad_lumis_pk PRIMARY KEY (model_name, dataset_id, run_number, ls_number, me_id)
+        CONSTRAINT fact_ml_bad_lumis_pk PRIMARY KEY (model_id, dataset_id, run_number, ls_number, me_id)
     );
     """)
 
