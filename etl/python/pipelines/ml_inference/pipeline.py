@@ -1,5 +1,3 @@
-import os.path
-
 import pandas as pd
 from sqlalchemy import create_engine
 
@@ -13,16 +11,17 @@ from .preprocess import preprocess
 
 def pipeline(
     workspace_name: str,
+    model_id: int,
     model_file: str,
-    model_thr: float,
-    model_me: str,
+    thr: float,
+    target_me: str,
     dataset_id: int,
     file_id: int,
 ):
     engine = create_engine(f"{conn_str}/{workspace_name}")
 
     # Extrac me_id and TH dimension if me exists in database
-    me = extract_me(engine, model_me)
+    me = extract_me(engine, target_me)
     if me is None:
         return
 
@@ -39,14 +38,13 @@ def pipeline(
     preds = predict(workspace_name, model_file, input_data)
 
     # Select bad lumis
-    model_name = os.path.splitext(model_file)[0]
     bad_lumis = []
     for idx, ls_number in enumerate(lss_.flatten()):
         mse = preds[1][idx]
-        if mse >= model_thr:
+        if mse >= thr:
             bad_lumis.append(
                 {
-                    "model_name": model_name,
+                    "model_id": model_id,
                     "dataset_id": dataset_id,
                     "file_id": file_id,
                     "run_number": hists[idx].run_number,

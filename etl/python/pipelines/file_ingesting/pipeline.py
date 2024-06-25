@@ -11,47 +11,7 @@ from .extract import extract
 from .post_load import post_load
 from .pre_extract import pre_extract
 from .transform_load import transform_load
-from .utils import validate_root_file
-
-
-WORKSPACES_WITH_ML = {
-    "jetmet": [
-        {
-            "file": "model_CHFrac_highPt_Barrel_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_highPt_Barrel",
-            "thr": 0.05,
-        },
-        {
-            "file": "model_CHFrac_highPt_EndCap_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_highPt_EndCap",
-            "thr": 0.05,
-        },
-        {
-            "file": "model_CHFrac_lowPt_Barrel_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_lowPt_Barrel",
-            "thr": 0.05,
-        },
-        {
-            "file": "model_CHFrac_lowPt_EndCap_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_lowPt_EndCap",
-            "thr": 0.05,
-        },
-        {
-            "file": "model_CHFrac_mediumPt_Barrel_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_mediumPt_Barrel",
-            "thr": 0.05,
-        },
-        {
-            "file": "model_CHFrac_mediumPt_EndCap_checkpoint_20240517.onnx",
-            "me": "JetMET/Jet/Cleanedak4PFJetsCHS/CHFrac_mediumPt_EndCap",
-            "thr": 0.05,
-        },
-        {"file": "model_MET_2_checkpoint_20240517.onnx", "me": "JetMET/MET/pfMETT1/Cleaned/MET_2", "thr": 0.05},
-        {"file": "model_METPhi_checkpoint_20240517.onnx", "me": "JetMET/MET/pfMETT1/Cleaned/METPhi", "thr": 0.05},
-        {"file": "model_METSig_checkpoint_20240517.onnx", "me": "JetMET/MET/pfMETT1/Cleaned/METSig", "thr": 0.05},
-        {"file": "model_SumET_checkpoint_20240517.onnx", "me": "JetMET/MET/pfMETT1/Cleaned/SumET", "thr": 0.05},
-    ]
-}
+from .utils import fetch_active_models, validate_root_file
 
 
 def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: int):
@@ -90,16 +50,17 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     clean_file(fpath)
 
     # Run ML pipeline for each model if workspace has any models registered
-    if workspace_name in WORKSPACES_WITH_ML:
-        for model in WORKSPACES_WITH_ML[workspace_name]:
-            ml_pipeline(
-                workspace_name=workspace_name,
-                model_file=model["file"],
-                model_thr=model["thr"],
-                model_me=model["me"],
-                dataset_id=dataset_id,
-                file_id=file_id,
-            )
+    active_models = fetch_active_models(engine)
+    for model in active_models:
+        ml_pipeline(
+            workspace_name=workspace_name,
+            model_id=model.model_id,
+            model_file=model.filename,
+            thr=model.thr,
+            target_me=model.target_me,
+            dataset_id=dataset_id,
+            file_id=file_id,
+        )
 
     # Finally finishes
     post_load(engine, file_id)
