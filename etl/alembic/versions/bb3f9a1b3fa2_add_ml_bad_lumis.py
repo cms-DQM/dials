@@ -34,9 +34,25 @@ def fact_ml_bad_lumis() -> list:
     """)
 
 
+def dim_ml_models_index() -> list:
+    op.execute("""
+    CREATE TABLE IF NOT EXISTS dim_ml_models_index (
+        model_id SERIAL,
+        filename VARCHAR(255),
+        target_me VARCHAR(255),
+        thr DOUBLE PRECISION,
+        active BOOLEAN,
+        CONSTRAINT dim_ml_models_index_pk PRIMARY KEY (model_id)
+    );
+    """)
+    op.execute("CREATE INDEX idx_active ON dim_ml_models_index (active);")
+
+
 def upgrade(engine_name: str) -> None:
+    dim_ml_models_index()
     fact_ml_bad_lumis()
 
 
 def downgrade(engine_name: str) -> None:
+    op.drop_table("dim_ml_models_index")
     op.drop_table("fact_ml_bad_lumis")
