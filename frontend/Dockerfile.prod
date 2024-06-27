@@ -11,8 +11,8 @@ COPY yarn.lock /usr/src/app/
 
 RUN yarn install
 
-COPY .eslintignore $APP_HOME
-COPY .eslintrc.js $APP_HOME
+COPY .eslintignore /usr/src/app/
+COPY .eslintrc.js /usr/src/app/
 COPY vite.config.mjs /usr/src/app/
 COPY frontend /usr/src/app/frontend
 
