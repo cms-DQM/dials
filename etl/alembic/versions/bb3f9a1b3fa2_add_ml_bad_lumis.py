@@ -33,6 +33,7 @@ def fact_ml_bad_lumis() -> list:
         CONSTRAINT fact_ml_bad_lumis_pk PRIMARY KEY (model_id, dataset_id, run_number, ls_number, me_id)
     );
     """)
+    op.execute("CREATE INDEX idx_mlbl_dataset_id_run_number ON fact_ml_bad_lumis (dataset_id, run_number);")
 
 
 def dim_ml_models_index() -> list:
