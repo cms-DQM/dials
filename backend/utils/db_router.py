@@ -16,16 +16,17 @@ class GenericViewSetRouter:
         queryset = super().get_queryset()
         order_by = queryset.query.order_by
         queryset = queryset.model.objects
-        workspace = self.request.headers.get(settings.WORKSPACE_HEADER.capitalize())
+        workspace = self.get_workspace()
+        queryset = queryset.using(workspace)
+        return queryset.all().order_by(*order_by)
 
+    def get_workspace(self):
+        workspace = self.request.headers.get(settings.WORKSPACE_HEADER.capitalize())
         if workspace:
             if workspace not in settings.WORKSPACES.keys():
                 raise NotFound(detail=f"Workspace '{workspace}' not found", code=404)
-            queryset = queryset.using(workspace)
         else:
             user_roles = self.request.user.cern_roles
             workspace = get_workspace_from_role(user_roles)
             workspace = workspace or settings.DEFAULT_WORKSPACE
-            queryset = queryset.using(workspace)
-
-        return queryset.all().order_by(*order_by)
+        return workspace
