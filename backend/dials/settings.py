@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "th1.apps.TH1Config",
     "th2.apps.TH2Config",
     "ml_models_index.apps.MLModelsIndexConfig",
+    "ml_bad_lumisection.apps.MLBadLumisectionConfig",
     "cern_auth.apps.CERNAuthConfig",
 ]
 
