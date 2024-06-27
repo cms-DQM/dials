@@ -16,6 +16,6 @@ class FactMLBadLumis(Base):
     me_id = sa.Column("me_id", sa.Integer)
 
     __table_args__ = (
-        sa.PrimaryKeyConstraint("model_name", "dataset_id", "run_number", "ls_number", "me_id"),
-        sa.Index("idx_fmbl_model_name_run_number", "model_name", "run_number"),
+        sa.PrimaryKeyConstraint("model_id", "dataset_id", "run_number", "ls_number", "me_id"),
+        sa.Index("idx_mlbl_dataset_id_run_number", "dataset_id", "run_number"),
     )
