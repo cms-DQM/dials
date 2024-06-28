@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     # Primary datasets configured
     with open(etl_config_fpath) as f:
-        primary_datasets = [elem for ws in json.load(f)["workspaces"] for elem in ws["primary_datasets"]]
+        primary_datasets = [elem.get("name") for ws in json.load(f)["workspaces"] for elem in ws["primary_datasets"]]
         primary_datasets = sorted(set(primary_datasets))
 
     comments = """# Notes
