@@ -35,7 +35,7 @@ RUN pip3 wheel --no-cache-dir --no-deps --wheel-dir /usr/src/build/wheels -r req
 FROM python:3.10.13-slim AS release
 
 # This is to print directly to stdout instead of buffering output
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 ARG UID=1000
 ARG GID=1000
