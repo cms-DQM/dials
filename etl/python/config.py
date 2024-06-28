@@ -25,7 +25,7 @@ workspaces = config_contents["workspaces"]
 # List all primary datasets (removing duplicates)
 primary_datasets = [obj for ws in workspaces for obj in ws["primary_datasets"]]
 primary_datasets = {(d["dbs_pattern"], d["dbs_instance"]): d for d in primary_datasets}.values()
-primary_datasets = sorted(primary_datasets, key=lambda x: x["name"])
+primary_datasets = sorted(primary_datasets, key=lambda x: x["dbs_pattern"])
 
 # We can delete config_contents from memory
 del config_contents
