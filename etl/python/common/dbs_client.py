@@ -10,15 +10,17 @@ TIMEOUT = 30
 
 
 class MinimalDBSClient:
-    API_URL = "https://cmsweb-prod.cern.ch:8443/dbs/prod/global/DBSReader"
+    BASE_URL = "https://cmsweb-prod.cern.ch:8443/dbs/prod"
 
     def __init__(
         self,
+        dbs_instance: str | None = "global",
         cert_fpath: str | None = None,
         key_fpath: str | None = None,
         use_mock: bool = False,
         mock_fpath: str | None = None,
     ) -> None:
+        self.reader_url = os.path.join(self.BASE_URL, dbs_instance, "DBSReader")
         self.cert_fpath = cert_fpath
         self.key_fpath = key_fpath  # This key should be open
         self.use_mock = use_mock
@@ -34,7 +36,7 @@ class MinimalDBSClient:
         if self.cert_fpath is None or self.key_fpath is None:
             raise ValueError("Cert or key file path not set")
 
-        url = os.path.join(self.API_URL, endpoint)
+        url = os.path.join(self.reader_url, endpoint)
         cert = (self.cert_fpath, self.key_fpath)
         try:
             response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT)

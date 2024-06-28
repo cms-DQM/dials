@@ -274,14 +274,20 @@ And you'll also need to update the [`etl.config.json`](/etl/etl.config.json) fil
     {
       "name": "tracker",
       "primary_datasets": [
-        "ZeroBias",
+        {
+          "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
+          "priority_downloader_queue": "ZeroBias-downloader-priority"
+        }
       ],
       "me_startswith": [
         "PixelPhase1/",
-        "SiStrip/"
+        "SiStrip/",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackEtaPhi_ImpactPoint_GenTk"
       ],
-      "bulk_queue": "tracker-bulk",
-      "priority_queue": "tracker-priority"
+      "bulk_ingesting_queue": "tracker-bulk",
+      "priority_ingesting_queue": "tracker-priority"
     }
   ]
   ...

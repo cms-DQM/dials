@@ -2,7 +2,7 @@
 # BASE IMAGE FOR OTHER STAGES
 ###############################
 
-FROM rootproject/root:6.30.02-ubuntu22.04 as base
+FROM rootproject/root:6.30.02-ubuntu22.04 AS base
 
 # The ROOT installed in the base image was compiled against python3 in ubuntu22.04 base image
 # ROOT's team just installed the latest python version (3.10.x) at build time
@@ -39,7 +39,7 @@ ENV PYTHONFAULTHANDLER=1 \
 # BUILDER IMAGE
 ###############################
 
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /usr/src/app
 

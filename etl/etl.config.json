@@ -2,9 +2,6 @@
   "common_chunk_size": 5000,
   "common_indexer_queue": "common-indexer",
   "dev_env_label": "dev",
-  "downloader_bulk_suffix": "-downloader-bulk",
-  "downloader_priority_suffix": "-downloader-priority",
-  "era_cmp_pattern": "*Run202*",
   "priority_era": "Run2024",
   "th1_types": [3,4,5],
   "th2_types": [6,7,8],
@@ -13,68 +10,197 @@
     {
       "name": "csc",
       "primary_datasets": [
-        "Muon",
-        "Muon0",
-        "StreamExpress"
+        {
+          "dbs_pattern": "/Muon/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "Muon-downloader-bulk",
+          "priority_downloader_queue": "Muon-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/Muon0/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "Muon0-downloader-bulk",
+          "priority_downloader_queue": "Muon0-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/StreamExpress/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "StreamExpress-downloader-bulk",
+          "priority_downloader_queue": "StreamExpress-downloader-priority"
+        }
       ],
       "me_startswith": [
         "CSC/CSCOfflineMonitor/recHits/"
       ],
-      "bulk_queue": "csc-bulk",
-      "priority_queue": "csc-priority"
+      "bulk_ingesting_queue": "csc-bulk",
+      "priority_ingesting_queue": "csc-priority"
     },
     {
       "name": "ecal",
       "primary_datasets": [
-        "ZeroBias"
+        {
+          "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
+          "priority_downloader_queue": "ZeroBias-downloader-priority"
+        }
       ],
       "me_startswith": [
         "EcalBarrel/",
         "EcalEndcap/",
         "Ecal/EventInfo/"
       ],
-      "bulk_queue": "ecal-bulk",
-      "priority_queue": "ecal-priority"
+      "bulk_ingesting_queue": "ecal-bulk",
+      "priority_ingesting_queue": "ecal-priority"
+    },
+    {
+      "name": "egamma",
+      "primary_datasets": [
+        {
+          "dbs_pattern": "/EGamma0/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "EGamma0-downloader-bulk",
+          "priority_downloader_queue": "EGamma0-downloader-priority"
+        }
+      ],
+      "me_startswith": [
+        "Egamma/"
+      ],
+      "bulk_ingesting_queue": "egamma-bulk",
+      "priority_ingesting_queue": "egamma-priority"
     },
     {
       "name": "hcal",
       "primary_datasets": [
-        "ZeroBias"
+        {
+          "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
+          "priority_downloader_queue": "ZeroBias-downloader-priority"
+        }
       ],
       "me_startswith": [
         "Hcal/DigiTask/"
       ],
-      "bulk_queue": "hcal-bulk",
-      "priority_queue": "hcal-priority"
+      "bulk_ingesting_queue": "hcal-bulk",
+      "priority_ingesting_queue": "hcal-priority"
     },
     {
       "name": "jetmet",
       "primary_datasets": [
-        "JetMET",
-        "JetMET0"
+        {
+          "dbs_pattern": "/JetMET/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "JetMET-downloader-bulk",
+          "priority_downloader_queue": "JetMET-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/JetMET0/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "JetMET0-downloader-bulk",
+          "priority_downloader_queue": "JetMET0-downloader-priority"
+        }
       ],
       "me_startswith": [
         "JetMET/Jet/",
         "JetMET/MET/"
       ],
-      "bulk_queue": "jetmet-bulk",
-      "priority_queue": "jetmet-priority"
+      "bulk_ingesting_queue": "jetmet-bulk",
+      "priority_ingesting_queue": "jetmet-priority"
+    },
+    {
+      "name": "muon_staging",
+      "primary_datasets": [
+        {
+          "dbs_pattern": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
+          "dbs_instance": "phys03",
+          "bulk_downloader_queue": "Private-downloader-bulk",
+          "priority_downloader_queue": "Private-downloader-bulk"
+        }
+      ],
+      "me_startswith": [
+        "DT/02-Segments/Wheel-1/numberOfSegments_W-1",
+        "DT/02-Segments/Wheel-2/numberOfSegments_W-2",
+        "DT/02-Segments/Wheel0/numberOfSegments_W0",
+        "DT/02-Segments/Wheel1/numberOfSegments_W1",
+        "DT/02-Segments/Wheel2/numberOfSegments_W2"
+      ],
+      "bulk_ingesting_queue": "private-bulk",
+      "priority_ingesting_queue": "private-bulk"
     },
     {
       "name": "tracker",
       "primary_datasets": [
-        "ZeroBias",
-        "StreamExpress",
-        "HIForward0",
-        "HIPhysicsRawPrime0",
-        "StreamHIExpressRawPrime"
+        {
+          "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
+          "priority_downloader_queue": "ZeroBias-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/StreamExpress/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "StreamExpress-downloader-bulk",
+          "priority_downloader_queue": "StreamExpress-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/HIForward0/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "HIForward0-downloader-bulk",
+          "priority_downloader_queue": "HIForward0-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/HIPhysicsRawPrime0/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "HIPhysicsRawPrime0-downloader-bulk",
+          "priority_downloader_queue": "HIPhysicsRawPrime0-downloader-priority"
+        },
+        {
+          "dbs_pattern": "/StreamHIExpressRawPrime/*Run202*/DQMIO",
+          "dbs_instance": "global",
+          "bulk_downloader_queue": "StreamHIExpressRawPrime-downloader-bulk",
+          "priority_downloader_queue": "StreamHIExpressRawPrime-downloader-priority"
+        }
       ],
       "me_startswith": [
         "PixelPhase1/",
-        "SiStrip/"
+        "SiStrip/",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackEtaPhi_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/NumberOfTracks_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/HitProperties/NumberOfRecHitsPerTrack_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackPt_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/Chi2oNDF_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackPhi_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackEta_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/HitProperties/NumberOfRecHitsPerTrack_Strip_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/HitProperties/NumberOfRecHitsPerTrack_Pixel_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/DistanceOfClosestApproachToBS_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/DistanceOfClosestApproachToBSdz_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/DistanceOfClosestApproachToBSVsPhi_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/DistanceOfClosestApproachToBSVsEta_GenTk",
+        "Tracking/TrackParameters/highPurityTracks/pt_1/GeneralProperties/TrackQoverP_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/Quality_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/NumberofTracks_Hardvtx_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/NumberofTracks_PUvtx_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackPtHighpurity_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackPtTight_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackPtLoose_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackEtaHighpurity_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackEtaTight_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TrackEtaLoose_ImpactPoint_GenTk",
+        "Tracking/PrimaryVertices/highPurityTracks/pt_0to1/offline/NumberOfGoodPVtx_offline",
+        "Tracking/PrimaryVertices/highPurityTracks/pt_0to1/offline/GoodPVtxNumberOfTracks_offline",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/NumberofTracks_Hardvtx_PUvtx_GenTk",
+        "Tracking/PrimaryVertices/highPurityTracks/pt_0to1/offline/FractionOfGoodPVtx_offline",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_Ratio_byFoldingmap_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_Ratio_byFoldingmap_op_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_RelativeDifference_byFoldingmap_ImpactPoint_GenTk",
+        "Tracking/TrackParameters/generalTracks/GeneralProperties/TkEtaPhi_RelativeDifference_byFoldingmap_op_ImpactPoint_GenTk",
+        "OfflinePV/offlinePrimaryVertices/tagDiffX",
+        "OfflinePV/offlinePrimaryVertices/tagDiffY"
       ],
-      "bulk_queue": "tracker-bulk",
-      "priority_queue": "tracker-priority"
+      "bulk_ingesting_queue": "tracker-bulk",
+      "priority_ingesting_queue": "tracker-priority"
     }
   ]
 }
