@@ -2,7 +2,7 @@
 # BUILDER IMAGE
 ###############################
 
-FROM node:20.11-bookworm as builder
+FROM node:20.11-bookworm AS builder
 
 WORKDIR /usr/src/app
 

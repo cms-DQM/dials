@@ -16,15 +16,31 @@ else
     exit 1
 fi
 
-# Primary dataset download queue
-pds_names=()
-while IFS= read -r dataset; do
-    pds_names+=("$dataset")
-done < <(jq -r '.workspaces[].primary_datasets[]' "$ETL_CONFIG_FPATH" | sort -u)
+# Primary datasets download queues
+downloader_queues=()
 
-# Parse databases set in environment
-databases_parsed=$(echo $DATABASES | sed 's/[ ][ ]*//g')
-IFS=',' read -r -a db_names <<< "$databases_parsed"
+while IFS= read -r queue_name; do
+    downloader_queues+=("$queue_name")
+done < <(jq -r '.workspaces[].primary_datasets[].bulk_downloader_queue' "$ETL_CONFIG_FPATH" | sort -u)
+
+while IFS= read -r queue_name; do
+    downloader_queues+=("$queue_name")
+done < <(jq -r '.workspaces[].primary_datasets[].priority_downloader_queue' "$ETL_CONFIG_FPATH" | sort -u)
+
+downloader_queues=($(printf "%s\n" "${downloader_queues[@]}" | sort -u))
+
+# Ingesting queues
+ingesting_queues=()
+
+while IFS= read -r queue_name; do
+    ingesting_queues+=("$queue_name")
+done < <(jq -r '.workspaces[].bulk_ingesting_queue' "$ETL_CONFIG_FPATH" | sort -u)
+
+while IFS= read -r queue_name; do
+    ingesting_queues+=("$queue_name")
+done < <(jq -r '.workspaces[].priority_ingesting_queue' "$ETL_CONFIG_FPATH" | sort -u)
+
+ingesting_queues=($(printf "%s\n" "${ingesting_queues[@]}" | sort -u))
 
 # Array of pids to wait
 pids_arr=()
@@ -38,18 +54,14 @@ poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscal
 pids_arr+=($!)
 
 # Start workers for each workspace
-for db_name in "${db_names[@]}"; do
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${db_name}-bulk@%h --queues=${db_name}-bulk &
-    pids_arr+=($!)
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${db_name}-priority@%h --queues=${db_name}-priority &
+for queue_name in "${ingesting_queues[@]}"; do
+    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${queue_name}@%h --queues=${queue_name} &
     pids_arr+=($!)
 done
 
 # Start downloader workers for each pd
-for pd_name in "${pds_names[@]}"; do
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-bulk@%h --queues=${pd_name}-downloader-bulk &
-    pids_arr+=($!)
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${pd_name}-downloader-priority@%h --queues=${pd_name}-downloader-priority &
+for queue_name in "${downloader_queues[@]}"; do
+    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${queue_name}@%h --queues=${queue_name} &
     pids_arr+=($!)
 done
 

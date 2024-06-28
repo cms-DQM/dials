@@ -3,7 +3,6 @@
 import argparse
 import json
 import os
-import re
 
 import yaml
 from decouple import Config, RepositoryEnv
@@ -158,39 +157,25 @@ def gen_compose_header(postgres_path, paths_to_mount):
     }
 
 
-def gen_compose_workspace_workers(paths_to_mount, db_name):
+def gen_compose_workspace_workers(paths_to_mount, queue_name):
     return {
-        f"dials-{db_name}-bulk": {
-            "container_name": f"dials-{db_name}-bulk",
+        f"dials-{queue_name}": {
+            "container_name": f"dials-{queue_name}",
             "image": "dials_etl",
             "volumes": gen_volumes(paths_to_mount),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={db_name}-bulk@%h --queues={db_name}-bulk'",
-            "depends_on": gen_common_depends_on(),
-        },
-        f"dials-{db_name}-priority": {
-            "container_name": f"dials-{db_name}-priority",
-            "image": "dials_etl",
-            "volumes": gen_volumes(paths_to_mount),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={db_name}-priority@%h --queues={db_name}-priority'",
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={queue_name}@%h --queues={queue_name}'",
             "depends_on": gen_common_depends_on(),
         },
     }
 
 
-def gen_compose_downloader_workers(paths_to_mount, pd_name):
+def gen_compose_downloader_workers(paths_to_mount, queue_name):
     return {
-        f"dials-{pd_name.lower()}-downloader-bulk": {
-            "container_name": f"dials-{pd_name.lower()}-downloader-bulk",
+        f"dials-{queue_name.lower()}": {
+            "container_name": f"dials-{queue_name.lower()}",
             "image": "dials_etl",
             "volumes": gen_volumes(paths_to_mount),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={pd_name}-downloader-bulk@%h --queues={pd_name}-downloader-bulk'",
-            "depends_on": gen_common_depends_on(),
-        },
-        f"dials-{pd_name.lower()}-downloader-priority": {
-            "container_name": f"dials-{pd_name.lower()}-downloader-priority",
-            "image": "dials_etl",
-            "volumes": gen_volumes(paths_to_mount),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={pd_name}-downloader-priority@%h --queues={pd_name}-downloader-priority'",
+            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={queue_name}@%h --queues={queue_name}'",
             "depends_on": gen_common_depends_on(),
         },
     }
@@ -213,10 +198,6 @@ if __name__ == "__main__":
     # Load ETL env variables
     config = Config(RepositoryEnv(args.etl_env_file))
 
-    # Databases configured
-    databases = config.get("DATABASES")
-    databases = re.sub("\s+", "", databases).split(",")
-
     # ETL paths to mount in docker
     etl_config_fpath = config.get("ETL_CONFIG_FPATH")
     paths_to_mount = [
@@ -228,10 +209,20 @@ if __name__ == "__main__":
     ]
     paths_to_mount = [elem for elem in paths_to_mount if elem is not None]
 
-    # Primary datasets configured
+    # Queues
+    downloader_queues = []
+    ingesting_queues = []
     with open(etl_config_fpath) as f:
-        primary_datasets = [elem for ws in json.load(f)["workspaces"] for elem in ws["primary_datasets"]]
-        primary_datasets = sorted(set(primary_datasets))
+        config_asjson = json.load(f)
+        for workspace in config_asjson["workspaces"]:
+            ingesting_queues.append(workspace["bulk_ingesting_queue"])
+            ingesting_queues.append(workspace["priority_ingesting_queue"])
+            for primary_dataset in workspace["primary_datasets"]:
+                downloader_queues.append(primary_dataset["bulk_downloader_queue"])
+                downloader_queues.append(primary_dataset["priority_downloader_queue"])
+
+    downloader_queues = sorted(set(downloader_queues))
+    ingesting_queues = sorted(set(ingesting_queues))
 
     comments = """# Notes
 #
@@ -241,12 +232,12 @@ if __name__ == "__main__":
 
     docker_compose = gen_compose_header(args.pg_persistent_path, paths_to_mount)
 
-    for db_name in databases:
-        services = gen_compose_workspace_workers(paths_to_mount, db_name)
+    for queue_name in ingesting_queues:
+        services = gen_compose_workspace_workers(paths_to_mount, queue_name)
         docker_compose["services"].update(services)
 
-    for pd_name in primary_datasets:
-        services = gen_compose_downloader_workers(paths_to_mount, pd_name)
+    for queue_name in downloader_queues:
+        services = gen_compose_downloader_workers(paths_to_mount, queue_name)
         docker_compose["services"].update(services)
 
     with open("docker-compose.yaml", "w") as f:

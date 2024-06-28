@@ -39,11 +39,11 @@ def pipeline(
 
     for ws in wss:
         post_download(engines[ws["name"]], file_id)
-        queue_name = ws["p_queue"] if priority_era in logical_file_name else ws["b_queue"]
+        queue_name = ws["priority_ingesting_queue"] if priority_era in logical_file_name else ws["bulk_ingesting_queue"]
         kwargs = {
             "file_id": file_id,
             "dataset_id": dataset_id,
             "workspace_name": ws["name"],
-            "workspace_mes": ws["mes"],
+            "workspace_mes": ws["me_startswith"],
         }
         file_ingesting_pipeline_task.apply_async(kwargs=kwargs, queue=queue_name)
