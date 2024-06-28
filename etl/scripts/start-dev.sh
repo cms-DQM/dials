@@ -20,7 +20,7 @@ fi
 pds_names=()
 while IFS= read -r dataset; do
     pds_names+=("$dataset")
-done < <(jq -r '.workspaces[].primary_datasets[]' "$ETL_CONFIG_FPATH" | sort -u)
+done < <(jq -r '.workspaces[].primary_datasets[].name' "$ETL_CONFIG_FPATH" | sort -u)
 
 # Parse databases set in environment
 databases_parsed=$(echo $DATABASES | sed 's/[ ][ ]*//g')
