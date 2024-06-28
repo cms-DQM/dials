@@ -18,22 +18,23 @@ common_indexer_queue = config_contents["common_indexer_queue"]
 dev_env_label = config_contents["dev_env_label"]
 downloader_bulk_suffix = config_contents["downloader_bulk_suffix"]
 downloader_priority_suffix = config_contents["downloader_priority_suffix"]
-era_cmp_pattern = config_contents["era_cmp_pattern"]
 priority_era = config_contents["priority_era"]
 th1_types = config_contents["th1_types"]
 th2_types = config_contents["th2_types"]
 th2_chunk_size = config_contents["th2_chunk_size"]
 workspaces = config_contents["workspaces"]
 
-# List all primary datasets and generate queue names
-primary_datasets = [elem for ws in workspaces for elem in ws["primary_datasets"]]
-primary_datasets = sorted(set(primary_datasets))
+# List all primary datasets (removing duplicates) and generate queue names
+primary_datasets = [obj for ws in workspaces for obj in ws["primary_datasets"]]
+primary_datasets = {(d["name"], d["dbs_pattern"], d["dbs_instance"]): d for d in primary_datasets}.values()
+primary_datasets = sorted(primary_datasets, key=lambda x: x["name"])
+unique_pds = sorted(set([pd["name"] for pd in primary_datasets]))
 pds_queues = {
     primary_dataset: {
         "bulk_queue": f"{primary_dataset}{downloader_bulk_suffix}",
         "priority_queue": f"{primary_dataset}{downloader_priority_suffix}",
     }
-    for primary_dataset in primary_datasets
+    for primary_dataset in unique_pds
 }
 
 # We can delete config_contents from memory
