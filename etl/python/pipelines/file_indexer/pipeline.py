@@ -38,7 +38,7 @@ def pipeline(workspaces: list, primary_datasets: list) -> None:
         inserted_files: list = file_index[file_index.file_id.isin(list(wss_by_id.keys()))].to_dict(orient="records")
         for file in inserted_files:
             queue_key = "priority_queue" if priority_era in file["logical_file_name"] else "bulk_queue"
-            queue_name = pds_queues[primary_dataset][queue_key]
+            queue_name = pds_queues[primary_dataset["name"]][queue_key]
             file_downloader_pipeline_task.apply_async(
                 kwargs={
                     "dataset_id": file["dataset_id"],
