@@ -2,7 +2,7 @@
 
 import argparse
 
-from python.config import common_indexer_queue, pds_queues, primary_datasets, priority_era, workspaces
+from python.config import common_indexer_queue, primary_datasets, priority_era, workspaces
 from python.env import conn_str
 from python.models import FactFileIndex, FactTH1, FactTH2
 from python.models.file_index import StatusCollection
@@ -60,9 +60,11 @@ def downloader_handler(args):
             wss_by_id[file_id]["logical_file_name"] = result["logical_file_name"]
 
     for file_id, item in wss_by_id.items():
-        queue_key = "priority_queue" if priority_era in item["logical_file_name"] else "bulk_queue"
+        queue_key = (
+            "priority_downloader_queue" if priority_era in item["logical_file_name"] else "bulk_downloader_queue"
+        )
         primary_dataset = item["logical_file_name"].split("/")[4]
-        queue_name = pds_queues[primary_dataset][queue_key]
+        queue_name = primary_dataset[queue_key]
         file_downloader_pipeline_task.apply_async(
             kwargs={
                 "dataset_id": item["dataset_id"],
@@ -72,8 +74,12 @@ def downloader_handler(args):
                     {
                         "name": ws_name,
                         "mes": next(filter(lambda x: x["name"] == ws_name, workspaces), None)["me_startswith"],
-                        "p_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)["priority_queue"],
-                        "b_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)["bulk_queue"],
+                        "priority_ingesting_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
+                            "priority_ingesting_queue"
+                        ],
+                        "bulk_ingesting_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
+                            "bulk_ingesting_queue"
+                        ],
                     }
                     for ws_name in item["wss"]
                 ],
