@@ -2,6 +2,10 @@ import paramiko
 from scp import SCPClient
 
 
+class SSHAuthenticationTimeoutError(Exception):
+    pass
+
+
 class XrdcpNoServersAvailableToReadFileError(Exception):
     pass
 
