@@ -60,11 +60,14 @@ def downloader_handler(args):
             wss_by_id[file_id]["logical_file_name"] = result["logical_file_name"]
 
     for file_id, item in wss_by_id.items():
+        first_ws = next(filter(lambda x: x["name"] == item["wss"][0], workspaces), None)
         queue_key = (
             "priority_downloader_queue" if priority_era in item["logical_file_name"] else "bulk_downloader_queue"
         )
         primary_dataset = item["logical_file_name"].split("/")[4]
-        queue_name = primary_dataset[queue_key]
+        queue_name = next(filter(lambda x: primary_dataset in x["dbs_pattern"], first_ws["primary_datasets"]), None)[
+            queue_key
+        ]
         file_downloader_pipeline_task.apply_async(
             kwargs={
                 "dataset_id": item["dataset_id"],
@@ -73,7 +76,9 @@ def downloader_handler(args):
                 "wss": [
                     {
                         "name": ws_name,
-                        "mes": next(filter(lambda x: x["name"] == ws_name, workspaces), None)["me_startswith"],
+                        "me_startswith": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
+                            "me_startswith"
+                        ],
                         "priority_ingesting_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
                             "priority_ingesting_queue"
                         ],
@@ -103,9 +108,9 @@ def ingesting_handler(args):
 
     tasks = [
         {
-            "queue_name": workspace["priority_queue"]
+            "queue_name": workspace["priority_ingesting_queue"]
             if priority_era in file["logical_file_name"]
-            else workspace["bulk_queue"],
+            else workspace["bulk_ingesting_queue"],
             "file_id": file["file_id"],
             "dataset_id": file["dataset_id"],
             "workspace_name": workspace["name"],
