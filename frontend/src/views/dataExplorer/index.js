@@ -6,6 +6,7 @@ import Lumisection from './lumisection'
 import Histograms1D from './histograms1d'
 import Histograms2D from './histograms2d'
 import Histogram from './histogram'
+import DQMGui from './dqmgui'
 
 export {
   FileIndex,
@@ -16,4 +17,5 @@ export {
   Histograms1D,
   Histograms2D,
   Histogram,
+  DQMGui,
 }

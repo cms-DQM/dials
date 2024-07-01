@@ -9,6 +9,7 @@ import {
   Histograms1D,
   Histograms2D,
   Histogram,
+  DQMGui,
 } from './dataExplorer'
 
 const Views = {
@@ -27,6 +28,7 @@ const Views = {
     Histograms1D,
     Histograms2D,
     Histogram,
+    DQMGui,
   },
 }
 

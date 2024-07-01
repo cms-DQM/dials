@@ -71,6 +71,10 @@ const AppRoutes = () => {
           }
         />
       </Route>
+      <Route
+        path='/dqmgui'
+        element={<PrivateRoute component={Views.DataExplorer.DQMGui} />}
+      />
     </Routes>
   )
 }
