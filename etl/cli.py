@@ -68,7 +68,6 @@ def downloader_handler(args):
         queue_name = next(filter(lambda x: primary_dataset in x["dbs_pattern"], first_ws["primary_datasets"]), None)[
             queue_key
         ]
-        print(item["logical_file_name"], "-", queue_name, "-")
         file_downloader_pipeline_task.apply_async(
             kwargs={
                 "dataset_id": item["dataset_id"],
