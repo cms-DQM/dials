@@ -108,9 +108,9 @@ def ingesting_handler(args):
 
     tasks = [
         {
-            "queue_name": workspace["priority_queue"]
+            "queue_name": workspace["priority_ingesting_queue"]
             if priority_era in file["logical_file_name"]
-            else workspace["bulk_queue"],
+            else workspace["bulk_ingesting_queue"],
             "file_id": file["file_id"],
             "dataset_id": file["dataset_id"],
             "workspace_name": workspace["name"],
