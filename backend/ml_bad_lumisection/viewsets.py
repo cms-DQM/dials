@@ -7,12 +7,14 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from django_filters.rest_framework import DjangoFilterBackend
+from lumisection.models import Lumisection
 from ml_models_index.models import MLModelsIndex
 from rest_framework import mixins, viewsets
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from utils.common import list_to_range
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
     CERNKeycloakClientSecretAuthentication,
@@ -97,7 +99,7 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
         )
         result = [qs for qs in result]
 
-        # Format certification json
+        # Format bad lumi certification json
         response = {}
         for run in run_number:
             response[run] = {}
@@ -114,5 +116,52 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
                     response[run][ls].append(
                         {"model_id": model_id, "me_id": me_id, "filename": filename, "me": target_me}
                     )
+
+        return Response(response)
+
+    @action(detail=False, methods=["GET"], url_path=r"golden-json")
+    def generate_golden_json(self, request):
+        try:
+            dataset_id = int(request.query_params.get("dataset_id"))
+            run_number = list(map(int, request.query_params.get("run_number__in").split(",")))
+            model_id = list(map(int, request.query_params.get("model_id__in").split(",")))
+        except ValueError as err:
+            raise ValidationError(
+                "dataset_id and run_number must be valid integers and model_ids a valid list of integers"
+            ) from err
+
+        # Select user's workspace
+        workspace = self.get_workspace()
+
+        # Fetch predictions for a given dataset, multiple runs from multiple models
+        queryset = self.get_queryset()
+        result = (
+            queryset.filter(dataset_id=dataset_id, run_number__in=run_number, model_id__in=model_id)
+            .all()
+            .order_by("run_number", "ls_number")
+            .values()
+        )
+        result = [qs for qs in result]
+
+        # Generate ML golden json
+        response = {}
+        for run in run_number:
+            queryset = self.get_queryset()
+            bad_lumis = (
+                queryset.filter(dataset_id=dataset_id, run_number=run, model_id__in=model_id)
+                .all()
+                .order_by("ls_number")
+                .values_list("ls_number", flat=True)
+                .distinct()
+            )
+            bad_lumis = [qs for qs in bad_lumis]
+            all_lumis = (
+                Lumisection.objects.using(workspace)
+                .filter(dataset_id=dataset_id, run_number=run)
+                .all()
+                .values_list("ls_number", flat=True)
+            )
+            good_lumis = [ls for ls in all_lumis if ls not in bad_lumis]
+            response[run] = list_to_range(good_lumis)
 
         return Response(response)
