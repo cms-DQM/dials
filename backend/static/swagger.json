@@ -2431,6 +2431,84 @@
         ]
       }
     },
+    "/api/v1/ml-bad-lumisection/golden-json": {
+      "get": {
+        "operationId": "goldenJsonMLBadLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model_id__in",
+            "required": false,
+            "in": "query",
+            "description": "model_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "run_number__in",
+            "required": false,
+            "in": "query",
+            "description": "run_number__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MLBadLumisectionGoldenJson"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Bad Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
   },
   "components": {
     "schemas": {
@@ -3023,6 +3101,29 @@
                   }
                 }
               }
+            }
+          }
+        },
+        "required": [
+          "run_number",
+          "ls_number",
+          "model_id",
+          "me_id",
+          "filename",
+          "me"
+        ]
+      },
+      "MLBadLumisectionGoldenJson": {
+        "type": "object",
+        "properties": {
+          "run_number": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "example": [128, 145]
             }
           }
         },
