@@ -1,20 +1,16 @@
 # Local development
 
-Documentation, tips and tricks to develop DIALS locally. Make sure you are doing all the modifications in your own fork.
+Instruction for getting a local version of DIALS for development purposes. By following these intructions, you will have a fully functional version of DIALS (including the data finding, data downloading and ingesting, frontend rendering, and API) that runs locally on your computer, useful for debugging an issue or developing new features.
 
-## Setup tools
+Note: make sure you are doing all the modifications to this repository (if any) in your own fork, and then make a pull request to merge them in the production repository; do not make changes directly in the production repository.
 
-The etl and backend uses `Python` `^3.10.13` , the third-party dependencies are managed by [`poetry`](https://python-poetry.org/) `^1.7.1` and note that explicitly the etl has a hard dependency on `ROOT` `^6.30/02`. After having all these dependencies you can run `poetry install --no-root` to install all the etl and backend dependencies specified in `pyproject.toml`. Then you should configure `pre-commit` by running `poetry run pre-commit install`, this will ensure code standardization.
+## Get some data used for testing
+The first step is to get some DQMIO data that will be used by your local instance of DIALS. There are essentially two methods: the first one is mounting the real DIALS production workspace (where the files are already gathered by the production DIALS instance) so it can be read by your local instance as well; the second one is copying a small number of DQMIO files to your local machine. Whatever method you choose, you will anyway need a grid certificate for querying DBS (the central CMS file database, basically the backend behind [DAS](https://cmsweb.cern.ch/das/)). Even in case where you will use locally copied files, you still need the grid certificate because the dataset metadata will be queried anyway. Check [here](/docs/SETTING_UP_SA.md) how to generate a certificate.
 
-The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint`.
+DIALS will execute an indexing pipeline, querying all available datasets and all available files within each dataset from DBS. The dataset index just contains the names and some metadata on the available datasets, so querying it is not a problem. However, the file index is used to trigger file download and/or ingestion jobs, implying that your local DIALS instance will attempt to download and/or ingest a huge number of DQMIO files. To avoid running out of space, you can provide a dummy DBS response to the indexing pipeline. This dummy response just contains a few files, that should be enough for testing and debugging. An example can be found in `/eos/project-m/mlplayground/public/mocked_dbs_minimal.json`. You can copy it into the `etl` directory of the DIALS repository.
 
-If you don't want to setup any of those tools you can run the entire stack trough `docker`, you'll only need `pyyaml` package to generate the docker compose file.
-
-## Setup the data used for testing
-
-### Accessing DQMIO data from EOS
-
-Note: This step is *optional*, if you don't mount EOS locally the ETL workflow will download the data locally trough *scp*.
+### Accessing DQMIO data from EOS by mounting it locally
+The first way of accessing the data is by mounting the appropriate EOS directory locally. Note that if you don't mount EOS locally, the file downloading and ingestion workflow will download the data locally trough *scp*. (But in that case, as mentioned above, this can lead to a huge number of files being downloaded if you use the actual DBS response instead of the dummy DBS response.) 
 
 The following command will mount the production data directory from EOS in read-only mode:
 
@@ -29,33 +25,40 @@ In case you need to unmount (turning off the computer/losing connection to lxplu
 umount ./DQMIO
 ```
 
-### Getting data from DBS
+(Note the use of `umount` rather than `unmount`.)
 
-The dataset and files indexing pipelines read data from DBS to trigger ETL jobs periodically, so it is important to have a configured grid certificate (check [here](/docs/SETTING_UP_SA.md) how to generate a certificate) that can be used to access DBS. The dataset indexing pipeline is used mainly to gather datasets metadata, so ingesting the entire index is not an issue, but the files indexing pipeline is used to trigger ETL jobs for each DQMIO file which means that if you ingest all the index locally you are going to ingest all DQMIO files.
+Note: this approach can give issues if you use Docker for running DIALS (see below), since the mount does not seem to be visible inside the Docker container.
+Therefore, the second approach, discussed below, is recommended.
 
-To avoid running out of space instead of ingesting the entire index you can provide a mocked DBS response to the indexing pipeline, which is enough to test the ingestion locally. An example can be found in `/eos/project-m/mlplayground/public/mocked_dbs_minimal.json`.
+### Accessing DQMIO data by making a local copy
+Instead of mounting production DQMIO data, you can setup a directory that behaves exactly like production.
+This is the only way to run locally if you don't have access to `mlplayground` project area.
+To use this approach, simply copy the content of the folder `/eos/project-m/mlplayground/public/DQMIO_samples` into a new `DQMIO` folder in the top directory of the DIALS repository, e.g. as follows:
 
-### Simulating EOS directory structure
-
-Instead of mounting production DQMIO data, you can setup a directory that behaves exactly like production. This is the only way to run locally if you don't have access to `mlplayground` project area.
-
-You'll need to get some files that can be used for testing depending on how many primary datasets you want to ingest. Let's say you are going to test with `ZeroBias` and `StreamExpress` datasets, run the following commands to simulate the directory structure:
-
-```bash
+```
 mkdir -p ./DQMIO
-mkdir -p ./DQMIO/ZeroBias
-mkdir -p ./DQMIO/StreamExpress
+scp -r <YOUR LXPLUS USERNAME>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_samples/* DQMIO
 ```
 
-Them put all the `ZeroBias` and `StreamExpress` files you want to test the ingestion in each respective directory. Note that you may need to update your `mocked_dbs` file if you are going to use different files than the ones already set in the example.
+Note: you should make sure that your dummy DBS response file is in sync with the files you actually copy to the local directory. They are in sync at the time of writing, but you might need to make modifications if you are using different files than the ones already set in the example.
 
-## Running with Docker
+## Building and running a local DIALS instance using a Docker container
+There are two broad approaches for setting up the environment and running a local version of DIALS: the first involves setting up the environment yourself, which can be a bit of a mess, but is easier once it is set up correctly; the second one uses a docker container instead, which is easier to set up but a little more tricky to interact with while developing. The latter approach is detailed here, the former in the next section.
 
-### Setup the environment variables
+### Installing Docker
+The advantage of using Docker is that you don't need a lot of packages or other dependencies.
+You will however need the packages `pyyaml` and `python-decouple`. You can install them using `pip install pyyaml python-decouple`.
 
-#### Backend
+For installing Docker, follow the steps here: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository.
+Note: use the instructions under ‘Install using the apt repository’.
+Note: if you already have docker installed, you can skip this step, or follow the instructions for upgrading instead of installing.
 
-Create a `.env` file inside [`backend`](/backend/) with the following variables:
+Then, follow some additional steps here to avoid typing sudo every time: https://docs.docker.com/engine/install/linux-postinstall/.
+It seems necessary to reboot the computer for these changes to take effect.
+
+### Setup the backend environment variables
+
+Create a `.env` file inside the [`backend`](/backend/) folder with the following variables:
 
 ```bash
 DJANGO_ENV=dev
@@ -80,11 +83,13 @@ DJANGO_KEYCLOAK_API_CLIENTS={"<SECRET-HERE-2>": "cms-dials-dev-api-client-test"}
 
 ```
 
-Go to [Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
+Note: you need to fill in the application secret in the last two lines. Go to the [Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
 
-#### ETL
+Note: optionally, you can also modify the `DJANGO_WORKSPACES`, for example if you're only interested in a single workspace for your purposes.
 
-Create a `.env` file inside [`etl`](/etl/) with the following variables:
+### Setup the ETL environment variables
+
+Create a `.env` file inside the [`etl`](/etl/) folder with the following variables:
 
 ```bash
 ENV=dev
@@ -107,9 +112,9 @@ ETL_CONFIG_FPATH=<PATH-TO-YOUR>/etl.config.json
 * `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
 * `MOCKED_DBS_FPATH` is optional, if do not set it the application will try to ingest all available files in DBS.
 
-### Starting with docker
+### Building and launching the Docker container
 
-The [`etl`](/elt/), [`backend`](/backend/) and [`frontend`](/frontend/) ships a `Dockerfile` that can be used for local development. The repository ships the script [`gencompose-self-contained.py`](/scripts/gencompose-self-contained.py) to automatically generate a docker-compose file based on the environment variables (e.g. related to how many workspace you want to use for development). Beware that you'll need to specify the path you want to persist the postgres data:
+The [`etl`](/elt/), [`backend`](/backend/) and [`frontend`](/frontend/) ship a `Dockerfile` that can be used for local development. Furthermore, the DIALS repository ships the script [`gencompose-self-contained.py`](/scripts/gencompose-self-contained.py) to automatically generate a docker-compose file based on the environment variables (e.g. related to how many workspace you want to use for development). Beware that you'll need to specify the path you want to persist the postgres data:
 
 ```bash
 ./scripts/gencompose-self-contained.py --pg-persistent-path /mnt/pg-data
@@ -123,9 +128,13 @@ docker compose up dials-init
 docker compose up
 ```
 
-#### Starting the ETL
+Note: for checking which processes are running, use `docker ps`. For killing all processes, use the ctrl+c keys.
 
-In order to force the indexing it is possible to run the `trigger-indexing` script from inside the docker container with:
+### Interacting with the Docker container
+
+#### Starting the data extraction process
+
+In principle, the indexing, downloading and ingestion procedure is automatically launched at the start of every hour. However, for testing purposes, one can force the indexing by running the `trigger-indexing` script from inside the docker container with:
 
 ```bash
 docker exec -it dials-flower bash -c 'python3 scripts/trigger-indexing.py'
@@ -173,7 +182,15 @@ docker images dials\* -q | xargs docker rmi
 ```
 
 
-## Running natively
+## Building and running a local DIALS instance natively (i.e. without Docker)
+
+### Setting up a local environment
+
+The etl and backend uses `Python` `^3.10.13` , the third-party dependencies are managed by [`poetry`](https://python-poetry.org/) `^1.7.1` and note that explicitly the etl has a hard dependency on `ROOT` `^6.30/02`. After having all these dependencies you can run `poetry install --no-root` to install all the etl and backend dependencies specified in `pyproject.toml`. Then you should configure `pre-commit` by running `poetry run pre-commit install`, this will ensure code standardization.
+
+The frontend uses `Node.js` `^20.11.0` and the third-party dependencies are managed by [`yarn`](https://www.npmjs.com/package/yarn) that can be installed using `npm install -g yarn`. Then you can run `yarn install` to install the frontend dependencies specified in `package.json`. Note that the frontend will not work if code does not agree with `eslint` configuration, to fix any style problems you can run `yarn run lint`.
+
+Note: in case you will be using Docker, the above setup steps are not needed. On the other hand, you will need the `pyyaml` package to generate the docker compose file.
 
 ### Running PostgresSQL
 
