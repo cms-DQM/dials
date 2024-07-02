@@ -4,6 +4,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
+import { pathsToJson } from '../../utils/sanitizer'
 
 const DQMGui = () => {
   const datasetName = '/ZeroBias/Run2023C-PromptReco-v1/DQMIO'
@@ -17,7 +18,8 @@ const DQMGui = () => {
     API.mes
       .list({})
       .then((data) => {
-        setIngestedMEs(data)
+        const mesDir = pathsToJson(data.map((item) => item.me))
+        setIngestedMEs(mesDir)
         setIsLoadingMEs(false)
       })
       .catch((err) => {
@@ -38,9 +40,7 @@ const DQMGui = () => {
       {isLoadingMEs ? (
         <Spinner animation='border' role='status' />
       ) : (
-        ingestedMEs.map((item) => {
-          return <p key={item.me_id}>{item.me}</p>
-        })
+        <p>{JSON.stringify(ingestedMEs)}</p>
       )}
     </>
   )
