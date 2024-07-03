@@ -338,6 +338,106 @@ const listMEs = async ({ me, meRegex, dim }) => {
   return response.data
 }
 
+const listMLModelsIndex = async ({
+  nextToken,
+  modelId,
+  modelIdIn,
+  filename,
+  filenameRegex,
+  targetMe,
+  targetMeRegex,
+  active,
+}) => {
+  const endpoint = `${API_URL}/ml-models-index/`
+  const params = sanitizedURLSearchParams(
+    {
+      next_token: nextToken,
+      model_id: modelId,
+      model_id__in: modelIdIn,
+      filename,
+      filename__regex: filenameRegex,
+      targetMe,
+      target_me__regex: targetMeRegex,
+      active,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const listMLBadLumisections = async ({
+  nextToken,
+  modelId,
+  modelIdIn,
+  dataset,
+  datasetRegex,
+  me,
+  meRegex,
+  runNumber,
+  runNumberIn,
+  lsNumber,
+}) => {
+  const endpoint = `${API_URL}/ml-bad-lumisection/`
+  const params = sanitizedURLSearchParams(
+    {
+      next_token: nextToken,
+      model_id: modelId,
+      model_id__in: modelIdIn,
+      dataset,
+      dataset__regex: datasetRegex,
+      me,
+      me__regex: meRegex,
+      run_number: runNumber,
+      run_number__in: runNumberIn,
+      ls_number: lsNumber,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getMLCertificationJson = async ({
+  modelIdIn,
+  datasetId,
+  runNumberIn,
+}) => {
+  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json`
+  const params = sanitizedURLSearchParams(
+    {
+      model_id__in: modelIdIn,
+      dataset_id: datasetId,
+      run_number__in: runNumberIn,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getMLGoldenJson = async ({ modelIdIn, datasetId, runNumberIn }) => {
+  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json`
+  const params = sanitizedURLSearchParams(
+    {
+      model_id__in: modelIdIn,
+      dataset_id: datasetId,
+      run_number__in: runNumberIn,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
 const API = {
   auth: {
     exchange: exchangeToken,
@@ -370,6 +470,14 @@ const API = {
   histogram: {
     get: getHistogram,
     list: listHistograms,
+  },
+  mlModelsIndex: {
+    list: listMLModelsIndex,
+  },
+  mlBadLumis: {
+    list: listMLBadLumisections,
+    certJson: getMLCertificationJson,
+    goldenJson: getMLGoldenJson,
   },
 }
 
