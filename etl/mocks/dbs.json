@@ -1,0 +1,282 @@
+[
+    {
+        "creation_date": 1719180847,
+        "dataset": "/EGamma0/Run2024F-PromptReco-v1/DQMIO",
+        "file_id": 15540456317,
+        "file_size": 181290784,
+        "last_modification_date": 1719180847,
+        "logical_file_name": "/store/data/Run2024F/EGamma0/DQMIO/PromptReco-v1/000/382/255/00000/49B79078-3C41-46DF-A199-5B2F3DB64F4F.root"
+    },
+    {
+        "creation_date": 1719180847,
+        "dataset": "/EGamma0/Run2024F-PromptReco-v1/DQMIO",
+        "file_id": 15540456357,
+        "file_size": 8544354,
+        "last_modification_date": 1719180847,
+        "logical_file_name": "/store/data/Run2024F/EGamma0/DQMIO/PromptReco-v1/000/382/259/00000/AF1022E7-665B-4F58-85BA-4FFA85DA0BF2.root"
+    },
+    {
+        "creation_date": 1719180847,
+        "dataset": "/EGamma0/Run2024F-PromptReco-v1/DQMIO",
+        "file_id": 15540456397,
+        "file_size": 13069549,
+        "last_modification_date": 1719180847,
+        "logical_file_name": "/store/data/Run2024F/EGamma0/DQMIO/PromptReco-v1/000/382/260/00000/CCD47930-96CD-4026-9F4C-6037A72FEF2D.root"
+    },
+    {
+        "creation_date": 1719180847,
+        "dataset": "/EGamma0/Run2024F-PromptReco-v1/DQMIO",
+        "file_id": 15540456437,
+        "file_size": 42639591,
+        "last_modification_date": 1719180847,
+        "logical_file_name": "/store/data/Run2024F/EGamma0/DQMIO/PromptReco-v1/000/382/255/00000/7C93767E-C7FF-44F3-A39F-206352ED5B6E.root"
+    },
+    {
+        "creation_date": 1713332905,
+        "dataset": "/StreamExpress/Run2024C-Express-v1/DQMIO",
+        "file_id": 14185463997,
+        "file_size": 34650463,
+        "last_modification_date": 1713332905,
+        "logical_file_name": "/store/express/Run2024C/StreamExpress/DQMIO/Express-v1/000/379/530/00000/35F0A2DB-ECD1-4C01-BA02-128431A6238B.root"
+    },
+    {
+        "creation_date": 1713332905,
+        "dataset": "/StreamExpress/Run2024C-Express-v1/DQMIO",
+        "file_id": 14185464037,
+        "file_size": 34716921,
+        "last_modification_date": 1713332905,
+        "logical_file_name": "/store/express/Run2024C/StreamExpress/DQMIO/Express-v1/000/379/530/00000/FB3097C6-C51F-403C-908E-0284AC574ECD.root"
+    },
+    {
+        "creation_date": 1669444656,
+        "dataset": "/Muon/Run2022G-PromptReco-v1/DQMIO",
+        "file_id": 2251808277,
+        "file_size": 72338857,
+        "last_modification_date": 1669444656,
+        "logical_file_name": "/store/data/Run2022G/Muon/DQMIO/PromptReco-v1/000/362/596/00000/C5FAF33A-DF91-4672-A012-C5F9F173A2C4.root"
+    },
+    {
+        "creation_date": 1669503167,
+        "dataset": "/Muon/Run2022G-PromptReco-v1/DQMIO",
+        "file_id": 2256785917,
+        "file_size": 20011174,
+        "last_modification_date": 1669503167,
+        "logical_file_name": "/store/data/Run2022G/Muon/DQMIO/PromptReco-v1/000/362/439/00000/2D7DB1B7-C304-41B2-9461-886745790571.root"
+    },
+    {
+        "creation_date": 1713669668,
+        "dataset": "/Muon0/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14215365357,
+        "file_size": 22942406,
+        "last_modification_date": 1713669668,
+        "logical_file_name": "/store/data/Run2024C/Muon0/DQMIO/PromptReco-v1/000/379/613/00000/A24948D3-8D79-43C7-8A1C-3EFDEE6447DE.root"
+    },
+    {
+        "creation_date": 1713669668,
+        "dataset": "/Muon0/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14215365397,
+        "file_size": 185534985,
+        "last_modification_date": 1713669668,
+        "logical_file_name": "/store/data/Run2024C/Muon0/DQMIO/PromptReco-v1/000/379/618/00000/594D9062-D7BB-4ED5-B93B-B4DCD553D7ED.root"
+    },
+    {
+        "creation_date": 1693758811,
+        "dataset": "/Muon/Run2023E-PromptReco-v1/DQMIO",
+        "file_id": 5653409757,
+        "file_size": 75660107,
+        "last_modification_date": 1693758811,
+        "logical_file_name": "/store/data/Run2023E/Muon/DQMIO/PromptReco-v1/000/372/602/00000/D8C69FB9-21CD-4AEF-8EA1-775245A5FE4A.root"
+    },
+    {
+        "creation_date": 1694022620,
+        "dataset": "/Muon/Run2023E-PromptReco-v1/DQMIO",
+        "file_id": 5750858717,
+        "file_size": 15603823,
+        "last_modification_date": 1694022620,
+        "logical_file_name": "/store/data/Run2023E/Muon/DQMIO/PromptReco-v1/000/372/761/00000/C3097AB3-54CE-4155-884B-88D0E07C257F.root"
+    },
+    {
+        "creation_date": 1665092635,
+        "dataset": "/JetMET/Run2022E-30May2023-v1/DQMIO",
+        "file_id": 3763217117,
+        "file_size": 1651558767,
+        "last_modification_date": 1665092635,
+        "logical_file_name": "/store/data/Run2022C/JetMET/DQMIO/30May2023-v1/2830000/56EE840D-8689-464E-A76E-67D57F7C759B.root"
+    },
+    {
+        "creation_date": 1665092635,
+        "dataset": "/JetMET/Run2022E-PromptReco-v1/DQMIO",
+        "file_id": 1904540197,
+        "file_size": 165155867,
+        "last_modification_date": 1665092635,
+        "logical_file_name": "/store/data/Run2022E/JetMET/DQMIO/PromptReco-v1/000/359/764/00000/DA896465-F2CC-44A9-BA4C-ACA850919423.root"
+    },
+    {
+        "creation_date": 1665092635,
+        "dataset": "/JetMET/Run2022E-PromptReco-v1/DQMIO",
+        "file_id": 1904540117,
+        "file_size": 146790024,
+        "last_modification_date": 1665092635,
+        "logical_file_name": "/store/data/Run2022E/JetMET/DQMIO/PromptReco-v1/000/359/764/00000/3ED9ECFB-D52C-4922-85CF-2CE1A5C2E4EF.root"
+    },
+    {
+        "creation_date": 1713787604,
+        "dataset": "/JetMET0/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14221306757,
+        "file_size": 315922290,
+        "last_modification_date": 1713787604,
+        "logical_file_name": "/store/data/Run2024C/JetMET0/DQMIO/PromptReco-v1/000/379/660/00000/D7F67099-0E6F-49C1-A8C9-DD1505C2F430.root"
+    },
+    {
+        "creation_date": 1713787604,
+        "dataset": "/JetMET0/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14221306797,
+        "file_size": 392778268,
+        "last_modification_date": 1713787604,
+        "logical_file_name": "/store/data/Run2024C/JetMET0/DQMIO/PromptReco-v1/000/379/661/00000/D0EFFE29-268A-4773-84F6-858118F5613B.root"
+    },
+    {
+        "creation_date": 1683686725,
+        "dataset": "/ZeroBias/Run2023C-PromptReco-v1/DQMIO",
+        "file_id": 3395374557,
+        "file_size": 25848954,
+        "last_modification_date": 1683686725,
+        "logical_file_name": "/store/data/Run2023C/ZeroBias/DQMIO/PromptReco-v1/000/367/132/00000/A2FCB9BE-80D9-48D8-A3F8-79D9BC45B9FC.root"
+    },
+    {
+        "creation_date": 1683672054,
+        "dataset": "/ZeroBias/Run2023C-PromptReco-v1/DQMIO",
+        "file_id": 3393809397,
+        "file_size": 423578592,
+        "last_modification_date": 1683672054,
+        "logical_file_name": "/store/data/Run2023C/ZeroBias/DQMIO/PromptReco-v1/000/367/112/00000/D878867F-54B6-4353-9067-9A5218FF785F.root"
+    },
+    {
+        "creation_date": 1711084804,
+        "dataset": "/ZeroBias/Run2024A-PromptReco-v1/DQMIO",
+        "file_id": 13822664277,
+        "file_size": 136518352,
+        "last_modification_date": 1711084804,
+        "logical_file_name": "/store/data/Run2024A/ZeroBias/DQMIO/PromptReco-v1/000/378/146/00000/31274985-D58E-4BB8-AF92-E44E2EF55B91.root"
+    },
+    {
+        "creation_date": 1711018348,
+        "dataset": "/ZeroBias/Run2024A-PromptReco-v1/DQMIO",
+        "file_id": 13770979997,
+        "file_size": 25105071,
+        "last_modification_date": 1711018348,
+        "logical_file_name": "/store/data/Run2024A/ZeroBias/DQMIO/PromptReco-v1/000/378/144/00000/F6A65CA8-F2D1-489A-8187-4FBC198E10D0.root"
+    },
+    {
+        "creation_date": 1713216156,
+        "dataset": "/ZeroBias/Run2024B-PromptReco-v1/DQMIO",
+        "file_id": 14178276197,
+        "file_size": 97726453,
+        "last_modification_date": 1713216156,
+        "logical_file_name": "/store/data/Run2024B/ZeroBias/DQMIO/PromptReco-v1/000/379/349/00000/FA88C23B-CE70-43F4-8CAD-5A6C866227C1.root"
+    },
+    {
+        "creation_date": 1713324236,
+        "dataset": "/ZeroBias/Run2024B-PromptReco-v1/DQMIO",
+        "file_id": 14184975197,
+        "file_size": 64900890,
+        "last_modification_date": 1713324236,
+        "logical_file_name": "/store/data/Run2024B/ZeroBias/DQMIO/PromptReco-v1/000/379/391/00000/4DA9D3A1-5FDB-4E9D-AA3B-71711D4236B5.root"
+    },
+    {
+        "creation_date": 1713436491,
+        "dataset": "/ZeroBias/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14193073117,
+        "file_size": 340236559,
+        "last_modification_date": 1713436491,
+        "logical_file_name": "/store/data/Run2024C/ZeroBias/DQMIO/PromptReco-v1/000/379/454/00000/932EE77F-84A5-48D2-ACBA-DF20741734AF.root"
+    },
+    {
+        "creation_date": 1713342583,
+        "dataset": "/ZeroBias/Run2024C-PromptReco-v1/DQMIO",
+        "file_id": 14187057437,
+        "file_size": 344729600,
+        "last_modification_date": 1713342583,
+        "logical_file_name": "/store/data/Run2024C/ZeroBias/DQMIO/PromptReco-v1/000/379/420/00000/37BA1A20-D7F9-4F63-9D40-C450D89C24D2.root"
+    },
+    {
+        "creation_date": 1698638944,
+        "dataset": "/StreamHIExpressRawPrime/HIRun2023A-Express-v2/DQMIO",
+        "file_id": 7680534877,
+        "file_size": 7743958,
+        "last_modification_date": 1698638944,
+        "logical_file_name": "/store/express/HIRun2023A/StreamHIExpressRawPrime/DQMIO/Express-v2/000/375/831/00000/41A9710E-C06E-41FA-8411-38FEB22228CB.root"
+    },
+    {
+        "creation_date": 1698638944,
+        "dataset": "/StreamHIExpressRawPrime/HIRun2023A-Express-v2/DQMIO",
+        "file_id": 7680534837,
+        "file_size": 13350418,
+        "last_modification_date": 1698638944,
+        "logical_file_name": "/store/express/HIRun2023A/StreamHIExpressRawPrime/DQMIO/Express-v2/000/375/831/00000/A2FE88D3-B9C5-4C42-9C79-F94109D9640F.root"
+    },
+    {
+        "creation_date": 1698735041,
+        "dataset": "/HIForward0/HIRun2023A-PromptReco-v2/DQMIO",
+        "file_id": 7719111237,
+        "file_size": 19190519,
+        "last_modification_date": 1698735041,
+        "logical_file_name": "/store/hidata/HIRun2023A/HIForward0/DQMIO/PromptReco-v2/000/375/531/00000/0F89086C-2627-4BD5-8A37-F6F31ED8F426.root"
+    },
+    {
+        "creation_date": 1698735041,
+        "dataset": "/HIForward0/HIRun2023A-PromptReco-v2/DQMIO",
+        "file_id": 7719111197,
+        "file_size": 99871320,
+        "last_modification_date": 1698735041,
+        "logical_file_name": "/store/hidata/HIRun2023A/HIForward0/DQMIO/PromptReco-v2/000/375/530/00000/9146388A-29BA-44D7-A7FB-665B3AD147F4.root"
+    },
+    {
+        "creation_date": 1698742390,
+        "dataset": "/HIPhysicsRawPrime0/HIRun2023A-PromptReco-v2/DQMIO",
+        "file_id": 7722036917,
+        "file_size": 185425621,
+        "last_modification_date": 1698742390,
+        "logical_file_name": "/store/hidata/HIRun2023A/HIPhysicsRawPrime0/DQMIO/PromptReco-v2/000/375/531/00000/2943888D-817A-4160-8A5F-9DD4FD63C628.root"
+    },
+    {
+        "creation_date": 1698742390,
+        "dataset": "/HIPhysicsRawPrime0/HIRun2023A-PromptReco-v2/DQMIO",
+        "file_id": 7722036957,
+        "file_size": 182290807,
+        "last_modification_date": 1698742390,
+        "logical_file_name": "/store/hidata/HIRun2023A/HIPhysicsRawPrime0/DQMIO/PromptReco-v2/000/375/531/00000/231FF69F-B5B6-4BC1-B199-AA4AA11EC9F2.root"
+    },
+    {
+        "creation_date": 1719031776,
+        "dataset": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
+        "file_id": 4308797521,
+        "file_size": 2708679,
+        "last_modification_date": 1719031776,
+        "logical_file_name": "/store/user/fsimone/ZeroBias/crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24/240620_164821/0000/nanodqmio_1.root"
+    },
+    {
+        "creation_date": 1719010185,
+        "dataset": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
+        "file_id": 4308455361,
+        "file_size": 2637686,
+        "last_modification_date": 1719010185,
+        "logical_file_name": "/store/user/fsimone/ZeroBias/crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24/240620_164821/0000/nanodqmio_10.root"
+    },
+    {
+        "creation_date": 1719031777,
+        "dataset": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
+        "file_id": 4308800361,
+        "file_size": 2715245,
+        "last_modification_date": 1719031777,
+        "logical_file_name": "/store/user/fsimone/ZeroBias/crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24/240620_164821/0000/nanodqmio_100.root"
+    },
+    {
+        "creation_date": 1719019180,
+        "dataset": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
+        "file_id": 4308565561,
+        "file_size": 2713873,
+        "last_modification_date": 1719019180,
+        "logical_file_name": "/store/user/fsimone/ZeroBias/crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24/240620_164821/0000/nanodqmio_101.root"
+    }
+]
