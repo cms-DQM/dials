@@ -22,14 +22,14 @@ The first way of accessing the data is by mounting the appropriate EOS directory
 The following command will mount the production data directory from EOS in read-only mode:
 
 ```bash
-mkdir -p ./DQMIO
-sshfs -o default_permissions,ro <YOUR-CERN-USER>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_workspaces ./DQMIO
+mkdir -p ./DQMIO_samples
+sshfs -o default_permissions,ro <YOUR-CERN-USER>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_workspaces ./DQMIO_samples
 ```
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount ./DQMIO
+umount ./DQMIO_samples
 ```
 
 (Note the use of `umount` rather than `unmount`.)
@@ -39,11 +39,11 @@ Therefore, the second approach, discussed below, is recommended.
 
 ### Accessing DQMIO data by making a local copy
 Instead of mounting the production DQMIO data, you can setup a directory that behaves exactly like production.
-To use this approach, simply copy the content of the folder `/eos/project-m/mlplayground/public/DQMIO_samples` into a new `DQMIO` folder in the top directory of the DIALS repository, e.g. as follows:
+To use this approach, simply copy the content of the folder `/eos/project-m/mlplayground/public/DQMIO_samples` into a new `DQMIO_samples` folder in the top directory of the DIALS repository, e.g. as follows:
 
 ```
-mkdir -p ./DQMIO
-scp -r <YOUR LXPLUS USERNAME>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_samples/* DQMIO
+mkdir -p ./DQMIO_samples
+scp -r <YOUR LXPLUS USERNAME>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_samples/* DQMIO_samples
 ```
 
 Note: you should make sure that your dummy DBS response file is in sync with the files you actually copy to the local directory. They are in sync at the time of writing, but you might need to make modifications if you are using different files than the ones already set in the example.
