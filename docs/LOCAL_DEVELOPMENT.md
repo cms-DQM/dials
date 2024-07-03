@@ -72,7 +72,6 @@ DJANGO_REDIS_URL=redis://redis-local:6379/3
 DJANGO_DATABASE_URI=postgres://postgres:postgres@postgresql-local:5432
 DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID=cms-dials-dev-confidential-app
 
-DJANGO_WORKSPACES={"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}
 DJANGO_WORKSPACES={"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "egamma": "cms-dqm-runregistry-offline-ecal-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "muon_staging": "unknown", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}
 DJANGO_DEFAULT_WORKSPACE=tracker
 
@@ -101,8 +100,6 @@ CERT_FPATH=<PATH-TO-YOUR>/usercert.pem
 KEY_FPATH=<PATH-TO-YOUR>/userkey.open.key
 KEYTAB_USER=<YOUR-CERN-USER>
 KEYTAB_PWD=<YOUR-CERN-PWD>
-MOUNTED_EOS_PATH=<PATH-TO-YOUR>/DQMIO
-MOCKED_DBS_FPATH=<PATH-TO-YOUR>/mocked_dbs_minimal.json
 MOUNTED_EOS_PATH=<PATH-TO-YOUR>/DQMIO_samples
 MOCKED_DBS_FPATH=<PATH-TO-YOUR>/mocks/dbs.json
 ETL_CONFIG_FPATH=<PATH-TO-YOUR>/etl.config.json
@@ -132,7 +129,6 @@ docker compose up
 In order to force the indexing it is possible to run the `trigger-indexing` script from inside the docker container with:
 
 ```bash
-docker exec -it dials-flower bash -c 'python3 scripts/trigger-indexing.py'
 docker exec -it dials-flower bash -c 'python3 cli.py indexing -s'
 ```
 
