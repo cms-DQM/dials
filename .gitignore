@@ -333,6 +333,7 @@ yarn-error.log*
 mocked_dbs*.json
 docker-compose.yaml
 DQMIO/
+DQMIO_samples/
 usercert.pem
 userkey.pem
 ML_models/
