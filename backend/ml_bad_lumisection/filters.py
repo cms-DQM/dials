@@ -13,6 +13,6 @@ class MLBadLumisectionFilter(filters_mixins.DatasetFilterMethods, filters_mixins
             "model_id": ["exact", "in"],
             "dataset_id": ["exact"],
             "me_id": ["exact"],
-            "run_number": ["exact"],
+            "run_number": ["exact", "in"],
             "ls_number": ["exact"],
         }

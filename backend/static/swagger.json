@@ -2203,6 +2203,20 @@
             }
           },
           {
+            "name": "run_number__in",
+            "required": false,
+            "in": "query",
+            "description": "run_number__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "ls_number",
             "required": false,
             "in": "query",
