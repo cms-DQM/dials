@@ -22,7 +22,7 @@ The "Enter PEM pass phrase" is a password you must choose to authenticate with t
 5. Remove the passphrase from the key (this is useful for authenticating against DBS api using the certificate, using curl you can specify the password but using python requests you can't so you need to use the opened key)
 
 ```bash
-$ openssl rsa -in userkey.closed.key -out userkey.key
+$ openssl rsa -in userkey.closed.pem -out userkey.pem
 ```
 
 6. Upload the files to the SA lxplus space. Make sure the .globus directory exists, before transferring the files.
