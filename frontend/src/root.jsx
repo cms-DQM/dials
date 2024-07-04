@@ -42,7 +42,6 @@ const Root = () => {
         .signinSilent()
         .then(async (_user) => {
           await onSigninComplete({
-            subjectToken: _user.access_token,
             dispatchEvent: false,
           })
         })
