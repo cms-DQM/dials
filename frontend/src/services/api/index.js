@@ -41,14 +41,12 @@ const getWorkspaces = async () => {
   return response.data
 }
 
-const exchangeToken = async ({ subjectToken }) => {
+const exchangeToken = async () => {
   const oidc = getPublicToken()
   const endpoint = `${API_URL}/auth/exchange-token/`
   const response = await axios.post(
     endpoint,
-    {
-      subject_token: subjectToken,
-    },
+    {},
     {
       headers: {
         Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
