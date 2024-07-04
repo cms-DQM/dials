@@ -51,9 +51,15 @@ class AuthViewSet(ViewSet):
         authentication_classes=[CERNKeycloakPublicAuthentication],
     )
     def exchange_token(self, request: Request):
+        # This user authenticated trough the CERNKeycloakPublicAuthentication
+        # already carries the public access token (subject_token) in the user object
+        # so we don't need to ask a subject token trough the request body
         user: CERNKeycloakUser = request.user
         subject_token = user.token.access_token
         confidential_token = user.token.client.exchange_token(subject_token, settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID)
+
+        # After exchanging the token we must decode it (we don't need to verify it since is was just issued by the auth server)
+        # and extract the proper cern_roles from the confidential token
         exc_token_obj = CERNKeycloakToken(confidential_token["access_token"], client=None)
         cern_roles = exc_token_obj.unv_claims.get("cern_roles")
         confidential_token["default_workspace"] = get_workspace_from_role(cern_roles, use_default_if_not_found=True)
