@@ -75,7 +75,10 @@ const Root = () => {
         })
     }
     if (auth.isAuthenticated && tokenExchanged) {
-      setSelectedWorkspace(getUserWorkspace())
+      // if the workspace is already set in localStorage
+      // we want to preserve that, since the user might have selected another workspace
+      const currentWorkspace = localStorage.getItem(OIDC_USER_WORKSPACE)
+      setSelectedWorkspace(currentWorkspace !== null ? currentWorkspace : getUserWorkspace())
       fetchWorkspaces()
     }
   }, [auth.isAuthenticated, tokenExchanged])
