@@ -65,19 +65,7 @@
         "parameters": [],
         "requestBody": {
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "subject_token": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "subject_token"
-                ]
-              }
-            }
+            "application/json": {}
           }
         },
         "responses": {

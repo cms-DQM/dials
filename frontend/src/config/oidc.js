@@ -17,7 +17,6 @@ const userStore = new WebStorageStateStore({ store: window.localStorage })
 const onSigninCallback = async (_user) => {
   window.history.replaceState({}, document.title, window.location.pathname)
   await onSigninComplete({
-    subjectToken: _user.access_token,
     dispatchEvent: true,
   })
 }
