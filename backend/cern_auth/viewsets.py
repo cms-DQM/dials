@@ -15,6 +15,7 @@ from utils.rest_framework_cern_sso.authentication import (
     CERNKeycloakPublicAuthentication,
     confidential_kc,
 )
+from utils.rest_framework_cern_sso.token import CERNKeycloakToken
 from utils.rest_framework_cern_sso.user import CERNKeycloakUser
 
 from .serializers import (
@@ -50,15 +51,12 @@ class AuthViewSet(ViewSet):
         authentication_classes=[CERNKeycloakPublicAuthentication],
     )
     def exchange_token(self, request: Request):
-        subject_token = request.data.get("subject_token")
-        if not subject_token:
-            return HttpResponseBadRequest("Attribute 'subject_token' not found in request body.")
-
         user: CERNKeycloakUser = request.user
+        subject_token = user.token.access_token
         confidential_token = user.token.client.exchange_token(subject_token, settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID)
-        confidential_token["default_workspace"] = get_workspace_from_role(
-            user.cern_roles, use_default_if_not_found=True
-        )
+        exc_token_obj = CERNKeycloakToken(confidential_token["access_token"], client=None)
+        cern_roles = exc_token_obj.unv_claims.get("cern_roles")
+        confidential_token["default_workspace"] = get_workspace_from_role(cern_roles, use_default_if_not_found=True)
         payload = ExchangedTokenSerializer(confidential_token).data
         return Response(payload)
 
