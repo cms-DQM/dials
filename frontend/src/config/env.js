@@ -16,7 +16,7 @@ const OPTIONS = {
   production: {
     API_URL: 'https://cmsdials-api.web.cern.ch/api/v1',
     OIDC_AUTHORITY: 'https://auth.cern.ch/auth/realms/cern/',
-    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-public-app',
+    OIDC_PUBLIC_CLIENT_ID: 'cms-dials-prod-public-app',
     OIDC_SCOPE: 'openid profile email',
   },
 }
