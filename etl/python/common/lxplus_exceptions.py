@@ -16,3 +16,7 @@ class XrdcpTimeoutError(Exception):
 
 class XrdcpUnknownError(Exception):
     pass
+
+
+class XrdcpBadRootFileError(Exception):
+    pass

@@ -3,7 +3,12 @@ import logging
 import paramiko
 from scp import SCPClient
 
-from .lxplus_exceptions import XrdcpNoServersAvailableToReadFileError, XrdcpTimeoutError, XrdcpUnknownError
+from .lxplus_exceptions import (
+    XrdcpBadRootFileError,
+    XrdcpNoServersAvailableToReadFileError,
+    XrdcpTimeoutError,
+    XrdcpUnknownError,
+)
 
 
 logging.getLogger("paramiko").setLevel(logging.WARNING)
@@ -59,6 +64,32 @@ class MinimalLXPlusClient:
         else:
             self.rm(out_fpath)
             raise XrdcpUnknownError(f"xrdcp (exit = {return_code}) failed for {grid_fpath}. stderr: {stderr}")
+
+    def validate_root(self, output_dir: str, logical_file_name: str) -> None:
+        fname = logical_file_name.replace("/", "_")[1:]
+        fpath = f"{output_dir}/{fname}"
+        command = (
+            f"python3 -c 'import ROOT; fpath = \"{fpath}\"; f = ROOT.TFile(fpath); f.GetUUID().AsString(); f.Close()'"
+        )
+        _, stdout, stderr = self.client.exec_command(command)
+        return_code = stdout.channel.recv_exit_status()
+        stderr = stderr.read().decode("utf-8").strip()
+        stdout = stdout.read().decode("utf-8").strip()
+
+        if return_code == 1:
+            self.rm(fpath)
+            raise XrdcpBadRootFileError
+
+    def validate_adler32(self, output_dir: str, logical_file_name: str, adler32: str) -> None:
+        fname = logical_file_name.replace("/", "_")[1:]
+        fpath = f"{output_dir}/{fname}"
+        command = f'python3 -c \'import sys; import zlib; fpath = "{fpath}"; adler32 = "{adler32}"; sys.exit(0 if format(zlib.adler32(open(fpath, "rb").read()), "08x") == adler32 else 1)\''
+        _, stdout, _ = self.client.exec_command(command)
+        return_code = stdout.channel.recv_exit_status()
+
+        if return_code == 1:
+            self.rm(fpath)
+            raise XrdcpBadRootFileError
 
     def scp(self, remote_fpath: str, local_fpath: str) -> str:
         with SCPClient(self.client.get_transport()) as scp:

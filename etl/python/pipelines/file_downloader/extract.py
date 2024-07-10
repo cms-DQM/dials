@@ -31,3 +31,4 @@ def extract(logical_file_name: str) -> None:
             return
         client.init_proxy()
         client.xrdcp(remote_landing_dir, logical_file_name)
+        client.validate_root(remote_landing_dir, logical_file_name)
