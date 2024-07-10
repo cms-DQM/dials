@@ -1,3 +1,5 @@
+import logging
+
 import paramiko
 from scp import SCPClient
 
@@ -27,6 +29,8 @@ class MinimalLXPlusClient:
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.client.connect(self.SERVER, username=lxplus_user, password=lxplus_pwd)
+
+        logging.getLogger("paramiko").setLevel(logging.WARNING)
 
     def init_proxy(self) -> None:
         _, stdout, _ = self.client.exec_command(f"/usr/bin/timeout {self.timeout} voms-proxy-init -voms cms -rfc")
