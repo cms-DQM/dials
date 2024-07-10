@@ -1,11 +1,16 @@
 from ...celery import app
-from ...common.lxplus_client import SSHAuthenticationTimeoutError, XrdcpTimeoutError, XrdcpUnknownError
+from ...common.lxplus_client import (
+    SSHAuthenticationFailedError,
+    SSHAuthenticationTimeoutError,
+    XrdcpTimeoutError,
+    XrdcpUnknownError,
+)
 from .pipeline import pipeline
 
 
 @app.task(
     name="file_downloader_pipeline",
-    autoretry_for=(SSHAuthenticationTimeoutError, XrdcpTimeoutError, XrdcpUnknownError),
+    autoretry_for=(SSHAuthenticationTimeoutError, SSHAuthenticationFailedError, XrdcpTimeoutError, XrdcpUnknownError),
     retry_kwargs={"max_retries": 5},
     retry_backoff=True,
 )

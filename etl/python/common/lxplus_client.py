@@ -8,6 +8,10 @@ class SSHAuthenticationTimeoutError(Exception):
     pass
 
 
+class SSHAuthenticationFailedError(Exception):
+    pass
+
+
 class XrdcpNoServersAvailableToReadFileError(Exception):
     pass
 
