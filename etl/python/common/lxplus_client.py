@@ -6,6 +6,9 @@ from scp import SCPClient
 from .lxplus_exceptions import XrdcpNoServersAvailableToReadFileError, XrdcpTimeoutError, XrdcpUnknownError
 
 
+logging.getLogger("paramiko").setLevel(logging.WARNING)
+
+
 class MinimalLXPlusClient:
     SERVER = "lxplus.cern.ch"
     ERROR_MSG_3011 = "[3011] No servers are available to read the file."
@@ -15,8 +18,6 @@ class MinimalLXPlusClient:
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.client.connect(self.SERVER, username=lxplus_user, password=lxplus_pwd)
-
-        logging.getLogger("paramiko").setLevel(logging.WARNING)
 
     def init_proxy(self) -> None:
         _, stdout, _ = self.client.exec_command(f"/usr/bin/timeout {self.timeout} voms-proxy-init -voms cms -rfc")
