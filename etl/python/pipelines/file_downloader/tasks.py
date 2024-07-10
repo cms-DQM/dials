@@ -1,5 +1,5 @@
 from ...celery import app
-from ...common.lxplus_client import (
+from ...common.lxplus_exceptions import (
     SSHAuthenticationFailedError,
     SSHAuthenticationTimeoutError,
     XrdcpTimeoutError,

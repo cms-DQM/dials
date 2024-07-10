@@ -3,7 +3,7 @@ import traceback
 from paramiko.ssh_exception import AuthenticationException
 from sqlalchemy import create_engine
 
-from ...common.lxplus_client import (
+from ...common.lxplus_exceptions import (
     SSHAuthenticationFailedError,
     SSHAuthenticationTimeoutError,
     XrdcpNoServersAvailableToReadFileError,

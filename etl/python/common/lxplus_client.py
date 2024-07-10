@@ -3,25 +3,7 @@ import logging
 import paramiko
 from scp import SCPClient
 
-
-class SSHAuthenticationTimeoutError(Exception):
-    pass
-
-
-class SSHAuthenticationFailedError(Exception):
-    pass
-
-
-class XrdcpNoServersAvailableToReadFileError(Exception):
-    pass
-
-
-class XrdcpTimeoutError(Exception):
-    pass
-
-
-class XrdcpUnknownError(Exception):
-    pass
+from .lxplus_exceptions import XrdcpNoServersAvailableToReadFileError, XrdcpTimeoutError, XrdcpUnknownError
 
 
 class MinimalLXPlusClient:
