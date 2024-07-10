@@ -52,10 +52,12 @@ class MinimalLXPlusClient:
         if return_code == 0:
             return out_fpath
         elif return_code == 124:
+            self.rm(out_fpath)
             raise XrdcpTimeoutError(
                 f"xrdcp (exit = {return_code}) timed out after {self.timeout} seconds for {grid_fpath}"
             )
         else:
+            self.rm(out_fpath)
             raise XrdcpUnknownError(f"xrdcp (exit = {return_code}) failed for {grid_fpath}. stderr: {stderr}")
 
     def scp(self, remote_fpath: str, local_fpath: str) -> str:
@@ -78,6 +80,10 @@ class MinimalLXPlusClient:
 
     def mkdir(self, remote_path: str) -> None:
         self.client.exec_command(f"mkdir -p {remote_path}")
+
+    def rm(self, remote_path: str, recursive: bool = False) -> None:
+        rm_base = "rm -rf" if recursive else "rm"
+        self.client.exec_command(f"{rm_base} {remote_path}")
 
     def __enter__(self) -> "MinimalLXPlusClient":
         return self
