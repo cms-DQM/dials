@@ -3,7 +3,11 @@ import traceback
 from paramiko.ssh_exception import AuthenticationException
 from sqlalchemy import create_engine
 
-from ...common.lxplus_client import SSHAuthenticationTimeoutError, XrdcpNoServersAvailableToReadFileError
+from ...common.lxplus_exceptions import (
+    SSHAuthenticationFailedError,
+    SSHAuthenticationTimeoutError,
+    XrdcpNoServersAvailableToReadFileError,
+)
 from ...config import priority_era
 from ...env import conn_str
 from ...models.file_index import StatusCollection
@@ -29,6 +33,8 @@ def pipeline(
     except Exception as e:
         if isinstance(e, AuthenticationException) and "Authentication timeout" in str(e):
             raise SSHAuthenticationTimeoutError from e
+        elif isinstance(e, AuthenticationException) and "Authentication failed" in str(e):
+            raise SSHAuthenticationFailedError from e
         elif isinstance(e, XrdcpNoServersAvailableToReadFileError):
             err_status = StatusCollection.DOWNLOAD_FILE_NOT_AVAILABLE
         else:
