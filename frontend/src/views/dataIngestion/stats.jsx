@@ -35,6 +35,7 @@ const IngestionStatistics = () => {
   const [dataFilesPlot, setDataFilesPlot] = useState([])
   const [dataH1DPlot, setDataH1DPlot] = useState([])
   const [dataH2DPlot, setDataH2DPlot] = useState([])
+  const [layoutFilesPlot, setLayoutFilesPlot] = useState({})
   const [layoutH1DPlot, setLayoutH1DPlot] = useState({})
   const [layoutH2DPlot, setLayoutH2DPlot] = useState({})
 
@@ -91,14 +92,24 @@ const IngestionStatistics = () => {
             }
           })
         )
-        setDataFilesPlot([
+        const plotData = [
           {
             y: data.map((item) => item.count),
             x: data.map((item) => item.status),
             type: 'bar',
             text: data.map((item) => item.count),
+            textposition: 'outside'
           },
-        ])
+        ]
+        const maxY = Math.max(...data.map((item) => item.count))
+        const yMaxRange = maxY * 1.1
+        const layout = {
+          yaxis: {
+            range: [0, yMaxRange]
+          }
+        }
+        setDataFilesPlot(plotData)
+        setLayoutFilesPlot(layout)
         setIsLoadingFiles(false)
       } catch (err) {
         console.error(err)
@@ -235,6 +246,7 @@ const IngestionStatistics = () => {
             <Card.Body>
               <ResponsivePlot
                 data={dataFilesPlot}
+                layout={layoutFilesPlot}
                 config={{ staticPlot: true }}
                 isLoading={isLoadingFiles}
                 style={{ width: '100%', height: '100%' }}
