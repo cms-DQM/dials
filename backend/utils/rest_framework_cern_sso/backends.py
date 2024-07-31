@@ -25,14 +25,14 @@ class CERNKeycloakOIDC:
     def issue_device_token(self, device_code: str) -> dict:
         return self._kc.token(grant_type="urn:ietf:params:oauth:grant-type:device_code", device_code=device_code)
 
-    def issue_api_token(self) -> dict:
+    def issue_api_token(self, aud: str | None = None) -> dict:
         response = requests.post(
             f"{self.server_url}realms/{self.realm_name}/api-access/token",
             data={
                 "grant_type": "client_credentials",
                 "client_id": self.client_id,
                 "client_secret": self.client_secret_key,
-                "audience": self.client_id,
+                "audience": aud or self.client_id,
             },
             timeout=30,
         )
