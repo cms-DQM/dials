@@ -168,6 +168,10 @@ KEYCLOAK_CONFIDENTIAL_SECRET_KEY = config("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_K
 KEYCLOAK_PUBLIC_CLIENT_ID = config("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
 KEYCLOAK_API_CLIENTS = json.loads(config("DJANGO_KEYCLOAK_API_CLIENTS", default="{}"))
 
+# OMS OIDC
+OMS_SSO_CLIENT_ID = config("DJANGO_OMS_SSO_CLIENT_ID")
+OMS_SSO_CLIENT_SECRET = config("DJANGO_OMS_SSO_CLIENT_SECRET")
+
 # All available policies are listed at:
 # https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md
 # Empty list means the policy is disabled

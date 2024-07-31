@@ -5,6 +5,7 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 from file_index.routers import router as file_index_router
 from lumisection.routers import router as lumisection_router
+from oms_proxy.routers import router as oms_proxy_router
 from rest_framework import routers
 from run.routers import router as run_router
 from th1.routers import router as th1_router
@@ -20,6 +21,7 @@ router.registry.extend(lumisection_router.registry)
 router.registry.extend(th1_router.registry)
 router.registry.extend(th2_router.registry)
 router.registry.extend(cern_auth_router.registry)
+router.registry.extend(oms_proxy_router.registry)
 
 swagger_view = TemplateView.as_view(template_name="swagger-ui.html", extra_context={"schema_url": "openapi-schema"})
 

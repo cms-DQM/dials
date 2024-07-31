@@ -1919,7 +1919,79 @@
           {}
         ]
       }
-    }
+    },
+    "/api/v1/oms-proxy/": {
+      "get": {
+        "operationId": "proxyOMS",
+        "description": "Proxy request to OMS API",
+        "parameters": [
+          {
+            "name": "endpoint",
+            "required": true,
+            "in": "query",
+            "description": "OMS API endpoint such as (runs, lumisections, datasetrates and etc)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "required": true,
+            "in": "query",
+            "description": "OMS API endpoint filters",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true,
+              "example": {
+                "run_number": 382921,
+                "dataset_name": "ZeroBias"
+              }
+            },
+            "style": "deepObject"
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "OMS API endpoint page configuration",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true,
+              "example": {
+                "limit": 10,
+              }
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "OMSProxy"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
   },
   "components": {
     "schemas": {
