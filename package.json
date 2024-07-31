@@ -25,6 +25,7 @@
     "react-dom": "^18.2.0",
     "react-oidc-context": "^3.0.0",
     "react-plotly.js": "^2.6.0",
+    "react-resize-detector": "^11.0.1",
     "react-router-dom": "^6.21.3",
     "react-toastify": "^10.0.4"
   },
