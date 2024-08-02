@@ -109,12 +109,13 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
                 response[run][ls] = []
                 predictions_in_ls = [res for res in predictions_in_run if res.get("ls_number") == ls]
                 for preds in predictions_in_ls:
+                    mse = preds.get("mse")
                     model_id = preds.get("model_id")
                     me_id = preds.get("me_id")
                     filename = models[model_id].get("filename")
                     target_me = models[model_id].get("target_me")
                     response[run][ls].append(
-                        {"model_id": model_id, "me_id": me_id, "filename": filename, "me": target_me}
+                        {"model_id": model_id, "me_id": me_id, "filename": filename, "me": target_me, "mse": mse}
                     )
 
         return Response(response)

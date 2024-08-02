@@ -16,6 +16,7 @@ class MLBadLumisection(models.Model):
     run_number = models.IntegerField()
     ls_number = models.IntegerField()
     me_id = models.IntegerField()
+    mse = models.FloatField()
 
     class Meta:
         managed = False

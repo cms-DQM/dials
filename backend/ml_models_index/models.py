@@ -7,7 +7,6 @@ class MLModelsIndex(models.Model):
     model_id = models.IntegerField(primary_key=True)
     filename = models.CharField(max_length=255)
     target_me = models.CharField(max_length=255)
-    thr = models.FloatField()
     active = models.BooleanField()
 
     class Meta:

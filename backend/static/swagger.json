@@ -3084,9 +3084,6 @@
             "type": "string",
             "maxLength": 255
           },
-          "thr": {
-            "type": "number"
-          },
           "active": {
             "type": "boolean"
           }
@@ -3095,7 +3092,6 @@
           "model_id",
           "filename",
           "target_me",
-          "thr",
           "active"
         ]
       },
@@ -3134,7 +3130,10 @@
             "type": "integer",
             "maximum": 2147483647,
             "minimum": -2147483648
-          }
+          },
+          "mse": {
+            "type": "number"
+          },
         },
         "required": [
           "model_id",
@@ -3142,7 +3141,8 @@
           "file_id",
           "run_number",
           "ls_number",
-          "me_id"
+          "me_id",
+          "mse"
         ]
       },
       "MLBadLumisectionCertJson": {
