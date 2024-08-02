@@ -56,7 +56,6 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
             workspace_name=workspace_name,
             model_id=model.model_id,
             model_file=model.filename,
-            thr=model.thr,
             target_me=model.target_me,
             dataset_id=dataset_id,
             file_id=file_id,

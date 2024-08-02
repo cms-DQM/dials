@@ -30,6 +30,7 @@ def fact_ml_bad_lumis() -> list:
         run_number INT,
         ls_number INT,
         me_id INT,
+        mse DOUBLE PRECISION,
         CONSTRAINT fact_ml_bad_lumis_pk PRIMARY KEY (model_id, dataset_id, run_number, ls_number, me_id)
     );
     """)
@@ -42,7 +43,6 @@ def dim_ml_models_index() -> list:
         model_id SERIAL,
         filename VARCHAR(255),
         target_me VARCHAR(255),
-        thr DOUBLE PRECISION,
         active BOOLEAN,
         CONSTRAINT dim_ml_models_index_pk PRIMARY KEY (model_id)
     );

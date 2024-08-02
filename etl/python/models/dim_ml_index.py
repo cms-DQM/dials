@@ -11,7 +11,6 @@ class DimMLModelsIndex(Base):
     model_id = sa.Column("model_id", sa.BigInteger, autoincrement=True)
     filename = sa.Column("filename", sa.String(255))
     target_me = sa.Column("target_me", sa.String(255))
-    thr = sa.Column("thr", sa.Float)
     active = sa.Column("active", sa.Boolean)
 
     __table_args__ = (

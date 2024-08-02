@@ -13,7 +13,6 @@ def pipeline(
     workspace_name: str,
     model_id: int,
     model_file: str,
-    thr: float,
     target_me: str,
     dataset_id: int,
     file_id: int,
@@ -41,7 +40,8 @@ def pipeline(
     bad_lumis = []
     for idx, ls_number in enumerate(lss_.flatten()):
         mse = preds[1][idx]
-        if mse >= thr:
+        is_anomaly = bool(preds[2][idx])
+        if is_anomaly:
             bad_lumis.append(
                 {
                     "model_id": model_id,
@@ -50,6 +50,7 @@ def pipeline(
                     "run_number": hists[idx].run_number,
                     "ls_number": ls_number,
                     "me_id": me.me_id,
+                    "mse": mse,
                 }
             )
 
