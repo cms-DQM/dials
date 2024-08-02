@@ -61,6 +61,11 @@ const Predictions = () => {
         return <Link to={linkTo}>{row.me}</Link>
       },
     },
+    {
+      dataField: 'mse',
+      text: 'MSE',
+      type: 'number',
+    },
   ]
 
   const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
