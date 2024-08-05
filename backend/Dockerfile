@@ -44,16 +44,17 @@ ENV USERNAME=app
 ENV HOME=/home/$USERNAME
 ENV APP_HOME=$HOME/backend
 
-RUN mkdir -p $HOME
-RUN mkdir $APP_HOME
-RUN addgroup --system --gid $GID $USERNAME && adduser --system --ingroup $USERNAME --uid $UID $USERNAME
+RUN mkdir -p $HOME \
+    && mkdir $APP_HOME \
+    && addgroup --system --gid $GID $USERNAME \
+    && adduser --system --ingroup $USERNAME --uid $UID $USERNAME
 
 WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/build/wheels /wheels
 COPY --from=builder /usr/src/build/requirements.txt .
-RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache /wheels/*
+RUN pip3 install --upgrade pip \
+    && pip3 install --no-cache /wheels/*
 
 COPY backend $APP_HOME
 
@@ -61,9 +62,9 @@ RUN chown -R $USERNAME:$USERNAME $APP_HOME
 
 USER $USERNAME
 
-RUN python -m compileall dials
-RUN $APP_HOME/scripts/setup-django-production.sh
+RUN python -m compileall dials \
+    && $APP_HOME/scripts/setup-django-production.sh
 
 EXPOSE 8000
 
-CMD ${APP_HOME}/scripts/run-django-production.sh
+CMD ["./scripts/run-django-production.sh"]
