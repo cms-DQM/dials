@@ -69,6 +69,11 @@ const AppNavbar = ({
                   Lumisections
                 </NavDropdown.Item>
               </NavDropdown>
+              <NavDropdown title='Machine Learning'>
+                <NavDropdown.Item as={NavLink} to='/predictions'>
+                  Predictions
+                </NavDropdown.Item>
+              </NavDropdown>
             </Nav>
             <Nav>
               <NavDropdown title={`Using workspace: ${selectedWorkspace}`}>

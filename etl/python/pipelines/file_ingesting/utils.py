@@ -1,4 +1,8 @@
 import ROOT
+from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import sessionmaker
+
+from ...models import DimMLModelsIndex
 
 
 def validate_root_file(fpath: str) -> None:
@@ -8,3 +12,9 @@ def validate_root_file(fpath: str) -> None:
     """
     with ROOT.TFile(fpath) as root_file:
         root_file.GetUUID().AsString()
+
+
+def fetch_active_models(engine: Engine) -> list[DimMLModelsIndex]:
+    Session = sessionmaker(bind=engine)  # noqa: N806
+    with Session() as session:
+        return session.query(DimMLModelsIndex).filter(DimMLModelsIndex.active).all()

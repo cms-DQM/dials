@@ -1920,48 +1920,168 @@
         ]
       }
     },
-    "/api/v1/oms-proxy/": {
+  "/api/v1/oms-proxy/": {
+    "get": {
+      "operationId": "proxyOMS",
+      "description": "Proxy request to OMS API",
+      "parameters": [
+        {
+          "name": "endpoint",
+          "required": true,
+          "in": "query",
+          "description": "OMS API endpoint such as (runs, lumisections, datasetrates and etc)",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "filter",
+          "required": true,
+          "in": "query",
+          "description": "OMS API endpoint filters",
+          "schema": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "run_number": 382921,
+              "dataset_name": "ZeroBias"
+            }
+          },
+          "style": "deepObject"
+        },
+        {
+          "name": "page",
+          "required": false,
+          "in": "query",
+          "description": "OMS API endpoint page configuration",
+          "schema": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "limit": 10
+            }
+          },
+          "style": "deepObject"
+        }
+      ],
+      "responses": {
+        "200": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      },
+      "tags": [
+        "OMSProxy"
+      ],
+      "security": [
+        {
+          "Client Secret Key": []
+        },
+        {
+          "Confidential JWT Token": []
+        },
+        {}
+      ]
+    }
+  },
+    "/api/v1/ml-models-index/": {
       "get": {
-        "operationId": "proxyOMS",
-        "description": "Proxy request to OMS API",
+        "operationId": "listMLModelsIndex",
+        "description": "",
         "parameters": [
           {
-            "name": "endpoint",
-            "required": true,
+            "name": "next_token",
+            "required": false,
             "in": "query",
-            "description": "OMS API endpoint such as (runs, lumisections, datasetrates and etc)",
+            "description": "next_token",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "filter",
-            "required": true,
-            "in": "query",
-            "description": "OMS API endpoint filters",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true,
-              "example": {
-                "run_number": 382921,
-                "dataset_name": "ZeroBias"
-              }
-            },
-            "style": "deepObject"
-          },
-          {
-            "name": "page",
+            "name": "model_id",
             "required": false,
             "in": "query",
-            "description": "OMS API endpoint page configuration",
+            "description": "model_id",
             "schema": {
-              "type": "object",
-              "additionalProperties": true,
-              "example": {
-                "limit": 10,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "model_id__in",
+            "required": false,
+            "in": "query",
+            "description": "model_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
               }
             },
-            "style": "deepObject"
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "filename",
+            "required": false,
+            "in": "query",
+            "description": "filename",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename__regex",
+            "required": false,
+            "in": "query",
+            "description": "filename__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_me",
+            "required": false,
+            "in": "query",
+            "description": "target_me",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_me__regex",
+            "required": false,
+            "in": "query",
+            "description": "target_me__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "description": "active",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1971,6 +2091,24 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MLModelsIndex"
+                      }
+                    }
                   }
                 }
               }
@@ -1979,7 +2117,7 @@
           }
         },
         "tags": [
-          "OMSProxy"
+          "ML Models Index"
         ],
         "security": [
           {
@@ -1992,6 +2130,459 @@
         ]
       }
     },
+    "/api/v1/ml-models-index/{model_id}/": {
+      "get": {
+        "operationId": "retrieveMLModelsIndex",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this ml model in the index.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MLModelsIndex"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Models Index"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/ml-bad-lumisection/": {
+      "get": {
+        "operationId": "listMLBadLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "next_token",
+            "required": false,
+            "in": "query",
+            "description": "next_token",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model_id",
+            "required": false,
+            "in": "query",
+            "description": "model_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "model_id__in",
+            "required": false,
+            "in": "query",
+            "description": "model_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "dataset",
+            "required": false,
+            "in": "query",
+            "description": "dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset__regex",
+            "required": false,
+            "in": "query",
+            "description": "dataset__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me",
+            "required": false,
+            "in": "query",
+            "description": "me",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me__regex",
+            "required": false,
+            "in": "query",
+            "description": "me__regex",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "required": false,
+            "in": "query",
+            "description": "run_number",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "run_number__in",
+            "required": false,
+            "in": "query",
+            "description": "run_number__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "ls_number",
+            "required": false,
+            "in": "query",
+            "description": "ls_number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?next_token=cD0zMz"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?next_token=cj0xJnA"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MLBadLumisection"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Bad Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/ml-bad-lumisection/{model_id}/{dataset_id}/{run_number}/{ls_number}/{me_id}/": {
+      "get": {
+        "operationId": "retrieveMLBadLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying this ml model.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying the dataset.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying the run.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ls_number",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying the lumisection.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "me_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique value identifying the monitoring element.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MLBadLumisection"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Bad Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/ml-bad-lumisection/cert-json": {
+      "get": {
+        "operationId": "certJsonMLBadLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model_id__in",
+            "required": false,
+            "in": "query",
+            "description": "model_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "run_number__in",
+            "required": false,
+            "in": "query",
+            "description": "run_number__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MLBadLumisectionCertJson"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Bad Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/ml-bad-lumisection/golden-json": {
+      "get": {
+        "operationId": "goldenJsonMLBadLumisection",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model_id__in",
+            "required": false,
+            "in": "query",
+            "description": "model_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "run_number__in",
+            "required": false,
+            "in": "query",
+            "description": "run_number__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MLBadLumisectionGoldenJson"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "ML Bad Lumisection"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    }
   },
   "components": {
     "schemas": {
@@ -2474,6 +3065,149 @@
           "y_bin",
           "entries",
           "data"
+        ]
+      },
+      "MLModelsIndex": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "target_me": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "model_id",
+          "filename",
+          "target_me",
+          "active"
+        ]
+      },
+      "MLBadLumisection": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "dataset_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "file_id": {
+            "type": "integer",
+            "maximum": 9223372036854776000,
+            "minimum": -9223372036854776000,
+            "format": "int64"
+          },
+          "run_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "ls_number": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "me_id": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "mse": {
+            "type": "number"
+          },
+        },
+        "required": [
+          "model_id",
+          "dataset_id",
+          "file_id",
+          "run_number",
+          "ls_number",
+          "me_id",
+          "mse"
+        ]
+      },
+      "MLBadLumisectionCertJson": {
+        "type": "object",
+        "properties": {
+          "run_number": {
+            "type": "object",
+            "properties": {
+              "ls_number": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "model_id": {
+                      "type": "integer",
+                      "maximum": 2147483647,
+                      "minimum": -2147483648
+                    },
+                    "me_id": {
+                      "type": "integer",
+                      "maximum": 2147483647,
+                      "minimum": -2147483648
+                    },
+                    "filename": {
+                      "type": "string"
+                    },
+                    "me": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "run_number",
+          "ls_number",
+          "model_id",
+          "me_id",
+          "filename",
+          "me"
+        ]
+      },
+      "MLBadLumisectionGoldenJson": {
+        "type": "object",
+        "properties": {
+          "run_number": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "example": [128, 145]
+            }
+          }
+        },
+        "required": [
+          "run_number",
+          "ls_number",
+          "model_id",
+          "me_id",
+          "filename",
+          "me"
         ]
       }
     },
