@@ -17,4 +17,5 @@ imports = (
     "python.pipelines.dataset_indexer.tasks",
     "python.pipelines.file_indexer.tasks",
     "python.pipelines.file_ingesting.tasks",
+    "python.pipelines.ml_inference.tasks",
 )

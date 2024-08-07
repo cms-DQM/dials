@@ -11,6 +11,7 @@ import {
   Histogram,
   DQMGui,
 } from './dataExplorer'
+import { Predictions } from './machineLearning'
 
 const Views = {
   Home: {
@@ -29,6 +30,9 @@ const Views = {
     Histograms2D,
     Histogram,
     DQMGui,
+  },
+  MachineLearning: {
+    Predictions,
   },
 }
 

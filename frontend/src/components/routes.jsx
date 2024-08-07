@@ -75,6 +75,10 @@ const AppRoutes = () => {
         path='/dqmgui'
         element={<PrivateRoute component={Views.DataExplorer.DQMGui} />}
       />
+      <Route
+        path='/predictions'
+        element={<PrivateRoute component={Views.MachineLearning.Predictions} />}
+      />
     </Routes>
   )
 }

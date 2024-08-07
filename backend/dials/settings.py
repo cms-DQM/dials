@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     "lumisection.apps.LumisectionConfig",
     "th1.apps.TH1Config",
     "th2.apps.TH2Config",
+    "ml_models_index.apps.MLModelsIndexConfig",
+    "ml_bad_lumisection.apps.MLBadLumisectionConfig",
     "cern_auth.apps.CERNAuthConfig",
 ]
 
@@ -167,6 +169,10 @@ KEYCLOAK_CONFIDENTIAL_CLIENT_ID = config("DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID
 KEYCLOAK_CONFIDENTIAL_SECRET_KEY = config("DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY")
 KEYCLOAK_PUBLIC_CLIENT_ID = config("DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID")
 KEYCLOAK_API_CLIENTS = json.loads(config("DJANGO_KEYCLOAK_API_CLIENTS", default="{}"))
+
+# OMS OIDC
+OMS_SSO_CLIENT_ID = config("DJANGO_OMS_SSO_CLIENT_ID")
+OMS_SSO_CLIENT_SECRET = config("DJANGO_OMS_SSO_CLIENT_SECRET")
 
 # All available policies are listed at:
 # https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md

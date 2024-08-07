@@ -3,6 +3,7 @@ import os
 import re
 
 import requests
+import urllib3
 from requests.exceptions import SSLError
 
 
@@ -42,8 +43,10 @@ class MinimalDBSClient:
             response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT)
         except SSLError:
             # Running this curl request from LXPlus works without -k flag
-            # This is here for local testing
-            response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT, verify=False)  # noqa: S501
+            # This is here for local testing and for Openshift deployment
+            with urllib3.warnings.catch_warnings():
+                urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+                response = requests.get(url, params=params, cert=cert, timeout=TIMEOUT, verify=False)  # noqa: S501
 
         response.raise_for_status()
         return response.json()

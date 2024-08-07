@@ -4,7 +4,7 @@ import argparse
 
 from python.config import common_indexer_queue, primary_datasets, priority_era, workspaces
 from python.env import conn_str
-from python.models import FactFileIndex, FactTH1, FactTH2
+from python.models import DimMLModelsIndex, FactFileIndex, FactTH1, FactTH2
 from python.models.file_index import StatusCollection
 from python.pipelines.dataset_indexer.tasks import dataset_indexer_pipeline_task
 from python.pipelines.file_downloader.tasks import file_downloader_pipeline_task
@@ -154,6 +154,15 @@ def indexing_handler(args):
         )
 
 
+def add_ml_model_to_index_hanlder(args):
+    engine = get_engine(args.workspace)
+    Session = sessionmaker(bind=engine)  # noqa: N806
+    with Session() as session:
+        model = DimMLModelsIndex(filename=args.filename, target_me=args.target_me, thr=args.thr, active=args.active)
+        session.add(model)
+        session.commit()
+
+
 def main():
     parser = argparse.ArgumentParser(description="DIALS etl command line interface")
     subparsers = parser.add_subparsers(dest="command", title="Commands")
@@ -201,6 +210,19 @@ def main():
         "-w", "--workspace", help="Workspace name to trigger file ingestion.", required=True
     )
     clean_table_parser.set_defaults(handler=clean_parsing_error_handler)
+
+    # Register ml model command
+    add_ml_model_parser = subparsers.add_parser("add-ml-model-to-index", help="Register ML molde into DB")
+    add_ml_model_parser.add_argument("-w", "--workspace", help="Workspace name.", required=True)
+    add_ml_model_parser.add_argument("-f", "--filename", help="Model binary filename", required=True)
+    add_ml_model_parser.add_argument(
+        "-m", "--target-me", help="Monitoring element predicted by the model", required=True
+    )
+    add_ml_model_parser.add_argument(
+        "-t", "--thr", help="Model threshold for anomaly detection", required=True, type=float
+    )
+    add_ml_model_parser.add_argument("-a", "--active", help="Is the model active?", required=True, type=bool)
+    add_ml_model_parser.set_defaults(handler=add_ml_model_to_index_hanlder)
 
     args = parser.parse_args()
 
