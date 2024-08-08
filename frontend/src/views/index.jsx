@@ -14,9 +14,7 @@ import {
 import { Predictions } from './machineLearning'
 
 const Views = {
-  Home: {
-    Index: Home,
-  },
+  Home,
   Overview,
   Browser,
   DataExplorer: {

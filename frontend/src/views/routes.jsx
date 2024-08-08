@@ -18,7 +18,7 @@ import PrivateRoute from './components/privateRoute'
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path='/' element={<Views.Home.Index />} />
+      <Route path='/' element={<Views.Home />} />
       <Route
         path='/overview'
         element={<PrivateRoute component={Views.Overview} />}
