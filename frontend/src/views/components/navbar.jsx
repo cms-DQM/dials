@@ -9,8 +9,8 @@ import Image from 'react-bootstrap/Image'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import logo from '../assets/img/logo.png'
-import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../config/env'
+import logo from '../../assets/img/logo.png'
+import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../../config/env'
 
 const AppNavbar = ({
   allWorkspaces,

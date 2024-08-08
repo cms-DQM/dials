@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 
-import Views from '../views'
-import PrivateRoute from './privateRoute'
+import Views from './index'
+import PrivateRoute from './components/privateRoute'
 
 // Note on `PrivateRoute`
 //
