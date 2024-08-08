@@ -20,8 +20,8 @@ const AppRoutes = () => {
     <Routes>
       <Route path='/' element={<Views.Home.Index />} />
       <Route
-        path='/ingest'
-        element={<PrivateRoute component={Views.DataIngestion.Index} />}
+        path='/overview'
+        element={<PrivateRoute component={Views.Overview} />}
       />
       <Route
         path='/file-index'

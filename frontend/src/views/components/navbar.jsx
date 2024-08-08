@@ -47,8 +47,8 @@ const AppNavbar = ({
         {auth.isAuthenticated ? (
           <>
             <Nav className='me-auto'>
-              <Nav.Link as={NavLink} to='/ingest'>
-                Data Ingestion
+              <Nav.Link as={NavLink} to='/overview'>
+                Overview
               </Nav.Link>
               <Nav.Link as={NavLink} to='/browser'>
                 Browser
