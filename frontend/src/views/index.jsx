@@ -1,4 +1,5 @@
 import Home from './home'
+import Browser from './browser'
 import DataIngestion from './dataIngestion'
 import {
   FileIndex,
@@ -19,6 +20,7 @@ const Views = {
   DataIngestion: {
     Index: DataIngestion,
   },
+  Browser,
   DataExplorer: {
     FileIndex,
     Runs,

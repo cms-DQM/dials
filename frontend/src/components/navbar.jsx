@@ -50,6 +50,9 @@ const AppNavbar = ({
               <Nav.Link as={NavLink} to='/ingest'>
                 Data Ingestion
               </Nav.Link>
+              <Nav.Link as={NavLink} to='/browser'>
+                Browser
+              </Nav.Link>
               <NavDropdown title='Data Explorer'>
                 <NavDropdown.Item as={NavLink} to='/file-index'>
                   Indexed files

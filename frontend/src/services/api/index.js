@@ -336,6 +336,12 @@ const listMEs = async ({ me, meRegex, dim }) => {
   return response.data
 }
 
+const listMEsByRun = async ({ datasetId, runNumber }) => {
+  const endpoint = `${API_URL}/mes/${datasetId}/${runNumber}/`
+  const response = await axiosApiInstance.get(endpoint)
+  return response.data
+}
+
 const listMLModelsIndex = async ({
   nextToken,
   modelId,
@@ -464,6 +470,7 @@ const API = {
   },
   mes: {
     list: listMEs,
+    listByRun: listMEsByRun,
   },
   histogram: {
     get: getHistogram,
