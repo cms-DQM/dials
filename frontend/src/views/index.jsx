@@ -1,4 +1,5 @@
 import Home from './home'
+import Browser from './browser'
 import DataIngestion from './dataIngestion'
 import {
   FileIndex,
@@ -9,7 +10,6 @@ import {
   Histograms1D,
   Histograms2D,
   Histogram,
-  DQMGui,
 } from './dataExplorer'
 import { Predictions } from './machineLearning'
 
@@ -20,6 +20,7 @@ const Views = {
   DataIngestion: {
     Index: DataIngestion,
   },
+  Browser,
   DataExplorer: {
     FileIndex,
     Runs,
@@ -29,7 +30,6 @@ const Views = {
     Histograms1D,
     Histograms2D,
     Histogram,
-    DQMGui,
   },
   MachineLearning: {
     Predictions,
