@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col'
 import { toast } from 'react-toastify'
 
 import Card from 'react-bootstrap/Card'
-import { ResponsivePlot } from '../../components'
+import { ResponsivePlot } from '../components'
 import API from '../../services/api'
 
 const groupBySplitME = (data) => {
@@ -98,15 +98,15 @@ const IngestionStatistics = () => {
             x: data.map((item) => item.status),
             type: 'bar',
             text: data.map((item) => item.count),
-            textposition: 'outside'
+            textposition: 'outside',
           },
         ]
         const maxY = Math.max(...data.map((item) => item.count))
         const yMaxRange = maxY * 1.1
         const layout = {
           yaxis: {
-            range: [0, yMaxRange]
-          }
+            range: [0, yMaxRange],
+          },
         }
         setDataFilesPlot(plotData)
         setLayoutFilesPlot(layout)

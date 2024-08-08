@@ -10,7 +10,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { CMSOMSCard, ResponsivePlot } from '../../components'
+import { CMSOMSCard, ResponsivePlot } from '../components'
 import { getNextToken } from '../../utils/sanitizer'
 
 const Lumisection = () => {

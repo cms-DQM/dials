@@ -15,7 +15,7 @@ const ResponsivePlot = (props) => {
         <div ref={ref} style={{ display: 'flex', height: '100%' }}>
           <Plot
             data={data}
-            layout={{...layout, width, height}}
+            layout={{ ...layout, width, height }}
             config={config}
             useResizeHandler={true}
             style={style}

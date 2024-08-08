@@ -13,7 +13,7 @@ import Select from 'react-select'
 
 import API from '../services/api'
 import directoryIcon from '../assets/img/dir.png'
-import { ResponsivePlot } from '../components'
+import { ResponsivePlot } from './components'
 import { getNextToken } from '../utils/sanitizer'
 
 const TreeNode = ({
