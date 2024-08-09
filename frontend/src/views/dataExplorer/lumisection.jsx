@@ -25,41 +25,6 @@ const Lumisection = () => {
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
 
-  // const genericFetchAllPages = async ({
-  //   dim,
-  //   datasetId,
-  //   runNumber,
-  //   lsNumber,
-  // }) => {
-  //   const allData = []
-  //   let nextPageExists = true
-  //   let nextToken = null
-  //   let errorCount = 0
-  //   let totalPages = 0
-  //   while (nextPageExists) {
-  //     totalPages++
-  //     try {
-  //       const { results, next } = await API.histogram.list(dim, {
-  //         nextToken,
-  //         datasetId,
-  //         runNumber,
-  //         lsNumber,
-  //       })
-  //       results.forEach((e) => allData.unshift(e))
-  //       nextPageExists = !(next === null)
-  //       nextToken = getNextToken({ next }, 'next')
-  //     } catch (err) {
-  //       errorCount++
-  //     }
-  //   }
-  //   return {
-  //     results: allData,
-  //     count: allData.length,
-  //     error: errorCount,
-  //     totalPages,
-  //   }
-  // }
-
   useEffect(() => {
     const fetchDataset = () => {
       setDatasetLoading(true)
