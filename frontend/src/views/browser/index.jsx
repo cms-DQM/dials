@@ -162,6 +162,10 @@ const Browser = () => {
               value={selectedDataset}
               onChange={(selectedOptions) => {
                 setSelectedDataset(selectedOptions)
+                setRuns([])
+                setSelectedRun(undefined)
+                setLumisections([])
+                setSelectedLumisection(undefined)
               }}
               placeholder='Select a dataset...'
               options={datasets}
@@ -172,9 +176,11 @@ const Browser = () => {
         <Col md={3}>
           <Form.Group controlId='formRunSelector'>
             <Select
-              value={selectedRun}
+              value={selectedRun || null}
               onChange={(selectedOptions) => {
                 setSelectedRun(selectedOptions)
+                setLumisections([])
+                setSelectedLumisection(undefined)
               }}
               placeholder='Select a run...'
               options={runs}
@@ -185,7 +191,7 @@ const Browser = () => {
         <Col md={3}>
           <Form.Group controlId='formLumisectionSelector'>
             <Select
-              value={selectedLumisection}
+              value={selectedLumisection || null}
               onChange={(selectedOptions) => {
                 setSelectedLumisection(selectedOptions)
               }}
