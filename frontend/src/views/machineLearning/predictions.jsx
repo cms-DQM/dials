@@ -68,39 +68,11 @@ const Predictions = () => {
     },
   ]
 
-  const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
-    const allData = []
-    let nextPageExists = true
-    let nextToken = null
-    let errorCount = 0
-    let totalPages = 0
-    while (nextPageExists) {
-      totalPages++
-      try {
-        const { results, next } = await apiMethod({
-          nextToken,
-          ...params,
-        })
-        results.forEach((e) => allData.unshift(e))
-        nextPageExists = !(next === null)
-        nextToken = getNextToken({ next }, 'next')
-      } catch (err) {
-        errorCount++
-      }
-    }
-
-    return {
-      results: allData,
-      count: allData.length,
-      error: errorCount,
-      totalPages,
-    }
-  }
-
   useEffect(() => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
-      genericFetchAllPages({ apiMethod: API.dataset.list })
+      API.utils
+        .genericFetchAllPages({ apiMethod: API.dataset.list })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -124,10 +96,11 @@ const Predictions = () => {
   useEffect(() => {
     const fetchRuns = () => {
       setIsLoadingRuns(true)
-      genericFetchAllPages({
-        apiMethod: API.run.list,
-        params: { datasetId: selectedDataset.value },
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.run.list,
+          params: { datasetId: selectedDataset.value },
+        })
         .then((response) => {
           const runs = response.results.map((item) => ({
             value: item.run_number,
@@ -152,9 +125,10 @@ const Predictions = () => {
   useEffect(() => {
     const fetchModels = () => {
       setIsLoadingModels(true)
-      genericFetchAllPages({
-        apiMethod: API.mlModelsIndex.list,
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.mlModelsIndex.list,
+        })
         .then((response) => {
           const models = response.results.map((item) => ({
             value: item.model_id,

@@ -105,7 +105,8 @@ const Histogram = (props) => {
     }
 
     API.histogram
-      .list(dim, {
+      .list({
+        dim,
         dataset: searchDataset,
         runNumber: searchRunNumber,
         lsNumber: searchLsNumber,

@@ -99,8 +99,9 @@ const Histograms2D = () => {
   }) => {
     setLoading(true)
     API.histogram
-      .list(2, {
+      .list({
         nextToken,
+        dim: 2,
         runNumber,
         runNumberLte,
         runNumberGte,

@@ -10,7 +10,6 @@ import Select from 'react-select'
 
 import { TreeGrid } from './tree'
 import API from '../../services/api'
-import { getNextToken } from '../../utils/sanitizer'
 
 const Browser = () => {
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(true)
@@ -27,35 +26,6 @@ const Browser = () => {
 
   const [isLoadingMEs, setIsLoadingMEs] = useState(true)
   const [fullTree, setFullTree] = useState([])
-
-  const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
-    const allData = []
-    let nextPageExists = true
-    let nextToken = null
-    let errorCount = 0
-    let totalPages = 0
-    while (nextPageExists) {
-      totalPages++
-      try {
-        const { results, next } = await apiMethod({
-          nextToken,
-          ...params,
-        })
-        results.forEach((e) => allData.unshift(e))
-        nextPageExists = !(next === null)
-        nextToken = getNextToken({ next }, 'next')
-      } catch (err) {
-        errorCount++
-      }
-    }
-
-    return {
-      results: allData,
-      count: allData.length,
-      error: errorCount,
-      totalPages,
-    }
-  }
 
   const buildTree = (items) => {
     const tree = []
@@ -85,7 +55,8 @@ const Browser = () => {
   useEffect(() => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
-      genericFetchAllPages({ apiMethod: API.dataset.list })
+      API.utils
+        .genericFetchAllPages({ apiMethod: API.dataset.list })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -109,10 +80,11 @@ const Browser = () => {
   useEffect(() => {
     const fetchRuns = () => {
       setIsLoadingRuns(true)
-      genericFetchAllPages({
-        apiMethod: API.run.list,
-        params: { datasetId: selectedDataset.value },
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.run.list,
+          params: { datasetId: selectedDataset.value },
+        })
         .then((response) => {
           const runs = response.results.map((item) => ({
             value: item.run_number,
@@ -137,10 +109,11 @@ const Browser = () => {
   useEffect(() => {
     const fetchLumisections = ({ datasetId, runNumber }) => {
       setIsLoadingLumisections(true)
-      genericFetchAllPages({
-        apiMethod: API.lumisection.list,
-        params: { datasetId, runNumber },
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.lumisection.list,
+          params: { datasetId, runNumber },
+        })
         .then((response) => {
           const lumisections = response.results
             .sort((a, b) =>

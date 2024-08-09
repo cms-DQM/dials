@@ -11,7 +11,6 @@ import { toast } from 'react-toastify'
 
 import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../components'
-import { getNextToken } from '../../utils/sanitizer'
 
 const Lumisection = () => {
   const { datasetId, runNumber, lsNumber } = useParams()
@@ -26,40 +25,40 @@ const Lumisection = () => {
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
 
-  const genericFetchAllPages = async ({
-    dim,
-    datasetId,
-    runNumber,
-    lsNumber,
-  }) => {
-    const allData = []
-    let nextPageExists = true
-    let nextToken = null
-    let errorCount = 0
-    let totalPages = 0
-    while (nextPageExists) {
-      totalPages++
-      try {
-        const { results, next } = await API.histogram.list(dim, {
-          nextToken,
-          datasetId,
-          runNumber,
-          lsNumber,
-        })
-        results.forEach((e) => allData.unshift(e))
-        nextPageExists = !(next === null)
-        nextToken = getNextToken({ next }, 'next')
-      } catch (err) {
-        errorCount++
-      }
-    }
-    return {
-      results: allData,
-      count: allData.length,
-      error: errorCount,
-      totalPages,
-    }
-  }
+  // const genericFetchAllPages = async ({
+  //   dim,
+  //   datasetId,
+  //   runNumber,
+  //   lsNumber,
+  // }) => {
+  //   const allData = []
+  //   let nextPageExists = true
+  //   let nextToken = null
+  //   let errorCount = 0
+  //   let totalPages = 0
+  //   while (nextPageExists) {
+  //     totalPages++
+  //     try {
+  //       const { results, next } = await API.histogram.list(dim, {
+  //         nextToken,
+  //         datasetId,
+  //         runNumber,
+  //         lsNumber,
+  //       })
+  //       results.forEach((e) => allData.unshift(e))
+  //       nextPageExists = !(next === null)
+  //       nextToken = getNextToken({ next }, 'next')
+  //     } catch (err) {
+  //       errorCount++
+  //     }
+  //   }
+  //   return {
+  //     results: allData,
+  //     count: allData.length,
+  //     error: errorCount,
+  //     totalPages,
+  //   }
+  // }
 
   useEffect(() => {
     const fetchDataset = () => {
@@ -80,12 +79,16 @@ const Lumisection = () => {
 
     const fetchH1D = () => {
       setH1DLoading(true)
-      genericFetchAllPages({
-        dim: 1,
-        datasetId,
-        runNumber,
-        lsNumber,
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.histogram.list,
+          params: {
+            dim: 1,
+            datasetId,
+            runNumber,
+            lsNumber,
+          },
+        })
         .then((response) => {
           setH1DData(response.results)
           setH1DTotalSize(response.count)
@@ -106,12 +109,16 @@ const Lumisection = () => {
 
     const fetchH2D = () => {
       setH2DLoading(true)
-      genericFetchAllPages({
-        dim: 2,
-        datasetId,
-        runNumber,
-        lsNumber,
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.histogram.list,
+          params: {
+            dim: 2,
+            datasetId,
+            runNumber,
+            lsNumber,
+          },
+        })
         .then((response) => {
           setH2DData(response.results)
           setH2DTotalSize(response.count)
