@@ -8,7 +8,8 @@ import {
   OIDC_USER_WORKSPACE,
   EXCHANGED_TOKEN_EVT,
 } from './config/env'
-import { AppNavbar, AppRoutes } from './components'
+import { AppNavbar } from './views/components'
+import AppRoutes from './views/routes'
 import onSigninComplete from './utils/auth'
 import { getUserWorkspace } from './utils/userTokens'
 import API from './services/api'
@@ -78,7 +79,9 @@ const Root = () => {
       // if the workspace is already set in localStorage
       // we want to preserve that, since the user might have selected another workspace
       const currentWorkspace = localStorage.getItem(OIDC_USER_WORKSPACE)
-      setSelectedWorkspace(currentWorkspace !== null ? currentWorkspace : getUserWorkspace())
+      setSelectedWorkspace(
+        currentWorkspace !== null ? currentWorkspace : getUserWorkspace()
+      )
       fetchWorkspaces()
     }
   }, [auth.isAuthenticated, tokenExchanged])

@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 
-import Views from '../views'
-import PrivateRoute from './privateRoute'
+import Views from './index'
+import PrivateRoute from './components/privateRoute'
 
 // Note on `PrivateRoute`
 //
@@ -18,10 +18,10 @@ import PrivateRoute from './privateRoute'
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path='/' element={<Views.Home.Index />} />
+      <Route path='/' element={<Views.Home />} />
       <Route
-        path='/ingest'
-        element={<PrivateRoute component={Views.DataIngestion.Index} />}
+        path='/overview'
+        element={<PrivateRoute component={Views.Overview} />}
       />
       <Route
         path='/file-index'

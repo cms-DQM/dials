@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
-import { Table } from '../../components'
+import { Table } from '../components'
 import API from '../../services/api'
 import {
   isNumericNonZero,

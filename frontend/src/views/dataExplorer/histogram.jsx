@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { CMSOMSCard, ResponsivePlot } from '../../components'
+import { CMSOMSCard, ResponsivePlot } from '../components'
 import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
 
 const Histogram = (props) => {
@@ -105,7 +105,8 @@ const Histogram = (props) => {
     }
 
     API.histogram
-      .list(dim, {
+      .list({
+        dim,
         dataset: searchDataset,
         runNumber: searchRunNumber,
         lsNumber: searchLsNumber,

@@ -42,32 +42,10 @@ const getNextToken = (response, key) => {
     : null
 }
 
-const pathsToJson = (paths) => {
-  const result = {}
-  paths.forEach((path) => {
-    const parts = path.split('/')
-    let currentLevel = result
-
-    parts.forEach((part, index) => {
-      if (!currentLevel[part]) {
-        if (index === parts.length - 1) {
-          currentLevel[part] = null
-        } else {
-          currentLevel[part] = {}
-        }
-      }
-      currentLevel = currentLevel[part]
-    })
-  })
-
-  return result
-}
-
 export {
   toUndefined,
   isNumericNonZero,
   isStringNonEmpty,
   sanitizedURLSearchParams,
   getNextToken,
-  pathsToJson,
 }

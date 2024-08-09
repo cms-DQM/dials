@@ -9,8 +9,8 @@ import Image from 'react-bootstrap/Image'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import logo from '../assets/img/logo.png'
-import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../config/env'
+import logo from '../../assets/img/logo.png'
+import { OIDC_CONFIDENTIAL_TOKEN_NS } from '../../config/env'
 
 const AppNavbar = ({
   allWorkspaces,
@@ -47,8 +47,8 @@ const AppNavbar = ({
         {auth.isAuthenticated ? (
           <>
             <Nav className='me-auto'>
-              <Nav.Link as={NavLink} to='/ingest'>
-                Data Ingestion
+              <Nav.Link as={NavLink} to='/overview'>
+                Overview
               </Nav.Link>
               <Nav.Link as={NavLink} to='/browser'>
                 Browser

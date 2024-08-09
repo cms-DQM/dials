@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
 
-import { Table } from '../../components'
+import { Table } from '../components'
 import dateFormat from '../../utils/date'
 import API from '../../services/api'
 import { toast } from 'react-toastify'

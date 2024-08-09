@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { Table } from '../../components'
+import { Table } from '../components'
 import { getNextToken } from '../../utils/sanitizer'
 
 const Predictions = () => {
@@ -68,39 +68,11 @@ const Predictions = () => {
     },
   ]
 
-  const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
-    const allData = []
-    let nextPageExists = true
-    let nextToken = null
-    let errorCount = 0
-    let totalPages = 0
-    while (nextPageExists) {
-      totalPages++
-      try {
-        const { results, next } = await apiMethod({
-          nextToken,
-          ...params,
-        })
-        results.forEach((e) => allData.unshift(e))
-        nextPageExists = !(next === null)
-        nextToken = getNextToken({ next }, 'next')
-      } catch (err) {
-        errorCount++
-      }
-    }
-
-    return {
-      results: allData,
-      count: allData.length,
-      error: errorCount,
-      totalPages,
-    }
-  }
-
   useEffect(() => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
-      genericFetchAllPages({ apiMethod: API.dataset.list })
+      API.utils
+        .genericFetchAllPages({ apiMethod: API.dataset.list })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -124,10 +96,11 @@ const Predictions = () => {
   useEffect(() => {
     const fetchRuns = () => {
       setIsLoadingRuns(true)
-      genericFetchAllPages({
-        apiMethod: API.run.list,
-        params: { datasetId: selectedDataset.value },
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.run.list,
+          params: { datasetId: selectedDataset.value },
+        })
         .then((response) => {
           const runs = response.results.map((item) => ({
             value: item.run_number,
@@ -152,9 +125,10 @@ const Predictions = () => {
   useEffect(() => {
     const fetchModels = () => {
       setIsLoadingModels(true)
-      genericFetchAllPages({
-        apiMethod: API.mlModelsIndex.list,
-      })
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.mlModelsIndex.list,
+        })
         .then((response) => {
           const models = response.results.map((item) => ({
             value: item.model_id,
@@ -177,15 +151,24 @@ const Predictions = () => {
     }
   }, [selectedDataset])
 
-  const fetchFlaggedBadLumis = ({ nextToken, datasetId, runNumberIn, modelIdIn }) => {
+  const fetchFlaggedBadLumis = ({
+    nextToken,
+    datasetId,
+    runNumberIn,
+    modelIdIn,
+  }) => {
     setIsLoadingData(true)
-    API.mlBadLumis.list({ nextToken, datasetId, runNumberIn, modelIdIn })
+    API.mlBadLumis
+      .list({ nextToken, datasetId, runNumberIn, modelIdIn })
       .then((response) => {
-        API.mes.list({})
+        API.mes
+          .list({})
           .then((mesResponse) => {
             const results = response.results.map((item) => {
-              const model = models.find(regModel => regModel.value === item.model_id)
-              const me = mesResponse.find(regMe => regMe.me_id === item.me_id)
+              const model = models.find(
+                (regModel) => regModel.value === item.model_id
+              )
+              const me = mesResponse.find((regMe) => regMe.me_id === item.me_id)
               return {
                 ...item,
                 filename: model.label,
@@ -200,10 +183,10 @@ const Predictions = () => {
             setPreviousToken(previousToken)
             setFlaggedBadLumis(results)
           })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
+          .catch((error) => {
+            console.error(error)
+            toast.error('Failure to communicate with the API!')
+          })
       })
       .catch((error) => {
         console.error(error)
@@ -214,32 +197,40 @@ const Predictions = () => {
       })
   }
 
-  const handleJsonDownload = async ({ apiMethod, fileName, datasetId, runNumberIn, modelIdIn }) => {
+  const handleJsonDownload = async ({
+    apiMethod,
+    fileName,
+    datasetId,
+    runNumberIn,
+    modelIdIn,
+  }) => {
     try {
       const response = await apiMethod({
         datasetId,
         runNumberIn,
         modelIdIn,
-      });
+      })
 
       // Create a Blob from the JSON data
-      const blob = new Blob([JSON.stringify(response)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(response)], {
+        type: 'application/json',
+      })
 
       // Create a URL for the Blob
-      const url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob)
 
       // Create a link element and simulate a click to download the file
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
+      const link = document.createElement('a')
+      link.href = url
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
 
       // Clean up by revoking the object URL and removing the link
-      URL.revokeObjectURL(url);
-      document.body.removeChild(link);
+      URL.revokeObjectURL(url)
+      document.body.removeChild(link)
     } catch (error) {
-      console.error('Error downloading JSON:', error);
+      console.error('Error downloading JSON:', error)
     }
   }
 
@@ -299,8 +290,8 @@ const Predictions = () => {
               onClick={() => {
                 fetchFlaggedBadLumis({
                   datasetId: selectedDataset.value,
-                  runNumberIn: selectedRuns.map(item => item.value),
-                  modelIdIn: selectedModels.map(item => item.value)
+                  runNumberIn: selectedRuns.map((item) => item.value),
+                  modelIdIn: selectedModels.map((item) => item.value),
                 })
               }}
             >
@@ -313,7 +304,7 @@ const Predictions = () => {
         <Card className='text-center'>
           <Card.Header as='h4'>Predictions</Card.Header>
           <Card.Body>
-            { flaggedBadLumis ? (
+            {flaggedBadLumis ? (
               <>
                 <Button
                   variant='primary'
@@ -323,8 +314,8 @@ const Predictions = () => {
                       apiMethod: API.mlBadLumis.certJson,
                       fileName: 'mlCertJson.json',
                       datasetId: selectedDataset.value,
-                      runNumberIn: selectedRuns.map(item => item.value),
-                      modelIdIn: selectedModels.map(item => item.value)
+                      runNumberIn: selectedRuns.map((item) => item.value),
+                      modelIdIn: selectedModels.map((item) => item.value),
                     })
                   }}
                 >
@@ -338,8 +329,8 @@ const Predictions = () => {
                       apiMethod: API.mlBadLumis.goldenJson,
                       fileName: 'mlGoldenJson.json',
                       datasetId: selectedDataset.value,
-                      runNumberIn: selectedRuns.map(item => item.value),
-                      modelIdIn: selectedModels.map(item => item.value)
+                      runNumberIn: selectedRuns.map((item) => item.value),
+                      modelIdIn: selectedModels.map((item) => item.value),
                     })
                   }}
                 >
@@ -360,16 +351,16 @@ const Predictions = () => {
                     fetchFlaggedBadLumis({
                       nextToken: previousToken,
                       datasetId: selectedDataset.value,
-                      runNumberIn: selectedRuns.map(item => item.value),
-                      modelIdIn: selectedModels.map(item => item.value)
+                      runNumberIn: selectedRuns.map((item) => item.value),
+                      modelIdIn: selectedModels.map((item) => item.value),
                     })
                   }}
                   nextOnClick={() => {
                     fetchFlaggedBadLumis({
                       nextToken,
                       datasetId: selectedDataset.value,
-                      runNumberIn: selectedRuns.map(item => item.value),
-                      modelIdIn: selectedModels.map(item => item.value)
+                      runNumberIn: selectedRuns.map((item) => item.value),
+                      modelIdIn: selectedModels.map((item) => item.value),
                     })
                   }}
                 />

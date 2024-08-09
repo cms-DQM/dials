@@ -1,34 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
+import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
-import Card from 'react-bootstrap/Card'
-import { ResponsivePlot } from '../../components'
-import API from '../../services/api'
+import { ResponsivePlot } from './components'
+import API from '../services/api'
+import { groupBySplitME } from '../utils/ops'
 
-const groupBySplitME = (data) => {
-  const groupedData = data.reduce((acc, item) => {
-    const [firstPart, secondPart] = item.me.split('/')
-    const key = `${firstPart}/${secondPart.split('/')[0]}`
-
-    if (!acc[key]) {
-      acc[key] = {
-        me: key,
-        count: item.count,
-      }
-    } else {
-      acc[key].count += item.count
-    }
-
-    return acc
-  }, {})
-
-  return Object.values(groupedData)
-}
-
-const IngestionStatistics = () => {
+const Overview = () => {
   const [totalFiles, setTotalFiles] = useState(0)
   const [totalRuns, setTotalRuns] = useState(0)
   const [totalLumisections, setTotalLumisection] = useState(0)
@@ -98,15 +80,15 @@ const IngestionStatistics = () => {
             x: data.map((item) => item.status),
             type: 'bar',
             text: data.map((item) => item.count),
-            textposition: 'outside'
+            textposition: 'outside',
           },
         ]
         const maxY = Math.max(...data.map((item) => item.count))
         const yMaxRange = maxY * 1.1
         const layout = {
           yaxis: {
-            range: [0, yMaxRange]
-          }
+            range: [0, yMaxRange],
+          },
         }
         setDataFilesPlot(plotData)
         setLayoutFilesPlot(layout)
@@ -180,7 +162,7 @@ const IngestionStatistics = () => {
   }, [])
 
   return (
-    <>
+    <Container>
       <Row className='mt-5 mb-3'>
         <Col sm={4}>
           <Card className='text-center'>
@@ -255,8 +237,8 @@ const IngestionStatistics = () => {
           </Card>
         </Col>
       </Row>
-    </>
+    </Container>
   )
 }
 
-export default IngestionStatistics
+export default Overview

@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
 import { toast } from 'react-toastify'
 
-import { ResponsivePlot, Table } from '../../components'
+import { ResponsivePlot, Table } from '../components'
 import API from '../../services/api'
 import { getNextToken } from '../../utils/sanitizer'
 
@@ -99,8 +99,9 @@ const Histograms1D = () => {
   }) => {
     setLoading(true)
     API.histogram
-      .list(1, {
+      .list({
         nextToken,
+        dim: 1,
         runNumber,
         runNumberLte,
         runNumberGte,

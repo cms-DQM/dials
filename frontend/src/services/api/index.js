@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { sanitizedURLSearchParams } from '../../utils/sanitizer'
+import { sanitizedURLSearchParams, getNextToken } from '../../utils/sanitizer'
 import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
 import { API_URL, OIDC_USER_WORKSPACE } from '../../config/env'
 
@@ -265,28 +265,26 @@ const countLumisections = async ({
   return response.data
 }
 
-const listHistograms = async (
+const listHistograms = async ({
+  nextToken,
   dim,
-  {
-    nextToken,
-    datasetId,
-    fileId,
-    runNumber,
-    runNumberLte,
-    runNumberGte,
-    lsNumber,
-    lsNumberLte,
-    lsNumberGte,
-    meId,
-    entriesGte,
-    dataset,
-    datasetRegex,
-    logicalFileName,
-    logicalFileNameRegex,
-    me,
-    meRegex,
-  }
-) => {
+  datasetId,
+  fileId,
+  runNumber,
+  runNumberLte,
+  runNumberGte,
+  lsNumber,
+  lsNumberLte,
+  lsNumberGte,
+  meId,
+  entriesGte,
+  dataset,
+  datasetRegex,
+  logicalFileName,
+  logicalFileNameRegex,
+  me,
+  meRegex,
+}) => {
   const endpoint = `${API_URL}/th${dim}/`
   const params = sanitizedURLSearchParams(
     {
@@ -442,7 +440,39 @@ const getMLGoldenJson = async ({ modelIdIn, datasetId, runNumberIn }) => {
   return response.data
 }
 
+const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
+  const allData = []
+  let nextPageExists = true
+  let nextToken = null
+  let errorCount = 0
+  let totalPages = 0
+  while (nextPageExists) {
+    totalPages++
+    try {
+      const { results, next } = await apiMethod({
+        nextToken,
+        ...params,
+      })
+      results.forEach((e) => allData.unshift(e))
+      nextPageExists = !(next === null)
+      nextToken = getNextToken({ next }, 'next')
+    } catch (err) {
+      errorCount++
+    }
+  }
+
+  return {
+    results: allData,
+    count: allData.length,
+    error: errorCount,
+    totalPages,
+  }
+}
+
 const API = {
+  utils: {
+    genericFetchAllPages,
+  },
   auth: {
     exchange: exchangeToken,
   },

@@ -1,6 +1,6 @@
 import Home from './home'
+import Overview from './overview'
 import Browser from './browser'
-import DataIngestion from './dataIngestion'
 import {
   FileIndex,
   Runs,
@@ -14,12 +14,8 @@ import {
 import { Predictions } from './machineLearning'
 
 const Views = {
-  Home: {
-    Index: Home,
-  },
-  DataIngestion: {
-    Index: DataIngestion,
-  },
+  Home,
+  Overview,
   Browser,
   DataExplorer: {
     FileIndex,
