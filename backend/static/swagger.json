@@ -684,6 +684,68 @@
         ]
       }
     },
+    "/api/v1/mes/{dataset_id}/{run_number}/": {
+      "get": {
+        "operationId": "listDatasetRunMEs",
+        "description": "",
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "description": "A unique integer value identifying the dataset.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "run_number",
+            "in": "path",
+            "required": true,
+            "description": "A unique integer value identifying the run.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "workspace",
+            "required": false,
+            "in": "header",
+            "description": "workspace",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MinifiedMEs"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "MEs"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
     "/api/v1/mes/{me_id}/": {
       "get": {
         "operationId": "retrieveMEs",
@@ -2822,6 +2884,27 @@
         "required": [
           "me",
           "count",
+          "dim"
+        ]
+      },
+      "MinifiedMEs": {
+        "type": "object",
+        "properties": {
+          "me_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "me": {
+            "type": "string"
+          },
+          "dim": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          }
+        },
+        "required": [
+          "me",
           "dim"
         ]
       },
