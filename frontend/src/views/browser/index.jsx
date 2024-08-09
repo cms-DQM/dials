@@ -112,8 +112,6 @@ const Browser = () => {
       API.mes
         .listByRun({ datasetId, runNumber })
         .then((data) => {
-          console.log(data)
-          console.log(buildTree(data))
           setFullTree(buildTree(data))
         })
         .catch((err) => {
