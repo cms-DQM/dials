@@ -442,6 +442,36 @@ const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
   return response.data
 }
 
+const getCAFJson = async ({ className, kind }) => {
+  const endpoint = `${API_URL}/caf/`
+  const params = sanitizedURLSearchParams(
+    {
+      class_name: className,
+      kind,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getRRNextCallRuns = async ({ className, datasetName }) => {
+  const endpoint = `${API_URL}/runregistry/`
+  const params = sanitizedURLSearchParams(
+    {
+      class_name: className,
+      dataset_name: datasetName,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
 const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
   const allData = []
   let nextPageExists = true
@@ -515,6 +545,12 @@ const API = {
     list: listMLBadLumisections,
     certJson: getMLCertificationJson,
     goldenJson: getMLGoldenJson,
+  },
+  caf: {
+    get: getCAFJson,
+  },
+  runregistry: {
+    getNextCallRuns: getRRNextCallRuns,
   },
 }
 

@@ -73,6 +73,9 @@ const AppNavbar = ({
                 </NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title='Machine Learning'>
+                <NavDropdown.Item as={NavLink} to='/json-portal'>
+                  Json Portal
+                </NavDropdown.Item>
                 <NavDropdown.Item as={NavLink} to='/predictions'>
                   Predictions
                 </NavDropdown.Item>

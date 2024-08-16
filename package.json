@@ -18,6 +18,7 @@
     "oidc-client-ts": "^3.0.0",
     "plotly.js": "^2.28.0",
     "react": "^18.2.0",
+    "react-ace": "^12.0.0",
     "react-bootstrap": "^2.10.0",
     "react-bootstrap-range-slider": "^3.0.8",
     "react-bootstrap-table-next": "^4.0.3",
