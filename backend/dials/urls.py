@@ -1,3 +1,4 @@
+from caf.routers import router as caf_router
 from cern_auth.routers import router as cern_auth_router
 from dataset_index.routers import router as dataset_index_router
 from dim_mes.routers import router as dim_mes_router
@@ -26,6 +27,7 @@ router.registry.extend(ml_models_index_router.registry)
 router.registry.extend(ml_bad_lumisection_router.registry)
 router.registry.extend(cern_auth_router.registry)
 router.registry.extend(oms_proxy_router.registry)
+router.registry.extend(caf_router.registry)
 
 swagger_view = TemplateView.as_view(template_name="swagger-ui.html", extra_context={"schema_url": "openapi-schema"})
 
