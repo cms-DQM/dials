@@ -142,6 +142,7 @@ const getRun = async ({ datasetId, runNumber }) => {
 const listRuns = async ({
   nextToken,
   datasetId,
+  datasetIdIn,
   runNumber,
   runNumberLte,
   runNumberGte,
@@ -153,6 +154,7 @@ const listRuns = async ({
     {
       next_token: nextToken,
       dataset_id: datasetId,
+      dataset_id__in: datasetIdIn,
       run_number: runNumber,
       run_number__lte: runNumberLte,
       run_number__gte: runNumberGte,
@@ -424,12 +426,12 @@ const getMLCertificationJson = async ({
   return response.data
 }
 
-const getMLGoldenJson = async ({ modelIdIn, datasetId, runNumberIn }) => {
+const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
   const endpoint = `${API_URL}/ml-bad-lumisection/golden-json`
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
-      dataset_id: datasetId,
+      dataset_id__in: datasetIdIn,
       run_number__in: runNumberIn,
     },
     { repeatMode: false }
