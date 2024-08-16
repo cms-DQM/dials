@@ -2664,7 +2664,7 @@
         ]
       }
     },
-    "/api/v1/caf": {
+    "/api/v1/caf/": {
       "get": {
         "operationId": "retrieveCAF",
         "description": "",
@@ -2702,6 +2702,56 @@
         },
         "tags": [
           "CAF"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/runregistry/": {
+      "get": {
+        "operationId": "retrieveRR",
+        "description": "",
+        "parameters": [
+          {
+            "name": "class_name",
+            "required": true,
+            "in": "query",
+            "description": "class_name",
+            "schema": {
+              "type": "string"
+            },
+          },
+          {
+            "name": "dataset_name",
+            "required": true,
+            "in": "query",
+            "description": "dataset_name",
+            "schema": {
+              "type": "string"
+            },
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "RunRegistry"
         ],
         "security": [
           {
@@ -3391,6 +3441,12 @@
         "required": [
           "run_number",
         ]
+      },
+      "RunList": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
       }
     },
     "securitySchemes": {

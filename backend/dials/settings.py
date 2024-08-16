@@ -240,3 +240,7 @@ CACHES = {
         },
     }
 }
+
+# RR api client package requires exactly those two env variables to work
+os.environ["SSO_CLIENT_ID"] = OMS_SSO_CLIENT_ID
+os.environ["SSO_CLIENT_SECRET"] = OMS_SSO_CLIENT_SECRET

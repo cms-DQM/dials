@@ -11,6 +11,7 @@ from ml_models_index.routers import router as ml_models_index_router
 from oms_proxy.routers import router as oms_proxy_router
 from rest_framework import routers
 from run.routers import router as run_router
+from runregistry_min.routers import router as runregistry_min_router
 from th1.routers import router as th1_router
 from th2.routers import router as th2_router
 
@@ -28,6 +29,7 @@ router.registry.extend(ml_bad_lumisection_router.registry)
 router.registry.extend(cern_auth_router.registry)
 router.registry.extend(oms_proxy_router.registry)
 router.registry.extend(caf_router.registry)
+router.registry.extend(runregistry_min_router.registry)
 
 swagger_view = TemplateView.as_view(template_name="swagger-ui.html", extra_context={"schema_url": "openapi-schema"})
 
