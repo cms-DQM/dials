@@ -2644,6 +2644,56 @@
           {}
         ]
       }
+    },
+    "/api/v1/caf": {
+      "get": {
+        "operationId": "retrieveCAF",
+        "description": "",
+        "parameters": [
+          {
+            "name": "class_name",
+            "required": true,
+            "in": "query",
+            "description": "class_name",
+            "schema": {
+              "type": "string"
+            },
+          },
+          {
+            "name": "kind",
+            "required": true,
+            "in": "query",
+            "description": "CAF file kind (golden, muon, dcs)",
+            "schema": {
+              "type": "string"
+            },
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CAFJson"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "CAF"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
     }
   },
   "components": {
@@ -3286,11 +3336,41 @@
         },
         "required": [
           "run_number",
-          "ls_number",
-          "model_id",
-          "me_id",
-          "filename",
-          "me"
+        ]
+      },
+      "CAFJson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "last_modified": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "content": {
+            "type": "object",
+            "properties": {
+              "run_number": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "example": [128, 145]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "run_number",
         ]
       }
     },
