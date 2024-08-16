@@ -820,6 +820,20 @@
             }
           },
           {
+            "name": "dataset_id__in",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "run_number",
             "required": false,
             "in": "query",

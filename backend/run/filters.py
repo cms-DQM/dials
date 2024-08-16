@@ -10,6 +10,6 @@ class RunFilter(filters_mixins.DatasetFilterMethods, filters.FilterSet):
     class Meta:
         model = Run
         fields: ClassVar[dict[str, list[str]]] = {
-            "dataset_id": ["exact"],
+            "dataset_id": ["exact", "in"],
             "run_number": ["exact", "lte", "gte"],
         }
