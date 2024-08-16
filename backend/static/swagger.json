@@ -2601,13 +2601,18 @@
             "explode": false
           },
           {
-            "name": "dataset_id",
+            "name": "dataset_id__in",
             "required": false,
             "in": "query",
-            "description": "dataset_id",
+            "description": "dataset_id__in",
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "run_number__in",
