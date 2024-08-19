@@ -411,7 +411,7 @@ const getMLCertificationJson = async ({
   datasetId,
   runNumberIn,
 }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json`
+  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json/`
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
@@ -427,7 +427,7 @@ const getMLCertificationJson = async ({
 }
 
 const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json`
+  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json/`
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
