@@ -2763,6 +2763,146 @@
           {}
         ]
       }
+    },
+    "/api/v1/brilcalc-lumi/": {
+      "get": {
+        "operationId": "retrieveBrilcalcLumi",
+        "description": "",
+        "parameters": [
+          {
+            "name": "brilws_version",
+            "in": "query",
+            "description": "Version of BRILWS",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "3.7.4"
+            }
+          },
+          {
+            "name": "connect",
+            "in": "query",
+            "description": "Connection type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "offline"
+            }
+          },
+          {
+            "name": "fillnum",
+            "in": "query",
+            "description": "Fill number",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "runnumber",
+            "in": "query",
+            "description": "Run number",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "beamstatus",
+            "in": "query",
+            "description": "Beam status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "unit",
+            "in": "query",
+            "description": "Unit",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "/ub"
+            }
+          },
+          {
+            "name": "amodetag",
+            "in": "query",
+            "description": "A mode tag",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "normtag",
+            "in": "query",
+            "description": "Normalization tag",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "begin",
+            "in": "query",
+            "description": "Begin time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "End time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "byls",
+            "in": "query",
+            "description": "By Ls",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "Scope",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "all"
+            }
+          }
+        ],
+        "tags": [
+          "BrilcalcLumi"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Confidential JWT Token": []
+          },
+          {}
+        ]
+      }
     }
   },
   "components": {
