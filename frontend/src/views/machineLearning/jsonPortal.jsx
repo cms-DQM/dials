@@ -214,11 +214,6 @@ const JsonPortal = () => {
     triggerDownload({ filename, obj: mergedJson })
   }
 
-  // beamStatus: brilBeamStatus,
-  // aModeTag: brilAModeTag,
-  // normTag: brilNormTag,
-  // connect: brilConnect,
-  // unit: brilUnit,
   return (
     <Container fluid>
       <Row className='mt-3'>
