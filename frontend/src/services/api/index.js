@@ -457,7 +457,7 @@ const getCAFJson = async ({ className, kind }) => {
   return response.data
 }
 
-const getRRNextCallRuns = async ({ className, datasetName }) => {
+const getRROpenRuns = async ({ className, datasetName }) => {
   const endpoint = `${API_URL}/runregistry/`
   const params = sanitizedURLSearchParams(
     {
@@ -550,7 +550,7 @@ const API = {
     get: getCAFJson,
   },
   runregistry: {
-    getNextCallRuns: getRRNextCallRuns,
+    getOpenRuns: getRROpenRuns,
   },
 }
 

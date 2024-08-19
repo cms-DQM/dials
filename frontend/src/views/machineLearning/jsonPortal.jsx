@@ -33,7 +33,7 @@ const JsonPortal = () => {
   useEffect(() => {
     const fetchRROpenRuns = () => {
       API.runregistry
-        .getNextCallRuns({ className: rrClassName, datasetName: rrDatasetName })
+        .getOpenRuns({ className: rrClassName, datasetName: rrDatasetName })
         .then((response) => {
           setRROpenRuns(response)
         })
