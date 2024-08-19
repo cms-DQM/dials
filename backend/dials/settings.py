@@ -174,6 +174,10 @@ KEYCLOAK_API_CLIENTS = json.loads(config("DJANGO_KEYCLOAK_API_CLIENTS", default=
 OMS_SSO_CLIENT_ID = config("DJANGO_OMS_SSO_CLIENT_ID")
 OMS_SSO_CLIENT_SECRET = config("DJANGO_OMS_SSO_CLIENT_SECRET")
 
+# LXPLUS AUTH
+KEYTAB_USR = config("DJANGO_KEYTAB_USR")
+KEYTAB_PWD = config("DJANGO_KEYTAB_PWD")
+
 # All available policies are listed at:
 # https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md
 # Empty list means the policy is disabled
