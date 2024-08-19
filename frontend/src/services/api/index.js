@@ -472,6 +472,44 @@ const getRROpenRuns = async ({ className, datasetName }) => {
   return response.data
 }
 
+const getBrilcalcLumi = async ({
+  brilwsVersion,
+  connect,
+  fillNum,
+  runNumber,
+  beamStatus,
+  unit,
+  aModeTag,
+  normTag,
+  begin,
+  end,
+  byLs,
+  scope,
+}) => {
+  const endpoint = `${API_URL}/brilcalc-lumi/`
+  const params = sanitizedURLSearchParams(
+    {
+      brilws_version: brilwsVersion,
+      connect,
+      fillnum: fillNum,
+      runnumber: runNumber,
+      beamstatus: beamStatus,
+      unit,
+      amodetag: aModeTag,
+      normtag: normTag,
+      begin,
+      end,
+      byls: byLs,
+      scope,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
 const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
   const allData = []
   let nextPageExists = true
@@ -551,6 +589,9 @@ const API = {
   },
   runregistry: {
     getOpenRuns: getRROpenRuns,
+  },
+  brilcalc: {
+    lumi: getBrilcalcLumi,
   },
 }
 

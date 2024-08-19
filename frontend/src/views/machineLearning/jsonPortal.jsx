@@ -21,11 +21,19 @@ const JsonPortal = () => {
   const datasetRegex = `/.*/Run${currentYear}.*-PromptReco.*/DQMIO`
   const rrClassName = `Collisions${currentYear.toString().slice(2)}`
   const rrDatasetName = `/PromptReco/Collisions${currentYear}/DQM`
+  const brilBeamStatus = '"STABLE BEAMS"'
+  const brilAModeTag = 'PROTPHYS'
+  const brilNormTag =
+    '/cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json'
+  const brilConnect = 'web'
+  const brilUnit = '/nb'
+  const brilLowLumiRule = 80.0
 
   const [mergeDCSAndML, setMergeDCSAndML] = useState(true)
   const [activeModels, setActiveModels] = useState()
   const [datasetIds, setDatasetIds] = useState()
   const [rrOpenRuns, setRROpenRuns] = useState()
+  const [brilRuns, setBrilRuns] = useState()
   const [goldenJson, setGoldenJson] = useState()
   const [dcsJson, setDCSJson] = useState()
   const [mlGoldenJson, setMLGoldenJson] = useState()
@@ -93,11 +101,42 @@ const JsonPortal = () => {
   }, [datasetRegex, rrClassName, rrDatasetName])
 
   useEffect(() => {
-    const fetchMLJson = () => {
+    const fetchBrilLumiByRun = () => {
+      API.brilcalc
+        .lumi({
+          beamStatus: brilBeamStatus,
+          aModeTag: brilAModeTag,
+          normTag: brilNormTag,
+          connect: brilConnect,
+          unit: brilUnit,
+          scope: 'detailed', // Do not let the user edit this :)
+          begin: Math.min(...rrOpenRuns),
+          end: Math.max(...rrOpenRuns),
+        })
+        .then((response) => {
+          const result = response
+            .filter((item) => rrOpenRuns.includes(item.run))
+            .filter((item) => item[`recorded(${brilUnit})`] > brilLowLumiRule)
+            .map((item) => item.run)
+          setBrilRuns(result)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+    }
+
+    if (rrOpenRuns !== undefined) {
+      fetchBrilLumiByRun()
+    }
+  }, [rrOpenRuns])
+
+  useEffect(() => {
+    const fetchMLJson = (runList) => {
       API.mlBadLumis
         .goldenJson({
           datasetIdIn: datasetIds,
-          runNumberIn: rrOpenRuns,
+          runNumberIn: runList,
           modelIdIn: activeModels.map((item) => item.model_id),
         })
         .then((response) => {
@@ -112,11 +151,11 @@ const JsonPortal = () => {
     if (
       datasetIds !== undefined &&
       activeModels !== undefined &&
-      rrOpenRuns !== undefined
+      brilRuns !== undefined
     ) {
-      fetchMLJson()
+      fetchMLJson(brilRuns)
     }
-  }, [datasetIds, activeModels, rrOpenRuns])
+  }, [datasetIds, activeModels, brilRuns])
 
   const triggerDownload = ({ filename, obj }) => {
     const blob = new Blob([JSON.stringify(obj)], {
@@ -175,6 +214,11 @@ const JsonPortal = () => {
     triggerDownload({ filename, obj: mergedJson })
   }
 
+  // beamStatus: brilBeamStatus,
+  // aModeTag: brilAModeTag,
+  // normTag: brilNormTag,
+  // connect: brilConnect,
+  // unit: brilUnit,
   return (
     <Container fluid>
       <Row className='mt-3'>
@@ -221,19 +265,21 @@ const JsonPortal = () => {
         <Col md={4}>
           <div className='text-center'>
             <strong>
-              <a
-                href='#'
-                onClick={() =>
-                  triggerDownload({
-                    filename: goldenJson.name,
-                    obj: goldenJson.download,
-                  })
-                }
-              >
-                {goldenJson === undefined
-                  ? 'Golden JSON'
-                  : `${goldenJson.name} (generated at: ${goldenJson.last_modified})`}
-              </a>
+              {goldenJson === undefined ? (
+                <div>Golden JSON</div>
+              ) : (
+                <a
+                  href='#'
+                  onClick={() =>
+                    triggerDownload({
+                      filename: goldenJson.name,
+                      obj: goldenJson.download,
+                    })
+                  }
+                >
+                  {`${goldenJson.name} (generated at: ${goldenJson.last_modified})`}
+                </a>
+              )}
             </strong>
           </div>
           <div style={{ border: '3px solid #ddd', padding: '10px' }}>
@@ -256,19 +302,21 @@ const JsonPortal = () => {
         <Col md={4}>
           <div className='text-center'>
             <strong>
-              <a
-                href='#'
-                onClick={() =>
-                  triggerDownload({
-                    filename: dcsJson.name,
-                    obj: dcsJson.download,
-                  })
-                }
-              >
-                {dcsJson === undefined
-                  ? 'DCS JSON'
-                  : `${dcsJson.name} (generated at: ${dcsJson.last_modified})`}
-              </a>
+              {dcsJson === undefined ? (
+                <div>DCS JSON</div>
+              ) : (
+                <a
+                  href='#'
+                  onClick={() =>
+                    triggerDownload({
+                      filename: dcsJson.name,
+                      obj: dcsJson.download,
+                    })
+                  }
+                >
+                  {`${dcsJson.name} (generated at: ${dcsJson.last_modified})`}
+                </a>
+              )}
             </strong>
           </div>
           <div style={{ border: '3px solid #ddd', padding: '10px' }}>
@@ -291,17 +339,21 @@ const JsonPortal = () => {
         <Col md={4}>
           <div className='text-center'>
             <strong>
-              <a
-                href='#'
-                onClick={() => {
-                  const minRun = Math.min(...Object.keys(mlGoldenJson))
-                  const maxRun = Math.max(...Object.keys(mlGoldenJson))
-                  const filename = `mlOnly_Collisions${currentYear}_${minRun}_${maxRun}_Golden.json`
-                  triggerDownload({ filename, obj: mlGoldenJson })
-                }}
-              >
-                ML JSON
-              </a>
+              {mlGoldenJson === undefined ? (
+                <div>ML JSON</div>
+              ) : (
+                <a
+                  href='#'
+                  onClick={() => {
+                    const minRun = Math.min(...Object.keys(mlGoldenJson))
+                    const maxRun = Math.max(...Object.keys(mlGoldenJson))
+                    const filename = `mlOnly_Collisions${currentYear}_${minRun}_${maxRun}_Golden.json`
+                    triggerDownload({ filename, obj: mlGoldenJson })
+                  }}
+                >
+                  ML JSON
+                </a>
+              )}
             </strong>
           </div>
           <div style={{ border: '3px solid #ddd', padding: '10px' }}>
@@ -323,12 +375,19 @@ const JsonPortal = () => {
                 <span className='ms-1'>{`Fetching data ids for pattern: ${datasetRegex}`}</span>
               </div>
             )}
-            {mlGoldenJson === undefined ? (
+            {rrOpenRuns !== undefined && brilRuns === undefined && (
+              <div>
+                <Spinner animation='border' role='status' />
+                <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} runs.`}</span>
+              </div>
+            )}
+            {brilRuns !== undefined && mlGoldenJson === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
                 <span className='ms-1'>Generating the ML JSON</span>
               </div>
-            ) : (
+            )}
+            {mlGoldenJson !== undefined && (
               <AceEditor
                 mode='javascript'
                 theme='github'
