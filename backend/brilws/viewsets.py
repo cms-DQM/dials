@@ -3,6 +3,7 @@ from typing import ClassVar
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from utils.rest_framework_cern_sso.authentication import (
     CERNKeycloakClientSecretAuthentication,
@@ -18,7 +19,8 @@ class BrilcalcLumiViewSet(viewsets.ViewSet):
         CERNKeycloakConfidentialAuthentication,
     ]
 
-    def list(self, request):
+    @action(detail=False, methods=["GET"], url_path="brilcalc-lumi")
+    def brilcalc_lumi(self, request):
         brilws_version = request.query_params.get("brilws_version", "3.7.4")
         connect = request.query_params.get("connect", "offline")
         fillnum = request.query_params.get("fillnum", None)

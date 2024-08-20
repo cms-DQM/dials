@@ -4,4 +4,4 @@ from .viewsets import BrilcalcLumiViewSet
 
 
 router = routers.SimpleRouter()
-router.register(r"brilcalc-lumi", BrilcalcLumiViewSet, basename="brilcalc-lumi")
+router.register(r"brilws", BrilcalcLumiViewSet, basename="brilws")
