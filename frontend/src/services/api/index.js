@@ -597,8 +597,10 @@ const API = {
       list: listRREditableDatasets,
     },
   },
-  brilcalc: {
-    lumi: getBrilcalcLumi,
+  brilws: {
+    brilcalc: {
+      lumi: getBrilcalcLumi,
+    },
   },
 }
 

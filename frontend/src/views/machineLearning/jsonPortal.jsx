@@ -107,7 +107,7 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchBrilLumiByRun = () => {
-      API.brilcalc
+      API.brilws.brilcalc
         .lumi({
           beamStatus: brilBeamStatus,
           aModeTag: brilAModeTag,
