@@ -11,7 +11,7 @@ import {
   Histograms2D,
   Histogram,
 } from './dataExplorer'
-import { Predictions } from './machineLearning'
+import { Predictions, JsonPortal } from './machineLearning'
 
 const Views = {
   Home,
@@ -29,6 +29,7 @@ const Views = {
   },
   MachineLearning: {
     Predictions,
+    JsonPortal,
   },
 }
 

@@ -16,7 +16,7 @@ import { getNextToken } from '../../utils/sanitizer'
 const Predictions = () => {
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(false)
   const [datasets, setDatasets] = useState()
-  const [selectedDataset, setSelectedDataset] = useState()
+  const [selectedDatasets, setSelectedDatasets] = useState()
 
   const [isLoadingRuns, setIsLoadingRuns] = useState(false)
   const [runs, setRuns] = useState()
@@ -76,7 +76,7 @@ const Predictions = () => {
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
-              a.dataset > b.dataset ? 1 : b.dataset > a.dataset ? -1 : 0
+              a.dataset < b.dataset ? 1 : b.dataset < a.dataset ? -1 : 0
             )
             .map((item) => ({ value: item.dataset_id, label: item.dataset }))
           setDatasets(datasets)
@@ -99,7 +99,7 @@ const Predictions = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.run.list,
-          params: { datasetId: selectedDataset.value },
+          params: { datasetIdIn: selectedDatasets.map((item) => item.value) },
         })
         .then((response) => {
           const runs = response.results.map((item) => ({
@@ -117,12 +117,6 @@ const Predictions = () => {
         })
     }
 
-    if (selectedDataset !== undefined) {
-      fetchRuns()
-    }
-  }, [selectedDataset])
-
-  useEffect(() => {
     const fetchModels = () => {
       setIsLoadingModels(true)
       API.utils
@@ -130,6 +124,7 @@ const Predictions = () => {
           apiMethod: API.mlModelsIndex.list,
         })
         .then((response) => {
+          console.log(response)
           const models = response.results.map((item) => ({
             value: item.model_id,
             label: item.filename,
@@ -146,20 +141,21 @@ const Predictions = () => {
         })
     }
 
-    if (selectedDataset !== undefined) {
+    if (selectedDatasets !== undefined) {
+      fetchRuns()
       fetchModels()
     }
-  }, [selectedDataset])
+  }, [selectedDatasets])
 
   const fetchFlaggedBadLumis = ({
     nextToken,
-    datasetId,
+    datasetIdIn,
     runNumberIn,
     modelIdIn,
   }) => {
     setIsLoadingData(true)
     API.mlBadLumis
-      .list({ nextToken, datasetId, runNumberIn, modelIdIn })
+      .list({ nextToken, datasetIdIn, runNumberIn, modelIdIn })
       .then((response) => {
         API.mes
           .list({})
@@ -200,13 +196,13 @@ const Predictions = () => {
   const handleJsonDownload = async ({
     apiMethod,
     fileName,
-    datasetId,
+    datasetIdIn,
     runNumberIn,
     modelIdIn,
   }) => {
     try {
       const response = await apiMethod({
-        datasetId,
+        datasetIdIn,
         runNumberIn,
         modelIdIn,
       })
@@ -245,16 +241,17 @@ const Predictions = () => {
             <Form.Group className='mb-3' controlId='formDatasetSelector'>
               <Form.Label>Dataset</Form.Label>
               <Select
-                value={selectedDataset}
+                isMulti
+                value={selectedDatasets}
                 onChange={(selectedOptions) => {
-                  setSelectedDataset(selectedOptions)
+                  setSelectedDatasets(selectedOptions)
                 }}
                 options={datasets}
                 isDisabled={isLoadingDatasets}
               />
             </Form.Group>
 
-            {selectedDataset && (
+            {selectedDatasets && (
               <Form.Group className='mb-3' controlId='formRunsSelector'>
                 <Form.Label>Run numbers</Form.Label>
                 <Select
@@ -269,7 +266,7 @@ const Predictions = () => {
               </Form.Group>
             )}
 
-            {selectedDataset && (
+            {selectedDatasets && (
               <Form.Group className='mb-3' controlId='formModelsSelector'>
                 <Form.Label>Registered models</Form.Label>
                 <Select
@@ -289,7 +286,7 @@ const Predictions = () => {
               type='submit'
               onClick={() => {
                 fetchFlaggedBadLumis({
-                  datasetId: selectedDataset.value,
+                  datasetIdIn: selectedDatasets.map((item) => item.value),
                   runNumberIn: selectedRuns.map((item) => item.value),
                   modelIdIn: selectedModels.map((item) => item.value),
                 })
@@ -313,7 +310,7 @@ const Predictions = () => {
                     handleJsonDownload({
                       apiMethod: API.mlBadLumis.certJson,
                       fileName: 'mlCertJson.json',
-                      datasetId: selectedDataset.value,
+                      datasetIdIn: selectedDatasets.map((item) => item.value),
                       runNumberIn: selectedRuns.map((item) => item.value),
                       modelIdIn: selectedModels.map((item) => item.value),
                     })
@@ -328,7 +325,7 @@ const Predictions = () => {
                     handleJsonDownload({
                       apiMethod: API.mlBadLumis.goldenJson,
                       fileName: 'mlGoldenJson.json',
-                      datasetId: selectedDataset.value,
+                      datasetIdIn: selectedDatasets.map((item) => item.value),
                       runNumberIn: selectedRuns.map((item) => item.value),
                       modelIdIn: selectedModels.map((item) => item.value),
                     })
@@ -350,7 +347,7 @@ const Predictions = () => {
                   previousOnClick={() => {
                     fetchFlaggedBadLumis({
                       nextToken: previousToken,
-                      datasetId: selectedDataset.value,
+                      datasetIdIn: selectedDatasets.map((item) => item.value),
                       runNumberIn: selectedRuns.map((item) => item.value),
                       modelIdIn: selectedModels.map((item) => item.value),
                     })
@@ -358,7 +355,7 @@ const Predictions = () => {
                   nextOnClick={() => {
                     fetchFlaggedBadLumis({
                       nextToken,
-                      datasetId: selectedDataset.value,
+                      datasetIdIn: selectedDatasets.map((item) => item.value),
                       runNumberIn: selectedRuns.map((item) => item.value),
                       modelIdIn: selectedModels.map((item) => item.value),
                     })

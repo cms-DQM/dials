@@ -142,6 +142,7 @@ const getRun = async ({ datasetId, runNumber }) => {
 const listRuns = async ({
   nextToken,
   datasetId,
+  datasetIdIn,
   runNumber,
   runNumberLte,
   runNumberGte,
@@ -153,6 +154,7 @@ const listRuns = async ({
     {
       next_token: nextToken,
       dataset_id: datasetId,
+      dataset_id__in: datasetIdIn,
       run_number: runNumber,
       run_number__lte: runNumberLte,
       run_number__gte: runNumberGte,
@@ -409,7 +411,7 @@ const getMLCertificationJson = async ({
   datasetId,
   runNumberIn,
 }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json`
+  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json/`
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
@@ -424,13 +426,86 @@ const getMLCertificationJson = async ({
   return response.data
 }
 
-const getMLGoldenJson = async ({ modelIdIn, datasetId, runNumberIn }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json`
+const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
+  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json/`
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
-      dataset_id: datasetId,
+      dataset_id__in: datasetIdIn,
       run_number__in: runNumberIn,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getCAFJson = async ({ className, kind }) => {
+  const endpoint = `${API_URL}/caf/`
+  const params = sanitizedURLSearchParams(
+    {
+      class_name: className,
+      kind,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const listRREditableDatasets = async ({
+  className,
+  datasetName,
+  globalState,
+}) => {
+  const endpoint = `${API_URL}/runregistry/editable-datasets/`
+  const params = sanitizedURLSearchParams(
+    {
+      class_name: className,
+      dataset_name: datasetName,
+      global_state: globalState,
+    },
+    { repeatMode: false }
+  )
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+  })
+  return response.data
+}
+
+const getBrilcalcLumi = async ({
+  brilwsVersion,
+  connect,
+  fillNum,
+  runNumber,
+  beamStatus,
+  unit,
+  aModeTag,
+  normTag,
+  begin,
+  end,
+  byLs,
+  scope,
+}) => {
+  const endpoint = `${API_URL}/brilws/brilcalc-lumi/`
+  const params = sanitizedURLSearchParams(
+    {
+      brilws_version: brilwsVersion,
+      connect,
+      fillnum: fillNum,
+      runnumber: runNumber,
+      beamstatus: beamStatus,
+      unit,
+      amodetag: aModeTag,
+      normtag: normTag,
+      begin,
+      end,
+      byls: byLs,
+      scope,
     },
     { repeatMode: false }
   )
@@ -513,6 +588,19 @@ const API = {
     list: listMLBadLumisections,
     certJson: getMLCertificationJson,
     goldenJson: getMLGoldenJson,
+  },
+  caf: {
+    get: getCAFJson,
+  },
+  runregistry: {
+    editableDatasets: {
+      list: listRREditableDatasets,
+    },
+  },
+  brilws: {
+    brilcalc: {
+      lumi: getBrilcalcLumi,
+    },
   },
 }
 

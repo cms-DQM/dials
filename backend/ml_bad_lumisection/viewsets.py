@@ -123,33 +123,23 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
     @action(detail=False, methods=["GET"], url_path=r"golden-json")
     def generate_golden_json(self, request):
         try:
-            dataset_id = int(request.query_params.get("dataset_id"))
-            run_number = list(map(int, request.query_params.get("run_number__in").split(",")))
-            model_id = list(map(int, request.query_params.get("model_id__in").split(",")))
+            dataset_id__in = list(map(int, request.query_params.get("dataset_id__in").split(",")))
+            run_number__in = list(map(int, request.query_params.get("run_number__in").split(",")))
+            model_id__in = list(map(int, request.query_params.get("model_id__in").split(",")))
         except ValueError as err:
             raise ValidationError(
-                "dataset_id and run_number must be valid integers and model_ids a valid list of integers"
+                "dataset_id__in and run_number__in, and model_id__in a valid list of integers"
             ) from err
 
         # Select user's workspace
         workspace = self.get_workspace()
 
-        # Fetch predictions for a given dataset, multiple runs from multiple models
-        queryset = self.get_queryset()
-        result = (
-            queryset.filter(dataset_id=dataset_id, run_number__in=run_number, model_id__in=model_id)
-            .all()
-            .order_by("run_number", "ls_number")
-            .values()
-        )
-        result = [qs for qs in result]
-
         # Generate ML golden json
         response = {}
-        for run in run_number:
+        for run_number in run_number__in:
             queryset = self.get_queryset()
             bad_lumis = (
-                queryset.filter(dataset_id=dataset_id, run_number=run, model_id__in=model_id)
+                queryset.filter(dataset_id__in=dataset_id__in, run_number=run_number, model_id__in=model_id__in)
                 .all()
                 .order_by("ls_number")
                 .values_list("ls_number", flat=True)
@@ -158,11 +148,13 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
             bad_lumis = [qs for qs in bad_lumis]
             all_lumis = (
                 Lumisection.objects.using(workspace)
-                .filter(dataset_id=dataset_id, run_number=run)
+                .filter(dataset_id__in=dataset_id__in, run_number=run_number)
                 .all()
                 .values_list("ls_number", flat=True)
             )
             good_lumis = [ls for ls in all_lumis if ls not in bad_lumis]
-            response[run] = list_to_range(good_lumis)
+            if len(good_lumis) == 0:
+                continue
+            response[run_number] = list_to_range(good_lumis)
 
         return Response(response)

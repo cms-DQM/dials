@@ -79,6 +79,10 @@ const AppRoutes = () => {
         path='/predictions'
         element={<PrivateRoute component={Views.MachineLearning.Predictions} />}
       />
+      <Route
+        path='/json-portal'
+        element={<PrivateRoute component={Views.MachineLearning.JsonPortal} />}
+      />
     </Routes>
   )
 }
