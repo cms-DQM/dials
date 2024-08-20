@@ -2714,9 +2714,9 @@
         ]
       }
     },
-    "/api/v1/runregistry/": {
+    "/api/v1/runregistry/editable-datasets/": {
       "get": {
-        "operationId": "retrieveRR",
+        "operationId": "retrieveRREditableDatasets",
         "description": "",
         "parameters": [
           {
@@ -2733,6 +2733,15 @@
             "required": true,
             "in": "query",
             "description": "dataset_name",
+            "schema": {
+              "type": "string"
+            },
+          },
+          {
+            "name": "global_state",
+            "required": true,
+            "in": "query",
+            "description": "global_state",
             "schema": {
               "type": "string"
             },
@@ -2764,7 +2773,7 @@
         ]
       }
     },
-    "/api/v1/brilcalc-lumi/": {
+    "/api/v1/brilws/brilcalc-lumi/": {
       "get": {
         "operationId": "retrieveBrilcalcLumi",
         "description": "",
@@ -2890,6 +2899,17 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                }
+              }
+            },
+            "description": ""
+          }
+        },
         "tags": [
           "BrilcalcLumi"
         ],
