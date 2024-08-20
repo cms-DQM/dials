@@ -457,12 +457,17 @@ const getCAFJson = async ({ className, kind }) => {
   return response.data
 }
 
-const getRROpenRuns = async ({ className, datasetName }) => {
-  const endpoint = `${API_URL}/runregistry/`
+const listRREditableDatasets = async ({
+  className,
+  datasetName,
+  globalState,
+}) => {
+  const endpoint = `${API_URL}/runregistry/editable-datasets/`
   const params = sanitizedURLSearchParams(
     {
       class_name: className,
       dataset_name: datasetName,
+      global_state: globalState,
     },
     { repeatMode: false }
   )
@@ -486,7 +491,7 @@ const getBrilcalcLumi = async ({
   byLs,
   scope,
 }) => {
-  const endpoint = `${API_URL}/brilcalc-lumi/`
+  const endpoint = `${API_URL}/brilws/brilcalc-lumi/`
   const params = sanitizedURLSearchParams(
     {
       brilws_version: brilwsVersion,
@@ -588,7 +593,9 @@ const API = {
     get: getCAFJson,
   },
   runregistry: {
-    getOpenRuns: getRROpenRuns,
+    editableDatasets: {
+      list: listRREditableDatasets,
+    },
   },
   brilcalc: {
     lumi: getBrilcalcLumi,

@@ -21,6 +21,7 @@ const JsonPortal = () => {
   const datasetRegex = `/.*/Run${currentYear}.*-PromptReco.*/DQMIO`
   const rrClassName = `Collisions${currentYear.toString().slice(2)}`
   const rrDatasetName = `/PromptReco/Collisions${currentYear}/DQM`
+  const rrGlobalState = 'OPEN'
   const brilBeamStatus = '"STABLE BEAMS"'
   const brilAModeTag = 'PROTPHYS'
   const brilNormTag =
@@ -40,8 +41,12 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchRROpenRuns = () => {
-      API.runregistry
-        .getOpenRuns({ className: rrClassName, datasetName: rrDatasetName })
+      API.runregistry.editableDatasets
+        .list({
+          className: rrClassName,
+          datasetName: rrDatasetName,
+          globalState: rrGlobalState,
+        })
         .then((response) => {
           setRROpenRuns(response)
         })
