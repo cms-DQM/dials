@@ -6,6 +6,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
+import Alert from 'react-bootstrap/Alert'
 import AceEditor from 'react-ace'
 import { toast } from 'react-toastify'
 
@@ -158,7 +159,12 @@ const JsonPortal = () => {
       activeModels !== undefined &&
       brilRuns !== undefined
     ) {
-      fetchMLJson(brilRuns)
+      if (activeModels.length === 0) {
+        setMLGoldenJson({})
+      }
+      else {
+        fetchMLJson(brilRuns)
+      }
     }
   }, [datasetIds, activeModels, brilRuns])
 
@@ -228,6 +234,7 @@ const JsonPortal = () => {
             variant='primary'
             type='submit'
             disabled={
+              activeModels?.length === 0 ||
               goldenJson === undefined ||
               dcsJson === undefined ||
               mlGoldenJson === undefined
@@ -260,6 +267,18 @@ const JsonPortal = () => {
         </Col>
         <Col md={5} />
       </Row>
+      {activeModels?.length === 0 && (
+        <Row className='mt-3'>
+          <Col md={4} />
+          <Col md={4} className='text-center'>
+            <Alert variant='danger'>
+              <Alert.Heading>Oh snap! Where are the models?</Alert.Heading>
+              <p>There are no active models set for this workspace.</p>
+            </Alert>
+          </Col>
+          <Col md={4} />
+        </Row>
+      )}
       <hr />
       <Row className='mt-3'>
         <Col md={4}>
