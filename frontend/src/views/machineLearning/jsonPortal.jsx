@@ -31,6 +31,7 @@ const JsonPortal = () => {
   const brilUnit = '/nb'
   const brilLowLumiRule = 80.0
 
+  const [validWorkspaces, setValidWorkspaces] = useState()
   const [mergeDCSAndML, setMergeDCSAndML] = useState(true)
   const [activeModels, setActiveModels] = useState()
   const [datasetIds, setDatasetIds] = useState()
@@ -39,6 +40,56 @@ const JsonPortal = () => {
   const [goldenJson, setGoldenJson] = useState()
   const [dcsJson, setDCSJson] = useState()
   const [mlGoldenJson, setMLGoldenJson] = useState()
+
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      API.config
+        .getWorkspaces()
+        .then((response) => {
+          setValidWorkspaces(response.workspaces.filter(item => !item.includes('staging')))
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+    }
+
+    fetchWorkspaces()
+  }, [])
+
+  useEffect(() => {
+    const fetchModels = () => {
+      const promises = validWorkspaces.map(async ws => {
+        return API.utils
+          .genericFetchAllPages({
+            apiMethod: API.mlModelsIndex.list,
+            params: { active: true, workspace: ws },
+          })
+          .then((response) => {
+            return {[ws]: response.results}
+          })
+      })
+
+      Promise.all(promises)
+        .then(response => {
+          const mergedResponse = response.reduce((acc, obj) => {
+            return {...acc, ...obj}
+          }, {})
+          const result = Object.entries(mergedResponse).reduce((acc, [ws, models]) => {
+            return models.length !== 0 ? {...acc, [ws]: models} : acc
+          }, {})
+          setActiveModels(result)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+    }
+
+    if (validWorkspaces !== undefined) {
+      fetchModels()
+    }
+  }, [validWorkspaces])
 
   useEffect(() => {
     const fetchRROpenRuns = () => {
@@ -69,29 +120,27 @@ const JsonPortal = () => {
         })
     }
 
-    const fetchModels = () => {
-      API.utils
-        .genericFetchAllPages({
-          apiMethod: API.mlModelsIndex.list,
-          params: { active: true },
-        })
-        .then((response) => {
-          setActiveModels(response.results)
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
-        })
-    }
-
     const fetchDatasetIds = () => {
-      API.utils
-        .genericFetchAllPages({
-          apiMethod: API.dataset.list,
-          params: { datasetRegex },
-        })
-        .then((response) => {
-          setDatasetIds(response.results.map((item) => item.dataset_id))
+      const promises = Object.keys(activeModels).map(async ws => {
+        return API.utils
+          .genericFetchAllPages({
+            apiMethod: API.dataset.list,
+            params: { datasetRegex, workspace: ws },
+          })
+          .then((response) => {
+            return {[ws]: response.results.map(item => item.dataset_id)}
+          })
+      })
+
+      Promise.all(promises)
+        .then(response => {
+          const mergedResponse = response.reduce((acc, obj) => {
+            return {...acc, ...obj}
+          }, {})
+          const result = Object.entries(mergedResponse).reduce((acc, [ws, datasets]) => {
+            return datasets.length !== 0 ? {...acc, [ws]: datasets} : acc
+          }, {})
+          setDatasetIds(result)
         })
         .catch((error) => {
           console.error(error)
@@ -99,12 +148,13 @@ const JsonPortal = () => {
         })
     }
 
-    fetchRROpenRuns()
-    fetchCAFJson({ kind: 'golden', setStateCallback: setGoldenJson })
-    fetchCAFJson({ kind: 'dcs', setStateCallback: setDCSJson })
-    fetchModels()
-    fetchDatasetIds()
-  }, [datasetRegex, rrClassName, rrDatasetName])
+    if (activeModels !== undefined && Object.keys(activeModels)?.length > 0) {
+      fetchRROpenRuns()
+      fetchCAFJson({ kind: 'golden', setStateCallback: setGoldenJson })
+      fetchCAFJson({ kind: 'dcs', setStateCallback: setDCSJson })
+      fetchDatasetIds()
+    }
+  }, [activeModels, datasetRegex, rrClassName, rrDatasetName])
 
   useEffect(() => {
     const fetchBrilLumiByRun = () => {
@@ -139,14 +189,30 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchMLJson = (runList) => {
-      API.mlBadLumis
-        .goldenJson({
-          datasetIdIn: datasetIds,
-          runNumberIn: runList,
-          modelIdIn: activeModels.map((item) => item.model_id),
-        })
-        .then((response) => {
-          setMLGoldenJson(response)
+      const promises = Object.keys(datasetIds).map(async ws => {
+        return API.mlBadLumis
+          .goldenJson({
+            datasetIdIn: datasetIds[ws],
+            runNumberIn: runList,
+            modelIdIn: activeModels[ws].map(item => item.model_id),
+            workspace: ws
+          })
+      })
+
+      Promise.all(promises)
+        .then(response => {
+          const mergedWorkspacesMLJson = response.reduce((acc, wsJson) => {
+            for (const run in wsJson) {
+              const expandedRun = rangeToList(wsJson[run])
+              acc[run] = Object.hasOwn(acc, run) ? acc[run].filter(value => expandedRun.includes(value)) : expandedRun
+            }
+            return acc
+          }, {})
+          const result = Object.keys(mergedWorkspacesMLJson).reduce((acc, key) => {
+            acc[key] = [...listToRange(mergedWorkspacesMLJson[key])]
+            return acc
+          }, {})
+          setMLGoldenJson(result)
         })
         .catch((error) => {
           console.error(error)
@@ -159,7 +225,7 @@ const JsonPortal = () => {
       activeModels !== undefined &&
       brilRuns !== undefined
     ) {
-      if (activeModels.length === 0) {
+      if (Object.keys(datasetIds).length === 0) {
         setMLGoldenJson({})
       } else {
         fetchMLJson(brilRuns)
@@ -250,11 +316,13 @@ const JsonPortal = () => {
         <Col md={2} className='text-center'>
           <Card>
             <Card.Body>
+              <p><strong>Info</strong>: Considering all active models in all non-staging workspaces.</p>
+              <hr/>
               <Form>
                 <Form.Check
                   defaultChecked={true}
                   type='checkbox'
-                  label='Remove offline DCS bits from ML JSON'
+                  label='Filter ML JSON with DCS JSON'
                   value={mergeDCSAndML}
                   onChange={(e) => {
                     setMergeDCSAndML(e.target.checked)
@@ -272,7 +340,7 @@ const JsonPortal = () => {
           <Col md={4} className='text-center'>
             <Alert variant='danger'>
               <Alert.Heading>Oh snap! Where are the models?</Alert.Heading>
-              <p>There are no active models set for this workspace.</p>
+              <p>There are no active models set in any workspace.</p>
             </Alert>
           </Col>
           <Col md={4} />
