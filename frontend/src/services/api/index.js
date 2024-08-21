@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 import { sanitizedURLSearchParams, getNextToken } from '../../utils/sanitizer'
-import { getPublicToken, getConfidentialToken } from '../../utils/userTokens'
-import { API_URL, OIDC_USER_WORKSPACE } from '../../config/env'
+import { getPublicToken } from '../../utils/userTokens'
+import { API_URL } from '../../config/env'
+import { axiosApiInstance } from './adapters'
 
 const FILE_INDEX_STATUSES = [
   'PENDING',
@@ -16,24 +17,6 @@ const FILE_INDEX_STATUSES = [
   'INGESTION_PARSING_ERROR',
   'FINISHED',
 ]
-
-const axiosApiInstance = axios.create()
-
-axiosApiInstance.interceptors.request.use(
-  async (config) => {
-    const workspace = localStorage.getItem(OIDC_USER_WORKSPACE)
-    const oidc = getConfidentialToken()
-    config.headers = {
-      Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
-      Accept: 'application/json',
-      Workspace: workspace,
-    }
-    return config
-  },
-  (error) => {
-    Promise.reject(error)
-  }
-)
 
 const getWorkspaces = async () => {
   const endpoint = `${API_URL}/auth/workspaces/`
@@ -57,14 +40,23 @@ const exchangeToken = async () => {
   return response.data
 }
 
-const getDataset = async ({ datasetId }) => {
+const getDataset = async ({ datasetId, workspace }) => {
   const endpoint = `${API_URL}/dataset-index/${datasetId}/`
-  const response = await axiosApiInstance.get(endpoint)
+  const headers = { Workspace: workspace }
+  const response = await axiosApiInstance.get(endpoint, {
+    headers,
+  })
   return response.data
 }
 
-const listDatasets = async ({ nextToken, dataset, datasetRegex }) => {
+const listDatasets = async ({
+  nextToken,
+  dataset,
+  datasetRegex,
+  workspace,
+}) => {
   const endpoint = `${API_URL}/dataset-index/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -75,6 +67,7 @@ const listDatasets = async ({ nextToken, dataset, datasetRegex }) => {
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -87,8 +80,10 @@ const listFileIndex = async ({
   minSize,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/file-index/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -103,6 +98,7 @@ const listFileIndex = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -114,8 +110,10 @@ const countFileIndex = async ({
   minSize,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/file-index/count/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       logical_file_name: logicalFileName,
@@ -129,13 +127,17 @@ const countFileIndex = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
 
-const getRun = async ({ datasetId, runNumber }) => {
+const getRun = async ({ datasetId, runNumber, workspace }) => {
   const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/`
-  const response = await axiosApiInstance.get(endpoint)
+  const headers = { Workspace: workspace }
+  const response = await axiosApiInstance.get(endpoint, {
+    headers,
+  })
   return response.data
 }
 
@@ -148,8 +150,10 @@ const listRuns = async ({
   runNumberGte,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/run/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -165,6 +169,7 @@ const listRuns = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -176,8 +181,10 @@ const countRuns = async ({
   runNumberGte,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/run/count/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       dataset_id: datasetId,
@@ -191,13 +198,22 @@ const countRuns = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
 
-const getLumisection = async ({ datasetId, runNumber, lsNumber }) => {
+const getLumisection = async ({
+  datasetId,
+  runNumber,
+  lsNumber,
+  workspace,
+}) => {
   const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/${lsNumber}/`
-  const response = await axiosApiInstance.get(endpoint)
+  const headers = { Workspace: workspace }
+  const response = await axiosApiInstance.get(endpoint, {
+    headers,
+  })
   return response.data
 }
 
@@ -212,8 +228,10 @@ const listLumisections = async ({
   lsNumberGte,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/lumisection/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -231,6 +249,7 @@ const listLumisections = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -245,8 +264,10 @@ const countLumisections = async ({
   lsNumberGte,
   dataset,
   datasetRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/lumisection/count/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       dataset_id: datasetId,
@@ -263,6 +284,7 @@ const countLumisections = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -286,8 +308,10 @@ const listHistograms = async ({
   logicalFileNameRegex,
   me,
   meRegex,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/th${dim}/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -312,18 +336,30 @@ const listHistograms = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
 
-const getHistogram = async ({ dim, datasetId, runNumber, lsNumber, meId }) => {
+const getHistogram = async ({
+  dim,
+  datasetId,
+  runNumber,
+  lsNumber,
+  meId,
+  workspace,
+}) => {
   const endpoint = `${API_URL}/th${dim}/${datasetId}/${runNumber}/${lsNumber}/${meId}/`
-  const response = await axiosApiInstance.get(endpoint)
+  const headers = { Workspace: workspace }
+  const response = await axiosApiInstance.get(endpoint, {
+    headers,
+  })
   return response.data
 }
 
-const listMEs = async ({ me, meRegex, dim }) => {
+const listMEs = async ({ me, meRegex, dim, workspace }) => {
   const endpoint = `${API_URL}/mes/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       me,
@@ -332,13 +368,19 @@ const listMEs = async ({ me, meRegex, dim }) => {
     },
     { repeatMode: false }
   )
-  const response = await axiosApiInstance.get(endpoint, { params })
+  const response = await axiosApiInstance.get(endpoint, {
+    params,
+    headers,
+  })
   return response.data
 }
 
-const listMEsByRun = async ({ datasetId, runNumber }) => {
+const listMEsByRun = async ({ datasetId, runNumber, workspace }) => {
   const endpoint = `${API_URL}/mes/${datasetId}/${runNumber}/`
-  const response = await axiosApiInstance.get(endpoint)
+  const headers = { Workspace: workspace }
+  const response = await axiosApiInstance.get(endpoint, {
+    headers,
+  })
   return response.data
 }
 
@@ -351,8 +393,10 @@ const listMLModelsIndex = async ({
   targetMe,
   targetMeRegex,
   active,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/ml-models-index/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -368,6 +412,7 @@ const listMLModelsIndex = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -383,8 +428,10 @@ const listMLBadLumisections = async ({
   runNumber,
   runNumberIn,
   lsNumber,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/ml-bad-lumisection/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       next_token: nextToken,
@@ -402,6 +449,7 @@ const listMLBadLumisections = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
@@ -410,8 +458,10 @@ const getMLCertificationJson = async ({
   modelIdIn,
   datasetId,
   runNumberIn,
+  workspace,
 }) => {
   const endpoint = `${API_URL}/ml-bad-lumisection/cert-json/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
@@ -422,12 +472,19 @@ const getMLCertificationJson = async ({
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
 
-const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
+const getMLGoldenJson = async ({
+  modelIdIn,
+  datasetIdIn,
+  runNumberIn,
+  workspace,
+}) => {
   const endpoint = `${API_URL}/ml-bad-lumisection/golden-json/`
+  const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
@@ -438,6 +495,7 @@ const getMLGoldenJson = async ({ modelIdIn, datasetIdIn, runNumberIn }) => {
   )
   const response = await axiosApiInstance.get(endpoint, {
     params,
+    headers,
   })
   return response.data
 }
