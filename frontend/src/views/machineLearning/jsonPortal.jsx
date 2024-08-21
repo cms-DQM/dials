@@ -161,8 +161,7 @@ const JsonPortal = () => {
     ) {
       if (activeModels.length === 0) {
         setMLGoldenJson({})
-      }
-      else {
+      } else {
         fetchMLJson(brilRuns)
       }
     }
