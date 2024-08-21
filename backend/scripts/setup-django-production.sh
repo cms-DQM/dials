@@ -18,5 +18,7 @@ export "DJANGO_KEYCLOAK_API_CLIENTS={}"
 export "DJANGO_REDIS_URL=dummy"
 export "DJANGO_OMS_SSO_CLIENT_ID=dummy"
 export "DJANGO_OMS_SSO_CLIENT_SECRET=dummy"
+export "DJANGO_KEYTAB_USR=dummy"
+export "DJANGO_KEYTAB_PWD=dummy"
 
 python manage.py collectstatic --noinput

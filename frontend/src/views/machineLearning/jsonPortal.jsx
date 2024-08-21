@@ -161,8 +161,7 @@ const JsonPortal = () => {
     ) {
       if (activeModels.length === 0) {
         setMLGoldenJson({})
-      }
-      else {
+      } else {
         fetchMLJson(brilRuns)
       }
     }
@@ -314,6 +313,9 @@ const JsonPortal = () => {
                 fontSize={15}
                 wrapEnabled={true}
                 value={JSON.stringify(goldenJson.content)}
+                setOptions={{
+                  useWorker: false
+                }}
               />
             )}
           </div>
@@ -351,6 +353,9 @@ const JsonPortal = () => {
                 fontSize={15}
                 wrapEnabled={true}
                 value={JSON.stringify(dcsJson.content)}
+                setOptions={{
+                  useWorker: false
+                }}
               />
             )}
           </div>
@@ -416,6 +421,9 @@ const JsonPortal = () => {
                 fontSize={15}
                 wrapEnabled={true}
                 value={JSON.stringify(mlGoldenJson)}
+                setOptions={{
+                  useWorker: false
+                }}
               />
             )}
           </div>
