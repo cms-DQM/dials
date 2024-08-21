@@ -124,7 +124,6 @@ const Predictions = () => {
           apiMethod: API.mlModelsIndex.list,
         })
         .then((response) => {
-          console.log(response)
           const models = response.results.map((item) => ({
             value: item.model_id,
             label: item.filename,
