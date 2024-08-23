@@ -74,9 +74,9 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
     @action(detail=False, methods=["GET"], url_path=r"cert-json")
     def generate_certificate_json(self, request):
         try:
-            dataset_id = int(request.query_params.get("dataset_id"))
-            run_number = list(map(int, request.query_params.get("run_number__in").split(",")))
-            model_id = list(map(int, request.query_params.get("model_id__in").split(",")))
+            dataset_id__in = list(map(int, request.query_params.get("dataset_id__in").split(",")))
+            run_number__in = list(map(int, request.query_params.get("run_number__in").split(",")))
+            model_id__in = list(map(int, request.query_params.get("model_id__in").split(",")))
         except ValueError as err:
             raise ValidationError(
                 "dataset_id and run_number must be valid integers and model_ids a valid list of integers"
@@ -86,13 +86,13 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
         workspace = self.get_workspace()
 
         # Fetch models' metadata in the given workspace
-        models = MLModelsIndex.objects.using(workspace).filter(model_id__in=model_id).all().values()
+        models = MLModelsIndex.objects.using(workspace).filter(model_id__in=model_id__in).all().values()
         models = {qs.get("model_id"): qs for qs in models}
 
         # Fetch predictions for a given dataset, multiple runs from multiple models
         queryset = self.get_queryset()
         result = (
-            queryset.filter(dataset_id=dataset_id, run_number__in=run_number, model_id__in=model_id)
+            queryset.filter(dataset_id__in=dataset_id__in, run_number__in=run_number__in, model_id__in=model_id__in)
             .all()
             .order_by("run_number", "ls_number")
             .values()
@@ -101,7 +101,7 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
 
         # Format bad lumi certification json
         response = {}
-        for run in run_number:
+        for run in run_number__in:
             response[run] = {}
             predictions_in_run = [res for res in result if res.get("run_number") == run]
             unique_ls = [res.get("ls_number") for res in predictions_in_run]

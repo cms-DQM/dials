@@ -456,7 +456,7 @@ const listMLBadLumisections = async ({
 
 const getMLCertificationJson = async ({
   modelIdIn,
-  datasetId,
+  datasetIdIn,
   runNumberIn,
   workspace,
 }) => {
@@ -465,7 +465,7 @@ const getMLCertificationJson = async ({
   const params = sanitizedURLSearchParams(
     {
       model_id__in: modelIdIn,
-      dataset_id: datasetId,
+      dataset_id__in: datasetIdIn,
       run_number__in: runNumberIn,
     },
     { repeatMode: false }
