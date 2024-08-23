@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine
 
@@ -6,7 +7,6 @@ from ...env import conn_str
 from ...models import FactMLBadLumis, FactTH1, FactTH2
 from .extract import extract, extract_me
 from .predict import predict
-from .preprocess import preprocess
 
 
 def pipeline(
@@ -30,15 +30,18 @@ def pipeline(
     if len(hists) == 0:
         return
 
-    # Preprocess data
-    lss_, input_data = preprocess(hists)
+    # Sort by run_number and ls_number only
+    # since dataset_id, file_id and me_id are fixed.
+    hists = [{"run_number": hist.run_number, "ls_number": hist.ls_number, "data": hist.data} for hist in hists]
+    hists = sorted(hists, key=lambda x: (x["run_number"], x["ls_number"]))
+    data = np.vstack([hist.pop("data") for hist in hists]).astype(np.float32)
 
     # Predictions
-    preds = predict(workspace_name, model_file, input_data)
+    preds = predict(workspace_name, model_file, data)
 
     # Select bad lumis
     bad_lumis = []
-    for idx, ls_number in enumerate(lss_.flatten()):
+    for idx, hist in enumerate(hists):
         mse = preds[1][idx]
         is_anomaly = bool(preds[2][idx])
         if is_anomaly:
@@ -47,8 +50,8 @@ def pipeline(
                     "model_id": model_id,
                     "dataset_id": dataset_id,
                     "file_id": file_id,
-                    "run_number": hists[idx].run_number,
-                    "ls_number": ls_number,
+                    "run_number": hist["run_number"],
+                    "ls_number": hist["ls_number"],
                     "me_id": me.me_id,
                     "mse": mse,
                 }
