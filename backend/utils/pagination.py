@@ -18,6 +18,8 @@ class DynamicMultiOrderingCursorPagination(CursorPagination):
 
     cursor_query_param = "next_token"
     ordering_param = "order_by"
+    page_size_query_param = "page_size"
+    max_page_size = 1000
 
     def get_ordering(self, request, queryset, view):
         default_order_by = list(queryset.query.order_by)
