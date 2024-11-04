@@ -10,11 +10,11 @@ data:
   DJANGO_ALLOWED_HOSTS: cmsdials-api.web.cern.ch cmsdials.web.cern.ch
   DJANGO_CSRF_TRUSTED_ORIGINS: https://cmsdials-api.web.cern.ch https://cmsdials.web.cern.ch
   DJANGO_CORS_ALLOWED_ORIGINS: https://cmsdials-api.web.cern.ch https://cmsdials.web.cern.ch
-  DJANGO_WORKSPACES: '{"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}'
+  DJANGO_WORKSPACES: '{"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "egamma": "cms-dqm-runregistry-offline-egamma-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "muon_staging": "fake", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}'
   DJANGO_DEFAULT_WORKSPACE: tracker
   DJANGO_KEYCLOAK_SERVER_URL: https://auth.cern.ch/auth/
   DJANGO_KEYCLOAK_REALM: cern
-  DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID: cms-dials-public-app
-  GUNICORN_LOG_TO_STDOUT: '0'
+  DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID: cms-dials-prod-public-app
+  GUNICORN_LOG_TO_STDOUT: '1'
   GUNICORN_N_WORKERS: '3'
   GUNICORN_TIMEOUT: '30'
