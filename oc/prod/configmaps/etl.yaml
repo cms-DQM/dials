@@ -5,4 +5,4 @@ metadata:
   namespace: cms-dials-prod
 data:
   ENV: prod
-  DATABASES: csc,ecal,hcal,jetmet,tracker
+  DATABASES: csc,ecal,egamma,hcal,jetmet,muon_staging,tracker
