@@ -5,6 +5,7 @@ Instruction for getting a local version of DIALS for development purposes. By fo
 Note: make sure you are doing all the modifications to this repository (if any) in your own fork, and then make a pull request to merge them in the production repository; do not make changes directly in the production repository.
 
 ## Get a local version of the DIALS repository
+
 First, make your own fork of the DIALS repository on GitHub. Then, make a local instance on your computer using the usual `git clone`, for exampe:
 
 ```
@@ -12,24 +13,28 @@ git clone https://github.com/<YOUR GITHUB USERNAME>/dials.git
 ```
 
 ## Get some data used for testing
-The first step is to get some DQMIO data that will be used by your local instance of DIALS. There are essentially two methods: the first one is mounting the real DIALS production workspace (where the files are already gathered by the production DIALS instance) so it can be read by your local instance as well; the second one is copying a small number of DQMIO files to your local machine. Whatever method you choose, you will anyway need a grid certificate for querying DBS (the central CMS file database, basically the backend behind [DAS](https://cmsweb.cern.ch/das/)). Even in case where you will use locally copied files, you still need the grid certificate because the dataset metadata will be queried anyway. Check [here](/docs/SETTING_UP_SA.md) how to generate a certificate. You can put the resulting `usercert.pem` and `userkey.pem` in a location of your choice, and provide the path as an environment variable (see instructions further below).
 
-DIALS will execute an indexing pipeline, querying all available datasets and all available files within each dataset from DBS. The dataset index just contains the names and some metadata on the available datasets, so querying it is not a problem. However, the file index is used to trigger file download and/or ingestion jobs, implying that your local DIALS instance will attempt to download and/or ingest a huge number of DQMIO files. To avoid running out of space, you can provide a dummy DBS response to the indexing pipeline. This dummy response just contains a few files, that should be enough for testing and debugging. An example can be found in `etl/mocks/dbs.json`. To activate it, you have to provide the path to this file as an environment variable (see instruction further below).
+The first step is to get some DQMIO data that will be used by your local instance of DIALS. There are essentially two methods: the first one is mounting the production CMS-Store path (CERN's T2 disk storage) so it can be read by your local instance as well; the second one is copying a small number of DQMIO files to your local machine. Whatever method you choose, you will anyway need a grid certificate for querying DBS (the central CMS file database, basically the backend behind [DAS](https://cmsweb.cern.ch/das/)). Even in case where you will use locally copied files, you still need the grid certificate because the dataset metadata will be queried anyway. Check [here](/docs/SETTING_UP_SA.md) how to generate a certificate. You can put the resulting `usercert.pem` and `userkey.pem` in a location of your choice, and provide the path as an environment variable (see instructions further below).
+
+DIALS will execute an indexing pipeline, querying all available datasets and all available files within each dataset from DBS. The dataset index just contains the names and some metadata on the available datasets, so querying it is not a problem. However, the file index is used to trigger file ingestion jobs, implying that your local DIALS instance will attempt to download and/or ingest a huge number of DQMIO files. To avoid running out of space, you can provide a dummy DBS response to the indexing pipeline. This dummy response just contains a few files, that should be enough for testing and debugging. An example can be found in `etl/mocks/dbs.json`. To activate it, you have to provide the path to this file as an environment variable (see instruction further below).
+
+The file ingestion jobs will try to load the DQMIO files specified in the DBS response (production/mocked), if you don't have eos mounted locally or sample files this pipeline will fail acusing `FILE_NOT_AVAILABLE`.
 
 ### Accessing DQMIO data from EOS by mounting it locally
-The first way of accessing the data is by mounting the appropriate EOS directory locally. Note that if you don't mount EOS locally, the file downloading and ingestion workflow will attempt to download the data locally trough *scp*. In that case, you would probably want to use the dummy DBS response instead of the actual DBS response (as mentioned above) to avoid downloading and ingesting a huge number of files.
+
+The first way of accessing the data is by mounting the appropriate EOS directory locally.
 
 The following command will mount the production data directory from EOS in read-only mode:
 
 ```bash
-mkdir -p ./DQMIO_samples
-sshfs -o default_permissions,ro <YOUR-CERN-USER>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_workspaces ./DQMIO_samples
+mkdir -p ./etl/mocks/DQMIO_for_DIALS_local_dev
+sshfs -o default_permissions,ro <YOUR-LXPLUS-USER>@lxplus.cern.ch:/eos/cms ./etl/mocks/DQMIO_for_DIALS_local_dev
 ```
 
 In case you need to unmount (turning off the computer/losing connection to lxplus will umount automatically) you can run the following command:
 
 ```bash
-umount ./DQMIO_samples
+umount ./DQMIO_for_DIALS_local_dev
 ```
 
 (Note the use of `umount` rather than `unmount`.)
@@ -38,20 +43,22 @@ Note: this approach can give issues if you use Docker for running DIALS (see bel
 Therefore, the second approach, discussed below, is recommended.
 
 ### Accessing DQMIO data by making a local copy
+
 Instead of mounting the production DQMIO data, you can setup a directory that behaves exactly like production.
-To use this approach, simply copy the content of the folder `/eos/project-m/mlplayground/public/DQMIO_samples` into a new `DQMIO_samples` folder in the top directory of the DIALS repository, e.g. as follows:
+To use this approach, simply copy the content of the folder `/eos/project-m/mlplayground/public/DQMIO_for_DIALS_local_dev` into a new `./etl/mocks/DQMIO_for_DIALS_local_dev` folder, e.g. as follows:
 
 ```
-mkdir -p ./DQMIO_samples
-scp -r <YOUR LXPLUS USERNAME>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_samples/* DQMIO_samples
+scp -r <YOUR-LXPLUS-USER>@lxplus.cern.ch:/eos/project-m/mlplayground/public/DQMIO_for_DIALS_local_dev ./etl/mocks
 ```
 
 Note: you should make sure that your dummy DBS response file is in sync with the files you actually copy to the local directory. They are in sync at the time of writing, but you might need to make modifications if you are using different files than the ones already set in the example.
 
 ## Building and running a local DIALS instance using a Docker container
+
 There are two broad approaches for setting up the environment and running a local version of DIALS: the first involves setting up the environment yourself, which can be a bit of a mess, but is easier once it is set up correctly; the second one uses a docker container instead, which is easier to set up but a little more tricky to interact with while developing. The latter approach is detailed here, the former in the next section.
 
 ### Installing Docker
+
 The advantage of using Docker is that you don't need a lot of packages or other dependencies.
 You will however need the packages `pyyaml` and `python-decouple`. You can install them using `pip install pyyaml python-decouple`.
 
@@ -65,58 +72,16 @@ It seems necessary to reboot the computer for these changes to take effect.
 ### Setup the backend environment variables
 
 Create a `.env` file inside the [`backend`](/backend/) folder with the following variables:
+Create a `.env` file inside the [`backend`](/backend/) folder following the template file for native environment [here](/backend/env.native.sample) or for docker environment [here](/backend/env.docker.sample), and update the placeholders.
 
-```bash
-DJANGO_ENV=dev
-DJANGO_DEBUG=1
-DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
-DJANGO_CORS_ALLOWED_ORIGINS=http://localhost:8000 http://localhost:3000 http://localhost:8081
-DJANGO_KEYCLOAK_SERVER_URL=https://auth.cern.ch/auth/
-DJANGO_KEYCLOAK_REALM=cern
-DJANGO_KEYCLOAK_PUBLIC_CLIENT_ID=cms-dials-dev-public-app
-DJANGO_CACHE_TTL=0
-DJANGO_SECRET_KEY=potato
-DJANGO_REDIS_URL=redis://redis-local:6379/3
-DJANGO_DATABASE_URI=postgres://postgres:postgres@postgresql-local:5432
-DJANGO_KEYCLOAK_CONFIDENTIAL_CLIENT_ID=cms-dials-dev-confidential-app
-
-DJANGO_WORKSPACES={"csc": "cms-dqm-runregistry-offline-csc-certifiers", "ecal": "cms-dqm-runregistry-offline-ecal-certifiers", "egamma": "cms-dqm-runregistry-offline-ecal-certifiers", "hcal": "cms-dqm-runregistry-offline-hcal-certifiers", "jetmet": "cms-dqm-runregistry-offline-jme-certifiers", "muon_staging": "unknown", "tracker": "cms-dqm-runregistry-offline-tracker-certifiers"}
-DJANGO_DEFAULT_WORKSPACE=tracker
-
-DJANGO_KEYCLOAK_CONFIDENTIAL_SECRET_KEY=<SECRET-HERE-1>
-DJANGO_KEYCLOAK_API_CLIENTS={"<SECRET-HERE-2>": "cms-dials-dev-api-client-test"}
-
-```
-
-- Note: you need to fill in the application secret in the last two lines. Go to the [Application Portal](https://application-portal-qa.web.cern.ch/), get the secrets values and fill where it is written `SECRET_HERE`.
+- Note: you need to fill in the application secrets, request them to the application maintainers.
 
 - Note: optionally, you can also modify the `DJANGO_WORKSPACES`, for example if you're only interested in a single workspace for your purposes.
 
 ### Setup the ETL environment variables
 
-Create a `.env` file inside the [`etl`](/etl/) folder with the following variables:
+Create a `.env` file inside the [`etl`](/etl/) folder following the template file for native environment [here](/etl/env.native.sample) or for docker environment [here](/etl/env.docker.sample), and update the placeholders.
 
-```bash
-ENV=dev
-CELERY_BROKER_URL=redis://redis-local:6379/0
-CELERY_RESULT_BACKEND=redis://redis-local:6379/1
-CELERY_REDBEAT_URL=redis://redis-local:6379/2
-DATABASES=csc,ecal,hcal,jetmet,tracker
-DATABASES=csc,ecal,egamma,hcal,jetmet,muon_staging,tracker
-DATABASE_URI=postgresql://postgres:postgres@postgresql-local:5432
-EOS_LANDING_ZONE=/eos/project-m/mlplayground/public/DQMIO_workspaces
-
-CERT_FPATH=<PATH-TO-YOUR>/usercert.pem
-KEY_FPATH=<PATH-TO-YOUR>/userkey.pem
-KEYTAB_USER=<YOUR-CERN-USER>
-KEYTAB_PWD=<YOUR-CERN-PWD>
-MOUNTED_EOS_PATH=<PATH-TO-YOUR>/DQMIO_samples
-MOCKED_DBS_FPATH=<PATH-TO-YOUR>/mocks/dbs.json
-ETL_CONFIG_FPATH=<PATH-TO-YOUR>/etl.config.json
-```
-
-- Note: `MOUNTED_EOS_PATH` is optional, if you don't mount EOS locally the files will be downloaded trough scp;
 - Note: `MOCKED_DBS_FPATH` is optional, if do not set it the application will try to ingest all available files in DBS.
 
 ### Building and launching the Docker container
