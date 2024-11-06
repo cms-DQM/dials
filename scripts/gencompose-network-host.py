@@ -138,26 +138,15 @@ def gen_compose_workspace_workers(paths_to_mount, queue_name):
     }
 
 
-def gen_compose_downloader_workers(paths_to_mount, queue_name):
-    return {
-        f"dials-{queue_name.lower()}": {
-            "container_name": f"dials-{queue_name.lower()}",
-            "image": "dials_etl",
-            "volumes": gen_volumes(paths_to_mount),
-            "command": f"bash -c 'celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname={queue_name}@%h --queues={queue_name}'",
-            "network_mode": "host",
-            "depends_on": gen_common_depends_on(),
-        },
-    }
-
-
 if __name__ == "__main__":
     cwd = os.getcwd()
     if os.path.basename(cwd) != "dials":
         raise Exception(f"Expected to be in dials directory, but got {cwd}")
 
     # CLI
-    parser = argparse.ArgumentParser(description="Re-download files script.")
+    parser = argparse.ArgumentParser(
+        description="Dynamically generate a docker compose file for local DIALS development."
+    )
     parser.add_argument("--etl-env-file", help="Path to etl .env file.", default=f"{cwd}/etl/.env")
     args = parser.parse_args()
 
@@ -176,18 +165,13 @@ if __name__ == "__main__":
     paths_to_mount = [elem for elem in paths_to_mount if elem is not None]
 
     # Queues
-    downloader_queues = []
     ingesting_queues = []
     with open(etl_config_fpath) as f:
         config_asjson = json.load(f)
         for workspace in config_asjson["workspaces"]:
             ingesting_queues.append(workspace["bulk_ingesting_queue"])
             ingesting_queues.append(workspace["priority_ingesting_queue"])
-            for primary_dataset in workspace["primary_datasets"]:
-                downloader_queues.append(primary_dataset["bulk_downloader_queue"])
-                downloader_queues.append(primary_dataset["priority_downloader_queue"])
 
-    downloader_queues = sorted(set(downloader_queues))
     ingesting_queues = sorted(set(ingesting_queues))
 
     comments = """# Notes
@@ -206,10 +190,6 @@ if __name__ == "__main__":
 
     for queue_name in ingesting_queues:
         services = gen_compose_workspace_workers(paths_to_mount, queue_name)
-        docker_compose["services"].update(services)
-
-    for queue_name in downloader_queues:
-        services = gen_compose_downloader_workers(paths_to_mount, queue_name)
         docker_compose["services"].update(services)
 
     with open("docker-compose.yaml", "w") as f:
