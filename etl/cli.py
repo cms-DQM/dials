@@ -7,7 +7,6 @@ from python.env import conn_str
 from python.models import DimMLModelsIndex, FactFileIndex, FactTH1, FactTH2
 from python.models.file_index import StatusCollection
 from python.pipelines.dataset_indexer.tasks import dataset_indexer_pipeline_task
-from python.pipelines.file_downloader.tasks import file_downloader_pipeline_task
 from python.pipelines.file_ingesting.tasks import file_ingesting_pipeline_task
 from sqlalchemy import create_engine, delete
 from sqlalchemy.engine.base import Engine
@@ -41,56 +40,6 @@ def get_files_by_status(workspace: str, status: str | list[str]) -> None:
         results = [{k: v for k, v in result.__dict__.items() if k != "_sa_instance_state"} for result in results]
     engine.dispose()
     return results
-
-
-def downloader_handler(args):
-    wss_by_id = {}
-    for workspace in workspaces:
-        ws_name = workspace["name"]
-        if args.all:
-            files = get_files_by_status(ws_name, status=StatusCollection.DOWNLOAD_ERROR)
-        elif args.file_ids:
-            files = get_files_by_id(ws_name, files_id=args.file_ids)
-        for result in files:
-            file_id = result["file_id"]
-            if file_id not in wss_by_id:
-                wss_by_id[file_id] = {"dataset_id": None, "logical_file_name": None, "wss": []}
-            wss_by_id[file_id]["wss"].append(ws_name)
-            wss_by_id[file_id]["dataset_id"] = result["dataset_id"]
-            wss_by_id[file_id]["logical_file_name"] = result["logical_file_name"]
-
-    for file_id, item in wss_by_id.items():
-        first_ws = next(filter(lambda x: x["name"] == item["wss"][0], workspaces), None)
-        queue_key = (
-            "priority_downloader_queue" if priority_era in item["logical_file_name"] else "bulk_downloader_queue"
-        )
-        primary_dataset = item["logical_file_name"].split("/")[4]
-        queue_name = next(filter(lambda x: primary_dataset in x["dbs_pattern"], first_ws["primary_datasets"]), None)[
-            queue_key
-        ]
-        file_downloader_pipeline_task.apply_async(
-            kwargs={
-                "dataset_id": item["dataset_id"],
-                "file_id": file_id,
-                "logical_file_name": item["logical_file_name"],
-                "wss": [
-                    {
-                        "name": ws_name,
-                        "me_startswith": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
-                            "me_startswith"
-                        ],
-                        "priority_ingesting_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
-                            "priority_ingesting_queue"
-                        ],
-                        "bulk_ingesting_queue": next(filter(lambda x: x["name"] == ws_name, workspaces), None)[
-                            "bulk_ingesting_queue"
-                        ],
-                    }
-                    for ws_name in item["wss"]
-                ],
-            },
-            queue=queue_name,
-        )
 
 
 def ingesting_handler(args):
@@ -131,9 +80,7 @@ def clean_parsing_error_handler(args):
     engine = get_engine(args.workspace)
     Session = sessionmaker(bind=engine)  # noqa: N806
     with Session() as session:
-        results = (
-            session.query(FactFileIndex).filter(FactFileIndex.status == StatusCollection.INGESTION_PARSING_ERROR).all()
-        )
+        results = session.query(FactFileIndex).filter(FactFileIndex.status == StatusCollection.PARSING_ERROR).all()
         results = [{k: v for k, v in result.__dict__.items() if k != "_sa_instance_state"} for result in results]
         file_ids = [res.get("file_id") for res in results]
         if len(file_ids) > 0:
@@ -172,15 +119,6 @@ def main():
     indexing_parser.add_argument("-s", "--start", action="store_true", help="Schedule a dataset indexing task.")
     indexing_parser.set_defaults(handler=indexing_handler)
 
-    # Downloader command
-    downloader_parser = subparsers.add_parser("downloader", help="Schedule downloading tasks")
-    downloader_paser_arg_group = downloader_parser.add_mutually_exclusive_group(required=True)
-    downloader_paser_arg_group.add_argument(
-        "-a", "--all", action="store_true", help="Select all files marked with DOWNLOAD_ERROR."
-    )
-    downloader_paser_arg_group.add_argument("-f", "--file-ids", nargs="+", type=int, help="List of files id")
-    downloader_parser.set_defaults(handler=downloader_handler)
-
     # Ingesting command
     ingesting_parser = subparsers.add_parser("ingesting", help="Schedule ingesting tasks")
     ingesting_parser.add_argument("-w", "--workspace", help="Workspace name to trigger file ingestion.", required=True)
@@ -190,8 +128,8 @@ def main():
         nargs="+",
         type=str,
         choices=[
-            StatusCollection.INGESTION_COPY_ERROR,
-            StatusCollection.INGESTION_ROOTFILE_ERROR,
+            StatusCollection.COPY_ERROR,
+            StatusCollection.ROOTFILE_ERROR,
             StatusCollection.FINISHED,
         ],
         help="List of status used to search files when --all flag is specified.",
@@ -205,7 +143,9 @@ def main():
     ingesting_parser.set_defaults(handler=ingesting_handler)
 
     # Clean command
-    clean_table_parser = subparsers.add_parser("clean-parsing-error", help="Schedule downloading tasks")
+    clean_table_parser = subparsers.add_parser(
+        "clean-parsing-error", help="Clean leftover TH1/TH2 entries in DB for jobs that failed in the parsing step."
+    )
     clean_table_parser.add_argument(
         "-w", "--workspace", help="Workspace name to trigger file ingestion.", required=True
     )
