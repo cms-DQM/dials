@@ -1,3 +1,7 @@
+class PipelineFileNotAvailableError(Exception):
+    pass
+
+
 class PipelineCopyError(Exception):
     pass
 

@@ -6,7 +6,7 @@ from ...env import conn_str
 from ...models.file_index import StatusCollection
 from ..ml_inference.pipeline import pipeline as ml_pipeline
 from ..utils import clean_file, error_handler
-from .exceptions import PipelineCopyError, PipelineRootfileError
+from .exceptions import PipelineCopyError, PipelineFileNotAvailableError, PipelineRootfileError
 from .extract import extract
 from .post_load import post_load
 from .pre_extract import pre_extract
@@ -25,9 +25,13 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     # This function already clean the leftover root file if download fails
     try:
         fpath = extract(logical_file_name)
+    except PipelineFileNotAvailableError as e:
+        err_trace = traceback.format_exc()
+        error_handler(engine, file_id, err_trace, StatusCollection.FILE_NOT_AVAILABLE)
+        raise e
     except Exception as e:  # noqa: BLE001
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_COPY_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.COPY_ERROR)
         raise PipelineCopyError from e
 
     try:
@@ -35,7 +39,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_ROOTFILE_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.ROOTFILE_ERROR)
         raise PipelineRootfileError from e
 
     try:
@@ -43,7 +47,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     except Exception as e:  # noqa: BLE001
         clean_file(fpath)
         err_trace = traceback.format_exc()
-        error_handler(engine, file_id, err_trace, StatusCollection.INGESTION_PARSING_ERROR)
+        error_handler(engine, file_id, err_trace, StatusCollection.PARSING_ERROR)
         raise e
 
     # If everything goes well, we can clean the file
