@@ -115,7 +115,6 @@ oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend --confir
 oc import-image frontend --from=registry.cern.ch/cms-dqmdc/dials-frontend --confirm
 oc apply -f ./oc/prod/configmaps
 oc apply -f ./oc/prod/deployments/etl/common
-oc apply -f ./oc/prod/deployments/etl/downloaders
 oc apply -f ./oc/prod/deployments/etl/workspaces
 oc apply -f ./oc/prod/deployments/web
 oc apply -f ./oc/prod/services.yaml

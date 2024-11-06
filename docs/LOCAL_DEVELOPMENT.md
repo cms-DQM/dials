@@ -146,45 +146,24 @@ You can additionally check that DIALS is correctly running by running the comman
 
 ```
 CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS                   PORTS                                       NAMES
-9549095739c5   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet-downloader-priority
 81765d44592e   dials_frontend   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes             0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   dials-frontend
 fe3bfd7c084c   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-csc-bulk
-88a01dc0e518   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-hiphysicsrawprime0-downloader-priority
 fec0501e6d1c   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes             0.0.0.0:5555->5555/tcp, :::5555->5555/tcp   dials-flower
 15d46df20bae   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-csc-priority
-baf109de235d   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-egamma0-downloader-priority
-3884c8f99f84   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-streamhiexpressrawprime-downloader-priority
 684bf5b1c590   dials_backend    "python manage.py ru…"   3 minutes ago   Up 3 minutes             0.0.0.0:8000->8000/tcp, :::8000->8000/tcp   dials-backend
 75129249fca6   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet-bulk
 376651d7e7aa   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-common-indexer
-037b8d76bd2b   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet0-downloader-priority
 5457add93b70   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-egamma-priority
 84d7579e8e55   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-ecal-priority
-b5b8d8f77d9b   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-zerobias-downloader-bulk
 a5c5c169ad25   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-beat-scheduler
-641dfd7c783a   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 2 minutes                                                         dials-streamhiexpressrawprime-downloader-bulk
-2f453412609f   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-muon-downloader-bulk
 1ddefde9b55b   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 2 minutes                                                         dials-tracker-priority
 a9a531ec4ba9   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-hcal-bulk
-3501e2fa8e70   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-muon0-downloader-bulk
-699d1be4d9a3   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-muon-downloader-priority
-4d7e223b7223   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet0-downloader-bulk
-44ae49dfd684   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet-downloader-bulk
-ca2b173ac6ad   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-streamexpress-downloader-priority
 991418bbb585   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-ecal-bulk
 dc2ceb05851a   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-private-bulk
 3559615921e2   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-hcal-priority
-43564916c050   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 2 minutes                                                         dials-hiforward0-downloader-priority
-47ffe85cca3b   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-hiphysicsrawprime0-downloader-bulk
 dbeaf5400e28   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-egamma-bulk
-cd74ea827db5   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-zerobias-downloader-priority
 69cf337c5220   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-jetmet-priority
 dc7a3eb6f4ac   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-tracker-bulk
-550cfb344890   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 2 minutes                                                         dials-muon0-downloader-priority
-13ff85cfafbc   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-egamma0-downloader-bulk
-5ccc88160753   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-private-downloader-bulk
-1b66144b6f90   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-hiforward0-downloader-bulk
-f52544c371d6   dials_etl        "bash -c 'celery --a…"   3 minutes ago   Up 3 minutes                                                         dials-streamexpress-downloader-bulk
 67b69b897c86   postgres         "docker-entrypoint.s…"   22 hours ago    Up 3 minutes (healthy)   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   postgresql-local
 d429b32d6206   redis            "docker-entrypoint.s…"   22 hours ago    Up 3 minutes (healthy)   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis-local
 ```
@@ -358,9 +337,7 @@ And you'll also need to update the [`etl.config.json`](/etl/etl.config.json) fil
       "primary_datasets": [
         {
           "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
-          "priority_downloader_queue": "ZeroBias-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
