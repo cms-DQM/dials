@@ -52,27 +52,21 @@ def ingesting_handler(args):
 
     if args.all:
         files = get_files_by_status(workspace["name"], status=args.status)
-    elif args.file_ids:
-        files = get_files_by_status(workspace["name"], files_id=args.files_id)
+    elif args.files_id:
+        files = get_files_by_id(workspace["name"], files_id=args.files_id)
 
-    tasks = [
-        {
-            "queue_name": workspace["priority_ingesting_queue"]
+    for file in files:
+        queue_name = (
+            workspace["priority_ingesting_queue"]
             if priority_era in file["logical_file_name"]
-            else workspace["bulk_ingesting_queue"],
+            else workspace["bulk_ingesting_queue"]
+        )
+        task = {
             "file_id": file["file_id"],
             "dataset_id": file["dataset_id"],
             "workspace_name": workspace["name"],
-            "workspace_mes": workspace["me_startswith"],
+            "workspace_mes": args.me_startswith if args.me_startswith else workspace["me_startswith"],
         }
-        for file in files
-    ]
-
-    if args.me_startswith:
-        tasks = [{**task, "workspace_mes": args.me_startswith} for task in tasks]
-
-    for task in tasks:
-        queue_name = task.pop("queue_name")
         file_ingesting_pipeline_task.apply_async(kwargs=task, queue=queue_name)
 
 
@@ -82,16 +76,17 @@ def clean_parsing_error_handler(args):
     with Session() as session:
         results = session.query(FactFileIndex).filter(FactFileIndex.status == StatusCollection.PARSING_ERROR).all()
         results = [{k: v for k, v in result.__dict__.items() if k != "_sa_instance_state"} for result in results]
-        file_ids = [res.get("file_id") for res in results]
-        if len(file_ids) > 0:
-            sql1 = delete(FactTH1).where(FactTH1.file_id.in_(file_ids))
-            sql2 = delete(FactTH2).where(FactTH2.file_id.in_(file_ids))
+        files_id = [res.get("file_id") for res in results]
+        if len(files_id) > 0:
+            sql1 = delete(FactTH1).where(FactTH1.file_id.in_(files_id))
+            sql2 = delete(FactTH2).where(FactTH2.file_id.in_(files_id))
             session.execute(sql1)
             session.execute(sql2)
             session.commit()
-            print(f"Files which histograms were delete: {' '.join(file_ids)}")
+            print(f"Files which histograms were delete: {' '.join(files_id)}")
+
     engine.dispose()
-    return file_ids
+    return files_id
 
 
 def indexing_handler(args):
@@ -110,16 +105,13 @@ def add_ml_model_to_index_hanlder(args):
         session.commit()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="DIALS etl command line interface")
-    subparsers = parser.add_subparsers(dest="command", title="Commands")
-
-    # Indexing command
+def setup_indexing_subparser(subparsers):
     indexing_parser = subparsers.add_parser("indexing", help="Schedule indexing tasks")
     indexing_parser.add_argument("-s", "--start", action="store_true", help="Schedule a dataset indexing task.")
     indexing_parser.set_defaults(handler=indexing_handler)
 
-    # Ingesting command
+
+def setup_ingesting_subparser(subparsers):
     ingesting_parser = subparsers.add_parser("ingesting", help="Schedule ingesting tasks")
     ingesting_parser.add_argument("-w", "--workspace", help="Workspace name to trigger file ingestion.", required=True)
     ingesting_parser.add_argument(
@@ -128,6 +120,7 @@ def main():
         nargs="+",
         type=str,
         choices=[
+            StatusCollection.FILE_NOT_AVAILABLE,
             StatusCollection.COPY_ERROR,
             StatusCollection.ROOTFILE_ERROR,
             StatusCollection.FINISHED,
@@ -139,10 +132,11 @@ def main():
     ingesting_paser_arg_group.add_argument(
         "-a", "--all", action="store_true", help="Select all files marked with specified status."
     )
-    ingesting_paser_arg_group.add_argument("-f", "--file-ids", nargs="+", type=int, help="List of files id.")
+    ingesting_paser_arg_group.add_argument("-f", "--files-id", nargs="+", type=int, help="List of files id.")
     ingesting_parser.set_defaults(handler=ingesting_handler)
 
-    # Clean command
+
+def setup_cleaning_subparser(subparsers):
     clean_table_parser = subparsers.add_parser(
         "clean-parsing-error", help="Clean leftover TH1/TH2 entries in DB for jobs that failed in the parsing step."
     )
@@ -151,7 +145,8 @@ def main():
     )
     clean_table_parser.set_defaults(handler=clean_parsing_error_handler)
 
-    # Register ml model command
+
+def setup_ml_subparser(subparsers):
     add_ml_model_parser = subparsers.add_parser("add-ml-model-to-index", help="Register ML molde into DB")
     add_ml_model_parser.add_argument("-w", "--workspace", help="Workspace name.", required=True)
     add_ml_model_parser.add_argument("-f", "--filename", help="Model binary filename", required=True)
@@ -164,6 +159,14 @@ def main():
     add_ml_model_parser.add_argument("-a", "--active", help="Is the model active?", required=True, type=bool)
     add_ml_model_parser.set_defaults(handler=add_ml_model_to_index_hanlder)
 
+
+def main():
+    parser = argparse.ArgumentParser(description="DIALS etl command line interface")
+    subparsers = parser.add_subparsers(dest="command", title="Commands")
+    setup_indexing_subparser(subparsers)
+    setup_ingesting_subparser(subparsers)
+    setup_cleaning_subparser(subparsers)
+    setup_ml_subparser(subparsers)
     args = parser.parse_args()
 
     if hasattr(args, "handler"):
