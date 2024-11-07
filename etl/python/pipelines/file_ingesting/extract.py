@@ -3,35 +3,38 @@ import os.path
 import shutil
 import tempfile
 
-from ...env import mounted_eos_path
+from ...env import raw_layers
 from ..utils import clean_file
 from .exceptions import PipelineFileNotAvailableError
 
 
 def extract(logical_file_name: str) -> str:
     """
-    Extracts a DQMIO file from EOS and returns the local path to the extracted file.
-    If the file is corrupted (i.e. we cannot open it with ROOT), delete the file and raise the error.
+    Extracts a DQMIO file from RAW LAYER and return the local path
+    to the extracted file.
     """
     file_name = logical_file_name.replace("/", "_")[1:]
     tmp_dir = tempfile.mkdtemp()
     tmp_fpath = os.path.join(tmp_dir, file_name)
 
-    # The base path where files are expected to be is `mounted_eos_path`
-    # This path is configurable in the environment, you can copy files locally
-    # using `scp` and replicated the `logical_file_name` inside your base path
-    eos_file_path = mounted_eos_path + logical_file_name
-    if os.path.isfile(eos_file_path) is False:
-        raise PipelineFileNotAvailableError(eos_file_path)
+    # Try to find the file in multiple raw layers
+    src_fpaths = [raw_layer + logical_file_name for raw_layer in raw_layers]
+    for src_fpath in src_fpaths:
+        if os.path.isfile(src_fpath) is False:
+            continue
 
-    try:
-        shutil.copy(eos_file_path, tmp_fpath)
-    except Exception as e:
-        if os.path.isfile(tmp_fpath):
-            clean_file(tmp_fpath)
-        raise e
+        try:
+            shutil.copy(src_fpath, tmp_fpath)
+            break
+        except Exception as e:
+            if os.path.isfile(tmp_fpath):
+                clean_file(tmp_fpath)
+            raise e
+    else:
+        raise PipelineFileNotAvailableError(src_fpath)
 
-    # Well... if the previous function succeeded we should find the file locally in tmp_fpath.
+    # Well... if the previous function succeeded we should find the file
+    # locally in tmp_fpath.
     if os.path.isfile(tmp_fpath) is False:
         raise Exception(f"File {tmp_fpath} does not exist")
 

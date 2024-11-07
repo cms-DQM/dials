@@ -1,8 +1,8 @@
-from decouple import config
+from decouple import Csv, config
 
 
 app_env = config("ENV")
-mounted_eos_path = config("MOUNTED_EOS_PATH")
+raw_layers = config("RAW_LAYERS", cast=Csv())
 model_registry_path = config("MODEL_REGISTRY_PATH")
 conn_str = config("DATABASE_URI")
 cert_fpath = config("CERT_FPATH")
