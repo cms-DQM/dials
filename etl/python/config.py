@@ -1,15 +1,15 @@
 import json
 import os.path
 
-from .env import etl_config_fpath
+from .env import ETL_CONFIG_FPATH
 
 
 # If etl config file path is specific but dot no exists, stop the program
-if os.path.exists(etl_config_fpath) is False:
+if os.path.exists(ETL_CONFIG_FPATH) is False:
     raise Exception("etl config file not found in specified path.")
 
 # Read configuration from object
-with open(etl_config_fpath) as f:
+with open(ETL_CONFIG_FPATH) as f:
     config_contents = json.load(f)
 
 # Expose objects

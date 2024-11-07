@@ -3,7 +3,7 @@
 import argparse
 
 from python.config import common_indexer_queue, primary_datasets, priority_era, workspaces
-from python.env import conn_str
+from python.env import DATABASE_RUI
 from python.models import DimMLModelsIndex, FactFileIndex, FactTH1, FactTH2
 from python.models.file_index import StatusCollection
 from python.pipelines.dataset_indexer.tasks import dataset_indexer_pipeline_task
@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 def get_engine(workspace: str) -> Engine:
-    return create_engine(f"{conn_str}/{workspace}")
+    return create_engine(f"{DATABASE_RUI}/{workspace}")
 
 
 def get_files_by_id(workspace: str, files_id: list[int]) -> None:
@@ -28,7 +28,7 @@ def get_files_by_id(workspace: str, files_id: list[int]) -> None:
 
 
 def get_files_by_status(workspace: str, status: str | list[str]) -> None:
-    engine = create_engine(f"{conn_str}/{workspace}")
+    engine = create_engine(f"{DATABASE_RUI}/{workspace}")
     Session = sessionmaker(bind=engine)  # noqa: N806
     with Session() as session:
         query = session.query(FactFileIndex)

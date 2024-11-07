@@ -3,7 +3,7 @@ import os.path
 import shutil
 import tempfile
 
-from ...env import raw_layers
+from ...env import RAW_LAYERS
 from ..utils import clean_file
 from .exceptions import PipelineFileNotAvailableError
 
@@ -18,7 +18,7 @@ def extract(logical_file_name: str) -> str:
     tmp_fpath = os.path.join(tmp_dir, file_name)
 
     # Try to find the file in multiple raw layers
-    src_fpaths = [raw_layer + logical_file_name for raw_layer in raw_layers]
+    src_fpaths = [raw_layer + logical_file_name for raw_layer in RAW_LAYERS]
     for src_fpath in src_fpaths:
         if os.path.isfile(src_fpath) is False:
             continue

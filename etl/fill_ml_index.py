@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from python.env import conn_str
+from python.env import DATABASE_RUI
 from python.models import DimMLModelsIndex
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 def get_engine(workspace: str) -> Engine:
-    return create_engine(f"{conn_str}/{workspace}")
+    return create_engine(f"{DATABASE_RUI}/{workspace}")
 
 
 def register_model(ws, model_metadata):

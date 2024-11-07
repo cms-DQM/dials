@@ -2,7 +2,7 @@ import traceback
 
 from sqlalchemy import create_engine
 
-from ...env import conn_str
+from ...env import DATABASE_RUI
 from ...models.file_index import StatusCollection
 from ..ml_inference.pipeline import pipeline as ml_pipeline
 from ..utils import clean_file, error_handler
@@ -19,7 +19,7 @@ def pipeline(workspace_name: str, workspace_mes: str, file_id: int, dataset_id: 
     Note: always re-raise exceptions to mark the task as failed in celery broker
     """
     me_pattern = f"({'|'.join(workspace_mes)}).*"
-    engine = create_engine(f"{conn_str}/{workspace_name}")
+    engine = create_engine(f"{DATABASE_RUI}/{workspace_name}")
     logical_file_name, last_status = pre_extract(engine, file_id)
 
     # This function already clean the leftover root file if download fails

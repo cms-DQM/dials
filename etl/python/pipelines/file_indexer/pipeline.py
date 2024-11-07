@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 from ...config import priority_era
-from ...env import conn_str
+from ...env import DATABASE_RUI
 from ..file_ingesting.tasks import file_ingesting_pipeline_task
 from .extract import extract, extract_datasets_ids
 from .load import load
@@ -10,7 +10,7 @@ from .transform import transform
 
 
 def pipeline(workspaces: list, primary_datasets: list) -> None:
-    engines = {ws["name"]: create_engine(f"{conn_str}/{ws['name']}") for ws in workspaces}
+    engines = {ws["name"]: create_engine(f"{DATABASE_RUI}/{ws['name']}") for ws in workspaces}
 
     for primary_dataset in primary_datasets:
         workspaces_with_pd = [ws for ws in workspaces if primary_dataset in ws["primary_datasets"]]

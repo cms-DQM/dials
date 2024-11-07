@@ -1,11 +1,11 @@
-from ..env import celery_broker_url, celery_redbeat_url, celery_result_backend
+from ..env import CELERY_BROKER_URL, CELERY_REDBEAT_URL, CELERY_RESULT_BACKEND
 
 
 broker_connection_retry_on_startup = True
 broker_transport_options = {"visibility_timeout": 21600}  # 6 hours
-broker_url = celery_broker_url
-result_backend = celery_result_backend
-redbeat_redis_url = celery_redbeat_url
+broker_url = CELERY_BROKER_URL
+result_backend = CELERY_RESULT_BACKEND
+redbeat_redis_url = CELERY_REDBEAT_URL
 task_track_started = True
 result_extended = True
 task_serializer = "json"
