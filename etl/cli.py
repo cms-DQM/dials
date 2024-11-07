@@ -2,7 +2,7 @@
 
 import argparse
 
-from python.config import common_indexer_queue, primary_datasets, priority_era, workspaces
+from python.config import COMMON_INDEXER_QUEUE, PRIMARY_DATASETS, PRIORITY_ERA, WORKSPACES
 from python.env import DATABASE_RUI
 from python.models import DimMLModelsIndex, FactFileIndex, FactTH1, FactTH2
 from python.models.file_index import StatusCollection
@@ -48,7 +48,7 @@ def ingesting_handler(args):
     if StatusCollection.FINISHED in args.status and args.me_startswith is None:
         raise ValueError("me_startswith should be set if status is FINISHED")
 
-    workspace = next(filter(lambda x: x["name"] == args.workspace, workspaces), None)
+    workspace = next(filter(lambda x: x["name"] == args.workspace, WORKSPACES), None)
 
     if args.all:
         files = get_files_by_status(workspace["name"], status=args.status)
@@ -58,7 +58,7 @@ def ingesting_handler(args):
     for file in files:
         queue_name = (
             workspace["priority_ingesting_queue"]
-            if priority_era in file["logical_file_name"]
+            if PRIORITY_ERA in file["logical_file_name"]
             else workspace["bulk_ingesting_queue"]
         )
         task = {
@@ -92,7 +92,7 @@ def clean_parsing_error_handler(args):
 def indexing_handler(args):
     if args.start is True:
         dataset_indexer_pipeline_task.apply_async(
-            kwargs={"workspaces": workspaces, "primary_datasets": primary_datasets}, queue=common_indexer_queue
+            kwargs={"workspaces": WORKSPACES, "primary_datasets": PRIMARY_DATASETS}, queue=COMMON_INDEXER_QUEUE
         )
 
 

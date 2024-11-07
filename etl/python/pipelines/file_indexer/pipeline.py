@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
-from ...config import priority_era
+from ...config import PRIORITY_ERA
 from ...env import DATABASE_RUI
 from ..file_ingesting.tasks import file_ingesting_pipeline_task
 from .extract import extract, extract_datasets_ids
@@ -34,7 +34,7 @@ def pipeline(workspaces: list, primary_datasets: list) -> None:
                 logical_file_name = file["logical_file_name"]
                 queue_name = (
                     workspace["priority_ingesting_queue"]
-                    if priority_era in logical_file_name
+                    if PRIORITY_ERA in logical_file_name
                     else workspace["bulk_ingesting_queue"]
                 )
                 kwargs = {

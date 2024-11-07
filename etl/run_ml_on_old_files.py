@@ -2,7 +2,7 @@
 
 import argparse
 
-from python.config import workspaces
+from python.config import WORKSPACES
 from python.env import DATABASE_RUI
 from python.models import FactDatasetIndex, FactFileIndex, FactMLBadLumis
 from python.models.file_index import StatusCollection
@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 def get_ws_bulk_queue_name():
-    ws = next(filter(lambda x: x["name"] == args.workspace_name, workspaces), None)
+    ws = next(filter(lambda x: x["name"] == args.workspace_name, WORKSPACES), None)
     return ws["bulk_ingesting_queue"]
 
 

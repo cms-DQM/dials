@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from ...common.dqmio_reader import DQMIOReader
 from ...common.pgsql import copy_expert, copy_expert_onconflict_update, insert_onconflict_update
-from ...config import common_chunk_size, th1_types, th2_chunk_size, th2_types
+from ...config import COMMON_CHUK_SIZE, TH1_TYPES, TH2_CHUNK_SIZE, TH2_TYPES
 from ...models import DimMonitoringElements, FactLumisection, FactRun, FactTH1, FactTH2
 from ...models.file_index import StatusCollection
 from ..utils import list_to_sql_array, sqlachemy_asdict
@@ -24,7 +24,7 @@ def transform_load_run(engine: Engine, reader: DQMIOReader, dataset_id: int) -> 
         con=engine,
         if_exists="append",
         index=False,
-        chunksize=common_chunk_size,
+        chunksize=COMMON_CHUK_SIZE,
         method=method,
     )
 
@@ -35,8 +35,8 @@ def transform_load_lumis(
     run_lumi = reader.index_keys
     lumis = []
     for run, lumi in run_lumi:
-        th1_me = reader.get_mes_for_lumi(run, lumi, types=th1_types, re_pattern=me_pattern)
-        th2_me = reader.get_mes_for_lumi(run, lumi, types=th2_types, re_pattern=me_pattern)
+        th1_me = reader.get_mes_for_lumi(run, lumi, types=TH1_TYPES, re_pattern=me_pattern)
+        th2_me = reader.get_mes_for_lumi(run, lumi, types=TH2_TYPES, re_pattern=me_pattern)
         lumis.append(
             {
                 "dataset_id": dataset_id,
@@ -59,7 +59,7 @@ def transform_load_lumis(
         con=engine,
         if_exists="append",
         index=False,
-        chunksize=common_chunk_size,
+        chunksize=COMMON_CHUK_SIZE,
         method=method,
     )
 
@@ -72,14 +72,14 @@ def transform_mes(reader: DQMIOReader, me_pattern: str) -> list[dict]:
             run,
             lumi,
             types=(
-                *th1_types,
-                *th2_types,
+                *TH1_TYPES,
+                *TH2_TYPES,
             ),
             re_pattern=me_pattern,
         )
         for me in mes:
             if me.name not in mes_list.keys():
-                dim = 1 if me.type in th1_types else 2
+                dim = 1 if me.type in TH1_TYPES else 2
                 mes_list[me.name] = {"count": 0, "dim": dim}
             mes_list[me.name]["count"] += 1
 
@@ -98,7 +98,7 @@ def load_mes(engine: Engine, mes_list: list[dict], set_zero_count: bool = False)
         con=engine,
         if_exists="append",
         index=False,
-        chunksize=common_chunk_size,
+        chunksize=COMMON_CHUK_SIZE,
         method=method,
     )
 
@@ -106,8 +106,8 @@ def load_mes(engine: Engine, mes_list: list[dict], set_zero_count: bool = False)
 def transform_load_th(
     th_table: str, engine: Engine, reader: DQMIOReader, me_pattern: str, file_id: int, dataset_id: int
 ) -> None:
-    th_chunk_size = common_chunk_size if th_table == FactTH1.__tablename__ else th2_chunk_size
-    types = th1_types if th_table == FactTH1.__tablename__ else th2_types
+    th_chunk_size = COMMON_CHUK_SIZE if th_table == FactTH1.__tablename__ else TH2_CHUNK_SIZE
+    types = TH1_TYPES if th_table == FactTH1.__tablename__ else TH2_TYPES
     reader_func = reader.th1_from_cppyy if th_table == FactTH1.__tablename__ else reader.th2_from_cppyy
     run_lumi = reader.index_keys
 
