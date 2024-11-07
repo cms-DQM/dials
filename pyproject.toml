@@ -35,7 +35,6 @@ celery-redbeat = "^2.2.0"
 sqlalchemy = "^2.0.29"
 alembic = "^1.13.1"
 pandas = "^2.2.1"
-scp = "^0.14.5"
 flower = "^2.0.1"
 onnxruntime = "^1.18.0"
 

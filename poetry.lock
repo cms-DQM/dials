@@ -2201,20 +2201,6 @@ python-dotenv = "*"
 requests = "*"
 
 [[package]]
-name = "scp"
-version = "0.14.5"
-description = "scp module for paramiko"
-optional = false
-python-versions = "*"
-files = [
-    {file = "scp-0.14.5-py2.py3-none-any.whl", hash = "sha256:d224535dd8ed00294f52b0e0e18fde7a6fb7a3d06b97ede9e3f750fa7bf75c09"},
-    {file = "scp-0.14.5.tar.gz", hash = "sha256:64f0015899b3d212cb8088e7d40ebaf0686889ff0e243d5c1242efe8b50f053e"},
-]
-
-[package.dependencies]
-paramiko = "*"
-
-[[package]]
 name = "setuptools"
 version = "69.0.3"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
@@ -2508,4 +2494,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "873506ba72a3fbba16afb3db18d657c4b9fd251511d50a32d2dd1c22a2249922"
+content-hash = "5e5be827f5649906d1e7d39fc916e03facd7dba689a6b34d93860dea1401bf89"
