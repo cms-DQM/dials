@@ -15,7 +15,6 @@ with open(ETL_CONFIG_FPATH) as f:
 # Expose objects
 COMMON_CHUK_SIZE = config_contents["common_chunk_size"]
 COMMON_INDEXER_QUEUE = config_contents["common_indexer_queue"]
-DEV_ENV_LABEL = config_contents["dev_env_label"]
 PRIORITY_ERA = config_contents["priority_era"]
 TH1_TYPES = config_contents["th1_types"]
 TH2_TYPES = config_contents["th2_types"]

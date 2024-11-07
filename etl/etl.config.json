@@ -1,7 +1,6 @@
 {
   "common_chunk_size": 5000,
   "common_indexer_queue": "common-indexer",
-  "dev_env_label": "dev",
   "priority_era": "Run2024",
   "th1_types": [3,4,5],
   "th2_types": [6,7,8],

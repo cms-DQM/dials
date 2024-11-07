@@ -1,7 +1,16 @@
-from decouple import Csv, config
+from decouple import Choices, Csv, config
 
 
-ENV = config("ENV")
+class EnvChoices:
+    dev = "dev"
+    prod = "prod"
+
+    @staticmethod
+    def values():
+        return [value for key, value in vars(EnvChoices).items() if not key.startswith("__") and isinstance(value, str)]
+
+
+ENV = config("ENV", cast=Choices(EnvChoices.values()))
 RAW_LAYERS = config("RAW_LAYERS", cast=Csv())
 MODEL_REGISTRY_PATH = config("MODEL_REGISTRY_PATH")
 DATABASE_RUI = config("DATABASE_URI")
