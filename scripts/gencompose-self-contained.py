@@ -5,7 +5,7 @@ import json
 import os
 
 import yaml
-from decouple import Config, RepositoryEnv
+from decouple import Config, Csv, RepositoryEnv
 
 
 def gen_common_depends_on():
@@ -19,7 +19,7 @@ def gen_common_depends_on():
 def gen_volumes(paths_to_mount):
     volumes = ["./etl/:/home/app/etl"]
 
-    # One of the paths_to_mount might be the MOUNTED_EOS_PATH,
+    # One of the paths_to_mount might be the RAW_LAYERS,
     # since this can be an sshfs mount we cannot mount the path directly
     # if we don't update fuse.conf to allow_other (sshfs -o allow_other)
     # the mount will fail.
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     # ETL paths to mount in docker
     etl_config_fpath = config.get("ETL_CONFIG_FPATH")
     paths_to_mount = [
-        config.get("MOUNTED_EOS_PATH", default=None),
+        *config.get("RAW_LAYERS", cast=Csv()),
         config.get("CERT_FPATH"),
         config.get("KEY_FPATH"),
         config.get("MOCKED_DBS_FPATH", default=None),
