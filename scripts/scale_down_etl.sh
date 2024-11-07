@@ -1,5 +1,10 @@
 #!/bin/bash
 
+source "$(dirname "$0")/utils.sh"
+
+# Check if OC is checked out in the correct project
+check_oc_project
+
 oc scale --replicas=0 deployment/common-indexer
 oc scale --replicas=0 deployment/common-redbeat
 oc scale --replicas=0 deployment/flower
