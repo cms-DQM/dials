@@ -34,6 +34,5 @@
 **/build/
 
 # ETL files
-**/mocked_dbs*.json
-**/usercert.pem
-**/userkey.pem
+**/etl/mocks/DQMIO_for_DIALS_local_dev
+**/etl/mocks/ML_models

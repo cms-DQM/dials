@@ -5,7 +5,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.inspection import inspect
 
 from ...common.pgsql import copy_expert_onconflict_skip
-from ...config import common_chunk_size
+from ...config import COMMON_CHUK_SIZE
 from ...models import FactFileIndex
 
 
@@ -17,6 +17,6 @@ def load(engine: Engine, file_index: pd.DataFrame) -> list:
         con=engine,
         if_exists="append",
         index=False,
-        chunksize=common_chunk_size,
+        chunksize=COMMON_CHUK_SIZE,
         method=method,
     )

@@ -3,7 +3,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 from ...common.pgsql import copy_expert
-from ...env import conn_str
+from ...env import DATABASE_RUI
 from ...models import FactMLBadLumis, FactTH1, FactTH2
 from .extract import extract, extract_me
 from .predict import predict
@@ -17,7 +17,7 @@ def pipeline(
     dataset_id: int,
     file_id: int,
 ):
-    engine = create_engine(f"{conn_str}/{workspace_name}")
+    engine = create_engine(f"{DATABASE_RUI}/{workspace_name}")
 
     # Extrac me_id and TH dimension if me exists in database
     me = extract_me(engine, target_me)
