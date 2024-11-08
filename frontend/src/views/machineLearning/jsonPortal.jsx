@@ -157,7 +157,7 @@ const JsonPortal = () => {
   }, [activeModels, datasetRegex, rrClassName, rrDatasetName])
 
   useEffect(() => {
-    const fetchBrilLumiByRun = () => {
+    const fetchElegibleBrilRuns = () => {
       API.brilws.brilcalc
         .lumi({
           beamStatus: brilBeamStatus,
@@ -182,8 +182,8 @@ const JsonPortal = () => {
         })
     }
 
-    if (rrOpenRuns !== undefined) {
-      fetchBrilLumiByRun()
+    if (rrOpenRuns !== undefined && rrOpenRuns.length > 0) {
+      fetchElegibleBrilRuns()
     }
   }, [rrOpenRuns])
 
@@ -458,16 +458,21 @@ const JsonPortal = () => {
             {activeModels === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
-                <span className='ms-1'>Fetching the active ML models...</span>
+                <span className='ms-1'>Fetching active ML models...</span>
               </div>
             )}
             {datasetIds === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
-                <span className='ms-1'>{`Fetching data ids for pattern: ${datasetRegex}`}</span>
+                <span className='ms-1'>{`Fetching dataset ids for pattern: ${datasetRegex}`}</span>
               </div>
             )}
-            {rrOpenRuns !== undefined && brilRuns === undefined && (
+            {rrOpenRuns !== undefined && rrOpenRuns.length === 0 && (
+              <div>
+                <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}), thus no ML JSON will be generated.`}</span>
+              </div>
+            )}
+            {rrOpenRuns !== undefined && rrOpenRuns.length > 0 && brilRuns === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
                 <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} runs.`}</span>
