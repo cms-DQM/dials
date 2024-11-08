@@ -102,9 +102,12 @@ class Brilcalc:
         && {cmd}
         """
         _, stdout, stderr = self.client.exec_command(command)
+        stdout_text = stdout.read().decode("utf-8")
+        stderr_text = stderr.read().decode("utf-8")
         return_code = stdout.channel.recv_exit_status()
+        del stdout, stderr
 
         if return_code != 0:
-            raise BrilcalcError(stderr.read().decode("utf-8"))
+            raise BrilcalcError(stderr_text)
 
-        return self.__parse_lumi_html(stdout.read().decode("utf-8"), byls, unit)
+        return self.__parse_lumi_html(stdout_text, byls, unit)

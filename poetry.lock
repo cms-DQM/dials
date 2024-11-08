@@ -1572,13 +1572,13 @@ xml = ["lxml (>=4.9.2)"]
 
 [[package]]
 name = "paramiko"
-version = "3.4.0"
+version = "3.5.0"
 description = "SSH2 protocol library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "paramiko-3.4.0-py3-none-any.whl", hash = "sha256:43f0b51115a896f9c00f59618023484cb3a14b98bbceab43394a39c6739b7ee7"},
-    {file = "paramiko-3.4.0.tar.gz", hash = "sha256:aac08f26a31dc4dffd92821527d1682d99d52f9ef6851968114a8728f3c274d3"},
+    {file = "paramiko-3.5.0-py3-none-any.whl", hash = "sha256:1fedf06b085359051cd7d0d270cebe19e755a8a921cc2ddbfa647fb0cd7d68f9"},
+    {file = "paramiko-3.5.0.tar.gz", hash = "sha256:ad11e540da4f55cedda52931f1a3f812a8238a7af7f62a60de538cd80bb28124"},
 ]
 
 [package.dependencies]
@@ -2201,20 +2201,6 @@ python-dotenv = "*"
 requests = "*"
 
 [[package]]
-name = "scp"
-version = "0.14.5"
-description = "scp module for paramiko"
-optional = false
-python-versions = "*"
-files = [
-    {file = "scp-0.14.5-py2.py3-none-any.whl", hash = "sha256:d224535dd8ed00294f52b0e0e18fde7a6fb7a3d06b97ede9e3f750fa7bf75c09"},
-    {file = "scp-0.14.5.tar.gz", hash = "sha256:64f0015899b3d212cb8088e7d40ebaf0686889ff0e243d5c1242efe8b50f053e"},
-]
-
-[package.dependencies]
-paramiko = "*"
-
-[[package]]
 name = "setuptools"
 version = "69.0.3"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
@@ -2508,4 +2494,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "808a2df757086a7d75c06d6f8831ca4d50ab3f29c3bfb222e532195d3e04af84"
+content-hash = "5e5be827f5649906d1e7d39fc916e03facd7dba689a6b34d93860dea1401bf89"

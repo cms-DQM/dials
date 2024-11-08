@@ -1,7 +1,6 @@
 {
   "common_chunk_size": 5000,
   "common_indexer_queue": "common-indexer",
-  "dev_env_label": "dev",
   "priority_era": "Run2024",
   "th1_types": [3,4,5],
   "th2_types": [6,7,8],
@@ -12,21 +11,15 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/Muon/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "Muon-downloader-bulk",
-          "priority_downloader_queue": "Muon-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/Muon0/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "Muon0-downloader-bulk",
-          "priority_downloader_queue": "Muon0-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/StreamExpress/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "StreamExpress-downloader-bulk",
-          "priority_downloader_queue": "StreamExpress-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
@@ -40,9 +33,7 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
-          "priority_downloader_queue": "ZeroBias-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
@@ -58,9 +49,7 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/EGamma0/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "EGamma0-downloader-bulk",
-          "priority_downloader_queue": "EGamma0-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
@@ -74,9 +63,7 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
-          "priority_downloader_queue": "ZeroBias-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
@@ -90,15 +77,11 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/JetMET/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "JetMET-downloader-bulk",
-          "priority_downloader_queue": "JetMET-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/JetMET0/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "JetMET0-downloader-bulk",
-          "priority_downloader_queue": "JetMET0-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [
@@ -113,9 +96,7 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/ZeroBias/fsimone-crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24-00000000000000000000000000000000/USER",
-          "dbs_instance": "phys03",
-          "bulk_downloader_queue": "Private-downloader-bulk",
-          "priority_downloader_queue": "Private-downloader-bulk"
+          "dbs_instance": "phys03"
         }
       ],
       "me_startswith": [
@@ -133,33 +114,23 @@
       "primary_datasets": [
         {
           "dbs_pattern": "/ZeroBias/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "ZeroBias-downloader-bulk",
-          "priority_downloader_queue": "ZeroBias-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/StreamExpress/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "StreamExpress-downloader-bulk",
-          "priority_downloader_queue": "StreamExpress-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/HIForward0/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "HIForward0-downloader-bulk",
-          "priority_downloader_queue": "HIForward0-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/HIPhysicsRawPrime0/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "HIPhysicsRawPrime0-downloader-bulk",
-          "priority_downloader_queue": "HIPhysicsRawPrime0-downloader-priority"
+          "dbs_instance": "global"
         },
         {
           "dbs_pattern": "/StreamHIExpressRawPrime/*Run202*/DQMIO",
-          "dbs_instance": "global",
-          "bulk_downloader_queue": "StreamHIExpressRawPrime-downloader-bulk",
-          "priority_downloader_queue": "StreamHIExpressRawPrime-downloader-priority"
+          "dbs_instance": "global"
         }
       ],
       "me_startswith": [

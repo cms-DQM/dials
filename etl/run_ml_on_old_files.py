@@ -2,8 +2,8 @@
 
 import argparse
 
-from python.config import workspaces
-from python.env import conn_str
+from python.config import WORKSPACES
+from python.env import DATABASE_RUI
 from python.models import FactDatasetIndex, FactFileIndex, FactMLBadLumis
 from python.models.file_index import StatusCollection
 from python.pipelines.file_ingesting.utils import fetch_active_models
@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 def get_ws_bulk_queue_name():
-    ws = next(filter(lambda x: x["name"] == args.workspace_name, workspaces), None)
+    ws = next(filter(lambda x: x["name"] == args.workspace_name, WORKSPACES), None)
     return ws["bulk_ingesting_queue"]
 
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     queue = get_ws_bulk_queue_name()
-    engine = create_engine(f"{conn_str}/{args.workspace_name}")
+    engine = create_engine(f"{DATABASE_RUI}/{args.workspace_name}")
     dataset = get_dataset(engine, args.dataset_name)
     files = get_finished_files(engine, dataset.dataset_id)
     active_models = fetch_active_models(engine)

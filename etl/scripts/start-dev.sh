@@ -16,19 +16,6 @@ else
     exit 1
 fi
 
-# Primary datasets download queues
-downloader_queues=()
-
-while IFS= read -r queue_name; do
-    downloader_queues+=("$queue_name")
-done < <(jq -r '.workspaces[].primary_datasets[].bulk_downloader_queue' "$ETL_CONFIG_FPATH" | sort -u)
-
-while IFS= read -r queue_name; do
-    downloader_queues+=("$queue_name")
-done < <(jq -r '.workspaces[].primary_datasets[].priority_downloader_queue' "$ETL_CONFIG_FPATH" | sort -u)
-
-downloader_queues=($(printf "%s\n" "${downloader_queues[@]}" | sort -u))
-
 # Ingesting queues
 ingesting_queues=()
 
@@ -55,12 +42,6 @@ pids_arr+=($!)
 
 # Start workers for each workspace
 for queue_name in "${ingesting_queues[@]}"; do
-    poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${queue_name}@%h --queues=${queue_name} &
-    pids_arr+=($!)
-done
-
-# Start downloader workers for each pd
-for queue_name in "${downloader_queues[@]}"; do
     poetry run celery --app=python worker --loglevel=INFO --concurrency=1 --autoscale=1,0 --max-tasks-per-child=1 --hostname=${queue_name}@%h --queues=${queue_name} &
     pids_arr+=($!)
 done

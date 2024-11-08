@@ -2,17 +2,16 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import sessionmaker
 
 from ...common.dbs_client import MinimalDBSClient
-from ...config import dev_env_label
-from ...env import app_env, cert_fpath, key_fpath, mocked_dbs_fpath
+from ...env import ENV, GRID_CERT_FPATH, GRID_CERT_KEY_FPATH, MOCKED_DBS_FPATH, EnvChoices
 from ...models import FactDatasetIndex
 from ..utils import sqlachemy_asdict
 
 
 def extract(primary_dataset: dict) -> list:
     dbs = (
-        MinimalDBSClient(primary_dataset["dbs_instance"], cert_fpath, key_fpath)
-        if app_env != dev_env_label
-        else MinimalDBSClient("fake", None, None, True, mocked_dbs_fpath)
+        MinimalDBSClient(primary_dataset["dbs_instance"], GRID_CERT_FPATH, GRID_CERT_KEY_FPATH)
+        if ENV != EnvChoices.dev
+        else MinimalDBSClient("fake", None, None, True, MOCKED_DBS_FPATH)
     )
     return dbs.get(endpoint="files", params={"dataset": primary_dataset["dbs_pattern"], "detail": 1})
 

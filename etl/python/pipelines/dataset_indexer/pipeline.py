@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 from ...common.pgsql import plsql_create_dataset_ids_partitions
-from ...env import conn_str
+from ...env import DATABASE_RUI
 from ...models.file_index import FactFileIndex
 from ...models.lumisection import FactLumisection
 from ...models.run import FactRun
@@ -24,7 +24,7 @@ PARTITIONED_TABLES = [
 
 
 def pipeline(workspaces: list, primary_datasets: list) -> None:
-    engines = {ws["name"]: create_engine(f"{conn_str}/{ws['name']}") for ws in workspaces}
+    engines = {ws["name"]: create_engine(f"{DATABASE_RUI}/{ws['name']}") for ws in workspaces}
 
     for primary_dataset in primary_datasets:
         ws_names = [ws["name"] for ws in workspaces if primary_dataset in ws["primary_datasets"]]
