@@ -18,6 +18,7 @@ import API from '../../services/api'
 import { listToRange, rangeToList } from '../../utils/goldenJson'
 
 const JsonPortal = () => {
+  const defaultPageSize = 1000
   const currentYear = new Date().getFullYear()
   const datasetRegex = `/.*/Run${currentYear}.*-PromptReco.*/DQMIO`
   const rrClassName = `Collisions${currentYear.toString().slice(2)}`
@@ -63,7 +64,7 @@ const JsonPortal = () => {
         return API.utils
           .genericFetchAllPages({
             apiMethod: API.mlModelsIndex.list,
-            params: { active: true, workspace: ws },
+            params: { pageSize: defaultPageSize, active: true, workspace: ws },
           })
           .then((response) => {
             return {[ws]: response.results}
@@ -125,7 +126,7 @@ const JsonPortal = () => {
         return API.utils
           .genericFetchAllPages({
             apiMethod: API.dataset.list,
-            params: { datasetRegex, workspace: ws },
+            params: { pageSize: defaultPageSize, datasetRegex, workspace: ws },
           })
           .then((response) => {
             return {[ws]: response.results.map(item => item.dataset_id)}

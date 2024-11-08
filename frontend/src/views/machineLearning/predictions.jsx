@@ -14,6 +14,8 @@ import { Table } from '../components'
 import { getNextToken } from '../../utils/sanitizer'
 
 const Predictions = () => {
+  const defaultPageSize = 1000
+
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(false)
   const [datasets, setDatasets] = useState()
   const [selectedDatasets, setSelectedDatasets] = useState()
@@ -72,7 +74,7 @@ const Predictions = () => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
       API.utils
-        .genericFetchAllPages({ apiMethod: API.dataset.list })
+        .genericFetchAllPages({ apiMethod: API.dataset.list, params: { pageSize: defaultPageSize } })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -99,7 +101,7 @@ const Predictions = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.run.list,
-          params: { datasetIdIn: selectedDatasets.map((item) => item.value) },
+          params: { pageSize: defaultPageSize, datasetIdIn: selectedDatasets.map((item) => item.value) },
         })
         .then((response) => {
           const runs = response.results.map((item) => ({
@@ -122,6 +124,7 @@ const Predictions = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.mlModelsIndex.list,
+          params: { pageSize: defaultPageSize }
         })
         .then((response) => {
           const models = response.results.map((item) => ({
@@ -154,7 +157,7 @@ const Predictions = () => {
   }) => {
     setIsLoadingData(true)
     API.mlBadLumis
-      .list({ nextToken, datasetIdIn, runNumberIn, modelIdIn })
+      .list({ pageSize: defaultPageSize, nextToken, datasetIdIn, runNumberIn, modelIdIn })
       .then((response) => {
         API.mes
           .list({})
