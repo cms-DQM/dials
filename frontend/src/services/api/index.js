@@ -47,6 +47,7 @@ const getDataset = async ({ datasetId, workspace }) => {
 }
 
 const listDatasets = async ({
+  pageSize,
   nextToken,
   dataset,
   datasetRegex,
@@ -56,6 +57,7 @@ const listDatasets = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       dataset,
       dataset__regex: datasetRegex,
@@ -70,6 +72,7 @@ const listDatasets = async ({
 }
 
 const listFileIndex = async ({
+  pageSize,
   nextToken,
   logicalFileName,
   logicalFileNameRegex,
@@ -83,6 +86,7 @@ const listFileIndex = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       logical_file_name: logicalFileName,
       logical_file_name__regex: logicalFileNameRegex,
@@ -139,6 +143,7 @@ const getRun = async ({ datasetId, runNumber, workspace }) => {
 }
 
 const listRuns = async ({
+  pageSize,
   nextToken,
   datasetId,
   datasetIdIn,
@@ -153,6 +158,7 @@ const listRuns = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       dataset_id: datasetId,
       dataset_id__in: datasetIdIn,
@@ -215,6 +221,7 @@ const getLumisection = async ({
 }
 
 const listLumisections = async ({
+  pageSize,
   nextToken,
   datasetId,
   runNumber,
@@ -231,6 +238,7 @@ const listLumisections = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       dataset_id: datasetId,
       run_number: runNumber,
@@ -287,6 +295,7 @@ const countLumisections = async ({
 }
 
 const listHistograms = async ({
+  pageSize,
   nextToken,
   dim,
   datasetId,
@@ -311,6 +320,7 @@ const listHistograms = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       dataset_id: datasetId,
       file_id: fileId,
@@ -382,6 +392,7 @@ const listMEsByRun = async ({ datasetId, runNumber, workspace }) => {
 }
 
 const listMLModelsIndex = async ({
+  pageSize,
   nextToken,
   modelId,
   modelIdIn,
@@ -396,6 +407,7 @@ const listMLModelsIndex = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       model_id: modelId,
       model_id__in: modelIdIn,
@@ -415,6 +427,7 @@ const listMLModelsIndex = async ({
 }
 
 const listMLBadLumisections = async ({
+  pageSize,
   nextToken,
   modelId,
   modelIdIn,
@@ -431,6 +444,7 @@ const listMLBadLumisections = async ({
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      page_size: pageSize,
       next_token: nextToken,
       model_id: modelId,
       model_id__in: modelIdIn,
