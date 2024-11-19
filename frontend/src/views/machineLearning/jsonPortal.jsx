@@ -126,7 +126,7 @@ const JsonPortal = () => {
         return API.utils
           .genericFetchAllPages({
             apiMethod: API.dataset.list,
-            params: { pageSize: defaultPageSize, datasetRegex, workspace: ws },
+            params: { pageSize: defaultPageSize, datasetRegex, workspace: ws, fields: ['dataset_id'] },
           })
           .then((response) => {
             return {[ws]: response.results.map(item => item.dataset_id)}
