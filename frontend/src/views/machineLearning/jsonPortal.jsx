@@ -18,7 +18,7 @@ import API from '../../services/api'
 import { listToRange, rangeToList } from '../../utils/goldenJson'
 
 const JsonPortal = () => {
-  const defaultPageSize = 1000
+  const defaultPageSize = 500
   const currentYear = new Date().getFullYear()
   const datasetRegex = `/.*/Run${currentYear}.*-PromptReco.*/DQMIO`
   const rrClassName = `Collisions${currentYear.toString().slice(2)}`

@@ -14,7 +14,7 @@ import { Table } from '../components'
 import { getNextToken } from '../../utils/sanitizer'
 
 const Predictions = () => {
-  const defaultPageSize = 1000
+  const defaultPageSize = 500
 
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(false)
   const [datasets, setDatasets] = useState()
