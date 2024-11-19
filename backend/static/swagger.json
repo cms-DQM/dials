@@ -2676,7 +2676,7 @@
             "description": "class_name",
             "schema": {
               "type": "string"
-            },
+            }
           },
           {
             "name": "kind",
@@ -2685,7 +2685,7 @@
             "description": "CAF file kind (golden, muon, dcs)",
             "schema": {
               "type": "string"
-            },
+            }
           }
         ],
         "responses": {
@@ -2726,7 +2726,7 @@
             "description": "class_name",
             "schema": {
               "type": "string"
-            },
+            }
           },
           {
             "name": "dataset_name",
@@ -2735,7 +2735,7 @@
             "description": "dataset_name",
             "schema": {
               "type": "string"
-            },
+            }
           },
           {
             "name": "global_state",
@@ -2744,7 +2744,7 @@
             "description": "global_state",
             "schema": {
               "type": "string"
-            },
+            }
           }
         ],
         "responses": {
@@ -3495,7 +3495,7 @@
           },
           "mse": {
             "type": "number"
-          },
+          }
         },
         "required": [
           "model_id",
@@ -3564,7 +3564,7 @@
           }
         },
         "required": [
-          "run_number",
+          "run_number"
         ]
       },
       "CAFJson": {
@@ -3599,7 +3599,8 @@
           }
         },
         "required": [
-          "run_number",
+          "run_number"
+
         ]
       },
       "RunList": {
