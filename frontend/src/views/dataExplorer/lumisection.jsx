@@ -56,6 +56,7 @@ const Lumisection = () => {
             datasetId,
             runNumber,
             lsNumber,
+            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
           },
         })
         .then((response) => {
@@ -87,6 +88,7 @@ const Lumisection = () => {
             datasetId,
             runNumber,
             lsNumber,
+            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
           },
         })
         .then((response) => {
