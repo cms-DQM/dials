@@ -34,7 +34,7 @@ const Browser = () => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
       API.utils
-        .genericFetchAllPages({ apiMethod: API.dataset.list, params: { pageSize: defaultPageSize } })
+        .genericFetchAllPages({ apiMethod: API.dataset.list, params: { pageSize: defaultPageSize, fields: ['dataset_id', 'dataset'] } })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -61,7 +61,7 @@ const Browser = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.run.list,
-          params: { datasetId: selectedDataset.value, pageSize: defaultPageSize },
+          params: { datasetId: selectedDataset.value, pageSize: defaultPageSize, fields: ['run_number'] },
         })
         .then((response) => {
           const runs = response.results.map((item) => ({
@@ -90,7 +90,7 @@ const Browser = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.lumisection.list,
-          params: { datasetId, runNumber, pageSize: defaultPageSize },
+          params: { datasetId, runNumber, pageSize: defaultPageSize, fields: ['ls_number'] },
         })
         .then((response) => {
           const lumisections = response.results
