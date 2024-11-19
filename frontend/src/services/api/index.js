@@ -49,6 +49,7 @@ const getDataset = async ({ datasetId, workspace }) => {
 const listDatasets = async ({
   pageSize,
   nextToken,
+  fields,
   dataset,
   datasetRegex,
   workspace,
@@ -59,6 +60,7 @@ const listDatasets = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       dataset,
       dataset__regex: datasetRegex,
     },
@@ -74,6 +76,7 @@ const listDatasets = async ({
 const listFileIndex = async ({
   pageSize,
   nextToken,
+  fields,
   logicalFileName,
   logicalFileNameRegex,
   status,
@@ -88,6 +91,7 @@ const listFileIndex = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       logical_file_name: logicalFileName,
       logical_file_name__regex: logicalFileNameRegex,
       status,
@@ -145,6 +149,7 @@ const getRun = async ({ datasetId, runNumber, workspace }) => {
 const listRuns = async ({
   pageSize,
   nextToken,
+  fields,
   datasetId,
   datasetIdIn,
   runNumber,
@@ -160,6 +165,7 @@ const listRuns = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       dataset_id: datasetId,
       dataset_id__in: datasetIdIn,
       run_number: runNumber,
@@ -223,6 +229,7 @@ const getLumisection = async ({
 const listLumisections = async ({
   pageSize,
   nextToken,
+  fields,
   datasetId,
   runNumber,
   runNumberLte,
@@ -240,6 +247,7 @@ const listLumisections = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       dataset_id: datasetId,
       run_number: runNumber,
       run_number__lte: runNumberLte,
@@ -297,6 +305,7 @@ const countLumisections = async ({
 const listHistograms = async ({
   pageSize,
   nextToken,
+  fields,
   dim,
   datasetId,
   fileId,
@@ -322,6 +331,7 @@ const listHistograms = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       dataset_id: datasetId,
       file_id: fileId,
       run_number: runNumber,
@@ -364,11 +374,12 @@ const getHistogram = async ({
   return response.data
 }
 
-const listMEs = async ({ me, meRegex, dim, workspace }) => {
+const listMEs = async ({ fields, me, meRegex, dim, workspace }) => {
   const endpoint = `${API_URL}/mes/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
+      fields,
       me,
       me__regex: meRegex,
       dim,
@@ -394,6 +405,7 @@ const listMEsByRun = async ({ datasetId, runNumber, workspace }) => {
 const listMLModelsIndex = async ({
   pageSize,
   nextToken,
+  fields,
   modelId,
   modelIdIn,
   filename,
@@ -409,6 +421,7 @@ const listMLModelsIndex = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       model_id: modelId,
       model_id__in: modelIdIn,
       filename,
@@ -429,6 +442,7 @@ const listMLModelsIndex = async ({
 const listMLBadLumisections = async ({
   pageSize,
   nextToken,
+  fields,
   modelId,
   modelIdIn,
   dataset,
@@ -446,6 +460,7 @@ const listMLBadLumisections = async ({
     {
       page_size: pageSize,
       next_token: nextToken,
+      fields,
       model_id: modelId,
       model_id__in: modelIdIn,
       dataset,
