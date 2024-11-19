@@ -206,6 +206,20 @@
             }
           },
           {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "dataset",
             "required": false,
             "in": "query",
@@ -342,6 +356,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "logical_file_name",
@@ -619,6 +647,20 @@
         "description": "",
         "parameters": [
           {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "me",
             "required": false,
             "in": "query",
@@ -809,6 +851,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "dataset_id",
@@ -1107,6 +1163,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "dataset_id",
@@ -1429,6 +1499,20 @@
             }
           },
           {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "dataset_id",
             "required": false,
             "in": "query",
@@ -1718,6 +1802,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "dataset_id",
@@ -2083,6 +2181,20 @@
             }
           },
           {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "model_id",
             "required": false,
             "in": "query",
@@ -2269,6 +2381,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "model_id",
