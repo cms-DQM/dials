@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from utils.serializers_mixins import DatasetNameMixin
+from utils.serializers_mixins import DatasetNameMixin, FieldsFilterMixin
 
 from .models import Run
 
 
-class RunSerializer(DatasetNameMixin, serializers.ModelSerializer):
+class RunSerializer(DatasetNameMixin, FieldsFilterMixin, serializers.ModelSerializer):
     class Meta:
         model = Run
         fields = "__all__"

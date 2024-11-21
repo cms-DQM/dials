@@ -13,6 +13,9 @@ import API from '../../services/api'
 import { CMSOMSCard, ResponsivePlot } from '../components'
 
 const Lumisection = () => {
+  const defaultPageSizeTH1 = 500
+  const defaultPageSizeTH2 = 10
+
   const { datasetId, runNumber, lsNumber } = useParams()
   const [isDatasetLoading, setDatasetLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
@@ -48,10 +51,12 @@ const Lumisection = () => {
         .genericFetchAllPages({
           apiMethod: API.histogram.list,
           params: {
+            pageSize: defaultPageSizeTH1,
             dim: 1,
             datasetId,
             runNumber,
             lsNumber,
+            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
           },
         })
         .then((response) => {
@@ -78,10 +83,12 @@ const Lumisection = () => {
         .genericFetchAllPages({
           apiMethod: API.histogram.list,
           params: {
+            pageSize: defaultPageSizeTH2,
             dim: 2,
             datasetId,
             runNumber,
             lsNumber,
+            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
           },
         })
         .then((response) => {

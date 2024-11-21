@@ -22,7 +22,7 @@ from utils.rest_framework_cern_sso.authentication import (
 
 from .filters import MEsFilter
 from .models import MEs
-from .serializers import MEsSerializer, MinifiedMEsSerializer
+from .serializers import MEsSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -76,5 +76,5 @@ class MEsViewSet(GenericViewSetRouter, mixins.RetrieveModelMixin, mixins.ListMod
         )
         mes_ids = [*th1_mes, *th2_mes]
         mes = MEs.objects.using(workspace).filter(me_id__in=mes_ids).all().order_by(MEs._meta.pk.name)
-        serializer = MinifiedMEsSerializer(mes, many=True)
+        serializer = MEsSerializer(mes, many=True, fields="me_id,me,dim")
         return Response(serializer.data)
