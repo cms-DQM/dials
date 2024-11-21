@@ -13,7 +13,7 @@ import API from '../../services/api'
 import { buildTree } from '../../utils/ops'
 
 const Browser = () => {
-  const defaultPageSize = 1000
+  const defaultPageSize = 500
 
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(true)
   const [datasets, setDatasets] = useState()
