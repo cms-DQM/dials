@@ -53,3 +53,22 @@ spec:
         name: registry.cern.ch/cms-dqmdc/dials-frontend
       referencePolicy:
         type: Local
+
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: nginx-unprivileged
+  namespace: cms-dials-prod
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: latest
+      annotations:
+        openshift.io/imported-from: registry.cern.ch/cms-dqmdc/nginxinc-nginx-unprivileged
+      from:
+        kind: DockerImage
+        name: registry.cern.ch/cms-dqmdc/nginxinc-nginx-unprivileged
+      referencePolicy:
+        type: Local

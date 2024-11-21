@@ -9,3 +9,4 @@ check_oc_project
 oc import-image etl --from=registry.cern.ch/cms-dqmdc/dials-etl --confirm
 oc import-image backend --from=registry.cern.ch/cms-dqmdc/dials-backend --confirm
 oc import-image frontend --from=registry.cern.ch/cms-dqmdc/dials-frontend --confirm
+oc import-image nginx-unprivileged --from=registry.cern.ch/cms-dqmdc/nginxinc-nginx-unprivileged --confirm
