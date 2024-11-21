@@ -58,7 +58,7 @@ spec:
               mountPath: /var/www/api/
               readOnly: true
           imagePullPolicy: Always
-          image: nginxinc/nginx-unprivileged
+          image: image-registry.openshift-image-registry.svc:5000/cms-dials-prod/nginx-unprivileged:latest
       volumes:
         - name: nginx-conf
           configMap:
