@@ -206,6 +206,15 @@
             }
           },
           {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "fields",
             "required": false,
             "in": "query",
@@ -355,6 +364,15 @@
             "description": "next_token",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -853,6 +871,15 @@
             }
           },
           {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "fields",
             "required": false,
             "in": "query",
@@ -1162,6 +1189,15 @@
             "description": "next_token",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -1499,6 +1535,15 @@
             }
           },
           {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "fields",
             "required": false,
             "in": "query",
@@ -1801,6 +1846,15 @@
             "description": "next_token",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -2181,6 +2235,15 @@
             }
           },
           {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
             "name": "fields",
             "required": false,
             "in": "query",
@@ -2380,6 +2443,15 @@
             "description": "next_token",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "required": false,
+            "in": "query",
+            "description": "page_size",
+            "schema": {
+              "type": "number"
             }
           },
           {
