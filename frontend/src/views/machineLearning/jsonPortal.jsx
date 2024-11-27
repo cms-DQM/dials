@@ -226,9 +226,10 @@ const JsonPortal = () => {
       activeModels !== undefined &&
       brilRuns !== undefined
     ) {
-      if (Object.keys(datasetIds).length === 0) {
+      if (Object.keys(datasetIds).length === 0 || brilRuns.length === 0) {
         setMLGoldenJson({})
       } else {
+        console.log('here', brilRuns)
         fetchMLJson(brilRuns)
       }
     }
@@ -470,22 +471,27 @@ const JsonPortal = () => {
             )}
             {rrOpenRuns !== undefined && rrOpenRuns.length === 0 && (
               <div>
-                <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}), thus no ML JSON will be generated.`}</span>
+                <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}), therefore no ML JSON will be generated.`}</span>
               </div>
             )}
             {rrOpenRuns !== undefined && rrOpenRuns.length > 0 && brilRuns === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
-                <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} runs.`}</span>
+                <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} ${rrOpenRuns.length === 1 ? 'run' : 'runs'}.`}</span>
               </div>
             )}
-            {brilRuns !== undefined && mlGoldenJson === undefined && (
+            {brilRuns !== undefined && brilRuns.length === 0 && (
+              <div>
+                <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}) with luminosity greater than ${brilLowLumiRule} ${brilUnit} in Bril, therefore no ML JSON will be generated.`}</span>
+              </div>
+            )}
+            {brilRuns !== undefined && brilRuns.length > 0 && mlGoldenJson === undefined && (
               <div>
                 <Spinner animation='border' role='status' />
                 <span className='ms-1'>Generating the ML JSON</span>
               </div>
             )}
-            {mlGoldenJson !== undefined && (
+            {brilRuns!== undefined && brilRuns.length > 0 && mlGoldenJson !== undefined && (
               <AceEditor
                 mode='javascript'
                 theme='github'
