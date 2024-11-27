@@ -12,7 +12,7 @@ psycopg2-binary = "^2.9.9"
 requests = "^2.31.0"
 
 [tool.poetry.group.backend.dependencies]
-django = "^5.0.6"
+django = "5.0.8"
 djangorestframework = "^3.14.0"
 django-filter = "^23.5"
 django-cors-headers = "^4.3.1"
