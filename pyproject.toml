@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.10"
 python-decouple = "^3.8"
 psycopg2-binary = "^2.9.9"
-requests = "^2.31.0"
+requests = "^2.32.0"
 
 [tool.poetry.group.backend.dependencies]
 django = "^5.0.6"
