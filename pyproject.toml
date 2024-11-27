@@ -13,7 +13,7 @@ requests = "^2.31.0"
 
 [tool.poetry.group.backend.dependencies]
 django = "^5.0.6"
-djangorestframework = "^3.14.0"
+djangorestframework = "3.15.2"
 django-filter = "^23.5"
 django-cors-headers = "^4.3.1"
 django-debreach = "^2.1.0"
