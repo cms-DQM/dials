@@ -3298,6 +3298,10 @@
             "type": "string",
             "maxLength": 255
           },
+          "processed_ds_name": {
+            "type": "string",
+            "maxLength": 255
+          },
           "processing_version": {
             "type": "integer",
             "maximum": 2147483647,
@@ -3314,6 +3318,7 @@
           "era",
           "data_tier",
           "primary_ds_name",
+          "processed_ds_name",
           "processing_version",
           "last_modification_date"
         ]
