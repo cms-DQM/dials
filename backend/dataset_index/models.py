@@ -9,6 +9,7 @@ class DatasetIndex(models.Model):
     era = models.CharField(max_length=255)
     data_tier = models.CharField(max_length=255)
     primary_ds_name = models.CharField(max_length=255)
+    processed_ds_name = models.CharField(max_length=255)
     processing_version = models.IntegerField()
     last_modification_date = models.DateTimeField()
 
