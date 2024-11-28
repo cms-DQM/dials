@@ -94,7 +94,7 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
         result = (
             queryset.filter(dataset_id__in=dataset_id__in, run_number__in=run_number__in, model_id__in=model_id__in)
             .all()
-            .order_by("run_number", "ls_number")
+            .order_by("dataset_id", "run_number", "ls_number")
             .values()
         )
         result = [qs for qs in result]
@@ -150,6 +150,7 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
                 Lumisection.objects.using(workspace)
                 .filter(dataset_id__in=dataset_id__in, run_number=run_number)
                 .all()
+                .order_by("ls_number")
                 .values_list("ls_number", flat=True)
             )
             good_lumis = [ls for ls in all_lumis if ls not in bad_lumis]
