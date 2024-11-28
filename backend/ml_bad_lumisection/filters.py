@@ -11,7 +11,7 @@ class MLBadLumisectionFilter(filters_mixins.DatasetFilterMethods, filters_mixins
         model = MLBadLumisection
         fields: ClassVar[dict[str, list[str]]] = {
             "model_id": ["exact", "in"],
-            "dataset_id": ["exact"],
+            "dataset_id": ["exact", "in"],
             "me_id": ["exact"],
             "run_number": ["exact", "in"],
             "ls_number": ["exact"],

@@ -10,6 +10,7 @@ class MLModelsIndexFilter(filters.FilterSet):
         model = MLModelsIndex
         fields: ClassVar[dict[str, list[str]]] = {
             "model_id": ["exact", "in"],
+            "filename": ["exact", "regex"],
             "target_me": ["exact", "regex"],
             "active": ["exact"],
         }

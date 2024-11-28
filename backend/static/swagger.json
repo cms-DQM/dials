@@ -2492,6 +2492,29 @@
             "explode": false
           },
           {
+            "name": "dataset_id",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "dataset_id__in",
+            "required": false,
+            "in": "query",
+            "description": "dataset_id__in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
             "name": "dataset",
             "required": false,
             "in": "query",
@@ -2507,6 +2530,15 @@
             "description": "dataset__regex",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "me_id",
+            "required": false,
+            "in": "query",
+            "description": "me_id",
+            "schema": {
+              "type": "integer"
             }
           },
           {
@@ -2721,13 +2753,18 @@
             "explode": false
           },
           {
-            "name": "dataset_id",
+            "name": "dataset_id__in",
             "required": false,
             "in": "query",
-            "description": "dataset_id",
+            "description": "dataset_id__in",
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "run_number__in",
