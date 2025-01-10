@@ -45,7 +45,7 @@ def get_files_by_status(workspace: str, status: str | list[str]) -> None:
 def ingesting_handler(args):
     if args.all and args.status is None:
         raise ValueError("status argument should be defined when --all is used")
-    if StatusCollection.FINISHED in args.status and args.me_startswith is None:
+    if args.all and StatusCollection.FINISHED in args.status and args.me_startswith is None:
         raise ValueError("me_startswith should be set if status is FINISHED")
 
     workspace = next(filter(lambda x: x["name"] == args.workspace, WORKSPACES), None)

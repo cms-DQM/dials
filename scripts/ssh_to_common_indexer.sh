@@ -6,7 +6,7 @@ source "$(dirname "$0")/utils.sh"
 check_oc_project
 
 # Select pod
-POD_NAME=$(get_pod_name "redis-etl-broker")
+POD_NAME=$(get_pod_name "common-indexer")
 echo -e "Selected pod: ${POD_NAME}\n"
 
 # "SSH" to container in the pod
