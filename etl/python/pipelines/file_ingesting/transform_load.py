@@ -16,7 +16,7 @@ def transform_load_run(engine: Engine, reader: DQMIOReader, dataset_id: int) -> 
     run_lumi = reader.index_keys
     runs = {}
     for run, _ in run_lumi:
-        runs[run] = runs[run] + 1 if run in runs else 0
+        runs[run] = runs[run] + 1 if run in runs else 1
 
     runs = [{"run_number": run, "dataset_id": dataset_id, "ls_count": ls_count} for run, ls_count in runs.items()]
     expr = f"ls_count = {FactRun.__tablename__}.ls_count + EXCLUDED.ls_count"
