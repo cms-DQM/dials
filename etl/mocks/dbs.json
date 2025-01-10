@@ -278,5 +278,45 @@
         "file_size": 2713873,
         "last_modification_date": 1719019180,
         "logical_file_name": "/store/user/fsimone/ZeroBias/crab_Run2023C-v1_DQMIO_ZeroBias_2023C_jun24/240620_164821/0000/nanodqmio_101.root"
+    },
+    {
+        "creation_date": 1674388715,
+        "dataset": "/ZeroBias/Run2022A-19Jan2023-v2/DQMIO",
+        "file_id": 2369296277,
+        "file_size": 96116159,
+        "last_modification_date": 1674388715,
+        "logical_file_name": "/store/data/Run2022A/ZeroBias/DQMIO/19Jan2023-v2/30000/DD2CC4FA-EF58-49AF-9BFB-F0ABE41BC4F4.root"
+    },
+    {
+        "creation_date": 1674386076,
+        "dataset": "/ZeroBias/Run2022A-19Jan2023-v2/DQMIO",
+        "file_id": 2369279877,
+        "file_size": 254684425,
+        "last_modification_date": 1674386076,
+        "logical_file_name": "/store/data/Run2022A/ZeroBias/DQMIO/19Jan2023-v2/30000/23F53374-C49D-4BBA-BAB7-05412999556A.root"
+    },
+    {
+        "creation_date": 1674585184,
+        "dataset": "/ZeroBias/Run2022A-19Jan2023-v2/DQMIO",
+        "file_id": 2373549157,
+        "file_size": 143139982,
+        "last_modification_date": 1674585184,
+        "logical_file_name": "/store/data/Run2022A/ZeroBias/DQMIO/19Jan2023-v2/30000/18BE9BCB-8882-4E60-B021-AE2866470FA8.root"
+    },
+    {
+        "creation_date": 1674585184,
+        "dataset": "/ZeroBias/Run2022A-19Jan2023-v2/DQMIO",
+        "file_id": 2373549197,
+        "file_size": 164324224,
+        "last_modification_date": 1674585184,
+        "logical_file_name": "/store/data/Run2022A/ZeroBias/DQMIO/19Jan2023-v2/30000/298E9DED-706B-4E7B-9A84-765AB5B70373.root"
+    },
+    {
+        "creation_date": 1674574403,
+        "dataset": "/ZeroBias/Run2022A-19Jan2023-v2/DQMIO",
+        "file_id": 2373045957,
+        "file_size": 21952309,
+        "last_modification_date": 1674574403,
+        "logical_file_name": "/store/data/Run2022A/ZeroBias/DQMIO/19Jan2023-v2/2550000/B7C5D067-F538-42CE-9261-033D668E62D0.root"
     }
 ]
