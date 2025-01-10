@@ -1,4 +1,5 @@
-from functools import partial, reduce
+from collections import Counter
+from functools import partial
 
 import pandas as pd
 from sqlalchemy.engine.base import Engine
@@ -14,7 +15,7 @@ from ..utils import list_to_sql_array, sqlachemy_asdict
 
 def transform_load_run(engine: Engine, reader: DQMIOReader, dataset_id: int) -> None:
     run_lumi = reader.index_keys
-    runs = reduce(lambda acc, cur: {cur[0]: acc.get(cur[0], 0) + 1}, run_lumi, {})
+    runs = Counter([run for run, _ in run_lumi])
     runs = [{"run_number": run, "dataset_id": dataset_id, "ls_count": ls_count} for run, ls_count in runs.items()]
     expr = f"ls_count = {FactRun.__tablename__}.ls_count + EXCLUDED.ls_count"
     method = partial(copy_expert_onconflict_update, conflict_key="run_number, dataset_id", expr=expr)
