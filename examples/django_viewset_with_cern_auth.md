@@ -52,7 +52,7 @@ In any viewset is possible to specify an `authentication_classes` attribute that
 ```python
 class BadFileIndexViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     ...
-    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication]
+    authentication_classes = [CERNKeycloakClientSecretAuthentication, CERNKeycloakBearerAuthentication]
 ```
 
 ## Exposing our ViewSet as an REST Api method

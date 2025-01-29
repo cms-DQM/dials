@@ -1,67 +1,17 @@
 import React, { useState, useEffect } from 'react'
 
+import { BrowserRouter } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
-import { useAuth } from 'react-oidc-context'
 
-import {
-  OIDC_CONFIDENTIAL_TOKEN_NS,
-  OIDC_USER_WORKSPACE,
-  EXCHANGED_TOKEN_EVT,
-} from './config/env'
-import { AppNavbar } from './views/components'
-import AppRoutes from './views/routes'
-import onSigninComplete from './utils/auth'
-import { getUserWorkspace } from './utils/userTokens'
+import keycloak from './services/keycloak'
+import { SELECTED_WORKSPACE_KEY } from './config/env'
 import API from './services/api'
+import AppRoutes from './views/routes'
+import AppNavbar from './views/components/navbar'
 
 const Root = () => {
-  const auth = useAuth()
-  const [silentSignin, setSilentSignin] = useState(false)
-  const [tokenExchanged, setTokenExchanged] = useState(false)
   const [selectedWorkspace, setSelectedWorkspace] = useState(null)
   const [allWorkspaces, setAllWorkspaces] = useState([])
-
-  // When user is redirected from SSO login, we capture this event
-  // to finished authentication
-  window.addEventListener(EXCHANGED_TOKEN_EVT, () => {
-    setTokenExchanged(true)
-  })
-
-  // When user load the page in another tab but it was already authenticated from another session
-  // `tokenExchanged` will not be set to true by the event, because the event ocurred in another window
-  // then we check if the confidential token is present in the localStorage to set the value to true
-  useEffect(() => {
-    if (localStorage.getItem(OIDC_CONFIDENTIAL_TOKEN_NS) !== null) {
-      setTokenExchanged(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    return auth.events.addAccessTokenExpiring(() => {
-      setSilentSignin(true)
-      auth
-        .signinSilent()
-        .then(async (_user) => {
-          await onSigninComplete({
-            dispatchEvent: false,
-          })
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-        .finally(() => {
-          setSilentSignin(false)
-        })
-    })
-  }, [silentSignin, auth, auth.events, auth.signinSilent])
-
-  useEffect(() => {
-    return auth.events.addAccessTokenExpired(() => {
-      auth.removeUser()
-      localStorage.removeItem(OIDC_CONFIDENTIAL_TOKEN_NS)
-      window.location.href = '/'
-    })
-  }, [auth, auth.events, auth.signinSilent])
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
@@ -75,39 +25,44 @@ const Root = () => {
           toast.error('Failure to communicate with the API!')
         })
     }
-    if (auth.isAuthenticated && tokenExchanged) {
-      // if the workspace is already set in localStorage
+
+    const fetchDefaultWorkspace = async () => {
+      return API.config
+        .getUserDefaultWorkspace()
+        .then((response) => {
+          console.log(response)
+          return response.workspace
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+          return undefined
+        })
+    }
+
+    if (keycloak.authenticated) {
+      // if the workspace is already set in localStorage (from another tab, maybe)
       // we want to preserve that, since the user might have selected another workspace
-      const currentWorkspace = localStorage.getItem(OIDC_USER_WORKSPACE)
-      setSelectedWorkspace(
-        currentWorkspace !== null ? currentWorkspace : getUserWorkspace()
-      )
+      const currentWorkspace = localStorage.getItem(SELECTED_WORKSPACE_KEY)
+
+      if (currentWorkspace) {
+        setSelectedWorkspace(currentWorkspace)
+      } else {
+        fetchDefaultWorkspace().then(setSelectedWorkspace)
+      }
+
       fetchWorkspaces()
     }
-  }, [auth.isAuthenticated, tokenExchanged])
+  }, [])
 
   useEffect(() => {
     if (selectedWorkspace) {
-      localStorage.setItem(OIDC_USER_WORKSPACE, selectedWorkspace)
+      localStorage.setItem(SELECTED_WORKSPACE_KEY, selectedWorkspace)
     }
   }, [selectedWorkspace])
 
-  // Will render authenticating div if auth provider is still loading
-  // or user is authenticated (auth not loading anymore) but
-  // token hasn't been exchanged yet
-  if (
-    !silentSignin &&
-    (auth.isLoading || (auth.isAuthenticated && !tokenExchanged))
-  ) {
-    return <div>Authenticating...</div>
-  }
-
-  if (auth.error) {
-    return <div>Oops... {auth.error.message}</div>
-  }
-
   return (
-    <>
+    <BrowserRouter>
       <AppNavbar
         allWorkspaces={allWorkspaces}
         selectedWorkspace={selectedWorkspace}
@@ -115,7 +70,7 @@ const Root = () => {
       />
       <AppRoutes key={selectedWorkspace} />
       <ToastContainer position='bottom-right' />
-    </>
+    </BrowserRouter>
   )
 }
 

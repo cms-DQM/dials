@@ -10,9 +10,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from utils.db_router import get_workspace_from_role
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
-    CERNKeycloakPublicAuthentication,
     confidential_kc,
 )
 from utils.rest_framework_cern_sso.token import CERNKeycloakToken
@@ -22,7 +21,6 @@ from .serializers import (
     ConfiguredWorkspacesSerializer,
     DeviceSerializer,
     DeviceTokenSerializer,
-    ExchangedTokenSerializer,
     PendingAuthorizationErrorSerializer,
 )
 
@@ -36,7 +34,7 @@ class AuthViewSet(ViewSet):
         methods=["get"],
         name="Inspect configured workspaces",
         url_path=r"workspaces",
-        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication],
+        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakBearerAuthentication],
     )
     def get_workspaces(self, request: Request):
         payload = {"workspaces": list(settings.WORKSPACES.keys())}
@@ -45,25 +43,20 @@ class AuthViewSet(ViewSet):
 
     @action(
         detail=False,
-        methods=["post"],
-        name="Exchange public access token to confidential access_token",
-        url_path=r"exchange-token",
-        authentication_classes=[CERNKeycloakPublicAuthentication],
+        methods=["get"],
+        name="Inspect user default workspace based on their token",
+        url_path=r"user-default-workspace",
+        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakBearerAuthentication],
     )
-    def exchange_token(self, request: Request):
-        # This user authenticated trough the CERNKeycloakPublicAuthentication
-        # already carries the public access token (subject_token) in the user object
-        # so we don't need to ask a subject token trough the request body
+    def get_user_default_workspace(self, request: Request):
         user: CERNKeycloakUser = request.user
         subject_token = user.token.access_token
-        confidential_token = user.token.client.exchange_token(subject_token, settings.KEYCLOAK_CONFIDENTIAL_CLIENT_ID)
 
-        # After exchanging the token we must decode it (we don't need to verify it since is was just issued by the auth server)
-        # and extract the proper cern_roles from the confidential token
-        exc_token_obj = CERNKeycloakToken(confidential_token["access_token"], client=None)
-        cern_roles = exc_token_obj.unv_claims.get("cern_roles")
-        confidential_token["default_workspace"] = get_workspace_from_role(cern_roles, use_default_if_not_found=True)
-        payload = ExchangedTokenSerializer(confidential_token).data
+        token_obj = CERNKeycloakToken(subject_token, client=None)
+        cern_roles = token_obj.unv_claims.get("cern_roles")
+        ws = get_workspace_from_role(cern_roles, use_default_if_not_found=True)
+
+        payload = {"workspace": ws}
         return Response(payload)
 
     @action(detail=False, methods=["post"], name="Refresh confidential token", url_path=r"refresh-token")

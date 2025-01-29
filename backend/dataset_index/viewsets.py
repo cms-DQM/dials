@@ -10,8 +10,8 @@ from rest_framework import mixins, viewsets
 from rest_framework.authentication import BaseAuthentication
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .filters import DatasetIndexFilter
@@ -35,5 +35,5 @@ class DatasetIndexViewSet(
     filter_backends: ClassVar[list[DjangoFilterBackend]] = [DjangoFilterBackend]
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]

@@ -16,8 +16,8 @@ from th1.models import TH1
 from th2.models import TH2
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .filters import MEsFilter
@@ -39,7 +39,7 @@ class MEsViewSet(GenericViewSetRouter, mixins.RetrieveModelMixin, mixins.ListMod
     filter_backends: ClassVar[list[DjangoFilterBackend]] = [DjangoFilterBackend]
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
     pagination_class = None
 

@@ -1,17 +1,19 @@
 import axios from 'axios'
 
-import { getConfidentialToken } from '../../utils/userTokens'
-import { OIDC_USER_WORKSPACE } from '../../config/env'
+import keycloak from '../keycloak'
+import { SELECTED_WORKSPACE_KEY } from '../../config/env'
 
 const axiosApiInstance = axios.create()
+
 axiosApiInstance.interceptors.request.use(
   async (config) => {
-    const oidc = getConfidentialToken()
+    const serviceToken = keycloak.getServiceToken('dials')
     config.headers = {
-      Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
+      Authorization: `${serviceToken.tokenType} ${serviceToken.accessToken}`,
       Accept: 'application/json',
       Workspace:
-        config?.headers?.Workspace || localStorage.getItem(OIDC_USER_WORKSPACE),
+        config?.headers?.Workspace ||
+        localStorage.getItem(SELECTED_WORKSPACE_KEY),
     }
     return config
   },
@@ -20,4 +22,4 @@ axiosApiInstance.interceptors.request.use(
   }
 )
 
-export { axiosApiInstance }
+export default axiosApiInstance
