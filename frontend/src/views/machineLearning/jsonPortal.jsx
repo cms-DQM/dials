@@ -240,7 +240,6 @@ const JsonPortal = () => {
       if (Object.keys(datasetIds).length === 0 || brilRuns.length === 0) {
         setMLGoldenJson({})
       } else {
-        console.log('here', brilRuns)
         fetchMLJson(brilRuns)
       }
     }

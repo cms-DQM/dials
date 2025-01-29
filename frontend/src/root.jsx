@@ -30,7 +30,6 @@ const Root = () => {
       return API.config
         .getUserDefaultWorkspace()
         .then((response) => {
-          console.log(response)
           return response.workspace
         })
         .catch((error) => {
