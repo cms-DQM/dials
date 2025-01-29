@@ -9,9 +9,10 @@ import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
 import { toast } from 'react-toastify'
 
-import { ResponsivePlot, Table } from '../components'
 import API from '../../services/api'
 import { getNextToken } from '../../utils/sanitizer'
+import Table from '../components/table'
+import ResponsivePlot from '../components/responsivePlot'
 
 const Histograms1D = () => {
   const [isLoading, setLoading] = useState(true)

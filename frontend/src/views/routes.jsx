@@ -2,50 +2,62 @@ import React from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 
-import Views from './index'
+import Home from './components/home'
+import Overview from './components/overview'
+import FileIndex from './dataExplorer/fileIndex'
+import Runs from './dataExplorer/runs'
+import Run from './dataExplorer/run'
+import Lumisections from './dataExplorer/lumisections'
+import Lumisection from './dataExplorer/lumisection'
+import Histograms1D from './dataExplorer/histograms1d'
+import Histograms2D from './dataExplorer/histograms2d'
+import Histogram from './dataExplorer/histogram'
+import Browser from './browser'
+import Predictions from './machineLearning/predictions'
+import JsonPortal from './machineLearning/jsonPortal'
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path='/' element={<Views.Home />} />
-      <Route path='/overview' element={<Views.Overview />} />
-      <Route path='/file-index' element={<Views.DataExplorer.FileIndex />} />
+      <Route path='/' element={<Home />} />
+      <Route path='/overview' element={<Overview />} />
+      <Route path='/file-index' element={<FileIndex />} />
       <Route path='/runs'>
-        <Route index element={<Views.DataExplorer.Runs />} />
+        <Route index element={<Runs />} />
         <Route
           path=':datasetId/:runNumber'
-          element={<Views.DataExplorer.Run />}
+          element={<Run />}
         />
       </Route>
       <Route path='/lumisections'>
-        <Route index element={<Views.DataExplorer.Lumisections />} />
+        <Route index element={<Lumisections />} />
         <Route
           path=':datasetId/:runNumber/:lsNumber'
-          element={<Views.DataExplorer.Lumisection />}
+          element={<Lumisection />}
         />
       </Route>
       <Route path='/histograms-1d'>
-        <Route index element={<Views.DataExplorer.Histograms1D />} />
+        <Route index element={<Histograms1D />} />
         <Route
           path=':datasetId/:runNumber/:lsNumber/:meId'
-          element={<Views.DataExplorer.Histogram dim={1} />}
+          element={<Histogram dim={1} />}
         />
       </Route>
       <Route path='/histograms-2d'>
-        <Route index element={<Views.DataExplorer.Histograms2D />} />
+        <Route index element={<Histograms2D />} />
         <Route
           path=':datasetId/:runNumber/:lsNumber/:meId'
-          element={<Views.DataExplorer.Histogram dim={2} />}
+          element={<Histogram dim={2} />}
         />
       </Route>
-      <Route path='/browser' element={<Views.Browser />} />
+      <Route path='/browser' element={<Browser />} />
       <Route
         path='/predictions'
-        element={<Views.MachineLearning.Predictions />}
+        element={<Predictions />}
       />
       <Route
         path='/json-portal'
-        element={<Views.MachineLearning.JsonPortal />}
+        element={<JsonPortal />}
       />
     </Routes>
   )

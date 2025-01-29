@@ -11,8 +11,9 @@ import Button from 'react-bootstrap/Button'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { CMSOMSCard, ResponsivePlot } from '../components'
 import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
+import CMSOMSCard from '../components/cmsOMSCard'
+import ResponsivePlot from '../components/responsivePlot'
 
 const Histogram = (props) => {
   const navigate = useNavigate()

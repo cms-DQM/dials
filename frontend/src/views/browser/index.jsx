@@ -8,9 +8,9 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Select from 'react-select'
 
-import { TreeGrid } from './tree'
 import API from '../../services/api'
 import { buildTree } from '../../utils/ops'
+import TreeGrid from './tree'
 
 const Browser = () => {
   const defaultPageSize = 500

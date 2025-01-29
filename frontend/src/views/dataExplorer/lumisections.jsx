@@ -8,13 +8,13 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
-import { Table } from '../components'
 import API from '../../services/api'
 import {
   isNumericNonZero,
   isStringNonEmpty,
   getNextToken,
 } from '../../utils/sanitizer'
+import Table from '../components/table'
 
 const Lumisections = () => {
   const navigate = useNavigate()

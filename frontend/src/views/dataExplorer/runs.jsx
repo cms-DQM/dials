@@ -8,13 +8,13 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import { toast } from 'react-toastify'
 
-import { Table } from '../components'
 import API from '../../services/api'
 import {
   isNumericNonZero,
   isStringNonEmpty,
   getNextToken,
 } from '../../utils/sanitizer'
+import Table from '../components/table'
 
 const Runs = () => {
   const navigate = useNavigate()

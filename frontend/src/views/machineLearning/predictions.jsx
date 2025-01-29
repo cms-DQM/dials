@@ -10,8 +10,8 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { Table } from '../components'
 import { getNextToken } from '../../utils/sanitizer'
+import Table from '../components/table'
 
 const Predictions = () => {
   const defaultPageSize = 500

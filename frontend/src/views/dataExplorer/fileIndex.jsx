@@ -6,12 +6,12 @@ import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import RangeSlider from 'react-bootstrap-range-slider'
-
-import { Table } from '../components'
-import dateFormat from '../../utils/date'
-import API from '../../services/api'
 import { toast } from 'react-toastify'
+
+import API from '../../services/api'
+import dateFormat from '../../utils/date'
 import { getNextToken } from '../../utils/sanitizer'
+import Table from '../components/table'
 
 const FileIndex = () => {
   const [isLoading, setLoading] = useState(true)
