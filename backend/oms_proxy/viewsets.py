@@ -4,8 +4,8 @@ from rest_framework import viewsets
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.response import Response
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .client import SimpleOMSClient
@@ -15,7 +15,7 @@ class OMSProxyViewSet(viewsets.ViewSet):
     oms = SimpleOMSClient()
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
 
     def list(self, request):

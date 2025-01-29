@@ -5,8 +5,8 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .client import RunRegistry
@@ -16,7 +16,7 @@ class RunRegistryViewSet(viewsets.ViewSet):
     rr = RunRegistry()
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
 
     @action(detail=False, methods=["GET"], url_path="editable-datasets")

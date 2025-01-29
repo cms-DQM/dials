@@ -17,8 +17,8 @@ from rest_framework.response import Response
 from utils.common import list_to_range
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .filters import MLBadLumisectionFilter
@@ -41,7 +41,7 @@ class MLBadLumisectionViewSet(GenericViewSetRouter, mixins.ListModelMixin, views
     filter_backends: ClassVar[list[DjangoFilterBackend]] = [DjangoFilterBackend]
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
 
     @action(

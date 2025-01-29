@@ -24,18 +24,19 @@ class CERNKeycloakToken:
         except ValueError as err:
             raise InvalidToken from err
 
-    def check_parties(self, valid_aud: list, valid_azp: list) -> None:
-        if self.aud not in valid_aud:
-            raise InvalidClient
-        if self.azp not in valid_azp:
-            raise InvalidClient
-
     def decode_and_verify(self) -> None:
         if self.client is None:
             raise ValueError("Unconfigured keycloak client.")
         self.claims = self.client.decode_token(self.access_token)
 
-    def validate(self, valid_aud: list, valid_azp: list) -> None:
-        self.check_parties(valid_aud, valid_azp)
-        self.decode_and_verify()
+    def validate(self) -> None:
+        # Check the client is properly set
+        if self.client is None:
+            raise ValueError("Unconfigured keycloak client.")
+
+        # Check the aud matches the client's client_id
+        if self.aud != self.client.client_id:
+            raise InvalidClient
+
+        self.claims = self.client.decode_token(self.access_token)
         self.is_authenticated = True

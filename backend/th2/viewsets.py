@@ -14,8 +14,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from utils.db_router import GenericViewSetRouter
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .filters import TH2Filter
@@ -38,7 +38,7 @@ class TH2ViewSet(GenericViewSetRouter, mixins.ListModelMixin, viewsets.GenericVi
     filter_backends: ClassVar[list[DjangoFilterBackend]] = [DjangoFilterBackend]
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
 
     @action(

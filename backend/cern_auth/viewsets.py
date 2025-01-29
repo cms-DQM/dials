@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from utils.db_router import get_workspace_from_role
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
     confidential_kc,
 )
 from utils.rest_framework_cern_sso.token import CERNKeycloakToken
@@ -34,7 +34,7 @@ class AuthViewSet(ViewSet):
         methods=["get"],
         name="Inspect configured workspaces",
         url_path=r"workspaces",
-        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakConfidentialAuthentication],
+        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakBearerAuthentication],
     )
     def get_workspaces(self, request: Request):
         payload = {"workspaces": list(settings.WORKSPACES.keys())}
@@ -46,7 +46,7 @@ class AuthViewSet(ViewSet):
         methods=["get"],
         name="Inspect user default workspace based on their token",
         url_path=r"user-default-workspace",
-        authentication_classes=[CERNKeycloakConfidentialAuthentication],
+        authentication_classes=[CERNKeycloakClientSecretAuthentication, CERNKeycloakBearerAuthentication],
     )
     def get_user_default_workspace(self, request: Request):
         user: CERNKeycloakUser = request.user
