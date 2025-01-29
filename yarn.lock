@@ -3476,6 +3476,11 @@ kdbush@^4.0.2:
   resolved "https://registry.yarnpkg.com/kdbush/-/kdbush-4.0.2.tgz#2f7b7246328b4657dd122b6c7f025fbc2c868e39"
   integrity sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==
 
+keycloak-js@^26.1.0:
+  version "26.1.0"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-26.1.0.tgz#b3807b3d9d79935d00ad59bc77cde8189f16444a"
+  integrity sha512-3CTelLNADK6sIxGHCQmKlT3ezcIp8O3Iimmg+ybS78RHy+HAUkkoBaW/YuHGdYkfEDMBlrqD3u+CQ4vLsrmyFA==
+
 keyv@^4.5.3:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/keyv/-/keyv-4.5.4.tgz#a879a99e29452f942439f2a405e3af8b31d4de93"
@@ -4240,11 +4245,6 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
-
-react-oidc-context@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/react-oidc-context/-/react-oidc-context-3.2.0.tgz#a7466d25c982fbafe26b9ec0a287a0bf77e788ec"
-  integrity sha512-ZLaCRLWV84Cn9pFdsatmblqxLMv0np69GWVXq9RWGqAjppdOGXNIbIxWMByIio0oSCVUwdeqwYRnJme0tjqd8A==
 
 react-plotly.js@^2.6.0:
   version "2.6.0"
