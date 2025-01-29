@@ -4,20 +4,24 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 
 import React from 'react'
-
 import ReactDOM from 'react-dom/client'
-import { AuthProvider } from 'react-oidc-context'
-import { BrowserRouter } from 'react-router-dom'
 
-import oidcConfig from './config/oidc'
+import keycloak from './services/keycloak'
+import { onLogin, onRefresh } from './services/keycloakServices'
+import KeycloakWrapper from './keycloakWrapper'
 import Root from './root'
+
+console.log('keycloak', keycloak)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider {...oidcConfig}>
-      <BrowserRouter>
-        <Root />
-      </BrowserRouter>
-    </AuthProvider>
+    <KeycloakWrapper
+      keycloak={keycloak}
+      keycloakParams={{ onLoad: 'login-required' }}
+      onLogin={onLogin}
+      onRefresh={onRefresh}
+    >
+      <Root />
+    </KeycloakWrapper>
   </React.StrictMode>
 )

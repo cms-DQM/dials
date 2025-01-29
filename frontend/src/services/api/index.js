@@ -1,9 +1,6 @@
-import axios from 'axios'
-
 import { sanitizedURLSearchParams, getNextToken } from '../../utils/sanitizer'
-import { getPublicToken } from '../../utils/userTokens'
-import { API_URL } from '../../config/env'
-import { axiosApiInstance } from './adapters'
+import { DIALS_API_URL } from '../../config/env'
+import axiosApiInstance from './adapters'
 
 const FILE_INDEX_STATUSES = [
   'PENDING',
@@ -16,29 +13,19 @@ const FILE_INDEX_STATUSES = [
 ]
 
 const getWorkspaces = async () => {
-  const endpoint = `${API_URL}/auth/workspaces/`
+  const endpoint = `${DIALS_API_URL}/auth/workspaces/`
   const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
-const exchangeToken = async () => {
-  const oidc = getPublicToken()
-  const endpoint = `${API_URL}/auth/exchange-token/`
-  const response = await axios.post(
-    endpoint,
-    {},
-    {
-      headers: {
-        Authorization: `${oidc.tokenType} ${oidc.accessToken}`,
-        Accept: 'application/json',
-      },
-    }
-  )
+const getUserDefaultWorkspace = async () => {
+  const endpoint = `${DIALS_API_URL}/auth/user-default-workspace/`
+  const response = await axiosApiInstance.get(endpoint)
   return response.data
 }
 
 const getDataset = async ({ datasetId, workspace }) => {
-  const endpoint = `${API_URL}/dataset-index/${datasetId}/`
+  const endpoint = `${DIALS_API_URL}/dataset-index/${datasetId}/`
   const headers = { Workspace: workspace }
   const response = await axiosApiInstance.get(endpoint, {
     headers,
@@ -54,7 +41,7 @@ const listDatasets = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/dataset-index/`
+  const endpoint = `${DIALS_API_URL}/dataset-index/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -85,7 +72,7 @@ const listFileIndex = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/file-index/`
+  const endpoint = `${DIALS_API_URL}/file-index/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -117,7 +104,7 @@ const countFileIndex = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/file-index/count/`
+  const endpoint = `${DIALS_API_URL}/file-index/count/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -138,7 +125,7 @@ const countFileIndex = async ({
 }
 
 const getRun = async ({ datasetId, runNumber, workspace }) => {
-  const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/`
+  const endpoint = `${DIALS_API_URL}/run/${datasetId}/${runNumber}/`
   const headers = { Workspace: workspace }
   const response = await axiosApiInstance.get(endpoint, {
     headers,
@@ -159,7 +146,7 @@ const listRuns = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/run/`
+  const endpoint = `${DIALS_API_URL}/run/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -192,7 +179,7 @@ const countRuns = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/run/count/`
+  const endpoint = `${DIALS_API_URL}/run/count/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -218,7 +205,7 @@ const getLumisection = async ({
   lsNumber,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/run/${datasetId}/${runNumber}/${lsNumber}/`
+  const endpoint = `${DIALS_API_URL}/run/${datasetId}/${runNumber}/${lsNumber}/`
   const headers = { Workspace: workspace }
   const response = await axiosApiInstance.get(endpoint, {
     headers,
@@ -241,7 +228,7 @@ const listLumisections = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/lumisection/`
+  const endpoint = `${DIALS_API_URL}/lumisection/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -279,7 +266,7 @@ const countLumisections = async ({
   datasetRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/lumisection/count/`
+  const endpoint = `${DIALS_API_URL}/lumisection/count/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -325,7 +312,7 @@ const listHistograms = async ({
   meRegex,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/th${dim}/`
+  const endpoint = `${DIALS_API_URL}/th${dim}/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -366,7 +353,7 @@ const getHistogram = async ({
   meId,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/th${dim}/${datasetId}/${runNumber}/${lsNumber}/${meId}/`
+  const endpoint = `${DIALS_API_URL}/th${dim}/${datasetId}/${runNumber}/${lsNumber}/${meId}/`
   const headers = { Workspace: workspace }
   const response = await axiosApiInstance.get(endpoint, {
     headers,
@@ -375,7 +362,7 @@ const getHistogram = async ({
 }
 
 const listMEs = async ({ fields, me, meRegex, dim, workspace }) => {
-  const endpoint = `${API_URL}/mes/`
+  const endpoint = `${DIALS_API_URL}/mes/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -394,7 +381,7 @@ const listMEs = async ({ fields, me, meRegex, dim, workspace }) => {
 }
 
 const listMEsByRun = async ({ datasetId, runNumber, workspace }) => {
-  const endpoint = `${API_URL}/mes/${datasetId}/${runNumber}/`
+  const endpoint = `${DIALS_API_URL}/mes/${datasetId}/${runNumber}/`
   const headers = { Workspace: workspace }
   const response = await axiosApiInstance.get(endpoint, {
     headers,
@@ -415,7 +402,7 @@ const listMLModelsIndex = async ({
   active,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/ml-models-index/`
+  const endpoint = `${DIALS_API_URL}/ml-models-index/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -457,7 +444,7 @@ const listMLBadLumisections = async ({
   lsNumber,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/`
+  const endpoint = `${DIALS_API_URL}/ml-bad-lumisection/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -492,7 +479,7 @@ const getMLCertificationJson = async ({
   runNumberIn,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/cert-json/`
+  const endpoint = `${DIALS_API_URL}/ml-bad-lumisection/cert-json/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -515,7 +502,7 @@ const getMLGoldenJson = async ({
   runNumberIn,
   workspace,
 }) => {
-  const endpoint = `${API_URL}/ml-bad-lumisection/golden-json/`
+  const endpoint = `${DIALS_API_URL}/ml-bad-lumisection/golden-json/`
   const headers = { Workspace: workspace }
   const params = sanitizedURLSearchParams(
     {
@@ -533,7 +520,7 @@ const getMLGoldenJson = async ({
 }
 
 const getCAFJson = async ({ className, kind }) => {
-  const endpoint = `${API_URL}/caf/`
+  const endpoint = `${DIALS_API_URL}/caf/`
   const params = sanitizedURLSearchParams(
     {
       class_name: className,
@@ -552,7 +539,7 @@ const listRREditableDatasets = async ({
   datasetName,
   globalState,
 }) => {
-  const endpoint = `${API_URL}/runregistry/editable-datasets/`
+  const endpoint = `${DIALS_API_URL}/runregistry/editable-datasets/`
   const params = sanitizedURLSearchParams(
     {
       class_name: className,
@@ -581,7 +568,7 @@ const getBrilcalcLumi = async ({
   byLs,
   scope,
 }) => {
-  const endpoint = `${API_URL}/brilws/brilcalc-lumi/`
+  const endpoint = `${DIALS_API_URL}/brilws/brilcalc-lumi/`
   const params = sanitizedURLSearchParams(
     {
       brilws_version: brilwsVersion,
@@ -638,11 +625,9 @@ const API = {
   utils: {
     genericFetchAllPages,
   },
-  auth: {
-    exchange: exchangeToken,
-  },
   config: {
     getWorkspaces,
+    getUserDefaultWorkspace,
   },
   dataset: {
     get: getDataset,

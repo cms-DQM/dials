@@ -30,7 +30,38 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
+          },
+          {}
+        ]
+      }
+    },
+    "/api/v1/auth/user-default-workspace/": {
+      "get": {
+        "operationId": "getUserDefaultWorkspaceAuthViewSet",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDefaultWorkspace"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "Client Secret Key": []
+          },
+          {
+            "Bearer Token": []
           },
           {}
         ]
@@ -55,39 +86,6 @@
         },
         "tags": [
           "Authentication"
-        ]
-      }
-    },
-    "/api/v1/auth/exchange-token/": {
-      "post": {
-        "operationId": "exchangeTokenAuthViewSet",
-        "description": "",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {}
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExchangedToken"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "Public JWT Token": []
-          },
-          {}
         ]
       }
     },
@@ -296,7 +294,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -346,7 +344,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -493,7 +491,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -552,7 +550,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -653,7 +651,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -738,7 +736,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -800,7 +798,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -850,7 +848,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1011,7 +1009,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1070,7 +1068,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1171,7 +1169,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1345,7 +1343,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1413,7 +1411,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1514,7 +1512,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1751,7 +1749,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -1828,7 +1826,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2065,7 +2063,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2142,7 +2140,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2207,14 +2205,14 @@
         }
       },
       "tags": [
-        "OMSProxy"
+        "Third-parties"
       ],
       "security": [
         {
           "Client Secret Key": []
         },
         {
-          "Confidential JWT Token": []
+          "Bearer Token": []
         },
         {}
       ]
@@ -2375,7 +2373,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2425,7 +2423,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2641,7 +2639,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2727,7 +2725,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2810,7 +2808,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2893,7 +2891,7 @@
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2936,14 +2934,14 @@
           }
         },
         "tags": [
-          "CAF"
+          "Third-parties"
         ],
         "security": [
           {
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -2995,14 +2993,14 @@
           }
         },
         "tags": [
-          "RunRegistry"
+          "Third-parties"
         ],
         "security": [
           {
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -3146,14 +3144,14 @@
           }
         },
         "tags": [
-          "Brilws"
+          "Third-parties"
         ],
         "security": [
           {
             "Client Secret Key": []
           },
           {
-            "Confidential JWT Token": []
+            "Bearer Token": []
           },
           {}
         ]
@@ -3170,6 +3168,17 @@
             "items": {
               "type": "string"
             }
+          }
+        },
+        "required": [
+          "workspaces"
+        ]
+      },
+      "UserDefaultWorkspace": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "type": "string"
           }
         },
         "required": [
@@ -3228,49 +3237,6 @@
           "scope",
           "session_state",
           "token_type"
-        ]
-      },
-      "ExchangedToken": {
-        "type": "object",
-        "properties": {
-          "access_token": {
-            "type": "string"
-          },
-          "expires_in": {
-            "type": "integer"
-          },
-          "refresh_expires_in": {
-            "type": "integer"
-          },
-          "refresh_token": {
-            "type": "string"
-          },
-          "token_type": {
-            "type": "string"
-          },
-          "id_token": {
-            "type": "string"
-          },
-          "session_state": {
-            "type": "string"
-          },
-          "scope": {
-            "type": "string"
-          },
-          "default_workspace": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "access_token",
-          "expires_in",
-          "id_token",
-          "refresh_expires_in",
-          "refresh_token",
-          "scope",
-          "session_state",
-          "token_type",
-          "default_workspace"
         ]
       },
       "DatasetIndex": {
@@ -3857,21 +3823,13 @@
         "name": "X-CLIENT-SECRET",
         "description": "CERN's Keycloak api access authentication"
       },
-      "Confidential JWT Token": {
+      "Bearer Token": {
         "type": "http",
         "scheme": "Bearer",
         "bearerFormat": "JWT",
         "in": "header",
         "name": "Authorization",
-        "description": "CERN's Keycloak confidential client authentication"
-      },
-      "Public JWT Token": {
-        "type": "http",
-        "scheme": "Bearer",
-        "bearerFormat": "JWT",
-        "in": "header",
-        "name": "Authorization",
-        "description": "CERN's Keycloak public client authentication"
+        "description": "CERN's Keycloak bearer authentication"
       }
     }
   }

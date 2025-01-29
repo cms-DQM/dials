@@ -6,8 +6,8 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from utils.rest_framework_cern_sso.authentication import (
+    CERNKeycloakBearerAuthentication,
     CERNKeycloakClientSecretAuthentication,
-    CERNKeycloakConfidentialAuthentication,
 )
 
 from .client import CAF
@@ -16,7 +16,7 @@ from .client import CAF
 class CAFViewSet(viewsets.ViewSet):
     authentication_classes: ClassVar[list[BaseAuthentication]] = [
         CERNKeycloakClientSecretAuthentication,
-        CERNKeycloakConfidentialAuthentication,
+        CERNKeycloakBearerAuthentication,
     ]
 
     def list(self, request):
