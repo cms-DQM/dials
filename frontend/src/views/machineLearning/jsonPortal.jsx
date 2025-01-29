@@ -40,6 +40,8 @@ const JsonPortal = () => {
   const [brilRuns, setBrilRuns] = useState()
   const [goldenJson, setGoldenJson] = useState()
   const [dcsJson, setDCSJson] = useState()
+  const [goldenJsonNotFound, setGoldenJsonNotFound] = useState(false)
+  const [dcsJsonNotFound, setDCSJsonNotFound] = useState(false)
   const [mlGoldenJson, setMLGoldenJson] = useState()
 
   useEffect(() => {
@@ -116,8 +118,17 @@ const JsonPortal = () => {
           setStateCallback(response)
         })
         .catch((error) => {
-          console.error(error)
-          toast.error('Failure to communicate with the API!')
+          if (error.response && error.response.status === 404) {
+            if (kind === 'golden') {
+              setGoldenJsonNotFound(true)
+            } else if (kind === 'dcs') {
+              setDCSJsonNotFound(true)
+            }
+            setStateCallback({})
+          } else {
+            console.error(error)
+            toast.error('Failure to communicate with the API!')
+          }
         })
     }
 
@@ -304,7 +315,9 @@ const JsonPortal = () => {
               activeModels?.length === 0 ||
               goldenJson === undefined ||
               dcsJson === undefined ||
-              mlGoldenJson === undefined
+              mlGoldenJson === undefined ||
+              goldenJsonNotFound ||
+              dcsJsonNotFound
             }
             onClick={mergeAndDownload}
           >
@@ -353,7 +366,7 @@ const JsonPortal = () => {
         <Col md={4}>
           <div className='text-center'>
             <strong>
-              {goldenJson === undefined ? (
+              {goldenJson === undefined || goldenJsonNotFound ? (
                 <div>Golden JSON</div>
               ) : (
                 <a
@@ -371,9 +384,15 @@ const JsonPortal = () => {
             </strong>
           </div>
           <div style={{ border: '3px solid #ddd', padding: '10px' }}>
-            {goldenJson === undefined ? (
+            {goldenJson === undefined && (
               <Spinner animation='border' role='status' />
-            ) : (
+            )}
+            {goldenJson !== undefined && goldenJsonNotFound && (
+              <div>
+                <span className='ms-1'>{`There are no Golden json files available in CAF for (${rrClassName}), therefore no JSON will be generated.`}</span>
+              </div>
+            )}
+            {goldenJson !== undefined && !goldenJsonNotFound && (
               <AceEditor
                 mode='javascript'
                 theme='github'
@@ -393,7 +412,7 @@ const JsonPortal = () => {
         <Col md={4}>
           <div className='text-center'>
             <strong>
-              {dcsJson === undefined ? (
+              {dcsJson === undefined || dcsJsonNotFound ? (
                 <div>DCS JSON</div>
               ) : (
                 <a
@@ -411,9 +430,15 @@ const JsonPortal = () => {
             </strong>
           </div>
           <div style={{ border: '3px solid #ddd', padding: '10px' }}>
-            {dcsJson === undefined ? (
+            {dcsJson === undefined && (
               <Spinner animation='border' role='status' />
-            ) : (
+            )}
+            {dcsJson !== undefined && dcsJsonNotFound && (
+              <div>
+                <span className='ms-1'>{`There are no DCS json files available in CAF for (${rrClassName}), therefore no JSON will be generated.`}</span>
+              </div>
+            )}
+            {dcsJson !== undefined && !dcsJsonNotFound && (
               <AceEditor
                 mode='javascript'
                 theme='github'
