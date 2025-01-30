@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 
-import logo from '../assets/img/logo.png'
+import logo from '../../assets/img/logo.png'
 
 const Home = () => {
   return (

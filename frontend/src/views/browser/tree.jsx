@@ -9,9 +9,9 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
 import API from '../../services/api'
 import directoryIcon from '../../assets/img/dir.png'
-import { ResponsivePlot } from '../components'
+import ResponsivePlot from '../components/responsivePlot'
 
-export const TreeNode = ({
+const TreeNode = ({
   datasetId,
   runNumber,
   lsNumber,
@@ -124,7 +124,7 @@ export const TreeNode = ({
   )
 }
 
-export const TreeGrid = ({ fullTree, datasetId, runNumber, lsNumber }) => {
+const TreeGrid = ({ fullTree, datasetId, runNumber, lsNumber }) => {
   const [currentPath, setCurrentPath] = useState([])
   const [currentTree, setCurrentTree] = useState(fullTree)
 
@@ -199,3 +199,5 @@ export const TreeGrid = ({ fullTree, datasetId, runNumber, lsNumber }) => {
     </div>
   )
 }
+
+export default TreeGrid

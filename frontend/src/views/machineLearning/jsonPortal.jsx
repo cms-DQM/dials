@@ -15,7 +15,7 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
 
 import API from '../../services/api'
-import { listToRange, rangeToList } from '../../utils/goldenJson'
+import { listToRange, rangeToList } from '../../utils'
 
 const JsonPortal = () => {
   const defaultPageSize = 500
@@ -46,10 +46,12 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
-      API.config
-        .getWorkspaces()
+      API.workspaces
+        .list()
         .then((response) => {
-          setValidWorkspaces(response.workspaces.filter(item => !item.includes('staging')))
+          setValidWorkspaces(
+            response.workspaces.filter((item) => !item.includes('staging'))
+          )
         })
         .catch((error) => {
           console.error(error)
@@ -62,25 +64,28 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchModels = () => {
-      const promises = validWorkspaces.map(async ws => {
+      const promises = validWorkspaces.map(async (ws) => {
         return API.utils
           .genericFetchAllPages({
             apiMethod: API.mlModelsIndex.list,
             params: { pageSize: defaultPageSize, active: true, workspace: ws },
           })
           .then((response) => {
-            return {[ws]: response.results}
+            return { [ws]: response.results }
           })
       })
 
       Promise.all(promises)
-        .then(response => {
+        .then((response) => {
           const mergedResponse = response.reduce((acc, obj) => {
-            return {...acc, ...obj}
+            return { ...acc, ...obj }
           }, {})
-          const result = Object.entries(mergedResponse).reduce((acc, [ws, models]) => {
-            return models.length !== 0 ? {...acc, [ws]: models} : acc
-          }, {})
+          const result = Object.entries(mergedResponse).reduce(
+            (acc, [ws, models]) => {
+              return models.length !== 0 ? { ...acc, [ws]: models } : acc
+            },
+            {}
+          )
           setActiveModels(result)
         })
         .catch((error) => {
@@ -133,25 +138,33 @@ const JsonPortal = () => {
     }
 
     const fetchDatasetIds = () => {
-      const promises = Object.keys(activeModels).map(async ws => {
+      const promises = Object.keys(activeModels).map(async (ws) => {
         return API.utils
           .genericFetchAllPages({
             apiMethod: API.dataset.list,
-            params: { pageSize: defaultPageSize, datasetRegex, workspace: ws, fields: ['dataset_id'] },
+            params: {
+              pageSize: defaultPageSize,
+              datasetRegex,
+              workspace: ws,
+              fields: ['dataset_id'],
+            },
           })
           .then((response) => {
-            return {[ws]: response.results.map(item => item.dataset_id)}
+            return { [ws]: response.results.map((item) => item.dataset_id) }
           })
       })
 
       Promise.all(promises)
-        .then(response => {
+        .then((response) => {
           const mergedResponse = response.reduce((acc, obj) => {
-            return {...acc, ...obj}
+            return { ...acc, ...obj }
           }, {})
-          const result = Object.entries(mergedResponse).reduce((acc, [ws, datasets]) => {
-            return datasets.length !== 0 ? {...acc, [ws]: datasets} : acc
-          }, {})
+          const result = Object.entries(mergedResponse).reduce(
+            (acc, [ws, datasets]) => {
+              return datasets.length !== 0 ? { ...acc, [ws]: datasets } : acc
+            },
+            {}
+          )
           setDatasetIds(result)
         })
         .catch((error) => {
@@ -201,29 +214,33 @@ const JsonPortal = () => {
 
   useEffect(() => {
     const fetchMLJson = (runList) => {
-      const promises = Object.keys(datasetIds).map(async ws => {
-        return API.mlBadLumis
-          .goldenJson({
-            datasetIdIn: datasetIds[ws],
-            runNumberIn: runList,
-            modelIdIn: activeModels[ws].map(item => item.model_id),
-            workspace: ws
-          })
+      const promises = Object.keys(datasetIds).map(async (ws) => {
+        return API.mlBadLumis.goldenJson({
+          datasetIdIn: datasetIds[ws],
+          runNumberIn: runList,
+          modelIdIn: activeModels[ws].map((item) => item.model_id),
+          workspace: ws,
+        })
       })
 
       Promise.all(promises)
-        .then(response => {
+        .then((response) => {
           const mergedWorkspacesMLJson = response.reduce((acc, wsJson) => {
             for (const run in wsJson) {
               const expandedRun = rangeToList(wsJson[run])
-              acc[run] = Object.hasOwn(acc, run) ? acc[run].filter(value => expandedRun.includes(value)) : expandedRun
+              acc[run] = Object.hasOwn(acc, run)
+                ? acc[run].filter((value) => expandedRun.includes(value))
+                : expandedRun
             }
             return acc
           }, {})
-          const result = Object.keys(mergedWorkspacesMLJson).reduce((acc, key) => {
-            acc[key] = [...listToRange(mergedWorkspacesMLJson[key])]
-            return acc
-          }, {})
+          const result = Object.keys(mergedWorkspacesMLJson).reduce(
+            (acc, key) => {
+              acc[key] = [...listToRange(mergedWorkspacesMLJson[key])]
+              return acc
+            },
+            {}
+          )
           setMLGoldenJson(result)
         })
         .catch((error) => {
@@ -240,7 +257,6 @@ const JsonPortal = () => {
       if (Object.keys(datasetIds).length === 0 || brilRuns.length === 0) {
         setMLGoldenJson({})
       } else {
-        console.log('here', brilRuns)
         fetchMLJson(brilRuns)
       }
     }
@@ -331,8 +347,11 @@ const JsonPortal = () => {
         <Col md={2} className='text-center'>
           <Card>
             <Card.Body>
-              <p><strong>Info</strong>: Considering all active models in all non-staging workspaces.</p>
-              <hr/>
+              <p>
+                <strong>Info</strong>: Considering all active models in all
+                non-staging workspaces.
+              </p>
+              <hr />
               <Form>
                 <Form.Check
                   defaultChecked={true}
@@ -403,7 +422,7 @@ const JsonPortal = () => {
                 wrapEnabled={true}
                 value={JSON.stringify(goldenJson.content)}
                 setOptions={{
-                  useWorker: false
+                  useWorker: false,
                 }}
               />
             )}
@@ -449,7 +468,7 @@ const JsonPortal = () => {
                 wrapEnabled={true}
                 value={JSON.stringify(dcsJson.content)}
                 setOptions={{
-                  useWorker: false
+                  useWorker: false,
                 }}
               />
             )}
@@ -499,38 +518,44 @@ const JsonPortal = () => {
                 <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}), therefore no ML JSON will be generated.`}</span>
               </div>
             )}
-            {rrOpenRuns !== undefined && rrOpenRuns.length > 0 && brilRuns === undefined && (
-              <div>
-                <Spinner animation='border' role='status' />
-                <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} ${rrOpenRuns.length === 1 ? 'run' : 'runs'}.`}</span>
-              </div>
-            )}
+            {rrOpenRuns !== undefined &&
+              rrOpenRuns.length > 0 &&
+              brilRuns === undefined && (
+                <div>
+                  <Spinner animation='border' role='status' />
+                  <span className='ms-1'>{`Fetching luminosity data from Bril for ${rrOpenRuns.length} ${rrOpenRuns.length === 1 ? 'run' : 'runs'}.`}</span>
+                </div>
+              )}
             {brilRuns !== undefined && brilRuns.length === 0 && (
               <div>
                 <span className='ms-1'>{`There are no OPEN runs in Run Registry for (${rrClassName}, ${rrDatasetName}) with luminosity greater than ${brilLowLumiRule} ${brilUnit} in Bril, therefore no ML JSON will be generated.`}</span>
               </div>
             )}
-            {brilRuns !== undefined && brilRuns.length > 0 && mlGoldenJson === undefined && (
-              <div>
-                <Spinner animation='border' role='status' />
-                <span className='ms-1'>Generating the ML JSON</span>
-              </div>
-            )}
-            {brilRuns!== undefined && brilRuns.length > 0 && mlGoldenJson !== undefined && (
-              <AceEditor
-                mode='javascript'
-                theme='github'
-                readOnly={true}
-                height='50vh'
-                width='100%'
-                fontSize={15}
-                wrapEnabled={true}
-                value={JSON.stringify(mlGoldenJson)}
-                setOptions={{
-                  useWorker: false
-                }}
-              />
-            )}
+            {brilRuns !== undefined &&
+              brilRuns.length > 0 &&
+              mlGoldenJson === undefined && (
+                <div>
+                  <Spinner animation='border' role='status' />
+                  <span className='ms-1'>Generating the ML JSON</span>
+                </div>
+              )}
+            {brilRuns !== undefined &&
+              brilRuns.length > 0 &&
+              mlGoldenJson !== undefined && (
+                <AceEditor
+                  mode='javascript'
+                  theme='github'
+                  readOnly={true}
+                  height='50vh'
+                  width='100%'
+                  fontSize={15}
+                  wrapEnabled={true}
+                  value={JSON.stringify(mlGoldenJson)}
+                  setOptions={{
+                    useWorker: false,
+                  }}
+                />
+              )}
           </div>
         </Col>
       </Row>

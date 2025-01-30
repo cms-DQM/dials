@@ -10,7 +10,8 @@ import Spinner from 'react-bootstrap/Spinner'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { CMSOMSCard, ResponsivePlot } from '../components'
+import CMSOMSCard from '../components/cmsOMSCard'
+import ResponsivePlot from '../components/responsivePlot'
 
 const Lumisection = () => {
   const defaultPageSizeTH1 = 500

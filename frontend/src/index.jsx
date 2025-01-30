@@ -11,8 +11,6 @@ import { onLogin, onRefresh } from './services/keycloakServices'
 import KeycloakWrapper from './keycloakWrapper'
 import Root from './root'
 
-console.log('keycloak', keycloak)
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <KeycloakWrapper
