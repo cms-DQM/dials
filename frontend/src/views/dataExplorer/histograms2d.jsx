@@ -10,8 +10,8 @@ import RangeSlider from 'react-bootstrap-range-slider'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { getNextToken } from '../../utils/sanitizer'
-import ResponsivePlot  from '../components/responsivePlot'
+import { getNextToken } from '../../utils'
+import ResponsivePlot from '../components/responsivePlot'
 import Table from '../components/table'
 
 const Histograms2D = () => {

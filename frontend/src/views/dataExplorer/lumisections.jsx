@@ -9,11 +9,7 @@ import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import {
-  isNumericNonZero,
-  isStringNonEmpty,
-  getNextToken,
-} from '../../utils/sanitizer'
+import { isNumericNonZero, isStringNonEmpty, getNextToken } from '../../utils'
 import Table from '../components/table'
 
 const Lumisections = () => {

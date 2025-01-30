@@ -8,7 +8,7 @@ import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { getNextToken } from '../../utils/sanitizer'
+import { getNextToken } from '../../utils'
 import CMSOMSCard from '../components/cmsOMSCard'
 import Table from '../components/table'
 

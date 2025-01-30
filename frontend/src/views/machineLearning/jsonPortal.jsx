@@ -15,7 +15,7 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
 
 import API from '../../services/api'
-import { listToRange, rangeToList } from '../../utils/goldenJson'
+import { listToRange, rangeToList } from '../../utils'
 
 const JsonPortal = () => {
   const defaultPageSize = 500

@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button'
 import Select from 'react-select'
 
 import API from '../../services/api'
-import { buildTree } from '../../utils/ops'
+import { buildTree } from './utils'
 import TreeGrid from './tree'
 
 const Browser = () => {
@@ -34,7 +34,13 @@ const Browser = () => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
       API.utils
-        .genericFetchAllPages({ apiMethod: API.dataset.list, params: { pageSize: defaultPageSize, fields: ['dataset_id', 'dataset'] } })
+        .genericFetchAllPages({
+          apiMethod: API.dataset.list,
+          params: {
+            pageSize: defaultPageSize,
+            fields: ['dataset_id', 'dataset'],
+          },
+        })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -61,7 +67,11 @@ const Browser = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.run.list,
-          params: { datasetId: selectedDataset.value, pageSize: defaultPageSize, fields: ['run_number'] },
+          params: {
+            datasetId: selectedDataset.value,
+            pageSize: defaultPageSize,
+            fields: ['run_number'],
+          },
         })
         .then((response) => {
           const runs = response.results.map((item) => ({
@@ -90,7 +100,12 @@ const Browser = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.lumisection.list,
-          params: { datasetId, runNumber, pageSize: defaultPageSize, fields: ['ls_number'] },
+          params: {
+            datasetId,
+            runNumber,
+            pageSize: defaultPageSize,
+            fields: ['ls_number'],
+          },
         })
         .then((response) => {
           const lumisections = response.results

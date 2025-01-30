@@ -1,4 +1,4 @@
-import { getNextToken } from '../../utils/sanitizer'
+import { getNextToken } from '../../utils'
 
 const genericFetchAllPages = async ({ apiMethod, params = {} }) => {
   const allData = []

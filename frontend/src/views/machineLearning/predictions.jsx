@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { getNextToken } from '../../utils/sanitizer'
+import { getNextToken } from '../../utils'
 import Table from '../components/table'
 
 const Predictions = () => {
@@ -74,7 +74,13 @@ const Predictions = () => {
     const fetchDatasets = () => {
       setIsLoadingDatasets(true)
       API.utils
-        .genericFetchAllPages({ apiMethod: API.dataset.list, params: { pageSize: defaultPageSize, fields: ['dataset_id', 'dataset'] } })
+        .genericFetchAllPages({
+          apiMethod: API.dataset.list,
+          params: {
+            pageSize: defaultPageSize,
+            fields: ['dataset_id', 'dataset'],
+          },
+        })
         .then((response) => {
           const datasets = response.results
             .sort((a, b) =>
@@ -101,7 +107,11 @@ const Predictions = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.run.list,
-          params: { pageSize: defaultPageSize, datasetIdIn: selectedDatasets.map((item) => item.value), fields: ['run_number'] },
+          params: {
+            pageSize: defaultPageSize,
+            datasetIdIn: selectedDatasets.map((item) => item.value),
+            fields: ['run_number'],
+          },
         })
         .then((response) => {
           const runs = response.results.map((item) => ({
@@ -124,7 +134,10 @@ const Predictions = () => {
       API.utils
         .genericFetchAllPages({
           apiMethod: API.mlModelsIndex.list,
-          params: { pageSize: defaultPageSize, fields: ['model_id', 'filename', 'target_me'] }
+          params: {
+            pageSize: defaultPageSize,
+            fields: ['model_id', 'filename', 'target_me'],
+          },
         })
         .then((response) => {
           const models = response.results.map((item) => ({
@@ -157,7 +170,13 @@ const Predictions = () => {
   }) => {
     setIsLoadingData(true)
     API.mlBadLumis
-      .list({ pageSize: defaultPageSize, nextToken, datasetIdIn, runNumberIn, modelIdIn })
+      .list({
+        pageSize: defaultPageSize,
+        nextToken,
+        datasetIdIn,
+        runNumberIn,
+        modelIdIn,
+      })
       .then((response) => {
         API.mes
           .list({})

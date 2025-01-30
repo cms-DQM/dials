@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { isNumericNonZero, isStringNonEmpty } from '../../utils/sanitizer'
+import { isNumericNonZero, isStringNonEmpty } from '../../utils'
 import CMSOMSCard from '../components/cmsOMSCard'
 import ResponsivePlot from '../components/responsivePlot'
 

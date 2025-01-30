@@ -1,4 +1,4 @@
-import { sanitizedURLSearchParams } from '../../utils/sanitizer'
+import { sanitizedURLSearchParams } from '../../utils'
 import { DIALS_API_URL } from '../../config/env'
 import axiosApiInstance from './adapters'
 

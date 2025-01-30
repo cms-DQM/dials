@@ -10,7 +10,7 @@ import RangeSlider from 'react-bootstrap-range-slider'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { getNextToken } from '../../utils/sanitizer'
+import { getNextToken } from '../../utils'
 import Table from '../components/table'
 import ResponsivePlot from '../components/responsivePlot'
 

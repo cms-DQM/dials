@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import { groupBySplitME } from '../../utils/ops'
+import { groupBySplitME } from '../../utils'
 import ResponsivePlot from './responsivePlot'
 
 const Overview = () => {

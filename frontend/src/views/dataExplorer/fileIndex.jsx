@@ -9,8 +9,7 @@ import RangeSlider from 'react-bootstrap-range-slider'
 import { toast } from 'react-toastify'
 
 import API from '../../services/api'
-import dateFormat from '../../utils/date'
-import { getNextToken } from '../../utils/sanitizer'
+import { formatDate, getNextToken } from '../../utils'
 import Table from '../components/table'
 
 const FileIndex = () => {
@@ -70,7 +69,7 @@ const FileIndex = () => {
         const results = response.results.map((item) => {
           return {
             ...item,
-            last_modification_date: dateFormat(
+            last_modification_date: formatDate(
               item.last_modification_date,
               'dd.MM.yyyy HH:mm:ss'
             ),
