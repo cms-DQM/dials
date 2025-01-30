@@ -15,8 +15,8 @@ const Root = () => {
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
-      API.config
-        .getWorkspaces()
+      API.workspaces
+        .list()
         .then((response) => {
           setAllWorkspaces(response.workspaces)
         })
@@ -27,7 +27,7 @@ const Root = () => {
     }
 
     const fetchDefaultWorkspace = async () => {
-      return API.config
+      return API.workspaces
         .getUserDefaultWorkspace()
         .then((response) => {
           return response.workspace
