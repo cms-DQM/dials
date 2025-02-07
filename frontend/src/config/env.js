@@ -30,3 +30,4 @@ export const KEYCLOAK_URL = OPTIONS[[ENV]].KEYCLOAK_URL
 export const KEYCLOAK_REALM = OPTIONS[[ENV]].KEYCLOAK_REALM
 export const KEYCLOAK_CLIENT_ID = OPTIONS[[ENV]].KEYCLOAK_CLIENT_ID
 export const SELECTED_WORKSPACE_KEY = 'dials.selected-workspace'
+export const API_SERVICES = [{ label: 'dials', aud: DIALS_API_AUDIENCE }]
