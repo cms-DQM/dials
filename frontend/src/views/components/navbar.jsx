@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
 import keycloak from '../../services/keycloak'
+import { ROLE_DQM_HARDCORE } from '../../config/env'
 import logo from '../../assets/img/logo.png'
 
 const AppNavbar = ({ allWorkspaces, selectedWorkspace, onWorkspaceChange }) => {
@@ -31,9 +32,11 @@ const AppNavbar = ({ allWorkspaces, selectedWorkspace, onWorkspaceChange }) => {
         className='justify-content-end me-3'
       >
         <Nav className='me-auto'>
-          <Nav.Link as={NavLink} to='/overview'>
-            Overview
-          </Nav.Link>
+          {keycloak.tokenParsed.cern_roles.includes(ROLE_DQM_HARDCORE) && (
+            <Nav.Link as={NavLink} to='/overview'>
+              Overview
+            </Nav.Link>
+          )}
           <Nav.Link as={NavLink} to='/browser'>
             Browser
           </Nav.Link>
