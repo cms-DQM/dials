@@ -19,7 +19,11 @@ const Home = () => {
         <Col md={8}>
           <Card>
             <Card.Body>
-              <h3><strong>DIALS</strong>: <strong>D</strong>ata <strong>I</strong>nspector for <strong>A</strong>nomalous <strong>L</strong>umi-<strong>S</strong>ections</h3>
+              <h3>
+                <strong>DIALS</strong>: <strong>D</strong>ata <strong>I</strong>
+                nspector for <strong>A</strong>nomalous <strong>L</strong>umi-
+                <strong>S</strong>ections
+              </h3>
               <br />
               {`
               DIALS is an application that serves as a gateway to DQM per-LS monitoring elements.
@@ -28,19 +32,35 @@ const Home = () => {
               Conveniently, data is served through this web UI and a dedicated REST API.
               `}
               <br />
-              <hr/>
+              <hr />
               <h4>Quick Links</h4>
               <ul>
-                <li><Link to='/runs'>Runs</Link>: explore the available data given a known run.</li>
-                <li><Link to='/browser'>Browser</Link>: Interactively explore the data, starting from a dataset.</li>
-                <li><Link to='/json-portal'>JSON Portal</Link>: Generate a Golden+DCS+ML JSON for data still awaiting certification during data taking.</li>
-                <li><Link to='/predictions'>Predictions</Link>: Check lumisections flagged as anomalous by one or many ML models.</li>
+                <li>
+                  <Link to='/runs'>Runs</Link>: explore the available data given
+                  a known run.
+                </li>
+                <li>
+                  <Link to='/browser'>Browser</Link>: Interactively explore the
+                  data, starting from a dataset.
+                </li>
+                <li>
+                  <Link to='/json-portal'>JSON Portal</Link>: Generate a
+                  Golden+DCS+ML JSON for data still awaiting certification
+                  during data taking.
+                </li>
+                <li>
+                  <Link to='/predictions'>Predictions</Link>: Check lumisections
+                  flagged as anomalous by one or many ML models.
+                </li>
                 <li>
                   <a
                     href='https://github.com/cms-DQM/dials-py'
                     target='_blank'
                     rel='noopener noreferrer'
-                  >dials-py</a>: The Python api client interface to DIALS service.
+                  >
+                    dials-py
+                  </a>
+                  : The Python api client interface to DIALS service.
                 </li>
               </ul>
             </Card.Body>

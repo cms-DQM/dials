@@ -96,7 +96,14 @@ const Lumisection = () => {
             datasetId,
             runNumber,
             lsNumber,
-            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
+            fields: [
+              'dataset_id',
+              'run_number',
+              'ls_number',
+              'me_id',
+              'me',
+              'data',
+            ],
           },
         })
         .then((response) => {
@@ -128,7 +135,14 @@ const Lumisection = () => {
             datasetId,
             runNumber,
             lsNumber,
-            fields: ['dataset_id', 'run_number', 'ls_number', 'me_id', 'me', 'data']
+            fields: [
+              'dataset_id',
+              'run_number',
+              'ls_number',
+              'me_id',
+              'me',
+              'data',
+            ],
           },
         })
         .then((response) => {
@@ -155,24 +169,19 @@ const Lumisection = () => {
     fetchH2D()
   }, [datasetId, runNumber, lsNumber])
 
-
   const handlePrevious = () => {
-    const currentIndex = lumisections.findIndex(ls => ls === Number(lsNumber))
+    const currentIndex = lumisections.findIndex((ls) => ls === Number(lsNumber))
     if (currentIndex > 0) {
       const prevLumi = lumisections[currentIndex - 1]
-      return navigate(
-        `/lumisections/${datasetId}/${runNumber}/${prevLumi}`
-      )
+      return navigate(`/lumisections/${datasetId}/${runNumber}/${prevLumi}`)
     }
   }
 
   const handleNext = () => {
-    const currentIndex = lumisections.findIndex(ls => ls === Number(lsNumber))
+    const currentIndex = lumisections.findIndex((ls) => ls === Number(lsNumber))
     if (currentIndex < lumisections.length - 1) {
       const nextLumi = lumisections[currentIndex + 1]
-      return navigate(
-        `/lumisections/${datasetId}/${runNumber}/${nextLumi}`
-      )
+      return navigate(`/lumisections/${datasetId}/${runNumber}/${nextLumi}`)
     }
   }
 
@@ -194,21 +203,33 @@ const Lumisection = () => {
                 linkAs={Link}
                 linkProps={{ to: `/runs/${datasetId}/${runNumber}` }}
               >{`Run ${runNumber}`}</Breadcrumb.Item>
-              <Breadcrumb.Item
-                active
-              >
+              <Breadcrumb.Item active>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  { isLoadingLumisections ? (
+                  {isLoadingLumisections ? (
                     <>
                       <p style={{ marginRight: '10px' }}>(Previous)</p>
-                      <p style={{ marginRight: '10px' }}>{`Lumisection ${lsNumber}`}</p>
+                      <p
+                        style={{ marginRight: '10px' }}
+                      >{`Lumisection ${lsNumber}`}</p>
                       <p style={{ marginRight: '10px' }}>(Next)</p>
                     </>
                   ) : (
                     <>
-                      <p onClick={handlePrevious} style={{ ...styleTextAsHyperlink, marginRight: '10px' }}>(Previous)</p>
-                      <p style={{ marginRight: '10px' }}>{`Lumisection ${lsNumber}`}</p>
-                      <p onClick={handleNext} style={{ ...styleTextAsHyperlink, marginRight: '10px' }}>(Next)</p>
+                      <p
+                        onClick={handlePrevious}
+                        style={{ ...styleTextAsHyperlink, marginRight: '10px' }}
+                      >
+                        (Previous)
+                      </p>
+                      <p
+                        style={{ marginRight: '10px' }}
+                      >{`Lumisection ${lsNumber}`}</p>
+                      <p
+                        onClick={handleNext}
+                        style={{ ...styleTextAsHyperlink, marginRight: '10px' }}
+                      >
+                        (Next)
+                      </p>
                     </>
                   )}
                 </div>

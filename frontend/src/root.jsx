@@ -70,7 +70,7 @@ const Root = () => {
         // however, it is needed to re-render this component whenever this state
         // changes.
       }
-      <AppRoutes key={selectedWorkspace}/>
+      <AppRoutes key={selectedWorkspace} />
       <ToastContainer position='bottom-right' />
     </>
   )
