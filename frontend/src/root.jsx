@@ -65,7 +65,12 @@ const Root = () => {
         selectedWorkspace={selectedWorkspace}
         onWorkspaceChange={setSelectedWorkspace}
       />
-      <AppRoutes />
+      {
+        // The key parameter is not explicitly used in the AppRoutes component,
+        // however, it is needed to re-render this component whenever this state
+        // changes.
+      }
+      <AppRoutes key={selectedWorkspace}/>
       <ToastContainer position='bottom-right' />
     </>
   )
