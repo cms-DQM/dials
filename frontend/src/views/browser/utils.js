@@ -22,3 +22,10 @@ export const buildTree = (items) => {
   })
   return tree
 }
+
+export const getCurrentTree = (path, tree) => {
+  return path.reduce((current, part) => {
+    const found = current.find((node) => node.name === part)
+    return found ? found.children : []
+  }, tree)
+}

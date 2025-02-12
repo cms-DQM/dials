@@ -9,13 +9,10 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
 import keycloak from '../../services/keycloak'
+import { ROLE_DQM_HARDCORE } from '../../config/env'
 import logo from '../../assets/img/logo.png'
 
-const AppNavbar = ({
-  allWorkspaces,
-  selectedWorkspace,
-  setSelectedWorkspace,
-}) => {
+const AppNavbar = ({ allWorkspaces, selectedWorkspace, onWorkspaceChange }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false)
 
   return (
@@ -35,9 +32,11 @@ const AppNavbar = ({
         className='justify-content-end me-3'
       >
         <Nav className='me-auto'>
-          <Nav.Link as={NavLink} to='/overview'>
-            Overview
-          </Nav.Link>
+          {keycloak.tokenParsed.cern_roles.includes(ROLE_DQM_HARDCORE) && (
+            <Nav.Link as={NavLink} to='/overview'>
+              Overview
+            </Nav.Link>
+          )}
           <Nav.Link as={NavLink} to='/browser'>
             Browser
           </Nav.Link>
@@ -74,7 +73,7 @@ const AppNavbar = ({
             {allWorkspaces.map((workspace) => (
               <NavDropdown.Item
                 key={`workspace-item-${workspace}`}
-                onClick={() => setSelectedWorkspace(workspace)}
+                onClick={() => onWorkspaceChange(workspace)}
               >
                 {workspace}
               </NavDropdown.Item>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
+import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -15,18 +16,40 @@ import TreeGrid from './tree'
 const Browser = () => {
   const defaultPageSize = 500
 
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialDatasetId = searchParams.get('dataset')
+    ? Number(searchParams.get('dataset'))
+    : null
+  const initialRun = searchParams.get('run')
+    ? Number(searchParams.get('run'))
+    : null
+  const initialLumisection = searchParams.get('lumi')
+    ? Number(searchParams.get('lumi'))
+    : null
+  const initialTreePath = searchParams.get('path')
+    ? searchParams.get('path').split('/')
+    : []
+
+  // Populate dropdowns
   const [isLoadingDatasets, setIsLoadingDatasets] = useState(true)
-  const [datasets, setDatasets] = useState()
-  const [selectedDataset, setSelectedDataset] = useState()
-
   const [isLoadingRuns, setIsLoadingRuns] = useState(true)
-  const [runs, setRuns] = useState()
-  const [selectedRun, setSelectedRun] = useState()
-
   const [isLoadingLumisections, setIsLoadingLumisections] = useState(true)
+  const [datasets, setDatasets] = useState()
+  const [runs, setRuns] = useState()
   const [lumisections, setLumisections] = useState()
-  const [selectedLumisection, setSelectedLumisection] = useState()
 
+  // User-selected parameters
+  const [selectedDataset, setSelectedDataset] = useState(null)
+  const [selectedRun, setSelectedRun] = useState(
+    initialRun ? { value: initialRun, label: initialRun } : null
+  )
+  const [selectedLumisection, setSelectedLumisection] = useState(
+    initialLumisection
+      ? { value: initialLumisection, label: initialLumisection }
+      : null
+  )
+
+  // Populate browser
   const [isLoadingMEs, setIsLoadingMEs] = useState(true)
   const [fullTree, setFullTree] = useState([])
 
@@ -48,6 +71,16 @@ const Browser = () => {
             )
             .map((item) => ({ value: item.dataset_id, label: item.dataset }))
           setDatasets(datasets)
+
+          // Set initial dataset if URL contains a dataset ID
+          if (initialDatasetId) {
+            const initialDataset = datasets.find(
+              (d) => d.value === initialDatasetId
+            )
+            if (initialDataset) {
+              setSelectedDataset(initialDataset)
+            }
+          }
         })
         .catch((error) => {
           console.error(error)
@@ -59,9 +92,11 @@ const Browser = () => {
     }
 
     fetchDatasets()
-  }, [])
+  }, [initialDatasetId])
 
   useEffect(() => {
+    if (!selectedDataset) return
+
     const fetchRuns = () => {
       setIsLoadingRuns(true)
       API.utils
@@ -89,12 +124,12 @@ const Browser = () => {
         })
     }
 
-    if (selectedDataset !== undefined) {
-      fetchRuns()
-    }
+    fetchRuns()
   }, [selectedDataset])
 
   useEffect(() => {
+    if (!selectedDataset || !selectedRun) return
+
     const fetchLumisections = ({ datasetId, runNumber }) => {
       setIsLoadingLumisections(true)
       API.utils
@@ -140,24 +175,52 @@ const Browser = () => {
         })
     }
 
-    if (selectedDataset !== undefined && selectedRun !== undefined) {
-      fetchMEs({
-        datasetId: selectedDataset.value,
-        runNumber: selectedRun.value,
-      })
-      fetchLumisections({
-        datasetId: selectedDataset.value,
-        runNumber: selectedRun.value,
-      })
-    }
+    fetchMEs({
+      datasetId: selectedDataset.value,
+      runNumber: selectedRun.value,
+    })
+    fetchLumisections({
+      datasetId: selectedDataset.value,
+      runNumber: selectedRun.value,
+    })
   }, [selectedDataset, selectedRun])
+
+  const handleDatasetChange = (selectedOptions) => {
+    setSelectedDataset(selectedOptions)
+    setRuns([])
+    setSelectedRun(null)
+    setLumisections([])
+    setSelectedLumisection(null)
+    searchParams.set('dataset', selectedOptions.value)
+    searchParams.delete('run')
+    searchParams.delete('lumi')
+    setSearchParams(searchParams)
+  }
+
+  const handleRunChange = (selectedOptions) => {
+    setSelectedRun(selectedOptions)
+    setLumisections([])
+    setSelectedLumisection(null)
+    searchParams.set('run', selectedOptions.value)
+    searchParams.delete('lumi')
+    setSearchParams(searchParams)
+  }
+
+  const handleLumisectionChange = (selectedOptions) => {
+    setSelectedLumisection(selectedOptions)
+    searchParams.set('lumi', selectedOptions.value)
+    setSearchParams(searchParams)
+  }
 
   const handlePrevious = () => {
     const currentIndex = lumisections.findIndex(
       (option) => option.value === selectedLumisection.value
     )
     if (currentIndex > 0) {
-      setSelectedLumisection(lumisections[currentIndex - 1])
+      const prevLumi = lumisections[currentIndex - 1]
+      setSelectedLumisection(prevLumi)
+      searchParams.set('lumi', prevLumi.value)
+      setSearchParams(searchParams)
     }
   }
 
@@ -166,7 +229,10 @@ const Browser = () => {
       (option) => option.value === selectedLumisection.value
     )
     if (currentIndex < lumisections.length - 1) {
-      setSelectedLumisection(lumisections[currentIndex + 1])
+      const nextLumi = lumisections[currentIndex + 1]
+      setSelectedLumisection(nextLumi)
+      searchParams.set('lumi', nextLumi.value)
+      setSearchParams(searchParams)
     }
   }
 
@@ -177,13 +243,7 @@ const Browser = () => {
           <Form.Group controlId='formDatasetSelector'>
             <Select
               value={selectedDataset}
-              onChange={(selectedOptions) => {
-                setSelectedDataset(selectedOptions)
-                setRuns([])
-                setSelectedRun(undefined)
-                setLumisections([])
-                setSelectedLumisection(undefined)
-              }}
+              onChange={handleDatasetChange}
               placeholder='Select a dataset...'
               options={datasets}
               isDisabled={isLoadingDatasets}
@@ -193,12 +253,8 @@ const Browser = () => {
         <Col md={3}>
           <Form.Group controlId='formRunSelector'>
             <Select
-              value={selectedRun || null}
-              onChange={(selectedOptions) => {
-                setSelectedRun(selectedOptions)
-                setLumisections([])
-                setSelectedLumisection(undefined)
-              }}
+              value={selectedRun}
+              onChange={handleRunChange}
               placeholder='Select a run...'
               options={runs}
               isDisabled={isLoadingRuns}
@@ -208,10 +264,8 @@ const Browser = () => {
         <Col md={3}>
           <Form.Group controlId='formLumisectionSelector'>
             <Select
-              value={selectedLumisection || null}
-              onChange={(selectedOptions) => {
-                setSelectedLumisection(selectedOptions)
-              }}
+              value={selectedLumisection}
+              onChange={handleLumisectionChange}
               placeholder='Select a lumisection...'
               options={lumisections}
               isDisabled={isLoadingLumisections}
@@ -221,7 +275,7 @@ const Browser = () => {
         <Col md={2}>
           <Button
             variant='primary'
-            disabled={selectedLumisection === undefined}
+            disabled={!selectedLumisection}
             onClick={handlePrevious}
             className='me-2'
           >
@@ -229,7 +283,7 @@ const Browser = () => {
           </Button>
           <Button
             variant='primary'
-            disabled={selectedLumisection === undefined}
+            disabled={!selectedLumisection}
             onClick={handleNext}
           >
             Next
@@ -238,12 +292,22 @@ const Browser = () => {
       </Row>
       <hr />
       <Row className='mt-3 mb-3 m-3'>
-        {!isLoadingMEs && selectedLumisection !== undefined && (
+        {!isLoadingMEs && selectedLumisection && (
           <TreeGrid
             fullTree={fullTree}
+            initialPath={initialTreePath}
             datasetId={selectedDataset.value}
             runNumber={selectedRun.value}
             lsNumber={selectedLumisection.value}
+            onChange={(currentPath) => {
+              if (currentPath) {
+                const path = currentPath.join('/')
+                searchParams.set('path', path)
+              } else {
+                searchParams.delete('path')
+              }
+              setSearchParams(searchParams)
+            }}
           />
         )}
       </Row>

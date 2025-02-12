@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 
 import keycloak from './services/keycloak'
 import { onLogin, onRefresh } from './services/keycloakServices'
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       onLogin={onLogin}
       onRefresh={onRefresh}
     >
-      <Root />
+      <BrowserRouter>
+        <Root />
+      </BrowserRouter>
     </KeycloakWrapper>
   </React.StrictMode>
 )
