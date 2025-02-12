@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -13,14 +13,23 @@ import API from '../../services/api'
 import CMSOMSCard from '../components/cmsOMSCard'
 import ResponsivePlot from '../components/responsivePlot'
 
+const styleTextAsHyperlink = {
+  cursor: 'pointer',
+  color: 'blue',
+  textDecoration: 'underline',
+}
+
 const Lumisection = () => {
+  const defaultLumiPageSize = 500
   const defaultPageSizeTH1 = 500
   const defaultPageSizeTH2 = 10
 
+  const navigate = useNavigate()
   const { datasetId, runNumber, lsNumber } = useParams()
   const [isDatasetLoading, setDatasetLoading] = useState(true)
   const [isH1DLoading, setH1DLoading] = useState(true)
   const [isH2DLoading, setH2DLoading] = useState(true)
+  const [isLoadingLumisections, setIsLoadingLumisections] = useState(true)
 
   // API results
   const [dataset, setDataset] = useState()
@@ -28,6 +37,7 @@ const Lumisection = () => {
   const [h2dData, setH2DData] = useState([])
   const [h1dTotalSize, setH1DTotalSize] = useState()
   const [h2dTotalSize, setH2DTotalSize] = useState()
+  const [lumisections, setLumisections] = useState()
 
   useEffect(() => {
     const fetchDataset = () => {
@@ -43,6 +53,35 @@ const Lumisection = () => {
         })
         .finally(() => {
           setDatasetLoading(false)
+        })
+    }
+
+    const fetchLumisections = () => {
+      setIsLoadingLumisections(true)
+      API.utils
+        .genericFetchAllPages({
+          apiMethod: API.lumisection.list,
+          params: {
+            datasetId,
+            runNumber,
+            pageSize: defaultLumiPageSize,
+            fields: ['ls_number'],
+          },
+        })
+        .then((response) => {
+          const lumisections = response.results
+            .sort((a, b) =>
+              a.ls_number > b.ls_number ? 1 : b.ls_number > a.ls_number ? -1 : 0
+            )
+            .map((item) => item.ls_number)
+          setLumisections(lumisections)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error('Failure to communicate with the API!')
+        })
+        .finally(() => {
+          setIsLoadingLumisections(false)
         })
     }
 
@@ -111,9 +150,31 @@ const Lumisection = () => {
     }
 
     fetchDataset()
+    fetchLumisections()
     fetchH1D()
     fetchH2D()
   }, [datasetId, runNumber, lsNumber])
+
+
+  const handlePrevious = () => {
+    const currentIndex = lumisections.findIndex(ls => ls === Number(lsNumber))
+    if (currentIndex > 0) {
+      const prevLumi = lumisections[currentIndex - 1]
+      return navigate(
+        `/lumisections/${datasetId}/${runNumber}/${prevLumi}`
+      )
+    }
+  }
+
+  const handleNext = () => {
+    const currentIndex = lumisections.findIndex(ls => ls === Number(lsNumber))
+    if (currentIndex < lumisections.length - 1) {
+      const nextLumi = lumisections[currentIndex + 1]
+      return navigate(
+        `/lumisections/${datasetId}/${runNumber}/${nextLumi}`
+      )
+    }
+  }
 
   return (
     <>
@@ -135,7 +196,23 @@ const Lumisection = () => {
               >{`Run ${runNumber}`}</Breadcrumb.Item>
               <Breadcrumb.Item
                 active
-              >{`Lumisection ${lsNumber}`}</Breadcrumb.Item>
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  { isLoadingLumisections ? (
+                    <>
+                      <p style={{ marginRight: '10px' }}>(Previous)</p>
+                      <p style={{ marginRight: '10px' }}>{`Lumisection ${lsNumber}`}</p>
+                      <p style={{ marginRight: '10px' }}>(Next)</p>
+                    </>
+                  ) : (
+                    <>
+                      <p onClick={handlePrevious} style={{ ...styleTextAsHyperlink, marginRight: '10px' }}>(Previous)</p>
+                      <p style={{ marginRight: '10px' }}>{`Lumisection ${lsNumber}`}</p>
+                      <p onClick={handleNext} style={{ ...styleTextAsHyperlink, marginRight: '10px' }}>(Next)</p>
+                    </>
+                  )}
+                </div>
+              </Breadcrumb.Item>
             </>
           )}
         </Breadcrumb>
