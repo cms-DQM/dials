@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 
-import keycloak from './services/keycloak'
 import API from './services/api'
 import AppRoutes from './views/routes'
 import AppNavbar from './views/components/navbar'
@@ -40,15 +39,16 @@ const Root = () => {
         })
     }
 
-    if (keycloak.authenticated) {
-      if (workspaceFromUrl.current) {
-        setSelectedWorkspace(workspaceFromUrl.current)
-      } else {
-        fetchDefaultWorkspace().then(setSelectedWorkspace)
-      }
-
-      fetchWorkspaces()
+    // We don't need to check if keycloak is authenticated here
+    // since this component will load if and only if keycloak
+    // has being successfully authenticated
+    if (workspaceFromUrl.current) {
+      setSelectedWorkspace(workspaceFromUrl.current)
+    } else {
+      fetchDefaultWorkspace().then(setSelectedWorkspace)
     }
+
+    fetchWorkspaces()
   }, [])
 
   useEffect(() => {
