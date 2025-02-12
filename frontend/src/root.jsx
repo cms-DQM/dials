@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
-import { BrowserRouter } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 
-import keycloak from './services/keycloak'
-import { SELECTED_WORKSPACE_KEY } from './config/env'
 import API from './services/api'
 import AppRoutes from './views/routes'
 import AppNavbar from './views/components/navbar'
@@ -12,6 +10,8 @@ import AppNavbar from './views/components/navbar'
 const Root = () => {
   const [selectedWorkspace, setSelectedWorkspace] = useState(null)
   const [allWorkspaces, setAllWorkspaces] = useState([])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const workspaceFromUrl = useRef(searchParams.get('ws'))
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
@@ -39,37 +39,40 @@ const Root = () => {
         })
     }
 
-    if (keycloak.authenticated) {
-      // if the workspace is already set in localStorage (from another tab, maybe)
-      // we want to preserve that, since the user might have selected another workspace
-      const currentWorkspace = localStorage.getItem(SELECTED_WORKSPACE_KEY)
-
-      if (currentWorkspace) {
-        setSelectedWorkspace(currentWorkspace)
-      } else {
-        fetchDefaultWorkspace().then(setSelectedWorkspace)
-      }
-
-      fetchWorkspaces()
+    // We don't need to check if keycloak is authenticated here
+    // since this component will load if and only if keycloak
+    // has being successfully authenticated
+    if (workspaceFromUrl.current) {
+      setSelectedWorkspace(workspaceFromUrl.current)
+    } else {
+      fetchDefaultWorkspace().then(setSelectedWorkspace)
     }
+
+    fetchWorkspaces()
   }, [])
 
   useEffect(() => {
     if (selectedWorkspace) {
-      localStorage.setItem(SELECTED_WORKSPACE_KEY, selectedWorkspace)
+      searchParams.set('ws', selectedWorkspace)
+      setSearchParams(searchParams)
     }
-  }, [selectedWorkspace])
+  }, [selectedWorkspace, searchParams, setSearchParams])
 
   return (
-    <BrowserRouter>
+    <>
       <AppNavbar
         allWorkspaces={allWorkspaces}
         selectedWorkspace={selectedWorkspace}
-        setSelectedWorkspace={setSelectedWorkspace}
+        onWorkspaceChange={setSelectedWorkspace}
       />
-      <AppRoutes key={selectedWorkspace} />
+      {
+        // The key parameter is not explicitly used in the AppRoutes component,
+        // however, it is needed to re-render this component whenever this state
+        // changes.
+      }
+      <AppRoutes key={selectedWorkspace}/>
       <ToastContainer position='bottom-right' />
-    </BrowserRouter>
+    </>
   )
 }
 

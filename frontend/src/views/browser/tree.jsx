@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
+import { getCurrentTree } from './utils'
 import API from '../../services/api'
 import directoryIcon from '../../assets/img/dir.png'
 import ResponsivePlot from '../components/responsivePlot'
@@ -124,34 +125,44 @@ const TreeNode = ({
   )
 }
 
-const TreeGrid = ({ fullTree, datasetId, runNumber, lsNumber }) => {
-  const [currentPath, setCurrentPath] = useState([])
-  const [currentTree, setCurrentTree] = useState(fullTree)
+const TreeGrid = ({
+  fullTree,
+  initialPath,
+  datasetId,
+  runNumber,
+  lsNumber,
+  onChange,
+}) => {
+  const [currentPath, setCurrentPath] = useState(initialPath)
+  const [currentTree, setCurrentTree] = useState(() =>
+    getCurrentTree(initialPath, fullTree)
+  )
+
+  useEffect(() => {
+    setCurrentPath(initialPath)
+    setCurrentTree(getCurrentTree(initialPath, fullTree))
+  }, [initialPath, fullTree])
 
   const navigateTo = (dir) => {
     const newPath = [...currentPath, dir]
     const newTree = getCurrentTree(newPath, fullTree)
     setCurrentPath(newPath)
     setCurrentTree(newTree)
+    onChange(newPath)
   }
 
   const navigateToPath = (index) => {
     if (index === -1) {
       setCurrentPath([])
       setCurrentTree(fullTree)
+      onChange(undefined)
     } else {
       const newPath = currentPath.slice(0, index + 1)
       const newTree = getCurrentTree(newPath, fullTree)
       setCurrentPath(newPath)
       setCurrentTree(newTree)
+      onChange(newPath)
     }
-  }
-
-  const getCurrentTree = (path, tree) => {
-    return path.reduce((current, part) => {
-      const found = current.find((node) => node.name === part)
-      return found ? found.children : []
-    }, tree)
   }
 
   return (
