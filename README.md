@@ -1,3 +1,7 @@
+Repository migrated to CERN's Gitlab [here](https://gitlab.cern.ch/cms-dqmdc/services/dials-service).
+
+---
+
 <p align="center">
   <img src="./docs/img/dials_logo.png" alt="DIALS"/>
 </p>
